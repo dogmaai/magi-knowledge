@@ -9,9 +9,11 @@ repo: dogmaai/magi-isabel
 
 # Overview
 
-ISABEL is MAGI's learning/feedback framework. It builds win vs lose reasoning
-centroids and embedding-based pattern stats per symbol/direction/unit, which the
-guard layers consume.
+ISABEL (**I**ntelligent **S**trategy **A**nalysis and **B**ehavioral **E**valuation
+**L**earner) is MAGI's learning/feedback framework. It correlates LLM trade
+reasoning with BigQuery execution records, builds win vs lose reasoning centroids
+(Cohere embeddings), and produces pattern stats per symbol/direction/unit, which
+the guard layers consume.
 
 # Produces
 

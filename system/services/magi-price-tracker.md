@@ -1,23 +1,34 @@
 ---
 type: Service
 title: magi-price-tracker
-description: Realtime price / market-data tracking service.
+description: Back-fills historical prices into BigQuery and grades LLM trade-rec accuracy.
 lilith_safe: false
-tags: [service, price-tracker, market-data]
+tags: [service, price-tracker, market-data, evaluation]
 repo: dogmaai/magi-price-tracker
 ---
 
 # Overview
 
-Provides realtime price and market-data tracking for the trading universe,
-feeding price context to magi-core and downstream analytics.
+A data-ingestion service that **back-fills historical price data into BigQuery**
+to evaluate how accurate LLM-generated trade recommendations were after the fact.
+Runs as a Cloud Run service on a Cloud Scheduler trigger.
 
-# Discovery
+# What it does
 
-URL resolved from [service_endpoints](/system/echidna-tables/service-endpoints.md)
-(`service='price-tracker'`).
+* Updates NULL price fields on historical records over rolling **1h** (60m–48h)
+  and **1d** (24h–7d) windows.
+* Computes an **outcome** for each LLM prediction: `Correct` / `Partial` /
+  `Incorrect`.
+* Writes to the `llm_analysis` BigQuery table (LLM trade predictions + grades).
 
-# Note
+# Relationships
 
-Role summarized from the service registry and repo name; expand with concrete
-endpoint/contract detail in a follow-up pass.
+* Pulls market data via [magi-moomoo](magi-moomoo.md).
+* Service discovery via [service_endpoints](/system/echidna-tables/service-endpoints.md).
+* Auth: GitHub→GCP Workload Identity Federation (keyless), OIDC service-to-service.
+
+# Contamination note
+
+`llm_analysis` grades are cross-unit prediction outcomes and `lilith_safe: false`.
+LILITH uses only its own trade results via the
+[ISABEL_STATS_BLOCK](/_lilith_safe/schemas/isabel-stats-block.md) schema.

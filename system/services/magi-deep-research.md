@@ -25,6 +25,19 @@ This is the same prohibition the LILITH boundary enforces from the other side:
 Jun-review ticker picks must never reach a model prompt. See
 [clean-source rule](/_lilith_safe/constitution/clean-source-rule.md).
 
+# Pipeline modules
+
+| Module | Role |
+|---|---|
+| `src/index.mjs` | Cloud Run Job orchestrator / entrypoint. |
+| `src/strip.mjs` | **Section 5 sanitizer** — regex removal of "## 5. Jun Review Only" + ticker-leak detection. |
+| `src/fallback.mjs` | Phase B Vertex AI generator (`generateDeepBrief()`). |
+| `src/nyse.mjs` | NYSE trading-day gate (skips holidays/weekends, ET context). |
+| `src/bigquery.mjs` / `src/box.mjs` / `src/gcs.mjs` | Fan-out: BigQuery log / Box brief / GCS raw envelope. |
+
+Per design doc **MAGI-GE-DESIGN-001-v2**, Section 5 strip leakage must stay at
+**0 occurrences** (regex hardening + ticker-detection monitoring + unit tests).
+
 # Manual path
 
 `magi-core/scripts/upload-deep-research.mjs` + `lib/deep-research.js` allow a
@@ -33,3 +46,5 @@ human-authored brief to be uploaded into the same `DAILY_DEEP_RESEARCH` row.
 # Citations
 
 * `magi-core/src/hermes.js` (`ask_market_context`, §2.3 / §7.5 boundary).
+* `magi-deep-research/src/strip.mjs` (Section 5 sanitization).
+* Design: MAGI-GE-DESIGN-001-v2 §2.3 (absolute boundary).
