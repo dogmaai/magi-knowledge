@@ -57,6 +57,30 @@ def main() -> int:
     if not kb.cross_unit_names():
         failures.append("cross_unit_names() detector list is empty")
 
+    # The verbatim output-rules block must be reproducible byte-for-byte and
+    # carry the cross-unit placeholder (filled in by the LILITH-side loader)
+    # rather than any literal unit name.
+    try:
+        block = kb.verbatim_block("constitution/output-rules")
+        if "{cross_unit_names}" not in block:
+            failures.append("output-rules block missing {cross_unit_names} placeholder")
+        if "ABSOLUTE CONSTRAINTS" not in block:
+            failures.append("output-rules block missing ABSOLUTE CONSTRAINTS")
+        if not (block.startswith("\n") and block.endswith("\n")):
+            failures.append("output-rules block lost its leading/trailing newline")
+        for name in kb.cross_unit_names():
+            if name.lower() in block.lower():
+                failures.append(f"output-rules block leaks unit name {name!r}")
+    except Exception as exc:  # noqa: BLE001
+        failures.append(f"could not read output-rules verbatim block: {exc}")
+
+    # A doc with no fenced block must fail loud, not return garbage.
+    try:
+        kb.verbatim_block("constitution/clean-source-rule")
+        failures.append("verbatim_block did not raise on a doc without a fence")
+    except ValueError:
+        pass
+
     if failures:
         for f in failures:
             print(f"FAIL  {f}")

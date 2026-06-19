@@ -41,6 +41,30 @@ from okf_common import Concept, iter_concept_files, load_concept  # noqa: E402
 SAFE_SUBDIR = "_lilith_safe"
 
 
+def _extract_verbatim_block(text: str, lang: str = "text") -> str:
+    """Return the content of the first ```<lang> fenced block, byte-for-byte.
+
+    Lines strictly between the opening and closing fence are rejoined with
+    ``\\n``. Unlike the frontmatter ``body`` (which ``parse_frontmatter``
+    normalises via ``splitlines()``), this preserves a block's exact bytes —
+    including leading/trailing blank lines — so canonical prompt text can be
+    reproduced verbatim. Raises ``ValueError`` if no such block exists.
+    """
+    open_marker = "```" + lang
+    lines = text.split("\n")
+    start = None
+    for i, line in enumerate(lines):
+        if line.strip() == open_marker:
+            start = i + 1
+            break
+    if start is None:
+        raise ValueError(f"no opening ```{lang} fence in document")
+    for j in range(start, len(lines)):
+        if lines[j].strip() == "```":
+            return "\n".join(lines[start:j])
+    raise ValueError("unterminated fenced block")
+
+
 class LilithContaminationError(RuntimeError):
     """Raised when a read would cross the LILITH-safe boundary."""
 
@@ -81,6 +105,18 @@ class LilithSafeKnowledge:
         if not path.is_file():
             raise FileNotFoundError(f"no safe concept {concept_id!r} ({path})")
         return self._validate(load_concept(self.bundle_root, path))
+
+    def verbatim_block(self, concept_id: str, *, lang: str = "text") -> str:
+        """Return a safe concept's first ```<lang> fenced block, byte-for-byte.
+
+        For canonical prompt text (e.g. ``constitution/output-rules``) that the
+        caller must reproduce exactly. The frontmatter ``body`` is line-
+        normalised and unsafe for that; this reads the raw file after the same
+        path + ``lilith_safe`` validation that ``get()`` performs.
+        """
+        concept = self.get(concept_id)
+        raw = concept.path.read_text(encoding="utf-8")
+        return _extract_verbatim_block(raw, lang)
 
     def all_concepts(self) -> list[Concept]:
         out = []
