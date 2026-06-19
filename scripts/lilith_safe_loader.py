@@ -29,6 +29,7 @@ prompts. The loader deliberately exposes ``cross_unit_names()`` as a flat list
 """
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -144,6 +145,24 @@ class LilithSafeKnowledge:
                 raw = c.frontmatter.get("unit_names", [])
                 return [str(x).lower() for x in raw]
         return []
+
+    def distribution_priors(self) -> dict:
+        """Return the ECHIDNA-fitted input priors as a parsed dict.
+
+        Reads the JSON fenced block from the single doc flagged
+        ``distribution_priors: true`` (after the same path + ``lilith_safe``
+        validation as every other read). These are **aggregates only** — VIX
+        regime frequencies, level/cash/ATR quantile bands, and LILITH-own ISABEL
+        data-sufficiency weights — used to ground the distill blocks. Raises if
+        no such doc exists or the JSON block is missing/malformed (fail-loud).
+        """
+        for c in self.all_concepts():
+            if c.frontmatter.get("distribution_priors") is True:
+                raw = c.path.read_text(encoding="utf-8")
+                return json.loads(_extract_verbatim_block(raw, "json"))
+        raise FileNotFoundError(
+            "no doc flagged 'distribution_priors: true' under _lilith_safe/"
+        )
 
 
 if __name__ == "__main__":
