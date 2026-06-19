@@ -17,6 +17,7 @@ It contains **structure and rules, never another unit's data**:
 * [schemas/](schemas/) - Synthetic prompt-block schemas (ISABEL stats, fundamentals, technicals, macro).
 * [hallucination-patterns/](hallucination-patterns/) - The six anti-hallucination classes targeted in Phase B0 DPO.
 * [constitution/](constitution/) - Clean-source rule, output envelope, immutable risk rules.
+* [distributions/](distributions/) - Real aggregate input priors (ECHIDNA-fitted) that ground the distill blocks.
 
 # Boundary rules (enforced by CI)
 

@@ -81,6 +81,28 @@ def main() -> int:
     except ValueError:
         pass
 
+    # The ECHIDNA-fitted distribution priors must load, parse, and expose the
+    # aggregate shapes the distill pipeline grounds on (no raw rows / picks).
+    try:
+        priors = kb.distribution_priors()
+        applied = priors["macro"]["vix_regime_weights"]["applied"]
+        if abs(sum(applied.values()) - 1.0) > 1e-6:
+            failures.append(
+                f"vix_regime_weights.applied must sum to 1.0, got {sum(applied.values())}"
+            )
+        nb = priors["isabel_lilith"]["n_bucket_weights"]["applied"]
+        if abs(sum(nb.values()) - 1.0) > 1e-6:
+            failures.append(
+                f"n_bucket_weights.applied must sum to 1.0, got {sum(nb.values())}"
+            )
+        for key in ("cash_pct_quantiles",):
+            if "p50" not in priors["macro"][key]:
+                failures.append(f"macro.{key} missing p50 quantile")
+        if "p50" not in priors["technicals"]["atr_pct_of_price_quantiles"]:
+            failures.append("technicals.atr_pct_of_price_quantiles missing p50")
+    except Exception as exc:  # noqa: BLE001
+        failures.append(f"could not load distribution_priors: {exc}")
+
     if failures:
         for f in failures:
             print(f"FAIL  {f}")
