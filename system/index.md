@@ -6,6 +6,7 @@ refuses to read it.
 
 # Contents
 
+* [constitution/](constitution/) - The v3.0 PLM Runtime Constitution, split per-section for easy update. The supreme rule — guards and units derive authority from here.
 * [echidna-tables/](echidna-tables/) - ECHIDNA = the `magi_core` BigQuery warehouse. Per-table schema, joins, query patterns.
 * [plm-units/](plm-units/) - The MAGI PLM units (the LLM roster): provider, model, Cloud Run job, status.
 * [services/](services/) - Cross-repo service dependency map.

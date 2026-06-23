@@ -24,6 +24,12 @@ Note: in code, L3 (symbol exclusion) is evaluated right after L1 and before
 L1.5; the numeric label reflects the original design, not strict execution
 order.
 
+# Constitution basis
+
+The guard pipeline is the programmatic enforcement layer for the
+[PLM Runtime Constitution](/system/constitution/). Each guard doc links back to
+the specific constitutional section it enforces.
+
 # Backing data
 
 * [l4-probation](/system/echidna-tables/l4-probation.md) — L4 state.

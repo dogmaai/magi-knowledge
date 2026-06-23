@@ -37,6 +37,15 @@ VIX-CORRELATED WATCHLIST FRAMEWORK, AUTONOMY DOCTRINE, TRADING FREEDOM,
 DEVELOPMENT ROLES, FORBIDDEN ACTIONS, DATA PIPELINE, SUCCESS CRITERIA,
 VERSION HISTORY.
 
+# OKF reference docs
+
+The constitution content is documented in two OKF trees:
+
+* **PLM runtime** (full): [system/constitution](/system/constitution/) — one
+  doc per section, mirrors `buildSwingConstitution()`.
+* **LILITH-safe** (subset): [_lilith_safe/constitution](/_lilith_safe/constitution/)
+  — immutable rules only.
+
 # Citations
 
 * Builder: `magi-core/lib/constitution.js` (Constitution prompt builder).
