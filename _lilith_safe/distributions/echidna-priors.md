@@ -28,7 +28,10 @@ per-symbol picks, no other unit's data.
 * ISABEL data-sufficiency is scoped to **`unit_name IN ('LILITH', 'ADAM')` only**
   (`ADAM` is the renamed qwen base-model unit; historical rows carry `LILITH`) —
   LILITH's own decided-trade counts. No other MAGI unit's performance is present
-  or derivable.
+  or derivable. The embedded fit below was generated before the rename, when all
+  rows carried `LILITH`, so its numbers and `scope` string are LILITH-only and
+  identical to what the widened filter would return; the next regeneration will
+  carry the `IN ('LILITH','ADAM')` scope.
 * No ticker-level picks, no Section markers, no cross-unit names.
 * `empirical` = observed; `applied` = what distill samples from, after a
   documented **coverage floor** that guarantees the safety-critical rare regimes

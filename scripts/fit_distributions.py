@@ -178,8 +178,8 @@ def fit(client, fit_date: str) -> dict:
             "source_dataset": DATASET,
             "scope": ("VIX from trades.market_snapshot; ATR + ISABEL from "
                       "trades_active (active scope); cash from "
-                      "portfolio_snapshots. ISABEL scoped unit_name=LILITH "
-                      "(clean-source)."),
+                      "portfolio_snapshots. ISABEL scoped unit_name IN "
+                      "('LILITH','ADAM') (clean-source, own lineage only)."),
             "decided_trades_all_units": decided_all,
             "snapshots_with_regime": total,
             "lilith_decided_trades": lilith_decided,
