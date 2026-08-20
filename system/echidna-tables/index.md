@@ -25,7 +25,9 @@ Two write-path conventions matter:
 * [consensus-signals](consensus-signals.md) - Cross-unit consensus detector.
 * [isabel-patterns](isabel-patterns.md) - ISABEL historical win/lose centroids.
 * [thought-quality-scores](thought-quality-scores.md) - Per-thought quality scoring.
-* [gemini-pattern-analysis](gemini-pattern-analysis.md) - Periodic Gemini win/lose pattern report.
+* [gemini-pattern-analysis](gemini-pattern-analysis.md) - Periodic Gemini *generic* win/lose pattern report (not causal analysis).
+* [fugu-sequential-patterns](fugu-sequential-patterns.md) - SEKHMET/`fugu-ultra` sequential **causal** outcome analysis.
+* [daphne-feedback](daphne-feedback.md) - DAPHNE LP-taxonomy loss classification with a static causal flag (SQL-based).
 
 # Ops, config & governance
 

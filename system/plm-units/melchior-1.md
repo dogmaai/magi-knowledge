@@ -16,6 +16,11 @@ MELCHIOR-1 is a **systematic multi-factor analyst** — "your edge is thoroughne
 and precision." It is the unit that triggers **HERMES intelligence collection**
 (MELCHIOR-1-only) at the start of its cycle.
 
+MELCHIOR-1 owns **logical / quantitative and generic pattern analysis**. It is
+**not** the causal-analysis owner — causal analysis belongs to
+[SEKHMET](sekhmet.md) (Sakana `fugu-ultra`, `magi-fugu-analyzer`). See
+[causal analysis ownership](index.md#causal-analysis-ownership).
+
 # Configuration
 
 | Field | Value |
@@ -27,7 +32,7 @@ and precision." It is the unit that triggers **HERMES intelligence collection**
 # Relationships
 
 * Writes/refreshes [market_research](/system/echidna-tables/market-research.md) via the HERMES stack.
-* Gemini also powers the batch [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md) report.
+* Gemini also powers the batch [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md) report (`magi-gemini-analyzer`, Cloud Scheduler `magi-gemini-analyzer-daily`, `0 14 * * 1-5` UTC, Vertex `gemini-3-flash-preview`) — generic WIN/LOSE pattern extraction, not causal analysis.
 
 # Trading history & performance
 

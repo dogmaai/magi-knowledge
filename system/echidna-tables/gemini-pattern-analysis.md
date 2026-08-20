@@ -12,6 +12,12 @@ table_type: BASE TABLE
 Periodic batch analysis where Gemini summarizes winning vs losing trade patterns.
 Cross-unit processed intelligence — `lilith_safe: false`.
 
+This is **generic** pattern analysis (logical / quantitative), *not* causal
+analysis: causal analysis is written by SEKHMET to
+[fugu-sequential-patterns](fugu-sequential-patterns.md), and the SQL-based
+static causal classification lives in [daphne-feedback](daphne-feedback.md).
+See [causal analysis ownership](/system/plm-units/index.md#causal-analysis-ownership).
+
 # Schema
 
 | Column | Type | Description |
@@ -30,4 +36,6 @@ Cross-unit processed intelligence — `lilith_safe: false`.
 
 # Citations
 
-* Producer: scheduled Gemini analysis job in `magi-core` / `magi-moni`.
+* Producer: `magi-core/jobs/gemini-analyzer/index.js` — Cloud Run job
+  `magi-gemini-analyzer`, Cloud Scheduler `magi-gemini-analyzer-daily`
+  (`0 14 * * 1-5` UTC), Vertex AI `gemini-3-flash-preview`.
