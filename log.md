@@ -1,6 +1,7 @@
 # Bundle Update Log
 
 ## 2026-08-22
+* **Enhancement**: Added rule 4 to [collaborating-with-antigravity](/.agents/skills/collaborating-with-antigravity/SKILL.md) — an exchange with Antigravity ends the moment the agents agree; no acknowledgement-only replies, no re-confirming an agreed spec (prevents infinite agent-to-agent loops).
 * **Creation**: [collaborating-with-antigravity](/.agents/skills/collaborating-with-antigravity/SKILL.md) — the Antigravity × Devin collaboration workflow (GitHub Issues/PRs as the shared hub, role split, PR description structure, review feedback loop, escalation to @dogmaai).
 
 ## 2026-08-19
