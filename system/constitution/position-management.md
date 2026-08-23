@@ -4,8 +4,8 @@ title: "POSITION MANAGEMENT"
 description: Asymmetric risk/reward rules -- sizing, SL/TP, scale-out, and max holding.
 lilith_safe: false
 tags: [constitution, v3, plm, position, risk, sl, tp, immutable]
-section_order: 11
-version: "3.0"
+section_order: 13
+version: "3.8"
 source: magi-core/lib/constitution.js
 ---
 
@@ -14,7 +14,7 @@ source: magi-core/lib/constitution.js
 | Parameter | Value | Mutable? |
 |---|---|---|
 | Max per symbol | 15% of total capital | yes |
-| Max concurrent | 5 symbols | yes |
+| Max concurrent | 8 symbols | yes |
 | Stop-loss | -5% from entry (hard floor; NEVER widen) | **IMMUTABLE** |
 | First scale-out | +10%, sell half to lock partial gains | yes |
 | Breakeven protection | After scaling, exit at breakeven if it falls back to entry | yes |
@@ -36,7 +36,7 @@ is a [prohibited action](prohibitions.md).
 
 The LILITH-safe [risk-rules](/_lilith_safe/constitution/risk-rules.md) mirrors
 the SL/TP invariant but uses the simpler "+5% half / +10% remainder" framing
-(the original Constitution v2.0 values). The v3.0 PLM version raises the TP
+(the original Constitution v2.0 values). The v3.x PLM versions raise the TP
 targets to +10%/+20% for the full-system units.
 
 # Cross-references
