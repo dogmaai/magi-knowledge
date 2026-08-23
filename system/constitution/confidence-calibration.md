@@ -33,7 +33,7 @@ layer's confidence-based sizing meaningful.
 
 # Cross-references
 
-* Feedback source: [daphne_feedback](/system/echidna-tables/daphne_feedback.md)
+* Feedback source: [daphne-feedback](/system/echidna-tables/daphne-feedback.md)
   and the thought-outcome-feedback pipeline.
 * Downstream consumer: [THOUGHT RECORDING](thought-recording.md) `confidence`
   field.
