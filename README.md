@@ -20,6 +20,7 @@ magi-knowledge/
 └── scripts/
     ├── okf_common.py        # zero-dep frontmatter parser
     ├── okf_lint.py          # OKF conformance + LILITH contamination linter
+    ├── okf_export.py        # flatten one tree into a single Markdown digest
     ├── lilith_safe_loader.py# the ONLY sanctioned reader for LILITH training
     └── test_lilith_safe_loader.py
 ```
@@ -50,6 +51,23 @@ To make that boundary impossible to cross by accident:
 ## Consuming the bundle
 
 No SDK required — `cat` any file. Agents parse the frontmatter directly.
+
+### Syncing the spec to an LLM that cannot read the repo
+
+Agents with repository access (Antigravity, Devin, Devin CLI) should read this
+bundle directly — clone/pull `main`, or vendor it as a submodule. For chat UIs
+and one-shot prompts, flatten a tree into a single pasteable file:
+
+```bash
+python scripts/okf_export.py                      # system/ tree (~90 KB)
+python scripts/okf_export.py --tree _lilith_safe  # LILITH-safe tree only
+python scripts/okf_export.py -o /tmp/magi-spec.md
+```
+
+One run exports exactly one tree, and a doc whose `lilith_safe` flag disagrees
+with its tree aborts the export — the digest can never mix the two sides of the
+contamination boundary. Output goes to stdout by default, so no generated copy
+is committed: regenerate instead of editing a digest.
 
 The LILITH training pipeline (`dogmaai/lilith-training`) vendors this bundle
 (git submodule at `vendor/magi-knowledge`, or a build-time fetch) and reads it
