@@ -64,9 +64,42 @@ def export(tree: str) -> str:
         "",
     ]
 
+    parts += [
+        "---",
+        "",
+        "## How to read this digest (OKF v0.1)",
+        "",
+        "This is a flattened cache of one directory-tree Markdown bundle in the",
+        "Open Knowledge Format (OKF) v0.1. The repository is the source of truth;",
+        "regenerate the digest rather than editing it.",
+        "Each concept document is Markdown with a flat YAML frontmatter block",
+        "delimited by `---` lines, followed by the document body.",
+        "`index.md`, `log.md`, and `README.md` are reserved filenames, not concepts.",
+        "A concept ID is the bundle-root-relative path with the `.md` suffix removed.",
+        "In this digest, each concept appears under a `## <concept_id>` heading.",
+        "The italic line immediately below that heading contains the document's",
+        "frontmatter, except for `lilith_safe`; the document body follows it.",
+        "Only one tree is flattened per digest, and its safety boundary is checked",
+        "during export. OKF specification:",
+        "https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md",
+        "",
+    ]
+
     index = root / "index.md"
     if index.is_file():
-        # Only the bundle root index.md carries frontmatter (OKF rule).
+        if tree == "system":
+            # Only the bundle root index.md carries frontmatter (OKF rule).
+            _, bundle_index = parse_frontmatter(
+                (BUNDLE_ROOT / "index.md").read_text(encoding="utf-8")
+            )
+            parts += [
+                "---",
+                "",
+                "## OKF bundle overview",
+                "",
+                bundle_index.strip(),
+                "",
+            ]
         parts += [
             "---",
             "",

@@ -13,7 +13,7 @@ Gemini-side agents cannot read `dogmaai/magi-knowledge`. The sync path is:
 ```
 magi-knowledge (main)
   └─ scripts/okf_export.py --tree system      # one Markdown digest, ~90 KB
-      └─ gs://<bucket>/okf/system.txttxt         # stable object name (.txt — see below), .txt (see below)
+      └─ gs://<bucket>/okf/system.txt            # stable object name (.txt — see below)
           └─ Discovery Engine data store (unstructured, CONTENT_REQUIRED)
               └─ attached to a Gemini Enterprise app / search engine
 ```
@@ -85,11 +85,11 @@ Gemini Enterprise)” runs these steps on every push to `main` that touches
 ```bash
 cd magi-knowledge && git pull
 python scripts/okf_export.py --tree system -o /tmp/system.md
-gcloud storage cp --content-type=text/plain --content-type=text/plain /tmp/system.md gs://magi-specifications/okf/system.txttxt
+gcloud storage cp --content-type=text/plain /tmp/system.md gs://magi-specifications/okf/system.txt
 
 curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
   "$BASE/dataStores/magi-knowledge/branches/default_branch/documents:import" -d '{
-    "gcsSource": { "inputUris": ["gs://magi-specifications/okf/system.txttxt"], "dataSchema": "content" },
+    "gcsSource": { "inputUris": ["gs://magi-specifications/okf/system.txt"], "dataSchema": "content" },
     "reconciliationMode": "FULL"
   }'
 ```
@@ -103,7 +103,7 @@ curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/jso
 * `dataSchema: "content"` = unstructured import (the file itself is the
   document); `INCREMENTAL` would leave stale documents behind, so use `FULL`.
 * A `.md` object name makes the import fail (see Environment); keep `.txt`.
-* The stable object name (`okf/system.txttxt`) plus `FULL` makes the refresh
+* The stable object name (`okf/system.txt`) plus `FULL` makes the refresh
   idempotent: each run replaces the previous digest rather than accumulating
   dated copies.
 * `documents:import` returns a long-running operation — poll
