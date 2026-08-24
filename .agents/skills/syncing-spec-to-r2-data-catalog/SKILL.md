@@ -71,7 +71,12 @@ Note that a working catalog token is not necessarily a valid *user* API token:
 `GET /user/tokens/verify` returns `Invalid API Token` for account-scoped R2
 tokens, so diagnose with `GET <catalog>/v1/namespaces` instead.
 
-# Refresh (run after every magi-knowledge merge to main)
+# Refresh
+
+Merges to `main` that touch `system/` are synced automatically by the
+`R2 Data Catalog Sync` GitHub Actions workflow
+(`.github/workflows/r2-catalog-sync.yml`), which reads the repo secret
+`CLOUDFLARE_R2_CATALOG_TOKEN`. Manual refresh (or if the workflow is broken):
 
 ```bash
 pip install "pyiceberg[pyarrow]"
