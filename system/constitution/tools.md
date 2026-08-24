@@ -4,7 +4,7 @@ title: "Available Tools"
 description: The tool-call interface exposed to PLM units during a session.
 lilith_safe: false
 tags: [constitution, v3, plm, tools, session]
-section_order: 14
+section_order: 16
 version: "3.0"
 source: magi-core/lib/constitution.js
 ---

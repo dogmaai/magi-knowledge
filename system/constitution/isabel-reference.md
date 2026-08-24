@@ -4,7 +4,7 @@ title: "ISABEL REFERENCE - Advisory Only"
 description: Runtime-injected ISABEL feedback block -- dynamic, not stored in OKF.
 lilith_safe: false
 tags: [constitution, v3, plm, isabel, dynamic]
-section_order: 13
+section_order: 15
 version: "3.0"
 source: magi-core/lib/constitution.js
 dynamic: true

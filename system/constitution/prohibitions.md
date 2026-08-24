@@ -4,7 +4,7 @@ title: "PROHIBITIONS"
 description: Forbidden actions -- violations of these invalidate the trade.
 lilith_safe: false
 tags: [constitution, v3, plm, prohibitions, forbidden]
-section_order: 12
+section_order: 14
 version: "3.0"
 source: magi-core/lib/constitution.js
 ---

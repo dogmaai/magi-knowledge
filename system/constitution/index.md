@@ -1,4 +1,4 @@
-# PLM Runtime Constitution (v3.0)
+# PLM Runtime Constitution (v3.8)
 
 The full swing-trading constitution that all PLM units receive as their system
 prompt. Built at runtime by `buildSwingConstitution()` in
@@ -12,8 +12,8 @@ changes in `lib/constitution.js`, update the corresponding section doc here.
 
 | Field | Value |
 |---|---|
-| Version | 3.0 |
-| Effective | 2026-06-18 |
+| Version | 3.8 |
+| Effective | 2026-08-24 |
 | Builder | `magi-core/lib/constitution.js` (`buildSwingConstitution`) |
 | BQ store | [constitution](/system/echidna-tables/constitution.md) table |
 
@@ -30,11 +30,13 @@ changes in `lib/constitution.js`, update the corresponding section doc here.
 | 7 | [TRADING UNIVERSE](trading-universe.md) | Dynamic symbol list + L3 exclusions | **dynamic** |
 | 8 | [TIMEFRAME: SWING](timeframe-swing.md) | Days to 2-3 months; entry needs catalyst + 2:1 R:R | yes |
 | 9 | [SWING TRADING DISCIPLINE](swing-discipline.md) | Check positions first; HOLD is valid | yes |
-| 10 | [THOUGHT RECORDING](thought-recording.md) | Mandatory 6-field log_analysis before every decision | yes |
-| 11 | [POSITION MANAGEMENT](position-management.md) | SL -5% **IMMUTABLE**; TP +10%/+20%; max 5 symbols | **SL immutable** |
-| 12 | [PROHIBITIONS](prohibitions.md) | Seven forbidden actions | yes |
-| 13 | [ISABEL REFERENCE](isabel-reference.md) | Runtime-injected ISABEL feedback | **dynamic** |
-| 14 | [Available Tools](tools.md) | Tool-call interface (get_price, place_order, etc.) | yes |
+| 10 | [THOUGHT RECORDING](thought-recording.md) | Mandatory 6-field log_analysis before every decision; 1:1 log_analysis/place_order pairing | yes |
+| 11 | [CONFIDENCE CALIBRATION](confidence-calibration.md) | Confidence = calibrated probability; 0.80-0.89 is the overconfidence trap | yes |
+| 12 | [CONCERNS ARE VETO SIGNALS](concerns-veto.md) | Concerns must be resolved with evidence or treated as veto | yes |
+| 13 | [POSITION MANAGEMENT](position-management.md) | SL -5% **IMMUTABLE**; TP +10%/+20%; max 8 symbols | **SL immutable** |
+| 14 | [PROHIBITIONS](prohibitions.md) | Seven forbidden actions | yes |
+| 15 | [ISABEL REFERENCE](isabel-reference.md) | Runtime-injected ISABEL feedback | **dynamic** |
+| 16 | [Available Tools](tools.md) | Tool-call interface (get_price, place_order, etc.) | yes |
 
 # Relationship to LILITH-safe constitution
 
