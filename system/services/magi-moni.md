@@ -32,5 +32,7 @@ automated performance reporting, and a natural-language operator interface
 
 * AKA-1 is governed by the MAGI Constitution (forbidden actions; slash commands
   bypass the LLM for direct status/reports).
+* [AKA memory](aka-memory.md) is held on TIALA: unlike the stateless Cloud Run
+  AKA-1, which reads ECHIDNA, it holds `MEMORY.md` and `memory/*.md`.
 * Tech: Node.js, Express, Cloud Run, BigQuery, Pub/Sub, Anthropic Claude, Gemini,
   Telegram, Terraform.
