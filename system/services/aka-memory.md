@@ -26,12 +26,21 @@ runtimes: AKA-1 is stateless per request and reads
 
 | Property | Value |
 |---|---|
+| Scheduler | launchd user agent `~/Library/LaunchAgents/com.openclaw.gcs-memory-sync.plist` (label `com.openclaw.gcs-memory-sync`) |
 | Script | `~/.openclaw/scripts/sync-memory-to-gcs.sh` on TIALA |
-| Scope | `MEMORY.md` + `memory/*.md` (full re-upload, not incremental) |
+| Source | `~/clawd/MEMORY.md` + `~/clawd/memory/*.md` |
 | Destination | `gs://screen-share-459802-memory/` |
-| Cadence | daily; objects observed rewritten at **12:00 UTC (21:00 JST)** |
+| Schedule | `StartCalendarInterval`: Hour=21, Minute=0; daily at **21:00 JST (12:00 UTC)**; `RunAtLoad`: false |
+| Command | `/bin/bash -c 'source ~/.zprofile && ~/.openclaw/scripts/sync-memory-to-gcs.sh >> /tmp/gcs-memory-sync.log 2>&1'` |
+| Log | `/tmp/gcs-memory-sync.log` (stdout/stderr) |
 | Identity | `aka-agent@screen-share-459802.iam.gserviceaccount.com` |
 | Versioning | Suspended — each run overwrites, so only the newest copy survives |
+
+The script uses `set -e`, activates `gcloud auth activate-service-account` with
+`~/.config/gcloud/service-account-key.json`, then copies the source files with
+`gsutil cp` (and `gsutil -m cp` for `memory/*.md`), using
+`Cache-Control: no-cache`. This is copy/overwrite only, not `rsync`, so locally
+deleted files are never removed from the bucket.
 
 Bucket layout:
 
@@ -41,18 +50,20 @@ gs://screen-share-459802-memory/
 └── memory/*.md          # dated session notes (71 objects as of 2026-08-24)
 ```
 
-The job is **host-local** (launchd/cron on TIALA), not a
+The job is **host-local** launchd, not a
 [Cloud Scheduler](/system/services/magi-core.md) entry, so it does not appear in
-`gcloud scheduler jobs list` and its failures surface only as a stale object
-timestamp in the bucket. `MEMORY.md` itself states the schedule as
-"21:00 UTC (06:00 JST)", which disagrees with the observed 12:00 UTC upload
-time; the observed time is authoritative until the TIALA-side schedule is
-re-read.
+`gcloud scheduler jobs list`. TIALA's timezone is JST (`JST+0900`), and there is
+no user crontab (`crontab: no crontab for jun`). The plist confirms the daily
+21:00 JST / 12:00 UTC schedule, matching the observed object rewrite time; any
+failure surfaces as a stale object timestamp in the bucket or in the local log.
+`MEMORY.md` itself incorrectly states the schedule as "21:00 UTC (06:00 JST)" —
+it states the local 21:00 as UTC. The correct schedule is 21:00 JST / 12:00
+UTC.
 
 # Host
 
 TIALA — Mac mini M4 (16 GB), 24/7, Tailscale `aka.aegean-boa.ts.net`
-(`100.114.185.1`). Also runs Ollama (`11435`, [ORACLE](/system/plm-units/oracle.md)
+(`100.114.185.1`). Also runs Ollama (`11435`, [TIARA](/system/plm-units/tiara.md)
 inference), OpenD (`11111`, the MooMoo gateway behind
 [magi-moomoo](magi-moomoo.md)), ttyd (`7681`) and Netdata (`19999`).
 

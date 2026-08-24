@@ -2,9 +2,10 @@
 
 ## 2026-08-24
 * **Creation**: [AKA memory](system/services/aka-memory.md) — documents the
-  daily host-local backup of `MEMORY.md` + `memory/*.md` to
-  `gs://screen-share-459802-memory` at 12:00 UTC / 21:00 JST; it is not a
-  Cloud Scheduler job. This differs from `MEMORY.md`'s own "21:00 UTC" claim.
+  confirmed host-local launchd backup from `~/clawd/MEMORY.md` +
+  `~/clawd/memory/*.md` to `gs://screen-share-459802-memory` daily at 21:00 JST /
+  12:00 UTC, as specified by the plist; it is not a Cloud Scheduler job.
+  `MEMORY.md`'s own "21:00 UTC (06:00 JST)" claim is incorrect.
 
 ## 2026-08-23
 * **Creation**: [syncing-spec-to-gemini-enterprise](/.agents/skills/syncing-spec-to-gemini-enterprise/SKILL.md) — the procedure for publishing the `system/` digest to a Discovery Engine (Gemini Enterprise / Vertex AI Search) data store: GCS object with a stable name, `documents:import` with `dataSchema: content` + `reconciliationMode: FULL`, attach to the Gemini Enterprise app, and the boundary rules (`_lilith_safe/` never indexed, PLM jobs stay off Gemini Enterprise per MAGI-GE-DESIGN-001-v2 §2.3).
