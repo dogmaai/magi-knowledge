@@ -38,7 +38,8 @@ this catalog — R2 SQL is a cross-unit surface. `r2_catalog_sync.py` refuses
 | Catalog URI | `https://catalog.cloudflarestorage.com/c3b51b9f35d16713caab757feca638d8/magi-system` |
 | Warehouse | `c3b51b9f35d16713caab757feca638d8_magi-system` |
 | Namespace / table | `okf` / `system` |
-| Token secret | `CLOUDFLARE_R2_CATALOG_TOKEN` |
+| Token secret | `CLOUDFLARE_R2_CATALOG_TOKEN` (org secret: `CLOUDFLARE_R2_CATALOG_TOKEN_V2`) |
+| Last verified write | 64 rows @ `082c503`, 2026-08-24 |
 | Table maintenance | compaction on (128 MB target), snapshot expiry on (min 3 snapshots, max 7d) — configured in the dashboard, no action needed here |
 
 Table columns: `concept_id`, `tree`, `path`, `title`, `type`, `description`,
@@ -66,6 +67,10 @@ Tokens that do **not** work (verified):
 * `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` — S3 credentials; they are not
   accepted by the Iceberg REST catalog and were `Unauthorized` on the S3 API.
 
+Note that a working catalog token is not necessarily a valid *user* API token:
+`GET /user/tokens/verify` returns `Invalid API Token` for account-scoped R2
+tokens, so diagnose with `GET <catalog>/v1/namespaces` instead.
+
 # Refresh (run after every magi-knowledge merge to main)
 
 ```bash
@@ -77,7 +82,9 @@ CLOUDFLARE_R2_CATALOG_TOKEN=<token> python scripts/r2_catalog_sync.py
 
 The script creates the namespace and table on first run
 (`create_namespace_if_not_exists` / `create_table_if_not_exists`), so there is
-no separate bootstrap step.
+no separate bootstrap step. A full run takes ~1–2 minutes (the `overwrite` does
+a delete + append against the vended R2 credentials); `UserWarning: Delete
+operation did not match any records` on the first run is expected.
 
 # Verification
 
