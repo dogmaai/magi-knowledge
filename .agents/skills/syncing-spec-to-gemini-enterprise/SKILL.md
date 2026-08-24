@@ -13,7 +13,7 @@ Gemini-side agents cannot read `dogmaai/magi-knowledge`. The sync path is:
 ```
 magi-knowledge (main)
   └─ scripts/okf_export.py --tree system      # one Markdown digest, ~90 KB
-      └─ gs://<bucket>/okf/system.md          # stable object name
+      └─ gs://<bucket>/okf/system.txt         # stable object name (.txt — see below)
           └─ Discovery Engine data store (unstructured, CONTENT_REQUIRED)
               └─ attached to a Gemini Enterprise app / search engine
 ```
@@ -24,14 +24,15 @@ would put other units' processed intelligence one query away from the training
 corpus. `okf_export.py` exports exactly one tree per run, so keep the flag at
 `--tree system`.
 
-# Environment (verified 2026-08-23)
+# Environment (verified 2026-08-24)
 
 | Item | Value |
 |---|---|
 | GCP project | `screen-share-459802` (number `398890937507`) |
 | API | `discoveryengine.googleapis.com`, location **`global`** (the regional `us` endpoint rejects these calls) |
 | Collection | `default_collection` |
-| Existing GCS-backed data stores | `magi-news`, `magi-earnings`, `magi-sec-filings` (all `contentConfig: CONTENT_REQUIRED`) |
+| This bundle's data store | `magi-knowledge` (created 2026-08-24, `contentConfig: CONTENT_REQUIRED`, attached to the `magi-research` engine) |
+| Other GCS-backed data stores | `magi-news`, `magi-earnings`, `magi-sec-filings` (all `contentConfig: CONTENT_REQUIRED`) |
 | Existing search apps (engines) | `magi-research`, `magi-system-bqdatastore-li_1779238130897` |
 
 Mirror `magi-news`: unstructured data store, default digital parsing, documents
@@ -41,7 +42,7 @@ whose `content.uri` points at a GCS object.
 set and is superseded by this bundle — do not refresh it, and prefer a separate
 `okf/` prefix so the two are never confused.
 
-# One-time setup
+# One-time setup (DONE 2026-08-24 — keep for disaster recovery)
 
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=/home/ubuntu/gcp-key.json
@@ -70,21 +71,32 @@ curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/jso
 
 # Refresh (run after every magi-knowledge merge to main)
 
+> **Automated**: the Devin Automation “MAGI GE spec 同期 (magi-knowledge main →
+Gemini Enterprise)” runs these steps on every push to `main` that touches
+`system/**` or `scripts/okf_export.py`. Run them manually only as a fallback
+(e.g. the automation failed, or a GCS/data-store repair is needed).
+
 ```bash
 cd magi-knowledge && git pull
 python scripts/okf_export.py --tree system -o /tmp/system.md
-gcloud storage cp /tmp/system.md gs://magi-specifications/okf/system.md
+gcloud storage cp --content-type=text/plain /tmp/system.md gs://magi-specifications/okf/system.txt
 
 curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
   "$BASE/dataStores/magi-knowledge/branches/default_branch/documents:import" -d '{
-    "gcsSource": { "inputUris": ["gs://magi-specifications/okf/system.md"], "dataSchema": "content" },
+    "gcsSource": { "inputUris": ["gs://magi-specifications/okf/system.txt"], "dataSchema": "content" },
     "reconciliationMode": "FULL"
   }'
 ```
 
+* The object name MUST end in `.txt`: Discovery Engine infers the MIME type
+  from the file extension (ignoring the GCS `Content-Type` metadata), and a
+  `.md` object imports as `text/markdown`, which the API rejects (`text/plain`
+  is allowed). Verified 2026-08-24 — the `.md` import fails even with
+  `Content-Type: text/plain` set on the object.
+
 * `dataSchema: "content"` = unstructured import (the file itself is the
   document); `INCREMENTAL` would leave stale documents behind, so use `FULL`.
-* The stable object name (`okf/system.md`) plus `FULL` makes the refresh
+* The stable object name (`okf/system.txt`) plus `FULL` makes the refresh
   idempotent: each run replaces the previous digest rather than accumulating
   dated copies.
 * `documents:import` returns a long-running operation — poll
