@@ -1,0 +1,44 @@
+name: AI Search R2 Sync
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "system/**"
+      - "scripts/ai_search_r2_sync.py"
+      - "scripts/okf_common.py"
+      - ".github/workflows/ai-search-sync.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ai-search-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: AWS CLI version
+        run: aws --version
+
+      - name: Dry run
+        run: |
+          python scripts/ai_search_r2_sync.py \
+            --bucket magi-system \
+            --prefix okf/system \
+            --dry-run
+
+      - name: Sync OKF system/ to R2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          python scripts/ai_search_r2_sync.py \
+            --bucket magi-system \
+            --prefix okf/system
