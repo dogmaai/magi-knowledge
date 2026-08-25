@@ -103,8 +103,10 @@ def upload_file(
         content_type,
     ]
 
-    for meta_key, meta_value in metadata.items():
-        cmd.extend(["--metadata", f"{meta_key}={meta_value}"])
+    if metadata:
+        # aws s3 cp --metadata is a single map argument; pass all fields as one
+        # JSON map to avoid later entries overwriting earlier ones.
+        cmd.extend(["--metadata", json.dumps(metadata, ensure_ascii=False)])
 
     if dry_run:
         cmd.append("--dryrun")
