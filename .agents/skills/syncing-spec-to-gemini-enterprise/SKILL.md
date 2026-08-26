@@ -110,6 +110,33 @@ curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/jso
   `GET https://discoveryengine.googleapis.com/v1/<operation.name>` until
   `done: true` and check `errorSamples`.
 
+## Current status: `magi-dataset`
+
+Direct grounding from the Gemini Enterprise app to `magi-dataset` could not be
+established, so it is currently connected through A2A (Agent2Agent). A2A
+provides enough browsing and reference access for now; therefore, migrating
+back to a direct data-store connection is **on hold** and the current setup
+should remain unchanged.
+
+Direct data-store attachment is still the canonical pattern — as with
+`magi-news`, an unstructured GCS-backed data store should be attached to the
+engine's `dataStoreIds`. A2A is a workaround, not the target architecture.
+This status does not change the `MAGI-GE-DESIGN-001-v2` §2.3 boundary: the
+eight PLM Cloud Run Jobs must not use Gemini Enterprise or this A2A path.
+
+### Known issue / TODO
+
+When direct grounding is investigated again:
+
+1. Confirm whether `magi-dataset` is a GCS unstructured data store
+   (`CONTENT_REQUIRED`) or a BigQuery structured data store. A structured BQ
+   data store cannot be attached directly to an agent, which is a common cause
+   of this connection failure.
+2. Confirm that both the data store and the engine use the `global` location;
+   the regional `us` endpoint is rejected.
+3. Confirm that `magi-dataset` is attached to the target engine's
+   `dataStoreIds`.
+
 # Verification
 
 1. `GET $BASE/dataStores/magi-knowledge/branches/default_branch/documents` —
