@@ -1,5 +1,12 @@
 # Bundle Update Log
 
+## 2026-08-24
+* **Creation**: [AKA memory](system/services/aka-memory.md) — documents the
+  confirmed host-local launchd backup from `~/clawd/MEMORY.md` +
+  `~/clawd/memory/*.md` to `gs://screen-share-459802-memory` daily at 21:00 JST /
+  12:00 UTC, as specified by the plist; it is not a Cloud Scheduler job.
+  `MEMORY.md`'s own "21:00 UTC (06:00 JST)" claim is incorrect.
+
 ## 2026-08-23
 * **Creation**: [syncing-spec-to-gemini-enterprise](/.agents/skills/syncing-spec-to-gemini-enterprise/SKILL.md) — the procedure for publishing the `system/` digest to a Discovery Engine (Gemini Enterprise / Vertex AI Search) data store: GCS object with a stable name, `documents:import` with `dataSchema: content` + `reconciliationMode: FULL`, attach to the Gemini Enterprise app, and the boundary rules (`_lilith_safe/` never indexed, PLM jobs stay off Gemini Enterprise per MAGI-GE-DESIGN-001-v2 §2.3).
 * **Creation**: [scripts/okf_export.py](/scripts/okf_export.py) — flattens one tree (`system/` or `_lilith_safe/`) into a single Markdown digest for syncing the common spec to LLMs without repository access. Exactly one tree per run, and a `lilith_safe` flag that disagrees with its tree aborts the export, so a digest can never straddle the contamination boundary. Documented under `Consuming the bundle` in the [README](/README.md).
