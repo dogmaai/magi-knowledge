@@ -1,11 +1,9 @@
 ---
 name: configuring-cloudflare-ai-search
-description: >-
-  How to configure and operate the Cloudflare AI Search (AutoRAG) instance that
-  indexes the MAGI OKF spec from the magi-system R2 bucket. Use when asked to
-  set up, fix, re-sync, or query the AI Search instance, when search returns 0
-  results, when path filters or custom metadata need changing, or when the
-  index looks stale.
+description: How to configure and operate the Cloudflare AI Search (AutoRAG) instance that indexes the MAGI OKF spec from the magi-system R2 bucket. Use when asked to set up, fix, re-sync, or query the AI Search instance, when search returns 0 results, when path filters or custom metadata need changing, or when the index looks stale.
+type: Workflow
+lilith_safe: false
+tags: [workflow, cloudflare, ai-search, autorag, r2]
 ---
 
 # Configuring Cloudflare AI Search for the MAGI OKF spec
