@@ -11,7 +11,7 @@ Contamination guarantees baked into the queries:
 
   * VIX regime / level, cash %, and ATR % are pooled aggregates across all rows
     (no unit attribution).
-  * The ISABEL data-sufficiency prior is scoped to ``unit_name = 'LILITH'`` only
+  * The ISABEL data-sufficiency prior is scoped to ``unit_name IN ('LILITH', 'ADAM')`` only
     — LILITH's own decided-trade counts. No other unit's performance is read.
   * Output is frequencies and quantiles, never raw rows.
 
@@ -135,12 +135,14 @@ def fit(client, fit_date: str) -> dict:
 
     # 4) ISABEL data-sufficiency — LILITH-OWN ONLY (clean-source). Per (symbol,
     #    side) decided-trade count, bucketed. We read counts only, never picks.
+    #    'ADAM' is the renamed qwen (DashScope base-model) unit; historical rows
+    #    from that path carry unit_name='LILITH', new rows carry 'ADAM'.
     nb_counts = {"0": 0, "1-4": 0, "5-9": 0, "10+": 0}
     lilith_decided = 0
     for r in q(f"""
         WITH cells AS (
           SELECT symbol, side, COUNTIF(result IN ('WIN','LOSE')) AS n
-          FROM {active} WHERE unit_name = 'LILITH'
+          FROM {active} WHERE unit_name IN ('LILITH', 'ADAM')
           GROUP BY symbol, side
         )
         SELECT
@@ -176,8 +178,8 @@ def fit(client, fit_date: str) -> dict:
             "source_dataset": DATASET,
             "scope": ("VIX from trades.market_snapshot; ATR + ISABEL from "
                       "trades_active (active scope); cash from "
-                      "portfolio_snapshots. ISABEL scoped unit_name=LILITH "
-                      "(clean-source)."),
+                      "portfolio_snapshots. ISABEL scoped unit_name IN "
+                      "('LILITH','ADAM') (clean-source, own lineage only)."),
             "decided_trades_all_units": decided_all,
             "snapshots_with_regime": total,
             "lilith_decided_trades": lilith_decided,
