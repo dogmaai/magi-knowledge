@@ -51,6 +51,21 @@ specific comment on the Issue/PR mentioning **@dogmaai** and state exactly what
 decision is needed. Antigravity and @dogmaai reply with the clarified spec. Do
 not guess and implement past an unresolved architectural question.
 
+## 4. End the exchange once agreement is reached — never loop
+
+A conversation with Antigravity is **finished the moment the two agents agree**.
+Do not keep the thread alive with acknowledgement-only replies ("understood",
+"confirmed", "ready to proceed"), and do not re-confirm a spec that has already
+been agreed. Once the answer or decision you needed has arrived, stop commenting
+and start executing.
+
+* If the reply resolves the question → act on it; post nothing further until
+  there is a concrete result (a PR, a push, or a new blocker) to report.
+* Comment again only when you have new information: a genuinely different
+  question, a result, or a blocker.
+* Never respond to a reply that itself contains no request. That is how two
+  agents deadlock into an infinite acknowledgement loop.
+
 # Interaction with repo-specific rules
 
 This workflow is additive: per-repo conventions still apply and take precedence
