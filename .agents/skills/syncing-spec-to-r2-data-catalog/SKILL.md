@@ -38,8 +38,8 @@ this catalog — R2 SQL is a cross-unit surface. `r2_catalog_sync.py` refuses
 | Catalog URI | `https://catalog.cloudflarestorage.com/c3b51b9f35d16713caab757feca638d8/magi-system` |
 | Warehouse | `c3b51b9f35d16713caab757feca638d8_magi-system` |
 | Namespace / table | `okf` / `system` |
-| Token secret | `CLOUDFLARE_R2_CATALOG_TOKEN` (org secret: `CLOUDFLARE_R2_CATALOG_TOKEN_V2`) |
-| Last verified write | 64 rows @ `082c503`, 2026-08-24 |
+| Token secret | `CLOUDFLARE_R2_CATALOG_TOKEN` (org secret: `CLOUDFLARE_R2_CATALOG_TOKEN_V3` — V1/V2 revoked 2026-08-25) |
+| Last verified write | 64 rows @ `a240d78`, 2026-08-25 |
 | Table maintenance | compaction on (128 MB target), snapshot expiry on (min 3 snapshots, max 7d) — configured in the dashboard, no action needed here |
 
 Table columns: `concept_id`, `tree`, `path`, `title`, `type`, `description`,
@@ -66,6 +66,13 @@ Tokens that do **not** work (verified):
   minimum-scope for compaction/snapshot expiry only.
 * `R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` — S3 credentials; they are not
   accepted by the Iceberg REST catalog and were `Unauthorized` on the S3 API.
+
+One account API token covers both APIs: use the token value as the Bearer for
+the Iceberg catalog, and derive S3-compatible credentials from the same token —
+`AWS_ACCESS_KEY_ID` = the token ID (from `GET /accounts/<acc>/tokens/verify`),
+`AWS_SECRET_ACCESS_KEY` = `sha256(token value)`. The same values back the
+`R2_ACCESS_KEY_ID` / `R2_SECRET_ACCESS_KEY` GitHub secrets used by
+`ai-search-sync.yml`.
 
 Note that a working catalog token is not necessarily a valid *user* API token:
 `GET /user/tokens/verify` returns `Invalid API Token` for account-scoped R2
