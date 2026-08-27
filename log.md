@@ -1,6 +1,19 @@
 # Bundle Update Log
 
 ## 2026-08-27
+* **Fix**: The AI Search instance `magi-document` was embedding the R2 Data
+  Catalog's Iceberg metadata under `__r2_data_catalog/` — `magi-system` holds
+  both surfaces. `source_params.exclude_items` now carries
+  `__r2_data_catalog/**`; the following sync job saw 65 files, all under
+  `okf/system/`.
+* **Enhancement**: [configuring-cloudflare-ai-search](/.agents/skills/configuring-cloudflare-ai-search/SKILL.md) —
+  recorded that a `PUT` replaces `source_params` wholesale, the equivalent
+  `ai-search/instances/...` routes, the S3-vs-catalog credential split for the
+  push side, and how to attribute AI Gateway traffic: AI Search's own
+  embedding/answer calls run through the `default` gateway (identifiable by the
+  log `metadata`), while `magi-llm` carries the PLM units' provider traffic.
+  Cross-referenced from
+  [syncing-spec-to-r2-data-catalog](/.agents/skills/syncing-spec-to-r2-data-catalog/SKILL.md).
 * **Enhancement**: Brought `system/constitution/position-management.md`,
   `system/guards/l2.md`, and the [PLM unit registry](/system/plm-units/)
   in line with the Antigravity-agreed changes in `magi-core` #387, #388, #389:
