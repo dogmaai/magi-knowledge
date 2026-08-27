@@ -14,7 +14,7 @@ implementations live in `src/paperGuards.js`. Blocks are logged to the
 | [L1](l1.md) | Data Validation (データ検証層) | Required params present & valid | block |
 | [L3](l3.md) | Symbol Exclusion | Symbol on `L3_EXCLUDED_SYMBOLS` (optuna_params) | block BUY |
 | [L1.5](l1-5.md) | Position Sizing (Hard Limit) | Max concurrent positions; max position % | block |
-| [L2](l2.md) | Confidence (コンフィデンス層) | `confidence >= L2_THRESHOLD` (Optuna) | block |
+| [L2](l2.md) | Confidence & Entry Sizing (コンフィデンス・サイジング層) | `confidence >= L2_THRESHOLD` (Optuna); confidence-band, short-entry and concerns sizing applied first | block |
 | [L4](l4.md) | Direction Suitability (方向適性層) | Provider/side probation | block |
 | [L5](l5.md) | Thought Similarity (思考類似度層) | Reasoning too similar to past losers | block |
 | [L6](l6.md) | Market Regime (市場環境層) | VIX regime vs side | warn (BUY) |

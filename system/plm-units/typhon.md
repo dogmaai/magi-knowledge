@@ -7,7 +7,7 @@ tags: [plm, active, kimi, contrarian, deep-value]
 provider: kimi
 model: kimi-k2.6
 status: active
-budget_weight_normal: 0.5
+budget_weight_normal: 0.75
 ---
 
 # Overview
@@ -24,11 +24,12 @@ Added as MAGI's 9th PLM (v4.3) as the successor to [ANIMA](anima.md).
 |---|---|
 | Provider | `kimi` (Moonshot AI, OpenAI-compatible API) |
 | Model | `kimi-k2.6` (Kimi K2 Thinking) |
-| Budget weight (NORMAL) | `0.5` (no Optuna data yet — re-optimized weekly) |
+| Budget weight (NORMAL) | `0.75` effective (`0.5` base × `UNIT_WEIGHT_MULTIPLIERS` 1.5x) |
 
 # Relationships
 
 * Replaces [ANIMA](anima.md) (groq) per `lib/config.js` (#157).
+* Receives a 1.5x budget-weight multiplier as of #388 (`UNIT_WEIGHT_MULTIPLIERS['kimi_NORMAL']`).
 * Participates in ISABEL [L7](/system/guards/l7.md) synthesis judging.
 
 # Trading history & performance

@@ -1,5 +1,18 @@
 # Bundle Update Log
 
+## 2026-08-27
+* **Enhancement**: Brought `system/constitution/position-management.md`,
+  `system/guards/l2.md`, and the [PLM unit registry](/system/plm-units/)
+  in line with the Antigravity-agreed changes in `magi-core` #387, #388, #389:
+  confidence-band sizing (0.80–0.89 `0.5x`, 0.90+ `1.2x`), short-entry sizing
+  `0.7x`, short stop-loss tightened to `-3.5%`, concerns soft penalty `-0.15`,
+  QWEN/TYPHON 1.5x budget-weight multiplier, and CASPER/MELCHIOR-1
+  `TRADE_MODE=SHADOW`.
+* **Deprecation**: Disabled the Devin Automation “MAGI GE spec 同期
+  (magi-knowledge main → Gemini Enterprise)” because the GeminiEnterprise App
+  subscription was cancelled. Cloudflare R2 / AI Search sync workflows remain
+  active.
+
 ## 2026-08-24
 * **Creation**: [AKA memory](system/services/aka-memory.md) — documents the
   confirmed host-local launchd backup from `~/clawd/MEMORY.md` +

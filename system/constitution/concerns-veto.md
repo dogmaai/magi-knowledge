@@ -19,8 +19,9 @@ Measured: losing trades carry systematically LONGER concerns text than winners
 * If the concerns are longer than the thesis, the unit is talking itself into
   a bad trade and must not enter.
 * The concerns field must never be used to hedge a trade already decided on.
-  Recorded red flags are respected -- the guard layer penalizes long
-  unresolved concerns.
+  Recorded red flags are respected — the guard layer applies a soft penalty:
+  if `concerns` text exceeds `200` characters or `concerns`/`reasoning` length
+  ratio exceeds `1.0`, confidence is reduced by `0.15` before L2 / L7.
 
 # Intent
 
