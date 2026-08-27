@@ -3,10 +3,10 @@ type: PLM Unit
 title: TIARA
 description: Legacy self-hosted Ollama identity using qwen3.5:9b.
 lilith_safe: false
-tags: [plm, active, ollama, self-hosted]
+tags: [plm, legacy, ollama, self-hosted]
 provider: ollama
 model: qwen3.5:9b
-status: active
+status: legacy
 budget_weight_normal: 1.0
 ---
 

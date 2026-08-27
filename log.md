@@ -1,6 +1,6 @@
 # Bundle Update Log
 
-## 2026-08-28
+## 2026-08-27
 * **Enhancement**: Realigned the [PLM unit registry](/system/plm-units/index.md) with
   `magi-core`: ZEROEL is retired for cost, PROMETHEUS is live with
   `gpt-5.6-luna`, QWEN and ADAM are split out of the former dual-slot/TIARA
@@ -16,8 +16,6 @@
 * **Enhancement**: Rewrote the [guard pipeline index](/system/guards/index.md)
   in actual execution order, including the shadow-mode short circuit and the
   new `magi_core.system_control` and per-unit realized-P&L backing data.
-
-## 2026-08-27
 * **Fix**: The AI Search instance `magi-document` was embedding the R2 Data
   Catalog's Iceberg metadata under `__r2_data_catalog/` — `magi-system` holds
   both surfaces. `source_params.exclude_items` now carries
