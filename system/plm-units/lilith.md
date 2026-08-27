@@ -29,7 +29,7 @@ processed intelligence, and never references another AI's interpretation.
 |---|---|
 | Provider | `qwen` (DashScope) or `lilith` (fine-tuned) |
 | Model | `qwen-plus` / `lilith-v1.0-b2-prod` (`LILITH_VERSION`) |
-| Budget weight (NORMAL) | `0.5` for both `qwen_NORMAL` and `lilith_NORMAL` |
+| Budget weight (NORMAL) | `0.5` base; `0.75` effective for `qwen_NORMAL` (1.5x multiplier), `0.5` for `lilith_NORMAL` |
 | Cloud Run | `lilith-inference-svc` (fine-tuned serving) |
 
 # Dual-provider unit slot
@@ -37,8 +37,11 @@ processed intelligence, and never references another AI's interpretation.
 LILITH occupies one MAGI unit slot across two providers so consensus and
 reporting keep working when `LLM_PROVIDER` swaps from `qwen` to `lilith`:
 
-* `qwen` → DashScope `qwen-plus` (hosted).
-* `lilith` → fine-tuned Qwen2.5-3B from `lilith-inference-svc`.
+* `qwen` → DashScope `qwen-plus` (hosted). As of #388 this path receives a 1.5x
+  budget-weight multiplier (`UNIT_WEIGHT_MULTIPLIERS['qwen_NORMAL']`), giving an
+  effective weight of `0.75` from the `0.5` base.
+* `lilith` → fine-tuned Qwen2.5-3B from `lilith-inference-svc`. The multiplier
+  does not apply to `lilith_NORMAL`, so the effective weight remains `0.5`.
 
 # Production safety
 

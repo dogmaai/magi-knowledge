@@ -37,6 +37,8 @@ layer's confidence-based sizing meaningful.
   and the thought-outcome-feedback pipeline.
 * Downstream consumer: [THOUGHT RECORDING](thought-recording.md) `confidence`
   field.
+* Sizing enforcer: [L2 Confidence & Entry Sizing](/system/guards/l2.md) applies
+  `0.5x` to the 0.80–0.89 band and `1.2x` to 0.90+ entry-only trades.
 
 # Citations
 

@@ -75,12 +75,13 @@ curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/jso
    when the app is managed there. An unattached data store is indexed but
    invisible to agents.
 
-# Refresh (run after every magi-knowledge merge to main)
+# Refresh (disabled — manual fallback only if the app is re-enabled)
 
-> **Automated**: the Devin Automation “MAGI GE spec 同期 (magi-knowledge main →
-Gemini Enterprise)” runs these steps on every push to `main` that touches
-`system/**` or `scripts/okf_export.py`. Run them manually only as a fallback
-(e.g. the automation failed, or a GCS/data-store repair is needed).
+> **Status (2026-08-27)**: the GeminiEnterprise App subscription has been
+> cancelled, so the Devin Automation “MAGI GE spec 同期 (magi-knowledge main →
+> Gemini Enterprise)” is **disabled**. Keep the manual steps below as a fallback
+> only if the app is re-enabled; do not run them automatically while it is
+> cancelled.
 
 ```bash
 cd magi-knowledge && git pull

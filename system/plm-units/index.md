@@ -10,16 +10,23 @@ This whole tree is **cross-unit by definition** and therefore
 
 # Active units
 
-| Unit | Provider | Model | Budget (NORMAL) | Persona |
-|---|---|---|---|---|
-| [SOPHIA-5](sophia-5.md) | mistral | mistral-small-latest | 0.774 | Strategist / golden reasoning (default) |
-| [MELCHIOR-1](melchior-1.md) | google | gemini-2.5-flash | 0.954 | Systematic multi-factor analyst |
-| [CASPER](casper.md) | deepseek | deepseek-v4-flash | 0.999 | Aggressive momentum hunter |
-| [ZEROEL](zeroel.md) | xai | grok-4.3 | 0.5 | Realtime news / X social algo trader |
-| [TIARA](tiara.md) | ollama | qwen2.5:14b | 1.0 | Self-hosted local reasoner |
-| [LILITH](lilith.md) | qwen / lilith | qwen-plus / lilith-v1.0-b2-prod | 0.5 | Independent reasoner (fine-tuned) |
-| [TYPHON](typhon.md) | kimi | kimi-k2.6 | 0.5 | Contrarian deep-value analyst |
-| [PROMETHEUS](prometheus.md) | openai | gpt-4o-mini | — (auxiliary) | GPT auxiliary / backup |
+| Unit | Provider | Model | Budget (NORMAL) | Status | Persona |
+|---|---|---|---|---|---|
+| [SOPHIA-5](sophia-5.md) | mistral | mistral-small-latest | 0.774 | active | Strategist / golden reasoning (default) |
+| [MELCHIOR-1](melchior-1.md) | google | gemini-2.5-flash | 0.954 | shadow (`TRADE_MODE=SHADOW`) | Systematic multi-factor analyst |
+| [CASPER](casper.md) | deepseek | deepseek-v4-flash | 0.999 | shadow (`TRADE_MODE=SHADOW`) | Aggressive momentum hunter |
+| [ZEROEL](zeroel.md) | xai | grok-4.3 | 0.5 | active | Realtime news / X social algo trader |
+| [TIARA](tiara.md) | ollama | qwen2.5:14b | 1.0 | active | Self-hosted local reasoner |
+| [LILITH](lilith.md) | qwen / lilith | qwen-plus / lilith-v1.0-b2-prod | 0.5 | active | Independent reasoner (fine-tuned) |
+| [TYPHON](typhon.md) | kimi | kimi-k2.6 | 0.5 | active | Contrarian deep-value analyst |
+| [PROMETHEUS](prometheus.md) | openai | gpt-4o-mini | — | auxiliary | GPT auxiliary / backup |
+
+`budget_weight_normal` mirrors the base `BUDGET_WEIGHTS` runtime mapping. The
+`qwen_NORMAL` (LILITH qwen path) and `kimi_NORMAL` (TYPHON) providers receive a
+`UNIT_WEIGHT_MULTIPLIERS` 1.5x boost, giving them an *effective* budget weight
+of `0.75` at runtime. CASPER and MELCHIOR-1 are in `TRADE_MODE=SHADOW`: they
+continue generating decisions and recording to `trades_shadow` / `thoughts_shadow`,
+but do not submit live broker orders.
 
 # Offline analysis units
 
