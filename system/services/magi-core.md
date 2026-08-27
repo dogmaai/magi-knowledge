@@ -22,7 +22,7 @@ and writes the core ECHIDNA tables.
 | `src/paperGuards.js` | L4 / L5 / L7 guard implementations. |
 | `src/positionMgmt.js` / `positionManager.js` | Position management + L0 guard. |
 | `src/hermes.js` | HERMES intelligence + Deep Research surfacing. |
-| `src/vix.js` | VIX regime detection (L6, hard gate). |
+| `lib/vix.js` | VIX regime detection (L6, hard gate). |
 | `lib/config.js` | Unit/model mapping + budget weights. |
 | `lib/bigquery.js` | ECHIDNA writers (`safeInsert`, validators). |
 | `lib/constitution.js` | Constitution prompt builder. |

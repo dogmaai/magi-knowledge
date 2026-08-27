@@ -33,6 +33,9 @@ downtrends, favouring high-momentum names, and carries the highest budget weight
 * RSI < 30 with recovering trend → strong BUY; RSI > 70 breaking down → strong SELL.
 * As of #388, `magi-core-deepseek` runs with `TRADE_MODE=SHADOW`: decisions are
   logged to shadow tables but are not sent to the broker.
+* The surge detector uses CASPER as the second opinion after
+  [SOPHIA-5](sophia-5.md) (`SECONDARY_JOB =
+  'magi-core-deepseek'`).
 * Risk is delegated to the [guard layers](/system/guards/), not to CASPER itself.
 
 # Trading history & performance
