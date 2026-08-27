@@ -33,7 +33,7 @@ changes in `lib/constitution.js`, update the corresponding section doc here.
 | 10 | [THOUGHT RECORDING](thought-recording.md) | Mandatory 6-field log_analysis before every decision; 1:1 log_analysis/place_order pairing | yes |
 | 11 | [CONFIDENCE CALIBRATION](confidence-calibration.md) | Confidence = calibrated probability; 0.80-0.89 is the overconfidence trap | yes |
 | 12 | [CONCERNS ARE VETO SIGNALS](concerns-veto.md) | Concerns must be resolved with evidence or treated as veto | yes |
-| 13 | [POSITION MANAGEMENT](position-management.md) | SL -5% long / -3.5% short; short entries sized 0.7x; TP +10%/+20%; max 8 symbols | **SL immutable** |
+| 13 | [POSITION MANAGEMENT](position-management.md) | SL -5% **IMMUTABLE**; short -3.5%; short entries sized 0.7x; TP +10%/+20%; max 8 symbols | **SL immutable** |
 | 14 | [PROHIBITIONS](prohibitions.md) | Seven forbidden actions | yes |
 | 15 | [ISABEL REFERENCE](isabel-reference.md) | Runtime-injected ISABEL feedback | **dynamic** |
 | 16 | [Available Tools](tools.md) | Tool-call interface (get_price, place_order, etc.) | yes |

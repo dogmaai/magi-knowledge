@@ -15,8 +15,8 @@ source: magi-core/lib/constitution.js
 |---|---|---|
 | Max per symbol | 15% of total capital | yes |
 | Max concurrent | 8 symbols | yes |
-| Stop-loss (long) | -5% from entry (hard floor; NEVER widen) | **IMMUTABLE** |
-| Stop-loss (short) | -3.5% from entry (`STOP_LOSS_PCT * 0.7`, default -3.5%) | yes |
+| Stop-loss | -5% from entry (hard floor; NEVER widen) | **IMMUTABLE** |
+| Short stop-loss | -3.5% from entry (`STOP_LOSS_PCT * 0.7`, default -3.5%) | yes |
 | Short entry sizing | Exposure-increasing SELLs sized at `0.7x` (`SHORT_SIZE_MULT`) | yes |
 | First scale-out | +10%, sell half to lock partial gains | yes |
 | Breakeven protection | After scaling, exit at breakeven if it falls back to entry | yes |
