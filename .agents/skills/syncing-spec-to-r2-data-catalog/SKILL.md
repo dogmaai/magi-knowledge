@@ -38,8 +38,8 @@ this catalog — R2 SQL is a cross-unit surface. `r2_catalog_sync.py` refuses
 | Catalog URI | `https://catalog.cloudflarestorage.com/c3b51b9f35d16713caab757feca638d8/magi-system` |
 | Warehouse | `c3b51b9f35d16713caab757feca638d8_magi-system` |
 | Namespace / table | `okf` / `system` |
-| Token secret | `CLOUDFLARE_R2_CATALOG_TOKEN` (org secret: `CLOUDFLARE_R2_CATALOG_TOKEN_V3` — V1/V2 revoked 2026-08-25) |
-| Last verified write | 64 rows @ `a240d78`, 2026-08-25 |
+| Token secret | `CLOUDFLARE_R2_CATALOG_TOKEN` (set to org secret `CLOUDFLARE_R2_CATALOG_TOKEN_V4`; V1/V2/V3 revoked 2026-08-27) |
+| Last verified write | 65 rows @ `b529f53`, 2026-08-27 |
 | Table maintenance | compaction on (128 MB target), snapshot expiry on (min 3 snapshots, max 7d) — configured in the dashboard, no action needed here |
 
 Table columns: `concept_id`, `tree`, `path`, `title`, `type`, `description`,
@@ -55,6 +55,13 @@ Parquet data files to the bucket with credentials the catalog vends.
 Create it at R2 → **API** → *Manage API tokens* → **Create Account API token** →
 permission **Admin Read & Write**, then store the *Token value* as
 `CLOUDFLARE_R2_CATALOG_TOKEN`.
+
+Token history:
+
+* V1/V2 were revoked 2026-08-25.
+* V3 (`CLOUDFLARE_R2_CATALOG_TOKEN_V3`) is dead as of 2026-08-27
+  (`/tokens/verify` returns `Invalid API Token`; catalog writes return 403).
+  Use `CLOUDFLARE_R2_CATALOG_TOKEN_V4`.
 
 Tokens that do **not** work (verified):
 
