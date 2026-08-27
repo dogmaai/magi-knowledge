@@ -17,13 +17,14 @@ Docs: <https://developers.cloudflare.com/ai-search/configuration/>
 | Instance ID | `magi-document` (namespace `default`) |
 | Account | `c3b51b9f35d16713caab757feca638d8` |
 | Source | R2 bucket `magi-system` |
-| Path filter | include `okf/system/**` (glob — see below) |
+| Path filter | include `okf/system/**` (glob — see below), exclude `__r2_data_catalog/**` |
 | Embedding model | `@cf/qwen/qwen3-embedding-0.6b` (fixed at creation) |
 | Chunking | 1024 tokens, 10% overlap |
 | Retrieval | score threshold 0.4, max 10 results, cache off |
 | Sync interval | 21600 s (6 h) |
 | Custom metadata | `type` text, `lilith_safe` boolean, `version` number, `status` text, `tags` text |
-| Last verified | 64 files indexed, 0 errors, 2026-08-26 |
+| AI Gateway | `default` (AI Search's own model calls — see below) |
+| Last verified | 65 files seen, embedding + skipped-file cleanup finished, job `871fd6dd-888d-4c0c-ad41-5ae33bd26235`, 2026-08-27 |
 
 Documents are uploaded by `scripts/ai_search_r2_sync.py` (GitHub Actions
 workflow `ai-search-sync.yml` on push to `main`), which sets the custom
@@ -31,8 +32,9 @@ metadata via S3 `x-amz-meta-*` headers (`aws s3 cp --metadata`).
 
 ## API access
 
-The AutoRAG REST API works with the Global API key (Bearer account tokens are
-not needed):
+The AutoRAG REST API works with the Global API key; an account API token with
+`AI Search Read` + `AI Search Write` also works as a Bearer token, and is
+preferable for a one-off inspection (create it, use it, delete it).
 
 ```
 H1: X-Auth-Email: jun@dogma.jp
@@ -48,6 +50,15 @@ B=https://api.cloudflare.com/client/v4/accounts/<acct>/autorag/rags/magi-documen
 | Index stats | `GET $B/stats` (completed/error counts, `vectorsCount`) |
 | Job logs | `GET $B/jobs/<job_id>/logs` |
 | Search test | `POST $B/search` with `{"query": "..."}` |
+
+The newer `ai-search` route is equivalent and is what the dashboard calls:
+`POST/GET /accounts/<acct>/ai-search/instances/magi-document/jobs`,
+`.../jobs/<job_id>/logs`, `.../ai-search`. Same 30 s job cooldown (`429`).
+
+A `PUT` **replaces `source_params` wholesale** — send the keys you are not
+changing (`prefix`, `include_items`, `exclude_items`, `r2_jurisdiction`,
+`web_crawler`) alongside the change, and `GET` afterwards to confirm nothing
+was dropped.
 
 ## Path filtering — the 0-results pitfall
 
@@ -84,8 +95,41 @@ files appear in job logs as `Skipped by Include Rules`.
   retrieval, models except embedding, metadata) is editable.
 - Do not point AI Search at the whole bucket: it will try to index the
   Iceberg internals under `__r2_data_catalog/` and error with
-  "unsupported type".
+  "unsupported type". `magi-system` holds both surfaces, so
+  `exclude_items: ["__r2_data_catalog/**"]` stays set (added 2026-08-27 after
+  `generate-embed` requests were observed with `file-key` values under that
+  prefix — the instance was paying to embed Iceberg metadata JSON). See
+  `syncing-spec-to-r2-data-catalog`.
+- Pushing objects is not indexing: the R2 upload needs the S3-compatible
+  `R2_ACCESS_KEY_ID`/`R2_SECRET_ACCESS_KEY` pair (a freshly created R2 token
+  needs ~10–15 s to propagate, so a first `Unauthorized` is not proof of a bad
+  key), and the index only picks the objects up on the 6 h schedule or via a
+  job.
 - `_lilith_safe/` must never be included (contamination boundary).
+
+## Whose traffic is in the AI Gateway logs
+
+AI Search routes **its own** model calls through the `default` gateway, not
+`magi-llm`. Unrecognised models there (`@cf/qwen/qwen3-embedding-0.6b`,
+`@cf/meta/llama-3.3-70b-instruct-fp8-fast`, provider Workers AI) are expected
+and identifiable from the log entry's `metadata`:
+
+```json
+{ "ai-search": "magi-document", "task": "generate-embed", "origin": "index",
+  "file-key": "okf/system/plm-units/lilith.md" }
+```
+
+* `task: generate-embed`, `origin: index` — indexing.
+* `task: chat-completions`, `origin: api` — a search query being answered.
+
+`magi-llm` carries the PLM units' provider traffic (deepseek, mistral,
+custom-qwen, custom-kimi, openai). Do not treat an unfamiliar model in
+`default` as a leak before reading the metadata: list with
+`GET /accounts/<acct>/ai-gateway/gateways/default/logs?per_page=50&page=<n>`
+(the list endpoint takes `per_page` ≤ 50 and `page`; a `cursor` parameter
+returns `400`), then fetch the single entry by id for its `metadata`. Merging
+this traffic into `magi-llm` would mean setting the instance's
+`ai_gateway_id`; that is deliberately not done.
 
 ## Verify
 

@@ -18,11 +18,12 @@ magi-knowledge (main)
           └─ R2 SQL Studio / Spark / DuckDB / PyIceberg
 ```
 
-This is the analytical mirror of the Gemini Enterprise sync (see
-`syncing-spec-to-gemini-enterprise`, which ships the same tree as one
-unstructured text document). Both are caches; the repository is the source of
-truth. Every run **fully replaces** the table (`table.overwrite`), so the
-refresh is idempotent and leaves no stale rows.
+This is the analytical mirror of the spec; the retrieval mirror is the AI
+Search instance `magi-document`, which indexes the same tree as Markdown
+objects out of the **same bucket** (see `configuring-cloudflare-ai-search`).
+Both are caches; the repository is the source of truth. Every run **fully
+replaces** the table (`table.overwrite`), so the refresh is idempotent and
+leaves no stale rows.
 
 Only the `system/` tree is ever synced. `_lilith_safe/` MUST NOT be written to
 this catalog — R2 SQL is a cross-unit surface. `r2_catalog_sync.py` refuses
@@ -128,6 +129,10 @@ print(t.num_rows, set(t.column("source_revision").to_pylist()))
 # Boundaries
 
 * **Never sync `_lilith_safe/`** to this catalog (see Overview).
+* PyIceberg writes its Parquet and metadata under `__r2_data_catalog/` in
+  `magi-system`, which the AI Search instance also reads. That prefix must stay
+  in the instance's `source_params.exclude_items`, or AI Search embeds the
+  Iceberg metadata JSON files.
 * The table is a cache: never edit rows in place — regenerate and re-run.
 * R2 Data Catalog is for analytical/SQL access to the spec. Runtime PLM units
   keep reading their own sources; do not route the 8 PLM Cloud Run Jobs through
