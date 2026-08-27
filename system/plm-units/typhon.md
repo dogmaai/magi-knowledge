@@ -7,7 +7,7 @@ tags: [plm, active, kimi, contrarian, deep-value]
 provider: kimi
 model: kimi-k2.6
 status: active
-budget_weight_normal: 0.75
+budget_weight_normal: 0.5
 ---
 
 # Overview
@@ -24,7 +24,7 @@ Added as MAGI's 9th PLM (v4.3) as the successor to [ANIMA](anima.md).
 |---|---|
 | Provider | `kimi` (Moonshot AI, OpenAI-compatible API) |
 | Model | `kimi-k2.6` (Kimi K2 Thinking) |
-| Budget weight (NORMAL) | `0.75` effective (`0.5` base × `UNIT_WEIGHT_MULTIPLIERS` 1.5x) |
+| Budget weight (NORMAL) | `0.5` base — effective `0.75` with `UNIT_WEIGHT_MULTIPLIERS` 1.5x |
 
 # Relationships
 

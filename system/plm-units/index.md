@@ -17,13 +17,14 @@ This whole tree is **cross-unit by definition** and therefore
 | [CASPER](casper.md) | deepseek | deepseek-v4-flash | 0.999 | shadow (`TRADE_MODE=SHADOW`) | Aggressive momentum hunter |
 | [ZEROEL](zeroel.md) | xai | grok-4.3 | 0.5 | active | Realtime news / X social algo trader |
 | [TIARA](tiara.md) | ollama | qwen2.5:14b | 1.0 | active | Self-hosted local reasoner |
-| [LILITH](lilith.md) | qwen / lilith | qwen-plus / lilith-v1.0-b2-prod | 0.75 (qwen) / 0.5 (lilith) | active | Independent reasoner (fine-tuned) |
-| [TYPHON](typhon.md) | kimi | kimi-k2.6 | 0.75 | active | Contrarian deep-value analyst |
+| [LILITH](lilith.md) | qwen / lilith | qwen-plus / lilith-v1.0-b2-prod | 0.5 | active | Independent reasoner (fine-tuned) |
+| [TYPHON](typhon.md) | kimi | kimi-k2.6 | 0.5 | active | Contrarian deep-value analyst |
 | [PROMETHEUS](prometheus.md) | openai | gpt-4o-mini | — | auxiliary | GPT auxiliary / backup |
 
-Budgets marked `0.75` for QWEN (`qwen_NORMAL`) and TYPHON (`kimi_NORMAL`) are the
-*effective* values after the `UNIT_WEIGHT_MULTIPLIERS` 1.5x boost applied to the
-`0.5` base weight. CASPER and MELCHIOR-1 are in `TRADE_MODE=SHADOW`: they
+`budget_weight_normal` mirrors the base `BUDGET_WEIGHTS` runtime mapping. The
+`qwen_NORMAL` (LILITH qwen path) and `kimi_NORMAL` (TYPHON) providers receive a
+`UNIT_WEIGHT_MULTIPLIERS` 1.5x boost, giving them an *effective* budget weight
+of `0.75` at runtime. CASPER and MELCHIOR-1 are in `TRADE_MODE=SHADOW`: they
 continue generating decisions and recording to `trades_shadow` / `thoughts_shadow`,
 but do not submit live broker orders.
 
