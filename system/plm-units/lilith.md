@@ -1,22 +1,24 @@
 ---
 type: PLM Unit
 title: LILITH
-description: Independent reasoner; fine-tuned Qwen2.5-3B served from lilith-inference-svc.
+description: Independent reasoner; fine-tuned LILITH model served from lilith-inference-svc.
 lilith_safe: false
-tags: [plm, active, qwen, lilith, fine-tuned, independent]
-provider: qwen, lilith
-model: qwen-plus (DashScope) / lilith-v1.0-b2-prod (fine-tuned)
+tags: [plm, active, lilith, fine-tuned, independent]
+provider: lilith
+model: lilith-v1.0-b2-prod
 status: active
 budget_weight_normal: 0.5
-cloud_run_job: lilith-inference-svc
+cloud_run_job: magi-core-lilith / lilith-inference-svc
 ---
 
 # Overview
 
-LILITH is the **independent reasoner**. Its edge is deciding solely from
-factual, verifiable data — price action, volume, technicals, VIX, macro — and
-its **own** ISABEL stats. It does NOT use other units' opinions, summaries, or
-processed intelligence, and never references another AI's interpretation.
+LILITH is the **independent reasoner** for the `lilith` provider. Its model is
+`LILITH_VERSION` (`lilith-v1.0-b2-prod`), served by `lilith-inference-svc`.
+Its edge is deciding solely from factual, verifiable data — price action,
+volume, technicals, VIX, macro — and its **own** ISABEL stats. It does NOT use
+other units' opinions, summaries, or processed intelligence, and never
+references another AI's interpretation.
 
 > This registry entry is `lilith_safe: false` and lives in `system/`. It exists
 > for cross-agent reference. The clean-source rules LILITH is *trained* on live
@@ -27,21 +29,17 @@ processed intelligence, and never references another AI's interpretation.
 
 | Field | Value |
 |---|---|
-| Provider | `qwen` (DashScope) or `lilith` (fine-tuned) |
-| Model | `qwen-plus` / `lilith-v1.0-b2-prod` (`LILITH_VERSION`) |
-| Budget weight (NORMAL) | `0.5` base; `0.75` effective for `qwen_NORMAL` (1.5x multiplier), `0.5` for `lilith_NORMAL` |
-| Cloud Run | `lilith-inference-svc` (fine-tuned serving) |
+| Provider | `lilith` |
+| Model | `LILITH_VERSION` (`lilith-v1.0-b2-prod`) |
+| Budget weight (NORMAL) | `0.5` (`lilith_NORMAL`; no multiplier) |
+| Cloud Run job | `magi-core-lilith` (canary, `LILITH_AUTOTRADE=0`, `LILITH_MAX_DECISIONS=12`) |
+| Serving side | `lilith-inference-svc` |
 
-# Dual-provider unit slot
+# Canary deployment
 
-LILITH occupies one MAGI unit slot across two providers so consensus and
-reporting keep working when `LLM_PROVIDER` swaps from `qwen` to `lilith`:
-
-* `qwen` → DashScope `qwen-plus` (hosted). As of #388 this path receives a 1.5x
-  budget-weight multiplier (`UNIT_WEIGHT_MULTIPLIERS['qwen_NORMAL']`), giving an
-  effective weight of `0.75` from the `0.5` base.
-* `lilith` → fine-tuned Qwen2.5-3B from `lilith-inference-svc`. The multiplier
-  does not apply to `lilith_NORMAL`, so the effective weight remains `0.5`.
+The canary PLM job is `magi-core-lilith`, configured with
+`LILITH_AUTOTRADE=0` and `LILITH_MAX_DECISIONS=12`. The `cloud_run_job` entry
+covers both this canary job and the `lilith-inference-svc` serving side.
 
 # Production safety
 
@@ -57,4 +55,5 @@ and the [LILITH-safe ground truth](/_lilith_safe/).
 
 # Citations
 
-* `magi-core/src/session.js` (LILITH IDENTITY); `magi-core/lib/config.js`.
+* `magi-core/src/session.js` (lilith provider path); `magi-core/lib/config.js`.
+* `magi-core/.github/workflows/deploy.yml` (canary job).

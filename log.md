@@ -1,6 +1,21 @@
 # Bundle Update Log
 
 ## 2026-08-27
+* **Enhancement**: Realigned the [PLM unit registry](/system/plm-units/index.md) with
+  `magi-core`: ZEROEL is retired for cost, PROMETHEUS is live with
+  `gpt-5.6-luna`, QWEN and ADAM are split out of the former dual-slot/TIARA
+  rows, LILITH is narrowed to the fine-tuned `lilith` provider plus its canary
+  job, ORACLE's name reuse for the VIX specialist is documented, and the
+  SOPHIA-5, MELCHIOR-1, and TIARA model details are refreshed.
+* **Creation**: Added [ADAM](/system/plm-units/adam.md) and
+  [QWEN](/system/plm-units/qwen.md), and documented the
+  [ORACLE VIX specialist](/system/plm-units/oracle.md).
+* **Creation**: Added the L0 emergency kill switch, L0.5 cash-account guard,
+  L0.9 HOLD/zero-quantity guard, L1.6 sellable-quantity guard, and L1.7
+  daily-loss kill switch under [system/guards](/system/guards/index.md).
+* **Enhancement**: Rewrote the [guard pipeline index](/system/guards/index.md)
+  in actual execution order, including the shadow-mode short circuit and the
+  new `magi_core.system_control` and per-unit realized-P&L backing data.
 * **Fix**: The AI Search instance `magi-document` was embedding the R2 Data
   Catalog's Iceberg metadata under `__r2_data_catalog/` — `magi-system` holds
   both surfaces. `source_params.exclude_items` now carries
