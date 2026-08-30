@@ -21,7 +21,7 @@ Two write-path conventions matter:
 
 # Intelligence & analysis
 
-* [market-research](market-research.md) - HERMES/ARIEL research cache (Deep Research outputs).
+* [market-research](market-research.md) - HERMES/ARIEL research cache.
 * [consensus-signals](consensus-signals.md) - Cross-unit consensus detector.
 * [isabel-patterns](isabel-patterns.md) - ISABEL historical win/lose centroids.
 * [thought-quality-scores](thought-quality-scores.md) - Per-thought quality scoring.
