@@ -1,24 +1,23 @@
 ---
 type: BigQuery Table
 title: market_research
-description: HERMES/ARIEL research cache — Deep Research outputs, sentiment, key events.
+description: HERMES/ARIEL research cache — sentiment and key events.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=market_research&page=table
 lilith_safe: false
-tags: [echidna, bigquery, hermes, research, deep-research]
+tags: [echidna, bigquery, hermes, research]
 dataset: magi_core
 table_type: BASE TABLE
 ---
 
-Cache of market research produced by the HERMES stack and the Deep Research
-agent. **Must never reach LILITH** — it is processed cross-source intelligence,
-and Section 5 / Jun-review research can land here.
+Cache of market research produced by the HERMES stack and ARIEL. **Must never
+reach LILITH** — it is processed cross-source intelligence.
 
 # Schema
 
 | Column | Type | Description |
 |---|---|---|
 | date | DATE | Research date. |
-| research_type | STRING | e.g. `DAILY_DEEP_RESEARCH`, `MACRO`, `SYMBOL`. |
+| research_type | STRING | e.g. `MACRO`, `SYMBOL`. |
 | symbol | STRING | Ticker (nullable for macro). |
 | summary | STRING | Text summary. |
 | sentiment | STRING | Sentiment label. |
@@ -26,7 +25,7 @@ and Section 5 / Jun-review research can land here.
 | key_events | JSON | Structured event list. |
 | raw_data | JSON | Raw payload. |
 | created_at | TIMESTAMP | Insert time. |
-| source_agent | STRING | Producing agent (HERMES, ARIEL, deep-research). |
+| source_agent | STRING | Producing agent (HERMES, ARIEL). |
 | box_file_id / box_url | STRING | Box document refs. |
 | gcs_uri | STRING | GCS object uri. |
 | word_count | INT64 | Summary length. |
@@ -44,5 +43,4 @@ and Section 5 / Jun-review research can land here.
 
 # Citations
 
-* Writer: `magi-core/src/hermes.js` (`saveToBigQuery`, `DAILY_DEEP_RESEARCH` row writer); `magi-deep-research` service.
-* See [services/magi-deep-research](/system/services/magi-deep-research.md).
+* Writer: `magi-core/src/hermes.js` (`saveToBigQuery`).

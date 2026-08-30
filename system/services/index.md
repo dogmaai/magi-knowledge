@@ -12,7 +12,6 @@ callers don't hard-code endpoints.
 | [magi-core](magi-core.md) | dogmaai/magi-core | Trading engine: trade loop, LLM orchestration, guard layers. |
 | [magi-moomoo](magi-moomoo.md) | dogmaai/magi-moomoo | MooMoo broker integration (account, positions, orders, snapshots). |
 | [magi-price-tracker](magi-price-tracker.md) | dogmaai/magi-price-tracker | Realtime price/market-data tracking. |
-| [magi-deep-research](magi-deep-research.md) | dogmaai/magi-deep-research | Deep Research agent → `market_research`. **Section 5 stripped.** |
 | [magi-isabel](magi-isabel.md) | dogmaai/magi-isabel | ISABEL pattern framework (centroids, embeddings). |
 | [magi-moni](magi-moni.md) | dogmaai/magi-moni | Monitoring / reporting / alerting. |
 | [aka-memory](aka-memory.md) | dogmaai/magi-moni | AKA long-term memory on TIALA + daily GCS backup. |

@@ -21,7 +21,7 @@ and writes the core ECHIDNA tables.
 | `src/llm.js` | LLM call orchestration + guard pipeline (L-1…L7). |
 | `src/paperGuards.js` | L4 / L5 / L7 guard implementations. |
 | `src/positionMgmt.js` / `positionManager.js` | Position management + L0 guard. |
-| `src/hermes.js` | HERMES intelligence + Deep Research surfacing. |
+| `src/hermes.js` | HERMES intelligence. |
 | `lib/vix.js` | VIX regime detection (L6, hard gate). |
 | `lib/config.js` | Unit/model mapping + budget weights. |
 | `lib/bigquery.js` | ECHIDNA writers (`safeInsert`, validators). |
@@ -56,4 +56,4 @@ Role boundaries: see
 # Depends on
 
 [magi-moomoo](magi-moomoo.md) (broker), [magi-isabel](magi-isabel.md) (patterns),
-[magi-deep-research](magi-deep-research.md) (research), Cohere (embeddings).
+Cohere (embeddings).

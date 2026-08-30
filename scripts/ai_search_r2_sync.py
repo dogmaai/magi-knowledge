@@ -11,6 +11,12 @@ Usage:
     python scripts/ai_search_r2_sync.py --bucket magi-system --prefix okf/system --dry-run
     AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... \
         python scripts/ai_search_r2_sync.py --bucket magi-system --prefix okf/system
+    AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... \
+        python scripts/ai_search_r2_sync.py --bucket magi-system --prefix okf/system --prune
+
+The ``--prune`` option reconciles the managed prefix with the current OKF
+tree; ``--prune --dry-run`` still requires credentials because it lists the
+existing R2 objects before printing deletions.
 """
 from __future__ import annotations
 
@@ -117,6 +123,74 @@ def upload_file(
         subprocess.run(cmd, check=True)
 
 
+def list_managed_keys(bucket: str, prefix: str, endpoint: str) -> set[str]:
+    """List every object key under ``prefix`` using S3 pagination."""
+    keys: set[str] = set()
+    continuation_token: str | None = None
+
+    while True:
+        cmd = [
+            "aws",
+            "s3api",
+            "list-objects-v2",
+            "--bucket",
+            bucket,
+            "--prefix",
+            f"{prefix}/",
+            "--endpoint-url",
+            endpoint,
+            "--output",
+            "json",
+        ]
+        if continuation_token:
+            cmd.extend(["--continuation-token", continuation_token])
+
+        try:
+            result = subprocess.run(
+                cmd,
+                check=True,
+                capture_output=True,
+                text=True,
+            )
+            response = json.loads(result.stdout)
+        except (OSError, subprocess.CalledProcessError, json.JSONDecodeError) as exc:
+            detail = getattr(exc, "stderr", None) or str(exc)
+            print(f"Failed to list R2 objects for pruning: {detail}", file=sys.stderr)
+            sys.exit(1)
+
+        keys.update(
+            item["Key"]
+            for item in response.get("Contents", [])
+            if isinstance(item.get("Key"), str)
+        )
+        continuation_token = response.get("NextContinuationToken")
+        if not continuation_token:
+            return keys
+
+
+def delete_file(
+    bucket: str,
+    key: str,
+    endpoint: str,
+    dry_run: bool,
+) -> None:
+    """Delete one R2 object, or print the command in dry-run mode."""
+    cmd = [
+        "aws",
+        "s3",
+        "rm",
+        f"s3://{bucket}/{key}",
+        "--endpoint-url",
+        endpoint,
+    ]
+    if dry_run:
+        cmd.append("--dryrun")
+
+    print(" ".join(cmd))
+    if not dry_run:
+        subprocess.run(cmd, check=True)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
         description="Sync OKF system/ tree to R2 with AI Search custom metadata headers."
@@ -148,6 +222,11 @@ def main() -> None:
         help="Print aws s3 cp commands instead of running them.",
     )
     parser.add_argument(
+        "--prune",
+        action="store_true",
+        help="Delete objects under the managed prefix that no longer correspond to a current OKF concept.",
+    )
+    parser.add_argument(
         "--schema",
         action="store_true",
         help="Print the custom metadata schema JSON for AI Search and exit.",
@@ -165,6 +244,7 @@ def main() -> None:
 
     tree_root = BUNDLE_ROOT / args.tree
     prefix = args.prefix.strip("/")
+    expected_keys: set[str] = set()
 
     for concept_path in iter_concept_files(tree_root):
         concept = load_concept(BUNDLE_ROOT, concept_path)
@@ -172,6 +252,7 @@ def main() -> None:
         if rel_within_tree.endswith(".md"):
             rel_within_tree = rel_within_tree[:-3]
         key = f"{prefix}/{rel_within_tree}.md"
+        expected_keys.add(key)
         metadata = build_metadata(concept.frontmatter)
         upload_file(
             local_path=concept_path,
@@ -182,6 +263,28 @@ def main() -> None:
             dry_run=args.dry_run,
             content_type=args.content_type,
         )
+
+    if args.prune:
+        if not expected_keys:
+            print(
+                "Refusing to prune: no current OKF concept keys were found.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+
+        existing_keys = list_managed_keys(args.bucket, prefix, args.endpoint)
+        stale_keys = {
+            key for key in existing_keys
+            if key.endswith(".md") and key not in expected_keys
+        }
+        for key in sorted(stale_keys):
+            delete_file(
+                bucket=args.bucket,
+                key=key,
+                endpoint=args.endpoint,
+                dry_run=args.dry_run,
+            )
+        print(f"Pruned {len(stale_keys)} stale object(s).")
 
     if args.dry_run:
         print("\nDry run complete; no objects were uploaded.")
