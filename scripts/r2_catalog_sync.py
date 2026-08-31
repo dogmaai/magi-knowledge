@@ -23,6 +23,7 @@ from pathlib import Path
 
 import pyarrow as pa
 from pyiceberg.catalog.rest import RestCatalog
+from pyiceberg.exceptions import NoSuchNamespaceError, NoSuchTableError
 
 from okf_common import iter_concept_files, load_concept, parse_frontmatter
 
@@ -134,6 +135,28 @@ def build_rows(tree: str) -> list[dict]:
     return rows
 
 
+def _ensure_namespace(catalog: RestCatalog, namespace: str) -> None:
+    """Create the namespace only when it does not already exist.
+
+    Avoids the 409 Conflict that ``create_namespace_if_not_exists`` would
+    receive from the R2 Data Catalog on every subsequent run.
+    """
+    try:
+        catalog.load_namespace_properties(namespace)
+    except NoSuchNamespaceError:
+        catalog.create_namespace(namespace)
+
+
+def _get_or_create_table(catalog: RestCatalog, identifier: str, schema: pa.Schema) -> object:
+    """Load an existing table or create it, without issuing create calls for
+    tables that already exist.
+    """
+    try:
+        return catalog.load_table(identifier)
+    except NoSuchTableError:
+        return catalog.create_table(identifier, schema=schema)
+
+
 def sync(
     tree: str,
     account_id: str,
@@ -149,9 +172,9 @@ def sync(
         uri=f"{CATALOG_HOST}/{account_id}/{bucket}",
         token=token,
     )
-    catalog.create_namespace_if_not_exists(namespace)
+    _ensure_namespace(catalog, namespace)
     identifier = f"{namespace}.{table_name}"
-    table = catalog.create_table_if_not_exists(identifier, schema=SCHEMA)
+    table = _get_or_create_table(catalog, identifier, SCHEMA)
     table.overwrite(data)
     return data.num_rows
 
