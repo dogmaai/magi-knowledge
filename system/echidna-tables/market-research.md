@@ -29,7 +29,7 @@ Also receives the weekday daily Deep Research brief via
 | key_events | JSON | Structured event list. |
 | raw_data | JSON | Raw payload. |
 | created_at | TIMESTAMP | Insert time. |
-| source_agent | STRING | Producing agent (HERMES, ARIEL). |
+| source_agent | STRING | Producing agent. Examples: `HERMES`, `ARIEL`, `devin_automation`. For `DAILY_DEEP_RESEARCH` rows the default is `devin_automation`, overridable via `DEEP_RESEARCH_SOURCE_AGENT`. |
 | box_file_id / box_url | STRING | Box document refs. |
 | gcs_uri | STRING | GCS object uri. |
 | word_count | INT64 | Summary length. |
