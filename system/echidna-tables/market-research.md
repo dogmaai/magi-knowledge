@@ -12,12 +12,16 @@ table_type: BASE TABLE
 Cache of market research produced by the HERMES stack and ARIEL. **Must never
 reach LILITH** — it is processed cross-source intelligence.
 
+Also receives the weekday daily Deep Research brief via
+[magi-deep-research](/system/services/magi-deep-research.md)
+(`research_type = 'DAILY_DEEP_RESEARCH'`).
+
 # Schema
 
 | Column | Type | Description |
 |---|---|---|
 | date | DATE | Research date. |
-| research_type | STRING | e.g. `MACRO`, `SYMBOL`. |
+| research_type | STRING | e.g. `MACRO`, `SYMBOL`, `DAILY_DEEP_RESEARCH`. |
 | symbol | STRING | Ticker (nullable for macro). |
 | summary | STRING | Text summary. |
 | sentiment | STRING | Sentiment label. |
@@ -44,3 +48,4 @@ reach LILITH** — it is processed cross-source intelligence.
 # Citations
 
 * Writer: `magi-core/src/hermes.js` (`saveToBigQuery`).
+* Writer: `magi-core/scripts/upload-deep-research.mjs` for `DAILY_DEEP_RESEARCH` rows.

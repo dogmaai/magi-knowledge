@@ -15,6 +15,7 @@ callers don't hard-code endpoints.
 | [magi-isabel](magi-isabel.md) | dogmaai/magi-isabel | ISABEL pattern framework (centroids, embeddings). |
 | [magi-moni](magi-moni.md) | dogmaai/magi-moni | Monitoring / reporting / alerting. |
 | [aka-memory](aka-memory.md) | dogmaai/magi-moni | AKA long-term memory on TIALA + daily GCS backup. |
+| [magi-deep-research](magi-deep-research.md) | dogmaai/magi-deep-research | Weekday daily Deep Research brief via Devin Automation. |
 | [magi-model-health-check](magi-model-health-check.md) | dogmaai/magi-model-health-check | Periodic provider/model health checks. |
 | [lilith-training](lilith-training.md) | dogmaai/lilith-training | LILITH fine-tuning + anti-hallucination DPO pipeline. |
 | [central-dogma](central-dogma.md) | dogmaai/central-dogma | Central governance / shared source of truth (role to confirm). |
