@@ -23,7 +23,12 @@ from pathlib import Path
 
 import pyarrow as pa
 from pyiceberg.catalog.rest import RestCatalog
-from pyiceberg.exceptions import NoSuchNamespaceError, NoSuchTableError
+from pyiceberg.exceptions import (
+    NamespaceAlreadyExistsError,
+    NoSuchNamespaceError,
+    NoSuchTableError,
+    TableAlreadyExistsError,
+)
 
 from okf_common import iter_concept_files, load_concept, parse_frontmatter
 
@@ -139,22 +144,29 @@ def _ensure_namespace(catalog: RestCatalog, namespace: str) -> None:
     """Create the namespace only when it does not already exist.
 
     Avoids the 409 Conflict that ``create_namespace_if_not_exists`` would
-    receive from the R2 Data Catalog on every subsequent run.
+    receive from the R2 Data Catalog on every subsequent run, while still
+    tolerating a concurrent create.
     """
     try:
         catalog.load_namespace_properties(namespace)
     except NoSuchNamespaceError:
-        catalog.create_namespace(namespace)
+        try:
+            catalog.create_namespace(namespace)
+        except NamespaceAlreadyExistsError:
+            pass
 
 
 def _get_or_create_table(catalog: RestCatalog, identifier: str, schema: pa.Schema) -> object:
     """Load an existing table or create it, without issuing create calls for
-    tables that already exist.
+    tables that already exist. A concurrent create is treated as success.
     """
     try:
         return catalog.load_table(identifier)
     except NoSuchTableError:
-        return catalog.create_table(identifier, schema=schema)
+        try:
+            return catalog.create_table(identifier, schema=schema)
+        except TableAlreadyExistsError:
+            return catalog.load_table(identifier)
 
 
 def sync(
