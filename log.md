@@ -1,5 +1,14 @@
 # Bundle Update Log
 
+## 2026-08-31
+* **Creation**: [magi-deep-research](/system/services/magi-deep-research.md) — documents the
+  current weekday daily Deep Research brief flow as a Devin Automation writing
+  `DAILY_DEEP_RESEARCH` rows into `magi_core.market_research` via
+  `magi-core/scripts/upload-deep-research.mjs`.
+* **Enhancement**: [market_research](/system/echidna-tables/market-research.md) now lists
+  `DAILY_DEEP_RESEARCH` as a `research_type` value and cites the new upload script.
+* **Enhancement**: [service map](/system/services/index.md) now links to `magi-deep-research`.
+
 ## 2026-08-27
 * **Enhancement**: Realigned the [PLM unit registry](/system/plm-units/index.md) with
   `magi-core`: ZEROEL is retired for cost, PROMETHEUS is live with
