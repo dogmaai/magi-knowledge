@@ -9,6 +9,11 @@ Single source of truth for MAGI system knowledge, expressed in the
 (OKF v0.1). Authored for both humans and the AI agents that operate MAGI
 (Devin, AKA-1, ARIEL) and for the LILITH training pipeline.
 
+The previous specification lived in `dogmaai/magi-stg` (`specifications/` and
+`docs/`); that repository is **archived** and its spec files carry a banner
+pointing here. This bundle is now the only authoritative source. See
+[log.md](log.md) for the change history.
+
 # Trees
 
 * [_lilith_safe/](_lilith_safe/) - Clean-source ground truth the LILITH training pipeline MAY consume. Contamination-guarded.
