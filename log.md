@@ -1,6 +1,14 @@
 # Bundle Update Log
 
 ## 2026-09-03
+* **Creation**: [cloudflare](/system/services/cloudflare.md) — documents MAGI's
+  four Cloudflare uses: the `magi-document` AI Search mirror and the
+  `okf.system` R2 Data Catalog (Iceberg) mirror of this spec on the
+  `magi-system` bucket, the Named Tunnels exposing `moomoo-bridge`, `ollama`
+  and `openclaw-gateway` on TIALA, and the `default` AI Gateway behind AI
+  Search. Runbooks stay in `.agents/skills/` and are referenced, not copied.
+* **Enhancement**: [service map](/system/services/index.md) gains an
+  Infrastructure section linking to `cloudflare`.
 * **Enhancement**: `dogmaai/magi-stg` is now formally treated as archived and
   this bundle is declared the single source of truth in [index.md](/index.md).
   On the `magi-stg` side, `AGENTS.md` was added and archive banners pointing to
