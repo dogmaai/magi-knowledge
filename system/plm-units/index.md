@@ -13,7 +13,7 @@ This whole tree is **cross-unit by definition** and therefore
 | Unit | Provider | Model | Budget (NORMAL) | Cloud Run job | Status | Persona |
 |---|---|---|---|---|---|---|
 | [SOPHIA-5](sophia-5.md) | mistral | mistral-small-2603 | 0.774 | `magi-core-job` | active | Strategist / golden reasoning (default) |
-| [MELCHIOR-1](melchior-1.md) | google | gemini-3.7-flash | 0.954 | `magi-core-gemini` | shadow (`TRADE_MODE=SHADOW`) | Systematic multi-factor analyst |
+| [MELCHIOR-1](melchior-1.md) | google | gemini-3.8-flash | 0.954 | `magi-core-gemini` | shadow (`TRADE_MODE=SHADOW`) | Systematic multi-factor analyst |
 | [CASPER](casper.md) | deepseek | deepseek-v4-flash | 0.999 | `magi-core-deepseek` | shadow (`TRADE_MODE=SHADOW`) | Aggressive momentum hunter |
 | [QWEN](qwen.md) | qwen | qwen-plus | 0.5 base / 0.75 effective | `magi-core-qwen` | active | Independent systematic reasoner |
 | [LILITH](lilith.md) | lilith | lilith-v1.0-b2-prod | 0.5 | `magi-core-lilith` (canary) | active | Independent fine-tuned reasoner |
@@ -46,7 +46,7 @@ Role boundaries, so the analyzers are not confused with each other:
 | Owner | Model / method | Analysis type | Output |
 |---|---|---|---|
 | [SEKHMET](sekhmet.md) (`magi-fugu-analyzer`) | Sakana `fugu-ultra`, `reasoning_effort=high` | **Causal analysis** — sequential/time-ordered causal outcome reasoning (`causal_insights`, win/lose streaks, regime transitions) | [fugu-sequential-patterns](/system/echidna-tables/fugu-sequential-patterns.md) |
-| [MELCHIOR-1](melchior-1.md) (`magi-gemini-analyzer`) | Gemini (`gemini-3-flash-preview`, Vertex AI) | **Generic pattern analysis / logical & quantitative analysis** — WIN/LOSE reasoning tendencies. *Not* the causal-analysis owner | [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md) |
+| [MELCHIOR-1](melchior-1.md) (`magi-gemini-analyzer`) | Gemini (`gemini-3.8-flash`, AI Studio) | **Generic pattern analysis / logical & quantitative analysis** — WIN/LOSE reasoning tendencies. *Not* the causal-analysis owner | [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md) |
 | DAPHNE (`magi-daphne-analyzer`) | BigQuery SQL `REGEXP_CONTAINS` + static `IS_CAUSAL` map (Gemini used only for why-lost narrative / hint rewrites) | **Static causal classification** — LOSE trades into the LP taxonomy, causal vs non-causal by rule | [daphne-feedback](/system/echidna-tables/daphne-feedback.md) |
 
 # Deprecated units

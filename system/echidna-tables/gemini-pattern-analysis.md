@@ -38,4 +38,4 @@ See [causal analysis ownership](/system/plm-units/index.md#causal-analysis-owner
 
 * Producer: `magi-core/jobs/gemini-analyzer/index.js` — Cloud Run job
   `magi-gemini-analyzer`, Cloud Scheduler `magi-gemini-analyzer-daily`
-  (`0 14 * * 1-5` UTC), Vertex AI `gemini-3-flash-preview`.
+  (`0 14 * * 1-5` UTC), AI Studio `gemini-3.8-flash`.

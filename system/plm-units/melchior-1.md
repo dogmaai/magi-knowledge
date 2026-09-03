@@ -5,7 +5,7 @@ description: Systematic multi-factor analyst; runs HERMES intelligence collectio
 lilith_safe: false
 tags: [plm, shadow, google, gemini, hermes]
 provider: google
-model: gemini-3.7-flash
+model: gemini-3.8-flash
 status: shadow
 budget_weight_normal: 0.954
 cloud_run_job: magi-core-gemini
@@ -30,7 +30,7 @@ MELCHIOR-1 owns **logical / quantitative and generic pattern analysis**. It is
 | Field | Value |
 |---|---|
 | Provider | `google` |
-| Model | `gemini-3.7-flash` (`GEMINI_MODEL` in the job; config fallback `gemini-2.5-flash`) |
+| Model | `gemini-3.8-flash` (`GEMINI_MODEL` in the job; config fallback `gemini-2.5-flash`) |
 | Budget weight (NORMAL) | `0.954` (Optuna: high; still used for shadow sizing) |
 | Trade mode | `SHADOW` — records to `trades_shadow` / `thoughts_shadow`; no live broker orders |
 | Cloud Run job | `magi-core-gemini` |
@@ -39,7 +39,7 @@ MELCHIOR-1 owns **logical / quantitative and generic pattern analysis**. It is
 # Relationships
 
 * Writes/refreshes [market_research](/system/echidna-tables/market-research.md) via the HERMES stack.
-* Gemini also powers the batch [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md) report (`magi-gemini-analyzer`, Cloud Scheduler `magi-gemini-analyzer-daily`, `0 14 * * 1-5` UTC, Vertex `gemini-3-flash-preview`) — generic WIN/LOSE pattern extraction, not causal analysis.
+* Gemini also powers the batch [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md) report (`magi-gemini-analyzer`, Cloud Scheduler `magi-gemini-analyzer-daily`, `0 14 * * 1-5` UTC, AI Studio `gemini-3.8-flash`) — generic WIN/LOSE pattern extraction, not causal analysis.
 
 # Trading history & performance
 
