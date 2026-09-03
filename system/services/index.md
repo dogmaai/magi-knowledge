@@ -20,6 +20,12 @@ callers don't hard-code endpoints.
 | [lilith-training](lilith-training.md) | dogmaai/lilith-training | LILITH fine-tuning + anti-hallucination DPO pipeline. |
 | [central-dogma](central-dogma.md) | dogmaai/central-dogma | Central governance / shared source of truth (role to confirm). |
 
+# Infrastructure
+
+| Service | Repo | Role |
+|---|---|---|
+| [cloudflare](cloudflare.md) | infra (Cloudflare) | AI Search + R2 Data Catalog mirrors of this spec, Named Tunnels for TIALA services, AI Gateway `default`. |
+
 # Data backbone
 
 All services read/write ECHIDNA (`magi_core` BigQuery). See
