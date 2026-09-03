@@ -1,5 +1,13 @@
 # Bundle Update Log
 
+## 2026-09-03
+* **Enhancement**: `dogmaai/magi-stg` is now formally treated as archived and
+  this bundle is declared the single source of truth in [index.md](/index.md).
+  On the `magi-stg` side, `AGENTS.md` was added and archive banners pointing to
+  this bundle were placed at the top of `specifications/README.md`,
+  `docs/README.md`, `docs/00_SYSTEM_SPEC_LATEST.md`, and `MEMORY.md`, replacing
+  the former "this directory is the single source of truth" wording.
+
 ## 2026-08-31
 * **Creation**: [magi-deep-research](/system/services/magi-deep-research.md) — documents the
   current weekday daily Deep Research brief flow as a Devin Automation writing
