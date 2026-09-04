@@ -2,6 +2,14 @@
 
 ## 2026-09-04
 * **Enhancement**: [magi-core](/system/services/magi-core.md) gains a
+  "Surge detector" section: `magi-surge-detector` polls MooMoo batch snapshots
+  only (no LLM / search API), gates on fresh RTH `change_pct` vs
+  `SURGE_THRESHOLD` / `CRASH_THRESHOLD`, guards re-triggers via Cloud Run
+  execution history, and fires `magi-core-job` ([SOPHIA-5](/system/plm-units/sophia-5.md))
+  then `magi-core-deepseek` ([CASPER](/system/plm-units/casper.md)) on 2+
+  simultaneous surges. Cross-linked from SOPHIA-5, CASPER and
+  [magi-moomoo](/system/services/magi-moomoo.md).
+* **Enhancement**: [magi-core](/system/services/magi-core.md) gains a
   "HERMES intelligence stack" section documenting where the Brave Search API is
   consumed across the trade lifecycle: pre-trade only, by Gemini
   (`HERMES_GEMINI_MODEL`) in `[HERMES:BRAVE]` via the hourly `magi-hermes-refresh`

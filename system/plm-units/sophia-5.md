@@ -29,8 +29,8 @@ SOPHIA-5 is the **strategist** (戦略家) and the system's default unit:
 
 # Relationships
 
-* Surge detector escalates to [CASPER](casper.md)
-  (`magi-core-deepseek`) for a second opinion.
+* [Surge detector](/system/services/magi-core.md#surge-detector) escalates to
+  [CASPER](casper.md) (`magi-core-deepseek`) for a second opinion.
 * Shares the swing Constitution prompt (`buildSwingConstitution`) with all units.
 
 # Trading history & performance

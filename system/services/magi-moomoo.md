@@ -18,7 +18,7 @@ batch market snapshots, and execute/close orders. Consumed in magi-core via
 
 * [L1.5](/system/guards/l1-5.md) position-sizing (live equity/positions).
 * [positionMgmt](/system/services/magi-core.md) order execution and exits.
-* `surge-detector.js` batch snapshots of the cash-equity universe.
+* [Surge detector](/system/services/magi-core.md#surge-detector) batch snapshots of the cash-equity universe.
 * HERMES `getMoomooMarketData` real-time block.
 
 # Availability
