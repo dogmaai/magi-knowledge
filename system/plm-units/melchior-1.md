@@ -39,6 +39,10 @@ MELCHIOR-1 owns **logical / quantitative and generic pattern analysis**. It is
 # Relationships
 
 * Writes/refreshes [market_research](/system/echidna-tables/market-research.md) via the HERMES stack.
+* In-session fallback collector for `[HERMES:BRAVE]` (Brave Search → Gemini
+  `HERMES_GEMINI_MODEL` → `pre_trade_intelligence`); the primary collector is the
+  hourly `magi-hermes-refresh` job. See
+  [HERMES intelligence stack](/system/services/magi-core.md#hermes-intelligence-stack).
 * Gemini also powers the batch [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md) report (`magi-gemini-analyzer`, Cloud Scheduler `magi-gemini-analyzer-daily`, `0 14 * * 1-5` UTC, AI Studio `gemini-3.8-flash`) — generic WIN/LOSE pattern extraction, not causal analysis.
 
 # Trading history & performance
