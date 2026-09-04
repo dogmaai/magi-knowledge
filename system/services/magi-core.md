@@ -22,6 +22,7 @@ and writes the core ECHIDNA tables.
 | `src/paperGuards.js` | L4 / L5 / L7 guard implementations. |
 | `src/positionMgmt.js` / `positionManager.js` | Position management + L0 guard. |
 | `src/hermes.js` | HERMES intelligence (see [HERMES intelligence stack](#hermes-intelligence-stack)). |
+| `surge-detector.js` / `lib/surge.js` | Intraday surge/crash watcher (see [Surge detector](#surge-detector)). |
 | `lib/vix.js` | VIX regime detection (L6, hard gate). |
 | `lib/config.js` | Unit/model mapping + budget weights. |
 | `lib/bigquery.js` | ECHIDNA writers (`safeInsert`, validators). |
@@ -47,6 +48,27 @@ trading unit. Other HERMES sources: `[HERMES:ALPHA_VANTAGE]` (raw API),
 `[HERMES:X_SEARCH]` (xAI, social layer; see [ZEROEL](/system/plm-units/zeroel.md)).
 Secrets: `BRAVE_SEARCH_API_KEY`, `GEMINI_API_KEY` (`deploy.yml`); collection is a
 no-op when `BRAVE_SEARCH_API_KEY` is absent.
+
+# Surge detector
+
+`surge-detector.js` (Cloud Run job `magi-surge-detector`, Scheduler
+`magi-surge-detector-scheduler`, `*/5 9-15 * * 1-5` America/New_York) is an
+opportunistic intraday watcher that lets a PLM react in-cycle instead of waiting
+for the next scheduled trading window. It calls **no LLM and no search API**
+itself; its only market input is the MooMoo broker.
+
+| Stage | What | Notes |
+|---|---|---|
+| Input | `getMoomooSnapshot()` batch snapshot of `INTELLIGENCE_SYMBOLS` via [magi-moomoo](/system/services/magi-moomoo.md) | ETFs (`SPY`, `QQQ`) are filtered out — the trading system is cash-equity only. |
+| Gate (`lib/surge.js`) | `change_pct` vs previous close must reach `SURGE_THRESHOLD` (default `+2.0`) or `CRASH_THRESHOLD` (default `-2.0`) on a quote younger than `SURGE_MAX_QUOTE_AGE_SEC` (default 300s) during 09:30-16:00 ET | The broker snapshot has no pre/post-market ticks, so outside RTH `change_pct` is the previous session's move and is ignored unless `SURGE_TRADE_OUTSIDE_RTH=true`. |
+| Re-trigger guards | Cloud Run executions API history of the PLM jobs (each surge run carries `SURGE_SYMBOLS` / `SURGE_CONTEXT` env overrides) | `SURGE_COOLDOWN_MIN` (default 45), `SURGE_RETRIGGER_DELTA_PCT` (default 1.0); `0` disables a guard. |
+| Primary reaction | Cloud Run Jobs API `:run` of `magi-core-job` → Mistral / [SOPHIA-5](/system/plm-units/sophia-5.md) | Chosen for the most structured swing-trade reasoning (ISABEL L4) and no rate limit on the paid tier. `src/session.js` injects `formatSurgePromptSection()` so the unit focuses on the surged symbols. |
+| Secondary reaction (2+ simultaneous surges) | `magi-core-deepseek` → DeepSeek / [CASPER](/system/plm-units/casper.md) | Second opinion; xAI was dropped as secondary trigger for cost. |
+| Notification | `sendTelegramNotification` (`TelegramCategory.REVIEW`) | Suppressed while cooled down unless `SURGE_ALERT_ON_COOLDOWN=true`. |
+
+Secrets: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` (`deploy.yml`). The Scheduler
+step is `describe || create`, so cron changes must be applied to the live job
+manually (`gcloud scheduler jobs update http magi-surge-detector-scheduler`).
 
 # Offline analysis jobs
 
