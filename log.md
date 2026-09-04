@@ -1,5 +1,19 @@
 # Bundle Update Log
 
+## 2026-09-04
+* **Enhancement**: `.agents/skills/` is now the home for cross-cutting Devin
+  reference skills that are not tied to one repo's code. Moved in from
+  `magi-core`: [devin-cli](/.agents/skills/devin-cli/SKILL.md),
+  [gemini-api-reference](/.agents/skills/gemini-api-reference/SKILL.md),
+  [kimi-api-reference](/.agents/skills/kimi-api-reference/SKILL.md); from
+  `magi-moomoo`:
+  [cloudflare-tunnel-protocols](/.agents/skills/cloudflare-tunnel-protocols/SKILL.md),
+  [moomoo-api-reference](/.agents/skills/moomoo-api-reference/SKILL.md). All
+  carry `type: Reference` / `lilith_safe: false`. Repo-bound skills
+  (`testing-*`, `operate-tiala`, `opend-manual`) stay co-located with their
+  code; `magi-moomoo`'s `cloudflare-api-reference` (abuse-reports endpoints
+  only) is dropped in favour of `consulting-cloudflare-docs`.
+
 ## 2026-09-03
 * **Creation**: [cloudflare](/system/services/cloudflare.md) — documents MAGI's
   four Cloudflare uses: the `magi-document` AI Search mirror and the
