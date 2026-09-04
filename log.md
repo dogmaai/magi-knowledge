@@ -1,6 +1,12 @@
 # Bundle Update Log
 
 ## 2026-09-04
+* **Enhancement**: [magi-core](/system/services/magi-core.md) gains a
+  "HERMES intelligence stack" section documenting where the Brave Search API is
+  consumed across the trade lifecycle: pre-trade only, by Gemini
+  (`HERMES_GEMINI_MODEL`) in `[HERMES:BRAVE]` via the hourly `magi-hermes-refresh`
+  job (fallback: [MELCHIOR-1](/system/plm-units/melchior-1.md) in-session), read by
+  all PLM units through `buildHermesPrompt()`; not used in-trade or post-trade.
 * **Enhancement**: `.agents/skills/` is now the home for cross-cutting Devin
   reference skills that are not tied to one repo's code. Moved in from
   `magi-core`: [devin-cli](/.agents/skills/devin-cli/SKILL.md),

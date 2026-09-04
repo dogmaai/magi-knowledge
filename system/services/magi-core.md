@@ -21,11 +21,32 @@ and writes the core ECHIDNA tables.
 | `src/llm.js` | LLM call orchestration + guard pipeline (L-1…L7). |
 | `src/paperGuards.js` | L4 / L5 / L7 guard implementations. |
 | `src/positionMgmt.js` / `positionManager.js` | Position management + L0 guard. |
-| `src/hermes.js` | HERMES intelligence. |
+| `src/hermes.js` | HERMES intelligence (see [HERMES intelligence stack](#hermes-intelligence-stack)). |
 | `lib/vix.js` | VIX regime detection (L6, hard gate). |
 | `lib/config.js` | Unit/model mapping + budget weights. |
 | `lib/bigquery.js` | ECHIDNA writers (`safeInsert`, validators). |
 | `lib/constitution.js` | Constitution prompt builder. |
+
+# HERMES intelligence stack
+
+`src/hermes.js` aggregates news / sentiment sources behind `buildHermesPrompt()`,
+which every PLM unit calls while assembling its system prompt. The only source
+that consumes an external search API is **`[HERMES:BRAVE]`**:
+
+| Stage | Who | Role |
+|---|---|---|
+| Pre-trade (collect) | `magi-hermes-refresh` Cloud Run job (Scheduler `magi-hermes-refresh-1h`, `0 13-21 * * 1-5` UTC) and, as a fallback, [MELCHIOR-1](/system/plm-units/melchior-1.md) at the start of its cycle (`LLM_PROVIDER=google` only) | `collectHermesIntelligence()` — one **Brave Search** web query per symbol (`freshness=pd`, 5 results; optional catalyst query via `HERMES_CATALYST_QUERY_ENABLED`) → **Gemini** (`HERMES_GEMINI_MODEL`, structured-output schema) scores sentiment / key events → `pre_trade_intelligence`. Rows younger than `HERMES_REFRESH_INTERVAL_HOURS` (default 2h) are reused, which is the Brave cost lever. |
+| Pre-trade (read) | All PLM units via `buildHermesPrompt()` → `buildHermesSection()` | Reads the latest `pre_trade_intelligence` row per symbol, computes tape bias / divergence, and injects the `[HERMES]` block into the prompt. LILITH clean-source mode (`skipLLMProcessed`) skips this block and receives only raw Alpha Vantage / MooMoo data. |
+| In-trade / post-trade | — | Brave is **not** used. DAPHNE, thought-outcome, Fugu and Gemini pattern analyzers work on ECHIDNA tables only. |
+
+The Brave-consuming LLM is therefore Gemini only (HERMES analyst role), not a
+trading unit. Other HERMES sources: `[HERMES:ALPHA_VANTAGE]` (raw API),
+`[HERMES:MARKET_RESEARCH]` (Gemini + Google Search Grounding →
+[market-research](/system/echidna-tables/market-research.md)), `[HERMES:ORACLE]`
+(Ollama VIX analyst), `[HERMES:MOOMOO]` (broker real-time data),
+`[HERMES:X_SEARCH]` (xAI, social layer; see [ZEROEL](/system/plm-units/zeroel.md)).
+Secrets: `BRAVE_SEARCH_API_KEY`, `GEMINI_API_KEY` (`deploy.yml`); collection is a
+no-op when `BRAVE_SEARCH_API_KEY` is absent.
 
 # Offline analysis jobs
 
