@@ -243,12 +243,14 @@ history_order_list_query(trd_env=TrdEnv.REAL, acc_id=0, acc_index=0,
 ## Order Push Callback
 
 ```python
-class TradeOrderHandlerBase:
+class OrderPushHandler(TradeOrderHandlerBase):
     def on_recv_rsp(self, rsp_pb):
-        # ret, data = super().on_recv_rsp(rsp_pb)
-        pass
+        ret, data = super().on_recv_rsp(rsp_pb)
+        if ret == RET_OK:
+            print(data)  # order update DataFrame
+        return ret, data
 
-trd_ctx.set_handler(TradeOrderHandlerBase())
+trd_ctx.set_handler(OrderPushHandler())
 trd_ctx.start()  # Start receiving push notifications
 ```
 

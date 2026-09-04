@@ -76,7 +76,7 @@ Initialize the client:
   const OpenAI = require("openai");
 
   const client = new OpenAI({
-      apiKey: "$MOONSHOT_API_KEY",
+      apiKey: process.env.MOONSHOT_API_KEY,
       baseURL: "https://api.moonshot.ai/v1",
   });
   ```
