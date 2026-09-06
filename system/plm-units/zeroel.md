@@ -19,10 +19,12 @@ ZEROEL is retired. The `magi-core-xai` Cloud Run job is commented out in
 and the PLM job alone cost approximately $47/month.
 
 The ZEROEL persona block still exists in `magi-core/src/session.js` for
-historical compatibility. The X (Twitter) social layer survives as HERMES
-`[HERMES:X_SEARCH]`, using the xAI Responses API with
-`X_SEARCH_REFRESH_HOURS = 24` in `magi-core/src/hermes.js` and writing to
-`magi_core.x_social_sentiment`.
+historical compatibility. The X (Twitter) social layer `[HERMES:X_SEARCH]`
+(xAI Responses API, `X_SEARCH_REFRESH_HOURS = 24` in `magi-core/src/hermes.js`,
+writing to `magi_core.x_social_sentiment`) is also **not in use** — dropped for
+cost reasons along with the PLM job (confirmed by @dogmaai 2026-09-06). The code
+path remains but is gated on `XAI_API_KEY`; see the HERMES decision record in
+[magi-core](/system/services/magi-core.md#why-brave-search-decision-record).
 
 # Configuration
 

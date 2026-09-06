@@ -48,6 +48,31 @@ trading unit. Other HERMES sources: `[HERMES:ALPHA_VANTAGE]` (raw API),
 Secrets: `BRAVE_SEARCH_API_KEY`, `GEMINI_API_KEY` (`deploy.yml`); collection is a
 no-op when `BRAVE_SEARCH_API_KEY` is absent.
 
+## Why Brave Search (decision record)
+
+Brave was introduced by @dogmaai on 2026-03-13 (magi-core `8bff62b`, first
+HERMES injection) and has remained the sole per-symbol news search API since.
+The rationale, as confirmed by @dogmaai on 2026-09-06:
+
+* **Cost**: cheapest web-search API that fits the HERMES call pattern. It
+  started on the Free tier (2,000 calls/month, PR #81) and is now on a **paid
+  tier** as the universe and refresh cadence grew; the 2h reuse window
+  (`HERMES_REFRESH_INTERVAL_HOURS`) and the opt-in catalyst query keep spend
+  bounded.
+* **Fit**: a plain REST call with a `freshness=pd` (last 24h) filter returns
+  a small, recent result set per symbol that Gemini can score with a
+  structured-output schema — no agentic search loop or LLM-side tokens needed
+  to find the news.
+* **Division of labour**: Google Search Grounding is reserved for the macro
+  `[HERMES:MARKET_RESEARCH]` report, and Alpha Vantage / MooMoo supply raw
+  quantitative data; Brave covers traditional-media, per-symbol headlines.
+
+**xAI `[HERMES:X_SEARCH]` is not in use.** The X social layer was dropped for
+cost reasons together with the ZEROEL PLM job (grok-4.3 at $1.25/$2.50 per M
+tokens, ~$47/month for the PLM job alone). The code path in `src/hermes.js`
+remains and is gated on `XAI_API_KEY`, but it is not part of the operating
+HERMES stack; Brave + Gemini is the only live external news source.
+
 # Offline analysis jobs
 
 Cloud Run jobs and their Cloud Scheduler wrappers (separate resources with
