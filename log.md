@@ -1,5 +1,12 @@
 # Bundle Update Log
 
+## 2026-09-06
+* **Enhancement**: [magi-core](/system/services/magi-core.md) HERMES section
+  gains a "Why Brave Search" decision record (cost — now on a paid tier —,
+  `freshness=pd` REST fit, division of labour vs Google Search Grounding) and
+  states that xAI `[HERMES:X_SEARCH]` is not in use (dropped for cost).
+  [ZEROEL](/system/plm-units/zeroel.md) updated to match.
+
 ## 2026-09-04
 * **Enhancement**: [magi-core](/system/services/magi-core.md) gains a
   "HERMES intelligence stack" section documenting where the Brave Search API is
