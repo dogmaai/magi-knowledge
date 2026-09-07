@@ -6,6 +6,10 @@
   `freshness=pd` REST fit, division of labour vs Google Search Grounding) and
   states that xAI `[HERMES:X_SEARCH]` is not in use (dropped for cost).
   [ZEROEL](/system/plm-units/zeroel.md) updated to match.
+* **Enhancement**: [magi-core](/system/services/magi-core.md) HERMES decision
+  record gains a TIP on why per-symbol news uses Brave rather than Gemini
+  Google Search Grounding (unit cost, freshness/result-set control, separation
+  of search and scoring); Grounding stays for the macro report.
 
 ## 2026-09-04
 * **Enhancement**: [magi-core](/system/services/magi-core.md) gains a

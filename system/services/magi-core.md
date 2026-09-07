@@ -73,6 +73,28 @@ tokens, ~$47/month for the PLM job alone). The code path in `src/hermes.js`
 remains and is gated on `XAI_API_KEY`, but it is not part of the operating
 HERMES stack; Brave + Gemini is the only live external news source.
 
+**TIP — why not Gemini Google Search Grounding for per-symbol news?** It is
+not that Grounding is weak; it already powers the macro `[HERMES:MACRO]`
+report. It is the wrong tool for the repeated, per-symbol scan:
+
+* **Unit cost**: Grounding is billed per grounded request (order of $35 per
+  1,000 beyond the free daily quota) on top of Gemini tokens; Brave paid tiers
+  are roughly $3–5 per 1,000 queries — about an order of magnitude cheaper for
+  a universe that is re-scanned several times a day. (Re-check current price
+  lists before quoting exact numbers.)
+* **Control**: Brave returns the raw result set with explicit `freshness=pd`
+  and `count` parameters, so the 24h window is enforced and the scored inputs
+  are inspectable and cacheable. Grounding searches inside the model and
+  returns a synthesised answer; freshness cannot be forced and the evidence
+  set is not reproducible.
+* **Separation of search and scoring**: search (Brave) and analysis (Gemini
+  structured output) are independent stages, so the analyst model can be
+  swapped (`HERMES_GEMINI_MODEL`), results reused for 2h, and Gemini's
+  verdict audited against the headlines it saw.
+
+Rule of thumb: Grounding for one-shot, open-ended synthesis (macro); Brave for
+high-frequency, filterable, per-symbol retrieval.
+
 # Offline analysis jobs
 
 Cloud Run jobs and their Cloud Scheduler wrappers (separate resources with
