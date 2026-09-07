@@ -107,10 +107,38 @@ separate names) as defined in `magi-core/.github/workflows/deploy.yml`:
 | `magi-daphne-analyzer` | `magi-daphne-analyzer-daily` | `0 22 * * 1-5` (America/New_York) | LP-taxonomy classification of LOSE trades in BigQuery SQL + static `IS_CAUSAL` flag → [daphne-feedback](/system/echidna-tables/daphne-feedback.md) |
 | `magi-thought-outcome-analyzer` | `magi-thought-outcome-analyzer-daily` | `0 23 * * 1-5` (America/New_York) | Links thoughts to realized outcomes (feeds the Fugu pass that follows at 23:30 ET) |
 | `magi-thought-quality-ranker` | `magi-thought-quality-ranker` | `0 0 1,15 * *` (UTC) | Semi-monthly thought quality ranking (`SAKANA_MODEL=fugu-ultra`) → [thought-quality-scores](/system/echidna-tables/thought-quality-scores.md) |
-| `magi-evaluator` | — (invoked by the trade pipeline) | — | Trade outcome evaluation |
+| `magi-evaluator` | `magi-evaluator-daily` | `0 10 * * *` (Asia/Tokyo) | Trade outcome evaluation (daily) |
 
 Role boundaries: see
 [causal analysis ownership](/system/plm-units/index.md#causal-analysis-ownership).
+
+# Operational jobs
+
+Source: `magi-core/.github/workflows/deploy.yml` @ 07c1767. Scheduler and Job names are separate resources.
+Note: `magi-scheduler-openai` has no explicit time zone in deploy.yml at this
+revision; magi-core is adding UTC.
+
+| Cloud Run Job | Scheduler | Schedule (TZ) | Role |
+|---|---|---|---|
+| `magi-vix-oracle` | `magi-vix-premarket` | `0 8 * * 1-5` (America/New_York) | HERMES ORACLE / VIX premarket |
+| `magi-sentiment-monitor` | `magi-sentiment-monitor-schedule` | `*/15 13-22 * * 1-5` (UTC) | HERMES sentiment monitor |
+| `magi-hermes-refresh` | `magi-hermes-refresh-1h` | `0 13-21 * * 1-5` (UTC) | HERMES intra-day refresh |
+| `magi-isabel-l4` | `magi-isabel-l4-scheduler` | `0 8 * * 1-5` (America/New_York) | ISABEL L4 pattern analysis |
+| `magi-llm-health-monitor` | `magi-llm-health-monitor-scheduler` | `*/5 13-22 * * 1-5` (UTC) | Provider health checks |
+| `magi-off-hours-chat` | `magi-off-hours-chat-scheduler` | `0 19 * * 1-5` (America/New_York) | Off-hours unit round-table |
+| `magi-off-hours-chat` | `magi-off-hours-chat-weekend-scheduler` | `0 12 * * 6,0` (America/New_York) | Off-hours weekend unit round-table |
+| `magi-surge-detector` | `magi-surge-detector-scheduler` | `*/5 9-15 * * 1-5` (America/New_York) | Intraday surge/crash watcher |
+| `magi-daily-report` | `magi-daily-report-scheduler` | `0 23 * * 1-5` (UTC) | Daily report |
+| `magi-isabel-cache` | `magi-isabel-cache-daily` | `0 8 * * 1-5` (America/New_York) | Daily ISABEL pre-compute |
+| `magi-isabel-briefing` | `magi-isabel-briefing-daily` | `30 13 * * 1-5` (UTC) | ISABEL morning briefing |
+| `magi-position-guard` | `magi-position-guard-scheduler` | `*/15 9-16 * * 1-5` (America/New_York) | Intra-day exit enforcement |
+| `magi-shadow-evaluator` | `magi-shadow-evaluator-daily` | `30 21 * * 1-5` (America/New_York) | LILITH shadow trade evaluation |
+| `magi-sync-embeddings` | `magi-sync-embeddings-daily` | `0 8 * * 1-5` (America/New_York) | Thought embedding sync |
+| `magi-optuna-job` | `magi-optuna-optimizer` | `0 6 * * 1` (UTC) | Optuna batch optimization (see deploy.yml) |
+| `magi-lilith-gate-monitor` | `magi-lilith-gate-monitor-daily` | `30 22 * * 1-5` (America/New_York) | LILITH adapter drift check |
+| `magi-sm-token-rotate` | `magi-sm-token-rotate-30min` | `*/30 * * * *` (UTC) | Rotate MooMoo Synthetic Monitoring token |
+| `magi-fred-updater` | `magi-fred-updater-daily` | `0 2 * * *` (UTC) | Daily FRED macro data fetch |
+| `magi-watchdog` | `magi-watchdog-daily` | `0 23 * * 1-5` (UTC) | Trade activity monitor |
 
 # Writes
 
