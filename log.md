@@ -8,6 +8,10 @@
   text) still says 8 and must follow in a reviewed magi-core PR; `okf-drift` will
   flag the mismatch once the submodule pin is advanced.
 
+* **Enhancement**: [magi-core](/system/services/magi-core.md) now documents the
+  daily `magi-evaluator` schedule and the remaining operational Cloud Run jobs
+  and Cloud Scheduler wrappers from `magi-core/.github/workflows/deploy.yml`.
+
 * **Creation**: [AGENTS.md](AGENTS.md) and [COLLABORATION.md](COLLABORATION.md)
   add a common development entry point for GPT/Codex, Devin and Antigravity,
   with one implementation owner, scoped independent review and a handoff format.
