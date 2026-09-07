@@ -3,6 +3,10 @@ type: Constitution Section
 title: "ISABEL REFERENCE - Advisory Only"
 description: Runtime-injected ISABEL feedback block -- dynamic, not stored in OKF.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-08-23T22:14:10Z }
+verified: { by: human:jun, at: 2026-08-23T22:14:10Z }
+stale_after: 2027-02-19T22:14:10Z
 tags: [constitution, v3, plm, isabel, dynamic]
 section_order: 15
 version: "3.0"

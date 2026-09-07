@@ -3,10 +3,14 @@ type: PLM Unit
 title: ORACLE
 description: DEPRECATED — Together.ai unit; removed in #139.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-08-27T23:14:38Z }
+verified: { by: human:jun, at: 2026-08-27T23:14:38Z }
+stale_after: 2027-02-23T23:14:38Z
 tags: [plm, deprecated, together, ollama, vix]
 provider: together
 model: null
-status: deprecated
+unit_status: deprecated
 deprecated_pr: "#139"
 ---
 

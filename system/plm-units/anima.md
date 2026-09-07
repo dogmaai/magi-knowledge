@@ -3,10 +3,14 @@ type: PLM Unit
 title: ANIMA
 description: DEPRECATED — fast Groq Llama unit; replaced by TYPHON.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-06-19T01:02:48Z }
+verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
+stale_after: 2026-12-16T01:02:48Z
 tags: [plm, deprecated, groq]
 provider: groq
 model: llama-3.3-70b-versatile
-status: deprecated
+unit_status: deprecated
 successor: TYPHON
 deprecated_pr: "#157"
 ---

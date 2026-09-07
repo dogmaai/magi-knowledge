@@ -3,6 +3,10 @@ type: Service
 title: central-dogma
 description: Unified NL gateway — intent parsing, command execution, and risk policy (ARIEL).
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-06-19T01:06:40Z }
+verified: { by: human:jun, at: 2026-06-19T01:06:40Z }
+stale_after: 2026-12-16T01:06:40Z
 tags: [service, central-dogma, gateway, ariel, intent]
 repo: dogmaai/central-dogma
 ---

@@ -3,6 +3,10 @@ type: Service
 title: magi-model-health-check
 description: Periodic provider/model health checks across the PLM roster.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-06-19T01:02:48Z }
+verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
+stale_after: 2026-12-16T01:02:48Z
 tags: [service, health-check, providers, ops]
 repo: dogmaai/magi-model-health-check
 ---

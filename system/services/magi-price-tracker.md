@@ -3,6 +3,10 @@ type: Service
 title: magi-price-tracker
 description: Back-fills historical prices into BigQuery and grades LLM trade-rec accuracy.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-06-19T01:06:40Z }
+verified: { by: human:jun, at: 2026-06-19T01:06:40Z }
+stale_after: 2026-12-16T01:06:40Z
 tags: [service, price-tracker, market-data, evaluation]
 repo: dogmaai/magi-price-tracker
 ---

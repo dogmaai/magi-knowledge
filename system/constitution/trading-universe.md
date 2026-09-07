@@ -3,6 +3,10 @@ type: Constitution Section
 title: "TRADING UNIVERSE"
 description: Dynamic symbol universe and L3 exclusion list -- generated at runtime.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-06-23T01:27:14Z }
+verified: { by: human:jun, at: 2026-06-23T01:27:14Z }
+stale_after: 2026-12-20T01:27:14Z
 tags: [constitution, v3, plm, symbols, universe, dynamic]
 section_order: 7
 version: "3.0"

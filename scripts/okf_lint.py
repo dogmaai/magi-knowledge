@@ -3,8 +3,19 @@
 
 Two responsibilities:
 
-1. **OKF v0.1 conformance** (SPEC §9): every non-reserved ``.md`` has parseable
-   frontmatter with a non-empty ``type``.
+1. **OKF v0.2 conformance** (SPEC §5, §7, §11): every non-reserved ``.md`` has
+   parseable frontmatter with a non-empty ``type``. On top of the spec's
+   permissive baseline this bundle *requires* the trust / lifecycle family so
+   consumers can tell canonical knowledge from a draft:
+
+     - ``status`` MUST be one of ``draft | stable | deprecated``.
+     - ``generated`` MUST be ``{ by: <actor>, at: <ISO 8601 UTC> }``.
+     - ``verified`` (optional) MUST be a ``{ by, at }`` mapping or a list of
+       them, with §7 actors. ``status: stable`` REQUIRES a ``human:`` verifier
+       — AI review alone only earns ``draft``.
+     - ``stale_after`` MUST be an ISO 8601 instant; a stale doc is a WARN
+       (an ERROR with ``--fail-on-stale``, used by the scheduled CI run).
+     - A non-deprecated doc MUST NOT link to a ``status: deprecated`` doc.
 
 2. **LILITH contamination boundary** — the hard requirement for this bundle.
    Anything the LILITH training pipeline is allowed to read lives under
@@ -23,12 +34,14 @@ Two responsibilities:
            true``). Even there, a win-rate / percentage attributed to a named
            unit is still forbidden — the detector lists names only.
 
-Run: ``python scripts/okf_lint.py`` (exit 0 = clean, 1 = violations).
+Run: ``python scripts/okf_lint.py [--fail-on-stale]`` (exit 0 = clean, 1 = violations).
 """
 from __future__ import annotations
 
+import argparse
 import re
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
 _SCRIPT_DIR = Path(__file__).resolve().parent
@@ -36,9 +49,14 @@ if str(_SCRIPT_DIR) not in sys.path:
     sys.path.insert(0, str(_SCRIPT_DIR))
 
 from okf_common import (  # noqa: E402
+    LIFECYCLE_STATUSES,
+    is_actor,
     iter_concept_files,
+    lifecycle_status,
     load_concept,
+    parse_datetime,
     parse_frontmatter,
+    verified_events,
 )
 
 BUNDLE_ROOT = _SCRIPT_DIR.parent
@@ -72,14 +90,75 @@ UNIT_WINRATE_RE = re.compile(
 )
 
 
+MD_LINK_RE = re.compile(r"\]\(([^)\s#]+)(?:#[^)]*)?\)")
+
+
 def _rel(path: Path) -> str:
     return path.relative_to(BUNDLE_ROOT).as_posix()
 
 
-def lint() -> int:
+def _resolve_link(src: Path, target: str) -> Path | None:
+    """Resolve a bundle-relative (``/x.md``) or relative markdown link."""
+    if "://" in target or target.startswith("mailto:"):
+        return None
+    if target.startswith("/"):
+        return (BUNDLE_ROOT / target.lstrip("/")).resolve()
+    return (src.parent / target).resolve()
+
+
+def _check_trust(rel: str, fm: dict, now: datetime, errors: list, warnings: list, stale: list):
+    status = fm.get("status")
+    if status not in LIFECYCLE_STATUSES:
+        errors.append(
+            f"{rel}: 'status' must be one of {'/'.join(LIFECYCLE_STATUSES)} "
+            f"(got {status!r}; unit lifecycle belongs in 'unit_status')"
+        )
+
+    gen = fm.get("generated")
+    if not isinstance(gen, dict):
+        errors.append(f"{rel}: missing 'generated: {{ by, at }}'")
+    else:
+        if not is_actor(gen.get("by")):
+            errors.append(f"{rel}: generated.by {gen.get('by')!r} is not a §7 actor")
+        if parse_datetime(gen.get("at")) is None:
+            errors.append(f"{rel}: generated.at {gen.get('at')!r} is not ISO 8601 with UTC offset")
+
+    human_verified = False
+    for ev in verified_events(fm):
+        if not isinstance(ev, dict):
+            errors.append(f"{rel}: verified entry {ev!r} is not a {{ by, at }} mapping")
+            continue
+        by = ev.get("by")
+        if not is_actor(by):
+            errors.append(f"{rel}: verified.by {by!r} is not a §7 actor")
+        elif by.startswith("human:"):
+            human_verified = True
+        if parse_datetime(ev.get("at")) is None:
+            errors.append(f"{rel}: verified.at {ev.get('at')!r} is not ISO 8601 with UTC offset")
+    if status == "stable" and not human_verified:
+        errors.append(
+            f"{rel}: 'status: stable' requires a 'verified' entry by a human: actor "
+            f"(machine/AI review only qualifies for 'draft')"
+        )
+
+    if "stale_after" in fm:
+        sa = parse_datetime(fm.get("stale_after"))
+        if sa is None:
+            errors.append(f"{rel}: stale_after {fm.get('stale_after')!r} is not ISO 8601 with UTC offset")
+        elif now >= sa and status != "deprecated":
+            stale.append(f"{rel}: stale since {fm['stale_after']} — re-verify or deprecate")
+    elif status == "stable":
+        warnings.append(f"{rel}: stable doc without 'stale_after' (freshness cannot be judged)")
+
+
+def lint(fail_on_stale: bool = False) -> int:
     errors: list[str] = []
     warnings: list[str] = []
+    stale: list[str] = []
     seen = 0
+    now = datetime.now(timezone.utc)
+    statuses: dict[Path, str] = {}
+    links: list[tuple[Path, str, Path]] = []
 
     for path in iter_concept_files(BUNDLE_ROOT):
         if "scripts" in path.relative_to(BUNDLE_ROOT).parts:
@@ -96,9 +175,16 @@ def lint() -> int:
         # --- OKF §9 conformance -------------------------------------------
         if not fm.get("type"):
             errors.append(f"{rel}: missing required non-empty 'type' field")
-
         under_safe = LILITH_SAFE_DIR in path.parents
         under_system = SYSTEM_DIR in path.parents
+        if under_safe or under_system:
+            _check_trust(rel, fm, now, errors, warnings, stale)
+        statuses[path.resolve()] = lifecycle_status(fm)
+        for m in MD_LINK_RE.finditer(concept.body):
+            target = _resolve_link(path, m.group(1))
+            if target is not None:
+                links.append((path, m.group(1), target))
+
         lilith_safe = fm.get("lilith_safe")
 
         # --- boundary: explicit flag must match location ------------------
@@ -152,6 +238,16 @@ def lint() -> int:
                     f"on the dedicated detector doc)"
                 )
 
+    # --- deprecated-reference check --------------------------------------
+    for src, raw, target in sorted(set(links)):
+        if statuses.get(src.resolve()) == "deprecated":
+            continue
+        if statuses.get(target) == "deprecated":
+            errors.append(
+                f"{_rel(src)}: links to deprecated concept {raw!r} — point at its "
+                f"successor or mark this doc deprecated too"
+            )
+
     # --- reserved index.md frontmatter rule (only bundle-root may have it) -
     for index_path in BUNDLE_ROOT.rglob("index.md"):
         if ".git" in index_path.parts:
@@ -170,16 +266,27 @@ def lint() -> int:
                 except ValueError as exc:
                     errors.append(f"{rel}: bad root index frontmatter: {exc}")
 
+    if fail_on_stale:
+        errors.extend(stale)
+    else:
+        warnings.extend(stale)
+
     for w in warnings:
         print(f"WARN  {w}")
     for e in errors:
         print(f"ERROR {e}")
     print(
         f"\nokf_lint: scanned {seen} concept(s), "
-        f"{len(errors)} error(s), {len(warnings)} warning(s)."
+        f"{len(errors)} error(s), {len(warnings)} warning(s), {len(stale)} stale."
     )
     return 1 if errors else 0
 
 
 if __name__ == "__main__":
-    raise SystemExit(lint())
+    ap = argparse.ArgumentParser(description="OKF conformance + LILITH boundary linter")
+    ap.add_argument(
+        "--fail-on-stale",
+        action="store_true",
+        help="treat docs past their stale_after as errors (scheduled freshness run)",
+    )
+    raise SystemExit(lint(fail_on_stale=ap.parse_args().fail_on_stale))

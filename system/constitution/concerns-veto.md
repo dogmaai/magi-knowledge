@@ -3,6 +3,10 @@ type: Constitution Section
 title: "CONCERNS ARE VETO SIGNALS, NOT DISCLAIMERS"
 description: Recorded concerns must either be resolved with evidence or act as a veto (HOLD / confidence cut).
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-08-27T07:11:06Z }
+verified: { by: human:jun, at: 2026-08-27T07:11:06Z }
+stale_after: 2027-02-23T07:11:06Z
 tags: [constitution, v3, plm, concerns, veto, risk]
 section_order: 12
 version: "3.8"

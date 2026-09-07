@@ -3,6 +3,10 @@ type: Constitution Section
 title: "CONFIDENCE CALIBRATION — MEASURED OUTCOMES (DAPHNE / TOF)"
 description: Confidence must be a calibrated probability, grounded in measured win rates per confidence bucket.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-08-27T07:11:06Z }
+verified: { by: human:jun, at: 2026-08-27T07:11:06Z }
+stale_after: 2027-02-23T07:11:06Z
 tags: [constitution, v3, plm, confidence, calibration, daphne, tof]
 section_order: 11
 version: "3.8"

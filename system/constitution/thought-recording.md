@@ -3,6 +3,10 @@ type: Constitution Section
 title: "THOUGHT RECORDING - MANDATORY"
 description: Every decision (BUY/SELL/HOLD) must be recorded via log_analysis with six fields.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-06-23T01:27:14Z }
+verified: { by: human:jun, at: 2026-06-23T01:27:14Z }
+stale_after: 2026-12-20T01:27:14Z
 tags: [constitution, v3, plm, thought, recording, mandatory]
 section_order: 10
 version: "3.0"

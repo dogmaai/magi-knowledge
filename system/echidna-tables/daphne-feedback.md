@@ -4,6 +4,10 @@ title: daphne_feedback
 description: DAPHNE loss-pattern (LP) classification of LOSE trades with a static causal/non-causal flag.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=daphne_feedback&page=table
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-08-20T05:49:46Z }
+verified: { by: human:jun, at: 2026-08-20T05:49:46Z }
+stale_after: 2027-02-16T05:49:46Z
 tags: [echidna, bigquery, daphne, causal, feedback]
 dataset: magi_core
 table_type: BASE TABLE

@@ -3,6 +3,10 @@ type: Constitution Section
 title: "YOUR EDGE"
 description: Where MAGI units beat other AI traders -- competitive positioning doctrine.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-06-23T01:27:14Z }
+verified: { by: human:jun, at: 2026-06-23T01:27:14Z }
+stale_after: 2026-12-20T01:27:14Z
 tags: [constitution, v3, plm, edge, competitive]
 section_order: 3
 version: "3.0"

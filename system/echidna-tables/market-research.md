@@ -4,6 +4,10 @@ title: market_research
 description: HERMES/ARIEL research cache — sentiment and key events.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=market_research&page=table
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-08-31T07:59:33Z }
+verified: { by: human:jun, at: 2026-08-31T07:59:33Z }
+stale_after: 2027-02-27T07:59:33Z
 tags: [echidna, bigquery, hermes, research]
 dataset: magi_core
 table_type: BASE TABLE
