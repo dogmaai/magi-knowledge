@@ -5,6 +5,13 @@
   daily `magi-evaluator` schedule and the remaining operational Cloud Run jobs
   and Cloud Scheduler wrappers from `magi-core/.github/workflows/deploy.yml`.
 
+* **Creation**: [AGENTS.md](AGENTS.md) and [COLLABORATION.md](COLLABORATION.md)
+  add a common development entry point for GPT/Codex, Devin and Antigravity,
+  with one implementation owner, scoped independent review and a handoff format.
+  Existing per-repo deployment rules remain in force. Machine-readable spec
+  extraction and CI drift-check expansion remain follow-up work after inspecting
+  the existing magi-core check.
+
 ## 2026-09-06
 * **Enhancement**: [magi-core](/system/services/magi-core.md) HERMES section
   gains a "Why Brave Search" decision record (cost — now on a paid tier —,
