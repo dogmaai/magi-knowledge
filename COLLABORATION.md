@@ -64,6 +64,31 @@ Once agreement is reached, execute. Do not send acknowledgement-only replies
 or restart an agreed discussion. Report again for a concrete result or a new
 blocker.
 
+## GitHub access for GPT / Codex
+
+ChatGPT and Codex reach GitHub through the **ChatGPT Codex Connector**
+GitHub App (`https://github.com/apps/chatgpt-codex-connector`, owner
+`openai`). The App itself requests `issues: write`, `pull_requests: write`,
+`contents: write` and `metadata: read`; those permissions cannot be edited
+from this side. What Jun controls is the **installation** on the `dogmaai`
+account (a User account, not an Organization):
+
+- Reads of a public repository succeed even when that repository is not in the
+  installation, because the connector falls back to public access. Writes
+  (`POST /repos/{owner}/{repo}/issues`, comments, updates) use the
+  installation token and fail with
+  `403 Resource not accessible by integration` when the repository is missing
+  from the installation or a permission update is still pending approval.
+- Before treating such a 403 as a repository or PAT problem, open
+  `https://github.com/settings/installations` → **ChatGPT Codex Connector** →
+  **Configure** and confirm the repository is listed under *Repository access*
+  and that no "requesting an update to its permissions" banner is pending.
+  Adding the repository (or accepting the update) is the fix; no repository
+  setting, PAT or GitHub Actions `GITHUB_TOKEN` change is involved.
+- Verify with a minimal issue (`title: integration write test`) from ChatGPT
+  and close it afterwards. Verified 2026-09-07 with
+  `dogmaai/magi-knowledge#50` after adding the repository to the installation.
+
 ## Changes requiring independent review
 
 Changes to trade guards, order execution, trading mode, risk configuration or

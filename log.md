@@ -1,6 +1,13 @@
 # Bundle Update Log
 
 ## 2026-09-07
+* **Enhancement**: [COLLABORATION.md](COLLABORATION.md) documents how GPT/Codex
+  reach GitHub (the `ChatGPT Codex Connector` App installation on the `dogmaai`
+  User account) and the check for `403 Resource not accessible by integration`
+  on writes: the repository must be in the installation's *Repository access*.
+  Root cause of the failing `create_issue` on this repository was the missing
+  repository in that installation; verified with #50 after adding it.
+
 * **Enhancement**: Bundle moves to **OKF v0.2** and adopts the trust/lifecycle
   family as *required* frontmatter (`status`, `generated`, `verified`,
   `stale_after`) on every `system/` and `_lilith_safe/` concept, so consumers
