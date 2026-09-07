@@ -14,6 +14,24 @@
   `okf_common.py` parses inline flow mappings; the R2 Data Catalog and AI Search
   mirrors carry `status` / `trust_tier` / `verified_at` / `stale_after`.
 
+* **Decision**: [POSITION MANAGEMENT](/system/constitution/position-management.md)
+  max concurrent positions set to **5 symbols** (was 8), aligning the Constitution
+  with [L1.5](/system/guards/l1-5.md). Decided by Jun. Implementation
+  (`magi-core/src/llm.js` `MAX_CONCURRENT_POSITIONS` default, `lib/constitution.js`
+  text) still says 8 and must follow in a reviewed magi-core PR; `okf-drift` will
+  flag the mismatch once the submodule pin is advanced.
+
+* **Enhancement**: [magi-core](/system/services/magi-core.md) now documents the
+  daily `magi-evaluator` schedule and the remaining operational Cloud Run jobs
+  and Cloud Scheduler wrappers from `magi-core/.github/workflows/deploy.yml`.
+
+* **Creation**: [AGENTS.md](AGENTS.md) and [COLLABORATION.md](COLLABORATION.md)
+  add a common development entry point for GPT/Codex, Devin and Antigravity,
+  with one implementation owner, scoped independent review and a handoff format.
+  Existing per-repo deployment rules remain in force. Machine-readable spec
+  extraction and CI drift-check expansion remain follow-up work after inspecting
+  the existing magi-core check.
+
 ## 2026-09-06
 * **Enhancement**: [magi-core](/system/services/magi-core.md) HERMES section
   gains a "Why Brave Search" decision record (cost — now on a paid tier —,

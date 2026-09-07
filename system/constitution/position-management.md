@@ -18,7 +18,7 @@ source: magi-core/lib/constitution.js
 | Parameter | Value | Mutable? |
 |---|---|---|
 | Max per symbol | 15% of total capital | yes |
-| Max concurrent | 8 symbols | yes |
+| Max concurrent | 5 symbols | yes |
 | Stop-loss | -5% from entry (hard floor; NEVER widen) | **IMMUTABLE** |
 | Short stop-loss | -3.5% from entry (`STOP_LOSS_PCT * 0.7`, default -3.5%) | yes |
 | Short entry sizing | Exposure-increasing SELLs sized at `0.7x` (`SHORT_SIZE_MULT`) | yes |
