@@ -1,5 +1,10 @@
 # Bundle Update Log
 
+## 2026-09-07
+* **Enhancement**: [magi-core](/system/services/magi-core.md) now documents the
+  daily `magi-evaluator` schedule and the remaining operational Cloud Run jobs
+  and Cloud Scheduler wrappers from `magi-core/.github/workflows/deploy.yml`.
+
 ## 2026-09-06
 * **Enhancement**: [magi-core](/system/services/magi-core.md) HERMES section
   gains a "Why Brave Search" decision record (cost — now on a paid tier —,
