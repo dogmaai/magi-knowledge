@@ -115,6 +115,8 @@ Role boundaries: see
 # Operational jobs
 
 Source: `magi-core/.github/workflows/deploy.yml` @ 07c1767. Scheduler and Job names are separate resources.
+Note: `magi-scheduler-openai` has no explicit time zone in deploy.yml at this
+revision; magi-core is adding UTC.
 
 | Cloud Run Job | Scheduler | Schedule (TZ) | Role |
 |---|---|---|---|
