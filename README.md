@@ -25,6 +25,13 @@ magi-knowledge/
     └── test_lilith_safe_loader.py
 ```
 
+## Development agents
+
+Start with [AGENTS.md](AGENTS.md) and the shared
+[collaboration workflow](COLLABORATION.md) for GPT/Codex, Devin and Antigravity.
+The workflow covers task ownership, handoffs, independent review and extending
+existing drift checks.
+
 ## Why this exists
 
 MAGI knowledge was scattered across code comments, `magi-stg/specifications`,
