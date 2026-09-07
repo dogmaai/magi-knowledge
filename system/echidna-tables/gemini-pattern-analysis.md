@@ -4,6 +4,10 @@ title: gemini_pattern_analysis
 description: Periodic Gemini-generated win/lose pattern report across recent trades.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=gemini_pattern_analysis&page=table
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-09-03T03:20:14Z }
+verified: { by: human:jun, at: 2026-09-03T03:20:14Z }
+stale_after: 2027-03-02T03:20:14Z
 tags: [echidna, bigquery, gemini, analysis, patterns]
 dataset: magi_core
 table_type: BASE TABLE

@@ -1,6 +1,6 @@
 # magi-knowledge
 
-OKF v0.1 knowledge bundle for the MAGI trading system. A directory of markdown
+OKF v0.2 knowledge bundle for the MAGI trading system. A directory of markdown
 files with YAML frontmatter — readable by humans, parseable by agents, diffable
 in git, with **no required tooling** to consume.
 
@@ -18,8 +18,8 @@ magi-knowledge/
 │   ├── services/            #   cross-repo service dependency map
 │   └── guards/              #   L1–L7 guard layer reference
 └── scripts/
-    ├── okf_common.py        # zero-dep frontmatter parser
-    ├── okf_lint.py          # OKF conformance + LILITH contamination linter
+    ├── okf_common.py        # zero-dep frontmatter parser + trust-tier helpers
+    ├── okf_lint.py          # OKF conformance, trust/lifecycle + LILITH contamination linter
     ├── okf_export.py        # flatten one tree into a single Markdown digest
     ├── lilith_safe_loader.py# the ONLY sanctioned reader for LILITH training
     └── test_lilith_safe_loader.py
@@ -54,6 +54,22 @@ To make that boundary impossible to cross by accident:
 | `lilith_safe: true\|false` frontmatter | Must match the doc's location; CI fails otherwise. |
 | `scripts/lilith_safe_loader.py` | Reads only `_lilith_safe/`; refuses traversal & unflagged docs (fail-loud). |
 | `scripts/okf_lint.py` | Fails CI on cross-unit names, unit win-rates, or Section 5 / ticker picks inside `_lilith_safe/`. |
+
+## Trust & lifecycle (what is canonical?)
+
+Every concept carries OKF v0.2 trust frontmatter, enforced by `okf_lint.py`:
+
+```yaml
+status: stable                                          # draft | stable | deprecated
+generated: { by: devin/cloud, at: 2026-08-27T07:28:31Z } # who wrote it (§7 actor)
+verified: { by: human:jun, at: 2026-08-27T07:28:31Z }    # who confirmed it
+stale_after: 2027-02-23T07:28:31Z                        # re-verify by this instant
+```
+
+`stable` requires a `human:` verifier; AI-authored, AI-reviewed content stays
+`draft`. Linking to a `deprecated` doc from a live one fails CI. Stale docs
+warn on every PR and fail the weekly freshness run (`okf_lint.py --fail-on-stale`).
+See [index.md](index.md#knowledge-authority-trust--lifecycle) for the rationale.
 
 ## Consuming the bundle
 

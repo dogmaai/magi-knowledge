@@ -3,6 +3,10 @@ type: Service
 title: magi-core
 description: The MAGI trading engine — trade loop, LLM orchestration, and guard layers.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-09-07T00:10:05Z }
+verified: { by: human:jun, at: 2026-09-07T00:10:05Z }
+stale_after: 2027-03-06T00:10:05Z
 tags: [service, magi-core, core, trading]
 repo: dogmaai/magi-core
 ---

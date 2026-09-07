@@ -3,6 +3,10 @@ type: Constitution Section
 title: "EXPECTANCY DISCIPLINE"
 description: The math of winning -- asymmetric risk/reward and EV optimization.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-06-23T01:27:14Z }
+verified: { by: human:jun, at: 2026-06-23T01:27:14Z }
+stale_after: 2026-12-20T01:27:14Z
 tags: [constitution, v3, plm, expectancy, risk-reward]
 section_order: 4
 version: "3.0"

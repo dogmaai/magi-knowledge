@@ -3,6 +3,10 @@ type: Service
 title: AKA memory (TIALA → GCS / SSD / Drive)
 description: AKA's long-term memory on TIALA, how it is written, and its daily backups to gs://screen-share-459802-memory, the external SSD and Google Drive.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-08-28T11:31:18Z }
+verified: { by: human:jun, at: 2026-08-28T11:31:18Z }
+stale_after: 2027-02-24T11:31:18Z
 tags: [service, aka, tiala, memory, backup, gcs, ssd, drive]
 repo: dogmaai/magi-moni
 ---

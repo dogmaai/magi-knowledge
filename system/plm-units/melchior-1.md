@@ -3,10 +3,14 @@ type: PLM Unit
 title: MELCHIOR-1
 description: Systematic multi-factor analyst; runs HERMES intelligence collection.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-09-04T07:50:05Z }
+verified: { by: human:jun, at: 2026-09-04T07:50:05Z }
+stale_after: 2027-03-03T07:50:05Z
 tags: [plm, shadow, google, gemini, hermes]
 provider: google
 model: gemini-3.8-flash
-status: shadow
+unit_status: shadow
 budget_weight_normal: 0.954
 cloud_run_job: magi-core-gemini
 ---

@@ -4,6 +4,10 @@ title: constitution
 description: Versioned store of the MAGI Unified System Constitution, by section.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=constitution&page=table
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-06-23T01:27:14Z }
+verified: { by: human:jun, at: 2026-06-23T01:27:14Z }
+stale_after: 2026-12-20T01:27:14Z
 tags: [echidna, bigquery, constitution, governance]
 dataset: magi_core
 table_type: BASE TABLE

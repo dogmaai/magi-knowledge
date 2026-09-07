@@ -3,6 +3,10 @@ type: Constitution Section
 title: "MARKET REGIME AWARENESS - VIX"
 description: VIX-based size and selectivity adjustment -- direction comes from edge, not VIX.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-06-23T01:27:14Z }
+verified: { by: human:jun, at: 2026-06-23T01:27:14Z }
+stale_after: 2026-12-20T01:27:14Z
 tags: [constitution, v3, plm, vix, regime, risk]
 section_order: 6
 version: "3.0"

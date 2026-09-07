@@ -22,7 +22,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
 import subprocess
 import sys
 from pathlib import Path
@@ -32,13 +31,23 @@ from typing import Any
 _SCRIPT_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(_SCRIPT_DIR))
 
-from okf_common import iter_concept_files, load_concept
+from okf_common import (
+    iter_concept_files,
+    latest_verified_at,
+    lifecycle_status,
+    load_concept,
+    trust_tier,
+)
 
 BUNDLE_ROOT = _SCRIPT_DIR.parent
 DEFAULT_ENDPOINT = "https://c3b51b9f35d16713caab757feca638d8.r2.cloudflarestorage.com"
 
-# Cloudflare AI Search custom metadata schema we want to populate.
-# Keep this in sync with the dashboard / API configuration for the instance.
+# Cloudflare AI Search custom metadata schema we want to populate (max 5
+# fields per instance). Keep this in sync with the dashboard / API
+# configuration for the instance. ``status`` is the OKF lifecycle
+# (draft/stable/deprecated); the extra trust headers below (``trust_tier``,
+# ``verified_at``, ``stale_after``, ``unit_status``) are written to R2 so they
+# can be promoted into the schema later without a re-upload.
 CUSTOM_METADATA_SCHEMA = [
     {"field_name": "type", "data_type": "text"},
     {"field_name": "lilith_safe", "data_type": "boolean"},
@@ -76,8 +85,14 @@ def build_metadata(frontmatter: dict) -> dict[str, str]:
         except (ValueError, TypeError):
             metadata["version"] = str(frontmatter["version"])
 
-    if (v := _str_value(frontmatter.get("status"))) is not None:
-        metadata["status"] = v
+    metadata["status"] = lifecycle_status(frontmatter)
+    metadata["trust_tier"] = trust_tier(frontmatter)
+    if (ts := latest_verified_at(frontmatter)) is not None:
+        metadata["verified_at"] = ts.isoformat()
+    if (v := _str_value(frontmatter.get("stale_after"))) is not None:
+        metadata["stale_after"] = v
+    if (v := _str_value(frontmatter.get("unit_status"))) is not None:
+        metadata["unit_status"] = v
 
     if (v := _str_value(frontmatter.get("tags"))) is not None:
         metadata["tags"] = v

@@ -3,6 +3,10 @@ type: Constitution Rule
 title: Output Rules (verbatim prompt tail)
 description: The exact COMMON_OUTPUT_RULES text appended to every LILITH lane prompt.
 lilith_safe: true
+status: stable
+generated: { by: devin/cloud, at: 2026-06-19T01:50:23Z }
+verified: { by: human:jun, at: 2026-06-19T01:50:23Z }
+stale_after: 2026-12-16T01:50:23Z
 tags: [lilith, constitution, output, format, prompt]
 ---
 

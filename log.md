@@ -1,6 +1,19 @@
 # Bundle Update Log
 
 ## 2026-09-07
+* **Enhancement**: Bundle moves to **OKF v0.2** and adopts the trust/lifecycle
+  family as *required* frontmatter (`status`, `generated`, `verified`,
+  `stale_after`) on every `system/` and `_lilith_safe/` concept, so consumers
+  can tell canonical, human-reviewed knowledge from an AI draft. See
+  [index.md — Knowledge authority](/index.md#knowledge-authority-trust--lifecycle).
+  Initial values were derived from git history (`generated` = last content
+  commit author/date, `verified` = `human:jun` at the merge to `main`,
+  `stale_after` = verified + 180 days). PLM unit lifecycles moved from `status`
+  to `unit_status`. `okf_lint.py` now enforces the family, forbids links to
+  `deprecated` concepts, and gains `--fail-on-stale` (weekly `okf-freshness.yml`).
+  `okf_common.py` parses inline flow mappings; the R2 Data Catalog and AI Search
+  mirrors carry `status` / `trust_tier` / `verified_at` / `stale_after`.
+
 * **Decision**: [POSITION MANAGEMENT](/system/constitution/position-management.md)
   max concurrent positions set to **5 symbols** (was 8), aligning the Constitution
   with [L1.5](/system/guards/l1-5.md). Decided by Jun. Implementation

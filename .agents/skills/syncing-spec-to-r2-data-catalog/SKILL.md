@@ -44,8 +44,12 @@ this catalog — R2 SQL is a cross-unit surface. `r2_catalog_sync.py` refuses
 | Table maintenance | compaction on (128 MB target), snapshot expiry on (min 3 snapshots, max 7d) — configured in the dashboard, no action needed here |
 
 Table columns: `concept_id`, `tree`, `path`, `title`, `type`, `description`,
-`tags` (list), `version`, `source`, `lilith_safe`, `frontmatter_json`, `body`,
-`source_revision` (git short SHA), `okf_version`, `synced_at`.
+`tags` (list), `version`, `source`, `lilith_safe`, `status` (OKF lifecycle),
+`trust_tier` (unverified / machine-confirmed / human-reviewed), `verified_at`,
+`stale_after`, `unit_status`, `frontmatter_json`, `body`, `source_revision`
+(git short SHA), `okf_version`, `synced_at`. New columns are added to an
+existing table via additive schema evolution (`update_schema().union_by_name`)
+on every run, so a schema change needs no manual migration.
 
 # Credentials
 

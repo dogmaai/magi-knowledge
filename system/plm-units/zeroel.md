@@ -3,10 +3,14 @@ type: PLM Unit
 title: ZEROEL
 description: Retired realtime news / X social-signal algo trader powered by Grok.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-09-06T23:55:32Z }
+verified: { by: human:jun, at: 2026-09-06T23:55:32Z }
+stale_after: 2027-03-05T23:55:32Z
 tags: [plm, retired, xai, grok, news, social]
 provider: xai
 model: grok-4.3
-status: retired
+unit_status: retired
 budget_weight_normal: null
 cloud_run_job: magi-core-xai
 ---

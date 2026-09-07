@@ -3,6 +3,10 @@ type: Hallucination Pattern
 title: HALLUCINATION_NO_DATA
 description: Reasoning cites a win-rate when actual_n is 0.
 lilith_safe: true
+status: stable
+generated: { by: devin/cloud, at: 2026-06-19T01:02:48Z }
+verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
+stale_after: 2026-12-16T01:02:48Z
 tags: [lilith, dpo, anti-hallucination]
 classification: HALLUCINATION_NO_DATA
 trigger_condition: actual_n == 0

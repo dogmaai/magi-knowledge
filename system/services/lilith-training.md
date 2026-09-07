@@ -3,6 +3,10 @@ type: Service
 title: lilith-training
 description: LILITH fine-tuning + anti-hallucination DPO pipeline (Qwen2.5-3B QLoRA).
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-06-19T01:02:48Z }
+verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
+stale_after: 2026-12-16T01:02:48Z
 tags: [service, lilith, training, dpo, qlora]
 repo: dogmaai/lilith-training
 ---

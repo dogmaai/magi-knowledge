@@ -3,6 +3,10 @@ type: Constitution Section
 title: "POSITION MANAGEMENT"
 description: Asymmetric risk/reward rules -- sizing, SL/TP, scale-out, and max holding.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-08-27T08:26:45Z }
+verified: { by: human:jun, at: 2026-08-27T08:27:48Z }
+stale_after: 2027-02-23T08:27:48Z
 tags: [constitution, v3, plm, position, risk, sl, tp, immutable]
 section_order: 13
 version: "3.8"

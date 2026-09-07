@@ -3,10 +3,14 @@ type: PLM Unit
 title: SEKHMET
 description: Offline sequential/causal outcome analyzer (Sakana fugu-ultra); retired from the live PLM roster.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-08-20T05:49:46Z }
+verified: { by: human:jun, at: 2026-08-20T05:49:46Z }
+stale_after: 2027-02-16T05:49:46Z
 tags: [plm, offline-analysis, causal, sakana, fugu]
 provider: sakana
 model: fugu-ultra
-status: offline-analysis
+unit_status: offline-analysis
 budget_weight_normal: excluded
 ---
 

@@ -3,6 +3,10 @@ type: Constitution Section
 title: "TIMEFRAME: SWING"
 description: Swing trading parameters -- holding period, entry criteria, exit conditions.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-06-23T01:27:14Z }
+verified: { by: human:jun, at: 2026-06-23T01:27:14Z }
+stale_after: 2026-12-20T01:27:14Z
 tags: [constitution, v3, plm, timeframe, swing]
 section_order: 8
 version: "3.0"

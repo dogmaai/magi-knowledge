@@ -22,7 +22,7 @@ Docs: <https://developers.cloudflare.com/ai-search/configuration/>
 | Chunking | 1024 tokens, 10% overlap |
 | Retrieval | score threshold 0.4, max 10 results, cache off |
 | Sync interval | 21600 s (6 h) |
-| Custom metadata | `type` text, `lilith_safe` boolean, `version` number, `status` text, `tags` text |
+| Custom metadata | `type` text, `lilith_safe` boolean, `version` number, `status` text (OKF lifecycle: draft/stable/deprecated), `tags` text |
 | AI Gateway | `default` (AI Search's own model calls — see below) |
 | Last verified | 65 files seen, embedding + skipped-file cleanup finished, job `871fd6dd-888d-4c0c-ad41-5ae33bd26235`, 2026-08-27 |
 
@@ -82,7 +82,10 @@ files appear in job logs as `Skipped by Include Rules`.
   re-index.
 - Built-in attributes always available: `filename`, `folder`, `timestamp`.
 - Values come from the R2 objects' `x-amz-meta-*` headers, already written by
-  `ai_search_r2_sync.py`.
+  `ai_search_r2_sync.py`. The sync also writes `trust_tier`, `verified_at`,
+  `stale_after` and `unit_status` headers that are NOT in the 5-field schema;
+  to expose one of them, swap it for `lilith_safe` (always `false` in the
+  `system/` tree, so it carries no information) and accept the full re-index.
 
 ## Operational notes
 

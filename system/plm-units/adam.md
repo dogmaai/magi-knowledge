@@ -3,10 +3,14 @@ type: PLM Unit
 title: ADAM
 description: Collaborative Ollama analyst using qwen2.5:7b with shared ISABEL context.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-08-27T23:14:38Z }
+verified: { by: human:jun, at: 2026-08-27T23:14:38Z }
+stale_after: 2027-02-23T23:14:38Z
 tags: [plm, active, ollama, collaborative, analyst]
 provider: ollama
 model: qwen2.5:7b
-status: active
+unit_status: active
 budget_weight_normal: 1.0
 cloud_run_job: magi-core-adam
 ---

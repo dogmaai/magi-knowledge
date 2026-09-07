@@ -3,6 +3,10 @@ type: Constitution Rule
 title: Immutable Risk Rules
 description: Fixed stop-loss / take-profit and mandatory VIX regime gating.
 lilith_safe: true
+status: stable
+generated: { by: devin/cloud, at: 2026-06-19T01:02:48Z }
+verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
+stale_after: 2026-12-16T01:02:48Z
 tags: [lilith, constitution, risk, vix]
 ---
 
