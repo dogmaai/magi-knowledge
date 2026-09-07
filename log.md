@@ -1,6 +1,13 @@
 # Bundle Update Log
 
 ## 2026-09-07
+* **Decision**: [POSITION MANAGEMENT](/system/constitution/position-management.md)
+  max concurrent positions set to **5 symbols** (was 8), aligning the Constitution
+  with [L1.5](/system/guards/l1-5.md). Decided by Jun. Implementation
+  (`magi-core/src/llm.js` `MAX_CONCURRENT_POSITIONS` default, `lib/constitution.js`
+  text) still says 8 and must follow in a reviewed magi-core PR; `okf-drift` will
+  flag the mismatch once the submodule pin is advanced.
+
 * **Enhancement**: [magi-core](/system/services/magi-core.md) now documents the
   daily `magi-evaluator` schedule and the remaining operational Cloud Run jobs
   and Cloud Scheduler wrappers from `magi-core/.github/workflows/deploy.yml`.
