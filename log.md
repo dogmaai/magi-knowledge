@@ -1,6 +1,17 @@
 # Bundle Update Log
 
 ## 2026-09-08
+* **Creation**: [secrets-inventory](/system/services/secrets-inventory.md) — single
+  ledger of every Grafana Cloud / Cloudflare / GitHub / GCP token referenced across
+  magi-core, magi-knowledge, magi-moomoo and magi-moni (canonical env var, auth
+  scheme, endpoint, scopes, source of truth, usage sites, rotation owner). States
+  the rule that GCP Secret Manager `screen-share-459802` is the only source of
+  truth and that injected env-var copies can go stale (the `operate-tiala` 401
+  case). Marks `SIGIL_AUTH_TOKEN` as a deprecated OTLP fallback and
+  `GRAFANA_ML_TOKEN` as a legacy alias of `GRAFANA_ML_API_TOKEN`; lists Tier 1
+  (no re-issue) and Tier 2 (token re-issue, human approval) follow-ups. Linked
+  from the services index Infrastructure section.
+
 * **Enhancement**: [NORTH STAR](/system/constitution/north-star.md) now makes MAGI's
   long-term learning objective explicit: validated multi-LLM trading reasoning
   and realized outcomes are to become reproducible learning assets that
