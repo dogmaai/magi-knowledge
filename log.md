@@ -1,6 +1,8 @@
 # Bundle Update Log
 
 ## 2026-09-08
+* **Decision**: Jun approved the initial SEKHMET Meta Verifier SHADOW envelope: weekly Saturday 00:30 ET, at most 12 hard cases, 6,000 output tokens, a 90-day window, zero retry, and zero Sakana calls for an empty candidate set. Review cost versus actionable findings after four weeks; the fallback is eight cases / 4,000 output tokens, not higher frequency.
+
 * **Draft / code merged, not deployed**: [SEKHMET Meta Verifier](/system/plm-units/sekhmet-meta-verifier.md) documents the cost-bounded SHADOW hard-case reviewer merged in `magi-core` PR #428 (`6f53dadfe9260cd195b6481574bc768c722afa96`). It selects at most 12 high-value evaluated outcomes, permits `ABSTAIN` / `NO_ACTIONABLE_FINDING`, and writes only to the proposed [sekhmet_reviews](/system/echidna-tables/sekhmet-reviews.md) audit table. No BigQuery DDL, Cloud Run job, Scheduler, order, guard, prompt, or LILITH path is active yet.
 
 * **Creation**: [secrets-inventory](/system/services/secrets-inventory.md) — single

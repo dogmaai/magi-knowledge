@@ -77,6 +77,26 @@ request timeout, and a 90-day candidate window. Environment overrides are
 `SEKHMET_MAX_CANDIDATES`, `SEKHMET_MAX_OUTPUT_TOKENS`,
 `SEKHMET_REQUEST_TIMEOUT_MS`, and `SEKHMET_WINDOW_DAYS`.
 
+# Approved weekly operating policy
+
+Jun approved the initial SHADOW operating envelope on 2026-09-08:
+
+* Cloud Run Job: `magi-sekhmet-meta-verifier`.
+* Scheduler: `magi-sekhmet-meta-verifier-weekly`.
+* Schedule: Saturday 00:30 `America/New_York`, after the Friday outcome and
+  legacy Fugu batches.
+* Maximum candidates: 12 per run.
+* Maximum output tokens: 6,000 per run.
+* Candidate window: 90 days.
+* Request timeout: 180 seconds; Cloud Run retries: zero.
+* An empty candidate set must make zero Sakana API calls.
+* Review cost and actionable findings are evaluated after the first four weeks.
+  If value is weak, reduce to eight candidates and 4,000 output tokens before
+  considering higher frequency.
+
+This schedule and budget affect retrospective SHADOW analysis only. They are
+not trading thresholds and grant no authority to affect live decisions.
+
 # Dependencies and activation order
 
 1. Jun reviews and executes `magi-core/sql/create_sekhmet_reviews.sql`.
