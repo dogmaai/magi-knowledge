@@ -1,23 +1,24 @@
 ---
 type: BigQuery Table
 title: sekhmet_reviews
-description: Proposed SHADOW-only audit ledger for SEKHMET hard-case reviews; not yet confirmed as created.
+description: SHADOW-only audit ledger for deployed SEKHMET hard-case reviews.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=sekhmet_reviews&page=table
 lilith_safe: false
-status: draft
-generated: { by: "process:chatgpt-codex", at: 2026-09-08T08:34:25Z }
-verified: { by: "process:github-ci", at: 2026-09-08T08:34:25Z }
-stale_after: 2027-03-07T08:34:25Z
+status: stable
+generated: { by: "process:github-actions", at: 2026-09-08T09:17:58Z }
+verified: { by: "human:jun", at: 2026-09-08T09:17:58Z }
+stale_after: 2027-03-07T09:17:58Z
 tags: [echidna, bigquery, sekhmet, shadow, audit]
 dataset: magi_core
-table_type: PROPOSED
+table_type: BASE TABLE
 ---
 
 # Status and boundary
 
-The DDL exists at `magi-core/sql/create_sekhmet_reviews.sql`, but table
-creation has not been confirmed. The table is in `magi_core` and must use
-BigQuery location `US`.
+Jun created and visually verified
+`screen-share-459802.magi_core.sekhmet_reviews` in BigQuery location `US`
+on 2026-09-08. The deployed producer is scheduled weekly; the first inserted
+SHADOW row remains to be verified.
 
 This is cross-unit processed intelligence and is therefore
 `lilith_safe: false`. It must never feed LILITH, `_lilith_safe/`, PLM

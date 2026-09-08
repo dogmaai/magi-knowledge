@@ -1,25 +1,27 @@
 ---
 type: Analysis Component
 title: SEKHMET Meta Verifier
-description: Cost-bounded SHADOW reviewer for evaluated hard cases; code merged but not deployed.
+description: Deployed weekly cost-bounded SHADOW reviewer for evaluated hard cases.
 lilith_safe: false
-status: draft
-generated: { by: "process:chatgpt-codex", at: 2026-09-08T08:34:25Z }
-verified: { by: "process:github-ci", at: 2026-09-08T08:34:25Z }
-stale_after: 2027-03-07T08:34:25Z
+status: stable
+generated: { by: "process:github-actions", at: 2026-09-08T09:17:58Z }
+verified: { by: "human:jun", at: 2026-09-08T09:17:58Z }
+stale_after: 2027-03-07T09:17:58Z
 tags: [sekhmet, sakana, fugu, shadow, hard-cases, offline-analysis]
 provider: sakana
 model: fugu-ultra
-unit_status: code-merged-not-deployed
+unit_status: shadow-active
 ---
 
 # Status
 
-The implementation was merged in `magi-core` PR #428 at
-`6f53dadfe9260cd195b6481574bc768c722afa96`, but it is **not operational**.
-The BigQuery table has not been confirmed as created, and no Cloud Run job or
-Cloud Scheduler trigger has been added. This document remains `draft` until
-those facts are verified by Jun.
+The implementation is deployed from `magi-core`
+`71722acce9b86b0d965ae368f1c204399b65ea12`. GitHub Actions deployment run
+`34208044793` completed successfully on 2026-09-08. Jun created and visually
+verified `magi_core.sekhmet_reviews` in BigQuery location `US`.
+
+The weekly job is active. The first successful SHADOW review row remains an
+operational verification item in `magi-core` Issue #429.
 
 # Purpose
 
@@ -77,14 +79,29 @@ request timeout, and a 90-day candidate window. Environment overrides are
 `SEKHMET_MAX_CANDIDATES`, `SEKHMET_MAX_OUTPUT_TOKENS`,
 `SEKHMET_REQUEST_TIMEOUT_MS`, and `SEKHMET_WINDOW_DAYS`.
 
-# Dependencies and activation order
+# Approved weekly operating policy
 
-1. Jun reviews and executes `magi-core/sql/create_sekhmet_reviews.sql`.
-2. Confirm the table in BigQuery location `US`.
-3. Create a separately reviewed Cloud Run Job and Scheduler change.
-4. Keep the component SHADOW-only and measure useful findings versus token cost.
-5. Promote this document to `stable` only after the deployed configuration is
-   checked against the implementation.
+Jun approved the initial SHADOW envelope on 2026-09-08:
+
+* Job: `magi-sekhmet-meta-verifier`.
+* Scheduler: `magi-sekhmet-meta-verifier-weekly`.
+* Schedule: Saturday 00:30 `America/New_York`.
+* At most 12 candidates and 6,000 output tokens per run.
+* 90-day candidate window, 180-second API timeout, zero Cloud Run retries.
+* An empty candidate set makes zero Sakana API calls.
+* Review cost and actionable findings after four completed weekly runs.
+* If value is weak, reduce to eight candidates and 4,000 output tokens before
+  considering higher frequency.
+
+These values govern retrospective SHADOW analysis only; they are not trading
+thresholds.
+
+# Operations and evaluation
+
+* Confirm the first successful SHADOW row in `sekhmet_reviews`.
+* Review token cost and actionable findings after four completed weekly runs.
+* Any non-SHADOW consumer or enforcement behavior requires a separate
+  specification, Jun approval, and independent review.
 
 # Citations
 
@@ -93,3 +110,6 @@ request timeout, and a 90-day candidate window. Environment overrides are
 * `dogmaai/magi-core/sql/create_sekhmet_reviews.sql`.
 * `dogmaai/magi-core` PR #428, merge
   `6f53dadfe9260cd195b6481574bc768c722afa96`.
+* `dogmaai/magi-core` PR #430, merge
+  `71722acce9b86b0d965ae368f1c204399b65ea12`.
+* GitHub Actions Deploy to Cloud Run run `34208044793` (success).

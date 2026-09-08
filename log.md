@@ -1,6 +1,13 @@
 # Bundle Update Log
 
 ## 2026-09-08
+* **Deployment**: SEKHMET Meta Verifier was activated as a weekly SHADOW-only
+  Cloud Run Job and Scheduler by `magi-core` #430
+  (`71722acce9b86b0d965ae368f1c204399b65ea12`). Deploy run `34208044793`
+  succeeded. Jun created and visually verified the US-region
+  `magi_core.sekhmet_reviews` table. The first successful review row and the
+  four-week cost/value evaluation remain open in `magi-core` #429.
+
 * **Draft / code merged, not deployed**: [SEKHMET Meta Verifier](/system/plm-units/sekhmet-meta-verifier.md) documents the cost-bounded SHADOW hard-case reviewer merged in `magi-core` PR #428 (`6f53dadfe9260cd195b6481574bc768c722afa96`). It selects at most 12 high-value evaluated outcomes, permits `ABSTAIN` / `NO_ACTIONABLE_FINDING`, and writes only to the proposed [sekhmet_reviews](/system/echidna-tables/sekhmet-reviews.md) audit table. No BigQuery DDL, Cloud Run job, Scheduler, order, guard, prompt, or LILITH path is active yet.
 
 * **Creation**: [secrets-inventory](/system/services/secrets-inventory.md) — single
