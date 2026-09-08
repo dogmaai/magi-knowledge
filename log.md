@@ -1,6 +1,8 @@
 # Bundle Update Log
 
 ## 2026-09-08
+* **Draft / code merged, not deployed**: [SEKHMET Meta Verifier](/system/plm-units/sekhmet-meta-verifier.md) documents the cost-bounded SHADOW hard-case reviewer merged in `magi-core` PR #428 (`6f53dadfe9260cd195b6481574bc768c722afa96`). It selects at most 12 high-value evaluated outcomes, permits `ABSTAIN` / `NO_ACTIONABLE_FINDING`, and writes only to the proposed [sekhmet_reviews](/system/echidna-tables/sekhmet-reviews.md) audit table. No BigQuery DDL, Cloud Run job, Scheduler, order, guard, prompt, or LILITH path is active yet.
+
 * **Creation**: [secrets-inventory](/system/services/secrets-inventory.md) — single
   ledger of every Grafana Cloud / Cloudflare / GitHub / GCP token referenced across
   magi-core, magi-knowledge, magi-moomoo and magi-moni (canonical env var, auth
