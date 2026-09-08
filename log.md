@@ -1,5 +1,17 @@
 # Bundle Update Log
 
+## 2026-09-08
+* **Enhancement**: [NORTH STAR](/system/constitution/north-star.md) now makes MAGI's
+  long-term learning objective explicit: validated multi-LLM trading reasoning
+  and realized outcomes are to become reproducible learning assets that
+  progressively fine-tune LILITH into MAGI's production securities-trading
+  specialist model. The text preserves the existing priority order and states
+  that model training serves profit, not the reverse. It also distinguishes the
+  architectural objective from current implementation: the documented
+  `lilith-training` pipeline still uses synthetic prompt blocks +
+  anti-hallucination DPO, and any future cross-PLM reasoning ingestion must obey
+  the LILITH contamination boundary.
+
 ## 2026-09-07
 * **Enhancement**: Bundle moves to **OKF v0.2** and adopts the trust/lifecycle
   family as *required* frontmatter (`status`, `generated`, `verified`,
@@ -157,5 +169,4 @@
 ## 2026-06-19
 * **Initialization**: Created the OKF v0.1 bundle skeleton — root [index](/index.md), `_lilith_safe/` and `system/` trees, and the conformance + LILITH-boundary tooling under `scripts/`.
 * **Creation**: ECHIDNA BigQuery data catalog under [system/echidna-tables](/system/echidna-tables/), schemas pulled live from `magi_core.INFORMATION_SCHEMA`.
-* **Creation**: PLM unit registry under [system/plm-units](/system/plm-units/), the cross-repo [service map](/system/services/), and the [L1–L7 guard reference](/system/guards/).
 * **Creation**: LILITH-safe ground truth — prompt-block [schemas](/_lilith_safe/schemas/), the six [hallucination patterns](/_lilith_safe/hallucination-patterns/), and the [constitution](/_lilith_safe/constitution/) clean-source rule.
