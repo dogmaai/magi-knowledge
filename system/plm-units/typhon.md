@@ -3,10 +3,14 @@ type: PLM Unit
 title: TYPHON
 description: Contrarian deep-value analyst (Kimi K2 Thinking); successor to ANIMA.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-08-27T07:28:31Z }
+verified: { by: human:jun, at: 2026-08-27T07:28:31Z }
+stale_after: 2027-02-23T07:28:31Z
 tags: [plm, active, kimi, contrarian, deep-value]
 provider: kimi
 model: kimi-k2.6
-status: active
+unit_status: active
 budget_weight_normal: 0.5
 ---
 

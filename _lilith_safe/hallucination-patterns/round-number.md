@@ -3,6 +3,10 @@ type: Hallucination Pattern
 title: HALLUCINATION_ROUND_NUMBER
 description: Lazy round-multiple-of-10 win-rate citation that differs from actual.
 lilith_safe: true
+status: stable
+generated: { by: devin/cloud, at: 2026-06-19T01:02:48Z }
+verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
+stale_after: 2026-12-16T01:02:48Z
 tags: [lilith, dpo, anti-hallucination]
 classification: HALLUCINATION_ROUND_NUMBER
 trigger_condition: claimed in {50,60,70,80,90,100} and abs(claimed - actual) > 2

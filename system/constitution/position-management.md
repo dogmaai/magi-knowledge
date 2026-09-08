@@ -3,6 +3,10 @@ type: Constitution Section
 title: "POSITION MANAGEMENT"
 description: Asymmetric risk/reward rules -- sizing, SL/TP, scale-out, and max holding.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-08-27T08:26:45Z }
+verified: { by: human:jun, at: 2026-08-27T08:27:48Z }
+stale_after: 2027-02-23T08:27:48Z
 tags: [constitution, v3, plm, position, risk, sl, tp, immutable]
 section_order: 13
 version: "3.8"
@@ -14,7 +18,7 @@ source: magi-core/lib/constitution.js
 | Parameter | Value | Mutable? |
 |---|---|---|
 | Max per symbol | 15% of total capital | yes |
-| Max concurrent | 8 symbols | yes |
+| Max concurrent | 5 symbols | yes |
 | Stop-loss | -5% from entry (hard floor; NEVER widen) | **IMMUTABLE** |
 | Short stop-loss | -3.5% from entry (`STOP_LOSS_PCT * 0.7`, default -3.5%) | yes |
 | Short entry sizing | Exposure-increasing SELLs sized at `0.7x` (`SHORT_SIZE_MULT`) | yes |

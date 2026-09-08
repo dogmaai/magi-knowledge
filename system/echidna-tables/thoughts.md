@@ -4,6 +4,10 @@ title: thoughts
 description: LLM reasoning log — one row per decision, with action, reasoning, and confidence.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=thoughts&page=table
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-06-19T01:02:48Z }
+verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
+stale_after: 2026-12-16T01:02:48Z
 tags: [echidna, bigquery, thoughts, reasoning, core]
 dataset: magi_core
 table_type: BASE TABLE

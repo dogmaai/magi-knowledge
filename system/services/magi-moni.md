@@ -3,6 +3,10 @@ type: Service
 title: magi-moni
 description: Monitoring + admin layer with the AKA-1 natural-language operator bot.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-08-24T11:03:39Z }
+verified: { by: human:jun, at: 2026-08-24T11:03:39Z }
+stale_after: 2027-02-20T11:03:39Z
 tags: [service, monitoring, reporting, alerts, aka-1]
 repo: dogmaai/magi-moni
 ---

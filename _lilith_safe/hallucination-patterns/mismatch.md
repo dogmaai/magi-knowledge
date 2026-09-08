@@ -3,6 +3,10 @@ type: Hallucination Pattern
 title: HALLUCINATION_MISMATCH
 description: Claimed win-rate differs from the actual win-rate by more than 5 points.
 lilith_safe: true
+status: stable
+generated: { by: devin/cloud, at: 2026-06-19T01:02:48Z }
+verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
+stale_after: 2026-12-16T01:02:48Z
 tags: [lilith, dpo, anti-hallucination]
 classification: HALLUCINATION_MISMATCH
 trigger_condition: abs(claimed_winrate - actual_winrate) > 5

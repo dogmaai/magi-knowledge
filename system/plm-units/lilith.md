@@ -3,10 +3,14 @@ type: PLM Unit
 title: LILITH
 description: Independent reasoner; fine-tuned LILITH model served from lilith-inference-svc.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-08-27T23:14:38Z }
+verified: { by: human:jun, at: 2026-08-27T23:14:38Z }
+stale_after: 2027-02-23T23:14:38Z
 tags: [plm, active, lilith, fine-tuned, independent]
 provider: lilith
 model: lilith-v1.0-b2-prod
-status: active
+unit_status: active
 budget_weight_normal: 0.5
 cloud_run_job: magi-core-lilith / lilith-inference-svc
 ---

@@ -3,6 +3,10 @@ type: Prompt Block Schema
 title: TECHNICALS_BLOCK
 description: Schema for the synthetic technicals block used by the L3 lane.
 lilith_safe: true
+status: stable
+generated: { by: devin/cloud, at: 2026-06-19T01:02:48Z }
+verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
+stale_after: 2026-12-16T01:02:48Z
 tags: [lilith, training, schema, technicals, l3]
 block_tag: TECHNICALS_BLOCK
 ---

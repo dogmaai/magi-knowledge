@@ -30,7 +30,14 @@ from pyiceberg.exceptions import (
     TableAlreadyExistsError,
 )
 
-from okf_common import iter_concept_files, load_concept, parse_frontmatter
+from okf_common import (
+    iter_concept_files,
+    latest_verified_at,
+    lifecycle_status,
+    load_concept,
+    parse_frontmatter,
+    trust_tier,
+)
 
 BUNDLE_ROOT = Path(__file__).resolve().parent.parent
 TREES = {"system": False, "_lilith_safe": True}
@@ -52,6 +59,17 @@ SCHEMA = pa.schema(
         pa.field("version", pa.string()),
         pa.field("source", pa.string()),
         pa.field("lilith_safe", pa.bool_(), nullable=False),
+        # These values are mandatory in the OKF source model, but must remain
+        # optional in the Iceberg mirror schema. Iceberg cannot add a new
+        # required column to an existing table because historical rows have no
+        # value for that field. build_rows() still materializes both values for
+        # every row, and the repository/lint remains the source of truth for
+        # their requiredness.
+        pa.field("status", pa.string()),
+        pa.field("trust_tier", pa.string()),
+        pa.field("verified_at", pa.timestamp("us", tz="UTC")),
+        pa.field("stale_after", pa.string()),
+        pa.field("unit_status", pa.string()),
         pa.field("frontmatter_json", pa.string(), nullable=False),
         pa.field("body", pa.string(), nullable=False),
         pa.field("source_revision", pa.string(), nullable=False),
@@ -128,6 +146,11 @@ def build_rows(tree: str) -> list[dict]:
                 "version": _as_str(fm.get("version")),
                 "source": _as_str(fm.get("source")),
                 "lilith_safe": safe,
+                "status": lifecycle_status(fm),
+                "trust_tier": trust_tier(fm),
+                "verified_at": latest_verified_at(fm),
+                "stale_after": _as_str(fm.get("stale_after")),
+                "unit_status": _as_str(fm.get("unit_status")),
                 "frontmatter_json": json.dumps(fm, ensure_ascii=False, default=str),
                 "body": concept.body,
                 "source_revision": revision,
@@ -187,6 +210,12 @@ def sync(
     _ensure_namespace(catalog, namespace)
     identifier = f"{namespace}.{table_name}"
     table = _get_or_create_table(catalog, identifier, SCHEMA)
+    # Additive schema evolution. Columns introduced after the table was first
+    # created must be nullable at the Iceberg layer: adding a required field to
+    # a table with historical rows is an incompatible schema change. Semantic
+    # requiredness is enforced by the OKF source/lint before this mirror write.
+    with table.update_schema() as update:
+        update.union_by_name(SCHEMA)
     table.overwrite(data)
     return data.num_rows
 

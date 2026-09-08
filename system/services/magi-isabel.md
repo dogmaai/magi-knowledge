@@ -3,6 +3,10 @@ type: Service
 title: magi-isabel
 description: ISABEL pattern framework — win/lose centroids and embedding analysis.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-06-19T01:06:40Z }
+verified: { by: human:jun, at: 2026-06-19T01:06:40Z }
+stale_after: 2026-12-16T01:06:40Z
 tags: [service, isabel, embeddings, patterns]
 repo: dogmaai/magi-isabel
 ---

@@ -4,6 +4,10 @@ title: fugu_sequential_patterns
 description: SEKHMET (Sakana fugu-ultra) offline sequential/causal outcome analysis of recent trades.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=fugu_sequential_patterns&page=table
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-08-20T05:49:46Z }
+verified: { by: human:jun, at: 2026-08-20T05:49:46Z }
+stale_after: 2027-02-16T05:49:46Z
 tags: [echidna, bigquery, sakana, fugu, causal, analysis]
 dataset: magi_core
 table_type: BASE TABLE

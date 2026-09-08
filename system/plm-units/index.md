@@ -39,6 +39,13 @@ TIARA remains documented as the legacy VIX-only Ollama identity; see
 |---|---|---|---|
 | [SEKHMET](sekhmet.md) | sakana | fugu-ultra | Offline sequential / **causal** outcome analysis (`magi-fugu-analyzer`); retired from the live roster |
 
+# Proposed SHADOW extensions
+
+* [SEKHMET Meta Verifier](sekhmet-meta-verifier.md) is a `draft`, code-merged but
+  not deployed extension. It reviews a bounded batch of evaluated hard cases and
+  writes audit-only findings. It is not a live PLM and cannot affect orders,
+  guards, sizing, PLM prompts, or LILITH.
+
 # Causal analysis ownership
 
 Role boundaries, so the analyzers are not confused with each other:

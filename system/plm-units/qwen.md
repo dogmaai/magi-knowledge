@@ -3,10 +3,14 @@ type: PLM Unit
 title: QWEN
 description: DashScope systematic independent reasoner using qwen-plus.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-08-27T23:14:38Z }
+verified: { by: human:jun, at: 2026-08-27T23:14:38Z }
+stale_after: 2027-02-23T23:14:38Z
 tags: [plm, active, qwen, dashscope, independent, turtle]
 provider: qwen
 model: qwen-plus
-status: active
+unit_status: active
 budget_weight_normal: 0.5
 cloud_run_job: magi-core-qwen
 ---

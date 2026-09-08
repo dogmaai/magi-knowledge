@@ -25,6 +25,7 @@ callers don't hard-code endpoints.
 | Service | Repo | Role |
 |---|---|---|
 | [cloudflare](cloudflare.md) | infra (Cloudflare) | AI Search + R2 Data Catalog mirrors of this spec, Named Tunnels for TIALA services, AI Gateway `default`. |
+| [secrets-inventory](secrets-inventory.md) | infra (GCP Secret Manager, Grafana, Cloudflare, GitHub) | Ledger of the Grafana Cloud / Cloudflare / GitHub / GCP tokens: canonical name, scopes, source of truth, usage sites, rotation owner. |
 
 # Data backbone
 

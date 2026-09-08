@@ -3,6 +3,10 @@ type: Guard Layer
 title: L0 Emergency Kill Switch
 description: Blocks every order while the global emergency trading halt is engaged.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-08-27T23:14:38Z }
+verified: { by: human:jun, at: 2026-08-27T23:14:38Z }
+stale_after: 2027-02-23T23:14:38Z
 tags: [guard, l0, kill-switch, emergency]
 layer: L0
 on_fail: block

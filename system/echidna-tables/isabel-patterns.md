@@ -4,6 +4,10 @@ title: isabel_patterns
 description: ISABEL win/lose reasoning centroids and win-rates per symbol/direction/unit.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=isabel_patterns&page=table
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-06-19T01:02:48Z }
+verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
+stale_after: 2026-12-16T01:02:48Z
 tags: [echidna, bigquery, isabel, patterns, embeddings]
 dataset: magi_core
 table_type: BASE TABLE

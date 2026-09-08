@@ -3,10 +3,14 @@ type: PLM Unit
 title: ZEROEL
 description: Retired realtime news / X social-signal algo trader powered by Grok.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-09-06T23:55:32Z }
+verified: { by: human:jun, at: 2026-09-06T23:55:32Z }
+stale_after: 2027-03-05T23:55:32Z
 tags: [plm, retired, xai, grok, news, social]
 provider: xai
 model: grok-4.3
-status: retired
+unit_status: retired
 budget_weight_normal: null
 cloud_run_job: magi-core-xai
 ---
@@ -19,10 +23,12 @@ ZEROEL is retired. The `magi-core-xai` Cloud Run job is commented out in
 and the PLM job alone cost approximately $47/month.
 
 The ZEROEL persona block still exists in `magi-core/src/session.js` for
-historical compatibility. The X (Twitter) social layer survives as HERMES
-`[HERMES:X_SEARCH]`, using the xAI Responses API with
-`X_SEARCH_REFRESH_HOURS = 24` in `magi-core/src/hermes.js` and writing to
-`magi_core.x_social_sentiment`.
+historical compatibility. The X (Twitter) social layer `[HERMES:X_SEARCH]`
+(xAI Responses API, `X_SEARCH_REFRESH_HOURS = 24` in `magi-core/src/hermes.js`,
+writing to `magi_core.x_social_sentiment`) is also **not in use** — dropped for
+cost reasons along with the PLM job (confirmed by @dogmaai 2026-09-06). The code
+path remains but is gated on `XAI_API_KEY`; see the HERMES decision record in
+[magi-core](/system/services/magi-core.md#why-brave-search-decision-record).
 
 # Configuration
 

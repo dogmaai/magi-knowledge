@@ -3,10 +3,14 @@ type: PLM Unit
 title: SOPHIA-5
 description: The strategist / golden-reasoning unit; also the default fallback unit.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-08-27T23:14:38Z }
+verified: { by: human:jun, at: 2026-08-27T23:14:38Z }
+stale_after: 2027-02-23T23:14:38Z
 tags: [plm, active, mistral]
 provider: mistral
 model: mistral-small-2603
-status: active
+unit_status: active
 budget_weight_normal: 0.774
 cloud_run_job: magi-core-job
 ---

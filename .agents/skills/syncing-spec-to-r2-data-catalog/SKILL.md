@@ -1,6 +1,6 @@
 ---
 name: syncing-spec-to-r2-data-catalog
-description: How to sync the MAGI common spec (this bundle's system/ tree) into the Cloudflare R2 Data Catalog (Apache Iceberg) on the magi-system bucket, so R2 SQL / Spark / DuckDB can query the spec. Use when asked to sync Cloudflare, to refresh the okf.system Iceberg table, or when the R2 Data Catalog token stops working.
+description: How to sync the MAGI common spec (this bundle's system/ tree) into the Cloudflare R2 Data Catalog (Apache Iceberg) on the magi-system bucket, so R2 SQL / Spark / DuckDB can query the spec alongside the rest of the warehouse.
 type: Workflow
 lilith_safe: false
 tags: [workflow, cloudflare, r2, iceberg, data-catalog, sync]
@@ -44,8 +44,16 @@ this catalog — R2 SQL is a cross-unit surface. `r2_catalog_sync.py` refuses
 | Table maintenance | compaction on (128 MB target), snapshot expiry on (min 3 snapshots, max 7d) — configured in the dashboard, no action needed here |
 
 Table columns: `concept_id`, `tree`, `path`, `title`, `type`, `description`,
-`tags` (list), `version`, `source`, `lilith_safe`, `frontmatter_json`, `body`,
-`source_revision` (git short SHA), `okf_version`, `synced_at`.
+`tags` (list), `version`, `source`, `lilith_safe`, `status` (OKF lifecycle),
+`trust_tier` (unverified / machine-confirmed / human-reviewed), `verified_at`,
+`stale_after`, `unit_status`, `frontmatter_json`, `body`, `source_revision`
+(git short SHA), `okf_version`, `synced_at`. New columns are added to an
+existing table via additive schema evolution (`update_schema().union_by_name`)
+on every run, so a schema change needs no manual migration. Columns introduced
+after initial table creation must be nullable in the Iceberg mirror schema,
+because Iceberg cannot add a required field to a table that already has
+historical rows. Source-level requiredness is enforced by OKF lint/build logic;
+the R2 table is a rebuildable analytical mirror, not the source of truth.
 
 # Credentials
 
@@ -68,7 +76,7 @@ Tokens that do **not** work (verified):
 
 * Workers tokens (`CLOUDFLARE_WORKERS_READ_TOKEN`, `..._BUILDS_TOKEN`) — R2 API
   returns `Authentication error`.
-* The dashboard-generated **“[R2 Data Catalog] Table Maintenance”** token: it
+* The dashboard-generated **"[R2 Data Catalog] Table Maintenance"** token: it
   can `GET /v1/config` and list namespaces, but every write returns
   `403 Forbidden: Insufficient permission for R2 Data Catalog Warehouse`. It is
   minimum-scope for compaction/snapshot expiry only.

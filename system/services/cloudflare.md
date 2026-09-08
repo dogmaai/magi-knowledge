@@ -3,6 +3,10 @@ type: Service
 title: Cloudflare (AI Search, R2 Data Catalog, Named Tunnel, AI Gateway)
 description: How MAGI uses Cloudflare — the magi-document AI Search mirror and okf.system Iceberg mirror of this spec on the magi-system bucket, the Named Tunnels exposing TIALA services, and the default AI Gateway behind AI Search.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-09-03T09:04:15Z }
+verified: { by: human:jun, at: 2026-09-03T09:04:15Z }
+stale_after: 2027-03-02T09:04:15Z
 tags: [service, cloudflare, r2, ai-search, tunnel, ai-gateway]
 repo: infra (Cloudflare account c3b51b9f35d16713caab757feca638d8)
 ---

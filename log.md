@@ -1,5 +1,87 @@
 # Bundle Update Log
 
+## 2026-09-08
+* **Deployment**: SEKHMET Meta Verifier was activated as a weekly SHADOW-only
+  Cloud Run Job and Scheduler by `magi-core` #430
+  (`71722acce9b86b0d965ae368f1c204399b65ea12`). Deploy run `34208044793`
+  succeeded. Jun created and visually verified the US-region
+  `magi_core.sekhmet_reviews` table. The first successful review row and the
+  four-week cost/value evaluation remain open in `magi-core` #429.
+
+* **Draft / code merged, not deployed**: [SEKHMET Meta Verifier](/system/plm-units/sekhmet-meta-verifier.md) documents the cost-bounded SHADOW hard-case reviewer merged in `magi-core` PR #428 (`6f53dadfe9260cd195b6481574bc768c722afa96`). It selects at most 12 high-value evaluated outcomes, permits `ABSTAIN` / `NO_ACTIONABLE_FINDING`, and writes only to the proposed [sekhmet_reviews](/system/echidna-tables/sekhmet-reviews.md) audit table. No BigQuery DDL, Cloud Run job, Scheduler, order, guard, prompt, or LILITH path is active yet.
+
+* **Creation**: [secrets-inventory](/system/services/secrets-inventory.md) — single
+  ledger of every Grafana Cloud / Cloudflare / GitHub / GCP token referenced across
+  magi-core, magi-knowledge, magi-moomoo and magi-moni (canonical env var, auth
+  scheme, endpoint, scopes, source of truth, usage sites, rotation owner). States
+  the rule that GCP Secret Manager `screen-share-459802` is the only source of
+  truth and that injected env-var copies can go stale (the `operate-tiala` 401
+  case). Marks `SIGIL_AUTH_TOKEN` as a deprecated OTLP fallback and
+  `GRAFANA_ML_TOKEN` as a legacy alias of `GRAFANA_ML_API_TOKEN`; lists Tier 1
+  (no re-issue) and Tier 2 (token re-issue, human approval) follow-ups. Linked
+  from the services index Infrastructure section.
+
+* **Enhancement**: [NORTH STAR](/system/constitution/north-star.md) now makes MAGI's
+  long-term learning objective explicit: validated multi-LLM trading reasoning
+  and realized outcomes are to become reproducible learning assets that
+  progressively fine-tune LILITH into MAGI's production securities-trading
+  specialist model. The text preserves the existing priority order and states
+  that model training serves profit, not the reverse. It also distinguishes the
+  architectural objective from current implementation: the documented
+  `lilith-training` pipeline still uses synthetic prompt blocks +
+  anti-hallucination DPO, and any future cross-PLM reasoning ingestion must obey
+  the LILITH contamination boundary.
+
+## 2026-09-07
+* **Enhancement**: [COLLABORATION.md](COLLABORATION.md) documents how GPT/Codex
+  reach GitHub (the `ChatGPT Codex Connector` App installation on the `dogmaai`
+  User account) and the check for `403 Resource not accessible by integration`
+  on writes: the repository must be in the installation's *Repository access*.
+  Root cause of the failing `create_issue` on this repository was the missing
+  repository in that installation; verified with #50 after adding it.
+
+* **Enhancement**: Bundle moves to **OKF v0.2** and adopts the trust/lifecycle
+  family as *required* frontmatter (`status`, `generated`, `verified`,
+  `stale_after`) on every `system/` and `_lilith_safe/` concept, so consumers
+  can tell canonical, human-reviewed knowledge from an AI draft. See
+  [index.md — Knowledge authority](/index.md#knowledge-authority-trust--lifecycle).
+  Initial values were derived from git history (`generated` = last content
+  commit author/date, `verified` = `human:jun` at the merge to `main`,
+  `stale_after` = verified + 180 days). PLM unit lifecycles moved from `status`
+  to `unit_status`. `okf_lint.py` now enforces the family, forbids links to
+  `deprecated` concepts, and gains `--fail-on-stale` (weekly `okf-freshness.yml`).
+  `okf_common.py` parses inline flow mappings; the R2 Data Catalog and AI Search
+  mirrors carry `status` / `trust_tier` / `verified_at` / `stale_after`.
+
+* **Decision**: [POSITION MANAGEMENT](/system/constitution/position-management.md)
+  max concurrent positions set to **5 symbols** (was 8), aligning the Constitution
+  with [L1.5](/system/guards/l1-5.md). Decided by Jun. Implementation
+  (`magi-core/src/llm.js` `MAX_CONCURRENT_POSITIONS` default, `lib/constitution.js`
+  text) still says 8 and must follow in a reviewed magi-core PR; `okf-drift` will
+  flag the mismatch once the submodule pin is advanced.
+
+* **Enhancement**: [magi-core](/system/services/magi-core.md) now documents the
+  daily `magi-evaluator` schedule and the remaining operational Cloud Run jobs
+  and Cloud Scheduler wrappers from `magi-core/.github/workflows/deploy.yml`.
+
+* **Creation**: [AGENTS.md](AGENTS.md) and [COLLABORATION.md](COLLABORATION.md)
+  add a common development entry point for GPT/Codex, Devin and Antigravity,
+  with one implementation owner, scoped independent review and a handoff format.
+  Existing per-repo deployment rules remain in force. Machine-readable spec
+  extraction and CI drift-check expansion remain follow-up work after inspecting
+  the existing magi-core check.
+
+## 2026-09-06
+* **Enhancement**: [magi-core](/system/services/magi-core.md) HERMES section
+  gains a "Why Brave Search" decision record (cost — now on a paid tier —,
+  `freshness=pd` REST fit, division of labour vs Google Search Grounding) and
+  states that xAI `[HERMES:X_SEARCH]` is not in use (dropped for cost).
+  [ZEROEL](/system/plm-units/zeroel.md) updated to match.
+* **Enhancement**: [magi-core](/system/services/magi-core.md) HERMES decision
+  record gains a TIP on why per-symbol news uses Brave rather than Gemini
+  Google Search Grounding (unit cost, freshness/result-set control, separation
+  of search and scoring); Grounding stays for the macro report.
+
 ## 2026-09-04
 * **Enhancement**: [magi-core](/system/services/magi-core.md) gains a
   "Surge detector" section: `magi-surge-detector` polls MooMoo batch snapshots
@@ -122,5 +204,4 @@
 ## 2026-06-19
 * **Initialization**: Created the OKF v0.1 bundle skeleton — root [index](/index.md), `_lilith_safe/` and `system/` trees, and the conformance + LILITH-boundary tooling under `scripts/`.
 * **Creation**: ECHIDNA BigQuery data catalog under [system/echidna-tables](/system/echidna-tables/), schemas pulled live from `magi_core.INFORMATION_SCHEMA`.
-* **Creation**: PLM unit registry under [system/plm-units](/system/plm-units/), the cross-repo [service map](/system/services/), and the [L1–L7 guard reference](/system/guards/).
 * **Creation**: LILITH-safe ground truth — prompt-block [schemas](/_lilith_safe/schemas/), the six [hallucination patterns](/_lilith_safe/hallucination-patterns/), and the [constitution](/_lilith_safe/constitution/) clean-source rule.

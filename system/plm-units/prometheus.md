@@ -3,10 +3,14 @@ type: PLM Unit
 title: PROMETHEUS
 description: Probability-calibrated strategist powered by OpenAI gpt-5.6-luna.
 lilith_safe: false
+status: stable
+generated: { by: devin/cloud, at: 2026-08-27T23:14:38Z }
+verified: { by: human:jun, at: 2026-08-27T23:14:38Z }
+stale_after: 2027-02-23T23:14:38Z
 tags: [plm, active, openai, gpt, strategist]
 provider: openai
 model: gpt-5.6-luna
-status: active
+unit_status: active
 budget_weight_normal: 0.5
 cloud_run_job: magi-core-openai
 ---
