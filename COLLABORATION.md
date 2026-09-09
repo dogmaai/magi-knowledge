@@ -64,6 +64,82 @@ Once agreement is reached, execute. Do not send acknowledgement-only replies
 or restart an agreed discussion. Report again for a concrete result or a new
 blocker.
 
+## Consultation protocol
+
+A development agent that is blocked, uncertain, or choosing between materially
+different designs may open a **consultation** instead of guessing. Consultation
+is for decision-making; it does not create a second implementation owner.
+
+### Shared meeting room
+
+Until a repo-independent responder exists, use `dogmaai/magi-core` Issues as
+the operational consultation hub because that repository contains the verified
+Antigravity responder and its GitHub Actions workflow. A consultation about
+another repository must link the target Issue/PR and name the affected
+repository and paths. The authoritative collaboration policy remains this file
+in `magi-knowledge`.
+
+Use the `Agent consultation` Issue template in `magi-core`. The minimum record
+is:
+
+- `To:` routing line;
+- the concrete question that needs a decision;
+- relevant specification and implementation revisions;
+- constraints / boundaries that must not change;
+- options already considered;
+- requested reviewers;
+- exactly one implementation owner (or `TBD` while the consultation is open);
+- decision status.
+
+### Routing
+
+Use explicit routing lines rather than relying on GitHub account names:
+
+```text
+To: Antigravity
+To: GPT, Devin, Antigravity
+```
+
+`To: Antigravity` is machine-routed by the `magi-core` Antigravity responder.
+The responder also retains legacy Antigravity mention support for existing
+agent threads. Explicit routing is required for a consultation opened by Jun;
+ordinary comments from `dogmaai` must not wake the responder accidentally.
+
+`To: GPT` and `To: Devin` are protocol-level destinations. They mean the active
+GPT/Codex or Devin session should read and answer the same GitHub thread when
+that agent has GitHub access. This document does **not** claim that GitHub can
+asynchronously start ChatGPT/Codex or Devin by itself. Do not report those
+routes as automated unless a separately verified webhook/runner is installed.
+
+### Conversation and decision states
+
+The consultation continues while there is a substantive unresolved question or
+new evidence. It ends by **agreement**, not by an arbitrary turn limit.
+
+Use one of these searchable terminal states in the thread:
+
+- `Status: AGREED` — the agents have a concrete decision and conditions;
+- `Status: NEEDS_JUN_DECISION` — a remaining policy, architecture, trading, or
+  risk choice requires Jun's explicit decision.
+
+When agreement is reached, state the decision and conditions once. After that,
+acknowledgement-only replies are prohibited. Antigravity's responder implements
+this existing rule with `[NO_REPLY_NEEDED]`; Devin follows the same stop-on-
+agreement rule in `collaborating-with-antigravity/SKILL.md`. GPT/Codex should
+apply the same behavior when participating through GitHub.
+
+Silence alone is not agreement. Do not mark `AGREED` unless the substantive
+positions have converged or Jun has made the required decision. If sources
+conflict, cite both and use `NEEDS_JUN_DECISION` rather than guessing.
+
+### Sensitive changes
+
+A consultation does not waive independent review. Trade guards, order
+execution, trading mode, risk configuration, and the LILITH data boundary still
+require a reviewer other than the implementer (or Jun). The consultation can
+record the architecture decision, but the implementation PR remains subject to
+the review rules below.
+
 ## GitHub access for GPT / Codex
 
 ChatGPT and Codex reach GitHub through the **ChatGPT Codex Connector**
