@@ -1,6 +1,12 @@
 # Bundle Update Log
 
 ## 2026-09-09
+* **Clarification**: [AGENTS.md](AGENTS.md) now makes human-verified `stable`
+  OKF concepts authoritative for role, ownership, lifecycle and policy intent.
+  Historical code paths, comments, names or disabled jobs cannot revive an
+  offline/retired unit; conflicts are implementation drift to report with both
+  revisions, not a basis for guessing live-trading participation.
+
 * **Enhancement / PR pending**: [COLLABORATION.md](COLLABORATION.md) defines a
   cross-agent consultation protocol for GPT/Codex, Devin and Antigravity. Until
   a repo-independent responder exists, `dogmaai/magi-core` Issues are the
