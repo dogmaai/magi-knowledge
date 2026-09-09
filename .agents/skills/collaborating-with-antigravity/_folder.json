@@ -1,0 +1,10 @@
+{
+  "kind": "Folder",
+  "apiVersion": "folder.grafana.app/v1",
+  "metadata": {
+    "name": "bfxpnyioa9s02c"
+  },
+  "spec": {
+    "title": "collaborating-with-antigravity"
+  }
+}

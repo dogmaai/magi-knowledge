@@ -1,0 +1,10 @@
+{
+  "kind": "Folder",
+  "apiVersion": "folder.grafana.app/v1",
+  "metadata": {
+    "name": "cfxpnyioa9s07b"
+  },
+  "spec": {
+    "title": "kimi-api-reference"
+  }
+}

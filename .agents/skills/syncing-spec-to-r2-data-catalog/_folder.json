@@ -1,0 +1,10 @@
+{
+  "kind": "Folder",
+  "apiVersion": "folder.grafana.app/v1",
+  "metadata": {
+    "name": "dfxpnyiocrocga"
+  },
+  "spec": {
+    "title": "syncing-spec-to-r2-data-catalog"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "kind": "Folder",
+  "apiVersion": "folder.grafana.app/v1",
+  "metadata": {
+    "name": "ffxpnyioa9s03c"
+  },
+  "spec": {
+    "title": "configuring-cloudflare-ai-search"
+  }
+}

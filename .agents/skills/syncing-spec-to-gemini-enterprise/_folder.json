@@ -1,0 +1,10 @@
+{
+  "kind": "Folder",
+  "apiVersion": "folder.grafana.app/v1",
+  "metadata": {
+    "name": "dfxpnyioa9s09f"
+  },
+  "spec": {
+    "title": "syncing-spec-to-gemini-enterprise"
+  }
+}
