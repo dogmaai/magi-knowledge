@@ -1,0 +1,10 @@
+{
+  "kind": "Folder",
+  "apiVersion": "folder.grafana.app/v1",
+  "metadata": {
+    "name": "bfxpnyioa9s06f"
+  },
+  "spec": {
+    "title": "gemini-api-reference"
+  }
+}
