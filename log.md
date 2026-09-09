@@ -1,5 +1,17 @@
 # Bundle Update Log
 
+## 2026-09-09
+* **Enhancement / PR pending**: [COLLABORATION.md](COLLABORATION.md) defines a
+  cross-agent consultation protocol for GPT/Codex, Devin and Antigravity. Until
+  a repo-independent responder exists, `dogmaai/magi-core` Issues are the
+  operational meeting hub: explicit `To:` routing, one implementation owner,
+  `Status: AGREED` / `Status: NEEDS_JUN_DECISION`, and stop-on-agreement
+  semantics. The linked `magi-core` change adds the `Agent consultation` Issue
+  template, explicit Jun-safe `To: Antigravity` routing, bounded Issue/comment
+  context, and routing tests. `To: GPT` / `To: Devin` are protocol destinations
+  for active sessions; asynchronous GitHub-triggered startup of those agents is
+  not claimed or implemented by this change.
+
 ## 2026-09-08
 * **Deployment**: SEKHMET Meta Verifier was activated as a weekly SHADOW-only
   Cloud Run Job and Scheduler by `magi-core` #430
