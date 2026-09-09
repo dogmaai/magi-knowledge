@@ -24,6 +24,11 @@ Then read the relevant documents under `system/` or `_lilith_safe/`.
 - Compare disputed values against the implementation and record the source
   revision. If access is blocked, report it; do not guess current defaults,
   deployed settings or the resolution of a policy conflict.
+- For role, ownership, lifecycle and policy intent, a human-verified `stable`
+  OKF concept is authoritative. Historical code paths, comments, names and
+  disabled jobs do not override it. Treat a disagreement as implementation
+  drift, report both revisions, and do not infer that a retired or offline unit
+  participates in live trading.
 - Sensitive changes require independent review as listed in
   [COLLABORATION.md](COLLABORATION.md). Repository-specific deployment rules
   continue to apply; this document grants no production-operation authority.
