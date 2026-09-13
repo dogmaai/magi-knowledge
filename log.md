@@ -1,6 +1,15 @@
 # Bundle Update Log
 
 ## 2026-09-13
+* **Correction**: [cross-unit detector](/_lilith_safe/hallucination-patterns/cross-unit.md)
+  list extended 9 → 14 names — added `typhon`, `prometheus`, `adam`, `qwen`,
+  `sekhmet` so the LILITH clean-source guard covers the current
+  [PLM unit registry](/system/plm-units/index.md) (R19). Legacy names retained
+  for historical references. Verified against `system/plm-units/index.md`.
+* **Creation**: `scripts/check_unit_detector_sync.py` — CI gate (okf-conformance)
+  that fails when a registry unit stem is missing from the detector list.
+
+## 2026-09-13
 * **Enhancement**: [magi-moomoo](/system/services/magi-moomoo.md) now documents the
   `POST /trade/place_order` server-side order gate (L0 three-state kill switch,
   reduce-only detection, `qty ≤ 1000`, `source='magi-core'` trusted-caller label,
