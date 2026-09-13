@@ -17,3 +17,5 @@ jobs:
         run: python scripts/okf_lint.py
       - name: LILITH-safe loader smoke test
         run: python scripts/test_lilith_safe_loader.py
+      - name: Cross-unit detector covers unit registry
+        run: python scripts/check_unit_detector_sync.py

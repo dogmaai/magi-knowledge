@@ -10,7 +10,7 @@ stale_after: 2026-12-16T01:02:48Z
 cross_unit_detector: true
 tags: [lilith, dpo, anti-hallucination, clean-source]
 classification: HALLUCINATION_CROSS_UNIT
-unit_names: [sophia, melchior, anima, casper, oracle, zeroel, tiara, seraph, balthasar]
+unit_names: [sophia, melchior, anima, casper, oracle, zeroel, tiara, seraph, balthasar, typhon, prometheus, adam, qwen, sekhmet]
 ---
 
 # Trigger
@@ -34,7 +34,14 @@ matched case-insensitively as whole words, plus the phrases "other unit",
 "other llm", "other ai":
 
 `sophia`, `melchior`, `anima`, `casper`, `oracle`, `zeroel`, `tiara`,
-`seraph`, `balthasar`.
+`seraph`, `balthasar`, `typhon`, `prometheus`, `adam`, `qwen`, `sekhmet`.
+
+Current-roster stems (`typhon`, `prometheus`, `adam`, `qwen`, `sekhmet`)
+cover `SOPHIA-5`-/`MELCHIOR-1`-style suffixed spellings via whole-word
+matching and retired/offline units via the retained legacy names. The list
+is verified against the `system/plm-units/` registry by
+`scripts/check_unit_detector_sync.py` in CI; LILITH's own name is
+intentionally absent (self-reference is not a cross-unit reference).
 
 # Faithful response (chosen)
 

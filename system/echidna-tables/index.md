@@ -17,6 +17,7 @@ Two write-path conventions matter:
 * [trades](trades.md) - Primary trade log (entry/exit, PnL, attribution).
 * [trades-quarantine](trades-quarantine.md) - Original snapshots of `CONTAMINATED` trades rows.
 * [trades-price-corrections](trades-price-corrections.md) - Pre-correction snapshots of quote-price fixes.
+* [trades-unverifiable](trades-unverifiable.md) - Rows that can never be broker-verified (Alpaca gone / >90d moomoo).
 * [thoughts](thoughts.md) - LLM reasoning log (one row per decision).
 * [sessions](sessions.md) - Per-session run summary (equity, PnL).
 * [views](views.md) - `trades_active` / `thoughts_active` VIEW definitions.
