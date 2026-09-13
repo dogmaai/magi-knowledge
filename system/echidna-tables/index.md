@@ -40,6 +40,7 @@ Two write-path conventions matter:
 * [optuna-params](optuna-params.md) - Optuna-tuned runtime parameters.
 * [service-endpoints](service-endpoints.md) - Dynamic service discovery URLs.
 * [order-approvals](order-approvals.md) - Single-use approval tokens for the magi-moomoo order gate.
+* [order-intents](order-intents.md) - Append-only order-intent journal; broker-response-loss recovery via remark-embedded intent ids (R10).
 * [l4-probation](l4-probation.md) - Guard L4 blocked provider/side combos.
 * [lilith-hard-gate-events](lilith-hard-gate-events.md) - LILITH VIX hard-gate rewrites.
 * [constitution](constitution.md) - Versioned MAGI Constitution store.
