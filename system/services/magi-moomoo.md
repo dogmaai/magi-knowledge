@@ -24,14 +24,17 @@ magi-moomoo is not a thin proxy: every order from every caller passes a
 server-side gate (`lib/order-gate.mjs`) before being forwarded to the bridge.
 
 1. **Parameter validation** — `side` ∈ {`buy`,`sell`}, `qty` positive integer ≤ 1000.
-2. **L0 kill switch (3 states)** — confirmed `HALTED` rejects all orders;
-   `RUNNING` is the normal path; a read failure degrades to `UNKNOWN`
-   (reduce-only). A confirmed `HALTED` is latched across subsequent read
-   failures so a halted state cannot silently clear.
+2. **L0 kill switch (3 states)** — confirmed `HALTED` rejects **all**
+   orders, including reducing ones (the halt check runs before reduction
+   detection); `RUNNING` is the normal path; a read failure degrades to
+   `UNKNOWN` (reduce-only). A confirmed `HALTED` is latched across
+   subsequent read failures so a halted state cannot silently clear.
 3. **Reduction detection** — an order counts as risk-reducing only if it
-   moves the position toward zero without crossing it
-   (`qty ≤ |position|`). Reducing orders always pass the gate.
-   A positions-lookup failure treats the order as non-reducing (fail-closed).
+   is counter-direction to the current position (selling a long or buying
+   to cover a short) *and* moves it toward zero without crossing it
+   (`qty ≤ |position|`). Reducing orders pass the gate in `RUNNING` and
+   `UNKNOWN` states — but not in `HALTED`. A positions-lookup failure
+   treats the order as non-reducing (fail-closed).
 4. **Non-reducing orders require authorization** — either
    `source='magi-core'` (the trusted-caller label magi-core stamps on its own
    already-gated orders) or a single-use token from
@@ -46,6 +49,16 @@ server-side gate (`lib/order-gate.mjs`) before being forwarded to the bridge.
 Manual/Telegram orders (magi-moni, `source='magi-moni'`) obtain tokens by
 writing an `ISSUED` row after a confirmed user approval; the model cannot
 self-authorize.
+
+**Trust model of `source`**: it is a request-body label, *not*
+cryptographically verified. The gate trusts it because (a) only
+authenticated callers can reach the service (Cloud Run OIDC) and
+(b) only first-party application code sets it — LLM tool arguments cannot
+influence it. Any caller able to reach the endpoint and craft the body
+could spoof `magi-core` and bypass the token requirement; a stronger
+boundary would verify caller identity in the OIDC token (requires
+per-service service accounts — the services currently share the default
+compute SA) or a shared secret.
 
 # Used by
 

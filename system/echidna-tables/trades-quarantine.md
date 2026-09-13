@@ -31,5 +31,7 @@ All `trades` columns, plus:
 
 # Notes
 
-* The quarantined `trades` rows keep `result='CONTAMINATED'`; all
-  result-enumerating consumers exclude them automatically.
+* The quarantined `trades` rows keep `result='CONTAMINATED'`; consumers must
+  explicitly exclude them unless they use a positive allowlist such as
+  `result IN ('WIN','LOSE')`. Generic predicates like `result IS NOT NULL`
+  still return them.
