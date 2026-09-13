@@ -31,7 +31,7 @@ reducing orders never need a token.
 | side | STRING | `buy` / `sell` the approval is bound to. |
 | qty | FLOAT64 | Quantity the approval is bound to. |
 | created_by | STRING | Issuing service / actor (e.g. `magi-moni`). |
-| order_id | STRING | Broker order id once consumed (`USED` rows). |
+| order_id | STRING | Reserved for a broker order id; the gate consumes the token *before* submission, so `USED` rows currently write NULL. |
 | expires_at | TIMESTAMP | Token expiry; expired tokens are invalid. |
 | created_at | TIMESTAMP | Row write time. |
 

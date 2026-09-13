@@ -11,7 +11,11 @@
   match implementation — `result` gains `HOLD`, `AUTO_CLOSE`, `CANCELLED` and
   `CONTAMINATED`; `trade_mode` corrected to `NORMAL`/`VIX_ONLY`/`SHADOW`/
   `POSITION_GUARD`; `price_confirmed`, `exit_timestamp`, `requested_qty` and
-  unrealized-vs-realized `pnl_*` semantics documented.
+  unrealized-vs-realized `pnl_*` semantics documented. Verified against
+  `magi-core@92c8b4b` (main after R03/R04 merges) plus live
+  `magi_core.trades` GROUP BY counts; order-gate behavior verified against
+  `magi-moomoo` `lib/order-gate.mjs` (deployed PR #71) and magi-moni
+  `lib/order-approvals.js` (deployed PR #50).
 * **Creation**: [order-approvals](/system/echidna-tables/order-approvals.md),
   [trades-quarantine](/system/echidna-tables/trades-quarantine.md) and
   [trades-price-corrections](/system/echidna-tables/trades-price-corrections.md)

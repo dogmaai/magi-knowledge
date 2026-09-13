@@ -26,13 +26,13 @@ table_type: BASE TABLE
 | order_id | STRING | Broker order id. |
 | symbol | STRING | Ticker. |
 | side | STRING | `buy` / `sell`. |
-| qty | FLOAT64 | Filled quantity. Unconfirmed rows (`price_confirmed=FALSE`) carry the requested quantity until the evaluator reconciles the fill. |
-| requested_qty | FLOAT64 | Quantity requested at submission (written on `AUTO_CLOSE` rows). |
+| qty | FLOAT64 | Confirmed filled quantity. Unconfirmed rows (`price_confirmed=FALSE`) may carry `0`; the submitted quantity lives in `requested_qty` until the evaluator reconciles the fill. |
+| requested_qty | FLOAT64 | Quantity requested at submission (written on manual/`AUTO_CLOSE` rows). |
 | price | FLOAT64 | Fill price. NULL until the fill is confirmed. |
 | reason | STRING | Short rationale string (`STOP_LOSS`, `TAKE_PROFIT`, …). |
 | trade_mode | STRING | `NORMAL` / `VIX_ONLY` / `SHADOW` / `POSITION_GUARD`. |
 | llm_provider | STRING | Provider key (see [plm-units](/system/plm-units/)). |
-| unit_name | STRING | MAGI unit name (e.g. `MELCHIOR-1`). On `AUTO_CLOSE` rows this is the *executing* unit; FIFO-owner attribution is applied by the consumer (see L1.7 daily-loss). |
+| unit_name | STRING | MAGI unit name (e.g. `MELCHIOR-1`). On `AUTO_CLOSE` rows this is the *executing* unit; FIFO-owner attribution is applied by the consumer (see [L1.7 daily-loss](/system/guards/l1-7.md)). |
 | result | STRING | See [Result vocabulary](#result-vocabulary) below. |
 | exit_price | FLOAT64 | Exit fill price. |
 | exit_timestamp | TIMESTAMP | For `WIN`/`LOSE` the actual last close-event time; for `AUTO_CLOSE` the row's own timestamp; for `CANCELLED` the evaluation time. NULL while open/`HOLD`. |
