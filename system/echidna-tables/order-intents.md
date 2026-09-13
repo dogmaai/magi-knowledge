@@ -1,7 +1,7 @@
 ---
 type: BigQuery Table
 title: order_intents
-description: Append-only order-intent journal; every magi-core order is journaled before the broker POST and reconciled against broker order_history via the intent id embedded in the broker remark.
+description: Append-only order-intent journal; magi-core orders are journaled before the broker POST (fail-closed for exposure-increasing orders; a risk-reducing order whose write fails still POSTs and is recovered via the remark key) and reconciled against broker order_history via the intent id embedded in the broker remark.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=order_intents&page=table
 lilith_safe: false
 status: draft
@@ -14,11 +14,19 @@ table_type: BASE TABLE
 ---
 
 `order_intents` is the durable order-intent journal introduced by R10 phase 1
-(magi-core `lib/order-intents.js`). Every order sent through
-`executeMoomooOrder()` is journaled as a `PENDING` event **before** the broker
-POST, and its `intent_id` (`i_` + 12 hex chars) rides in the broker remark as
+(magi-core `lib/order-intents.js`). Orders sent through `executeMoomooOrder()`
+are journaled as a `PENDING` event **before** the broker POST, and the
+`intent_id` (`i_` + 12 hex chars) rides in the broker remark as
 `<unit_name>:<intent_id>` — that remark is the reconciliation key and stays
 durable at the broker even when BigQuery is down.
+
+The before-POST guarantee holds for **successful writes and for
+exposure-increasing orders**, which fail closed on a journal error. The one
+exception: a risk-reducing order whose `PENDING` write fails still POSTs
+unjournaled — the intent id is in the broker remark and the failed row sits on
+the session retry queue, so it is recovered after dispatch rather than recorded
+before it (see [Fail policy](#fail-policy-on-journal-write)). Readers auditing
+"every order was pre-journaled" must account for that gap.
 
 The table is **append-only / event-sourced** (same pattern as
 [order-approvals](order-approvals.md)): lifecycle transitions are appended as
@@ -29,7 +37,7 @@ UPDATE/DELETE — so inserts never hit the streaming-buffer restriction.
 
 | event | Meaning |
 |---|---|
-| `PENDING` | Intent journaled before the broker POST. If a `CONFIRMED`/`REJECTED`/`UNKNOWN` event never follows, the process died mid-flight. |
+| `PENDING` | Intent journaled before the broker POST (or retried after it, for risk-reducing orders whose first write failed). If a `CONFIRMED`/`REJECTED`/`UNKNOWN` event never follows, the process died mid-flight. |
 | `CONFIRMED` | Broker accepted the order; `broker_order_id` (+ fill fields when present) recorded. |
 | `REJECTED` | Broker refused the order before dispatch (HTTP 4xx or `success=false`). |
 | `UNKNOWN` | Response lost — fetch threw or HTTP 5xx/proxy crash. The broker may or may not hold the order; resolved by reconciliation, **never** by blind resubmission. |
