@@ -8,8 +8,13 @@
   for historical references. Verified against `system/plm-units/index.md`.
 * **Creation**: `scripts/check_unit_detector_sync.py` — CI gate (okf-conformance)
   that fails when a registry unit stem is missing from the detector list.
-
-## 2026-09-13
+* **Creation**: [order-intents](/system/echidna-tables/order-intents.md) —
+  append-only order-intent journal (R10 phase 1): PENDING-before-POST contract,
+  `UNKNOWN`/`LOST`/`RECONCILED` lifecycle, remark-embedded `intent_id` as the
+  broker-side durable key, ORPHAN FILL alerting, and the fail-closed /
+  reduce-only journal-write policy. Verified against `magi-core`
+  `fix/r10-order-intents` (`lib/order-intents.js`, `lib/moomoo.js`,
+  `trade-evaluator.mjs`) and the live `magi_core.order_intents` schema.
 * **Enhancement**: [magi-moomoo](/system/services/magi-moomoo.md) now documents the
   `POST /trade/place_order` server-side order gate (L0 three-state kill switch,
   reduce-only detection, `qty ≤ 1000`, `source='magi-core'` trusted-caller label,
