@@ -4,7 +4,7 @@ title: magi-moomoo
 description: MooMoo broker integration — account, positions, orders, market snapshots.
 lilith_safe: false
 status: stable
-generated: { by: devin/cloud, at: 2026-06-19T01:02:48Z }
+generated: { by: devin/cli, at: 2026-09-14T05:48:57Z }
 verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
 stale_after: 2026-12-16T01:02:48Z
 tags: [service, moomoo, broker]
@@ -35,12 +35,36 @@ server-side gate (`lib/order-gate.mjs`) before being forwarded to the bridge.
    (`qty ≤ |position|`). Reducing orders pass the gate in `RUNNING` and
    `UNKNOWN` states — but not in `HALTED`. A positions-lookup failure
    treats the order as non-reducing (fail-closed).
-4. **Non-reducing orders require authorization** — either
-   `source='magi-core'` (the trusted-caller label magi-core stamps on its own
-   already-gated orders) or a single-use token from
+4. **Non-reducing orders require authorization** — either a verified
+   trusted-caller identity or a single-use token from
    `magi_core.order_approvals` (60s TTL, bound to symbol/side/qty; `ISSUED` /
    `USED` rows are append-only). In `UNKNOWN` state even a valid token is
    rejected.
+
+   Trusted-caller verification is OIDC subject verification, not a body
+   label. The caller's Google-signed ID token arrives via
+   `Authorization` (direct calls) or `X-Serverless-Authorization`
+   (forwarded by Cloud Run's IAM proxy). **Cloud Run strips the token
+   signature before forwarding**, so a platform-forwarded token cannot be
+   re-verified in-app; for that path the gate validates the claims —
+   `iss` is `accounts.google.com`, `aud` equals this service's URL (from
+   `service_endpoints` or `GATE_OIDC_AUDIENCE`), `exp` is unexpired, and
+   `email_verified` is true — relying on Cloud Run IAM having already
+   authenticated the signature (clients cannot inject this header).
+   `Authorization`-header tokens still carry a signature and are fully
+   re-verified in-app (`OAuth2Client.verifyIdToken`) plus the same claim
+   checks. In both paths the `email` claim must match
+   `GATE_TRUSTED_CALLER_EMAILS` — the dedicated service account the
+   order-placing magi-core jobs run as.
+
+   The request-body `source` field is observational only and cannot
+   confer trust once the allowlist is set. While
+   `GATE_TRUSTED_CALLER_EMAILS` is unset, the legacy
+   `source='magi-core'` label is still accepted — **spoofable: any
+   caller with invoke access can bypass the approval requirement**, so
+   this is a transition mode only, not a safe steady state; the allowlist
+   MUST be configured for the gate to provide real authentication. A
+   warning is logged on startup and once per process on first use.
 5. `approval_token` and `source` are consumed by the gate and never forwarded
    to the bridge.
 6. `POST /trade/place_order` is never retried — a failed non-idempotent order

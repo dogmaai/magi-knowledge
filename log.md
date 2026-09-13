@@ -15,6 +15,7 @@
 
 
 ## 2026-09-13
+<<<<<<< HEAD
 * **Enhancement**: [PROMPT.md](/PROMPT.md) gains a value-free **Consumer
   Preamble** (6 lines) at the top — the only text that has to be pasted into
   the system prompt of an LLM that cannot read this repo (GPT / Gemini /
@@ -35,6 +36,15 @@
   reduce-only journal-write policy. Verified against `magi-core`
   `fix/r10-order-intents` (`lib/order-intents.js`, `lib/moomoo.js`,
   `trade-evaluator.mjs`) and the live `magi_core.order_intents` schema.
+* **Enhancement**: [magi-moomoo](/system/services/magi-moomoo.md) order-gate
+  step 4 updated — the trusted-caller exemption is granted by OIDC subject
+  verification (Google-signed ID token `email` claim allowlisted via
+  `GATE_TRUSTED_CALLER_EMAILS`), replacing the spoofable `source='magi-core'`
+  request-body label. Platform-forwarded tokens (`X-Serverless-Authorization`)
+  arrive unsigned and are validated by claims (`iss`/`aud`/`exp`/
+  `email_verified`) since Cloud Run already verified the signature; the label
+  is retained as a transition-mode fallback until the per-service service
+  account is configured.
 * **Enhancement**: [magi-moomoo](/system/services/magi-moomoo.md) now documents the
   `POST /trade/place_order` server-side order gate (L0 three-state kill switch,
   reduce-only detection, `qty ≤ 1000`, `source='magi-core'` trusted-caller label,
