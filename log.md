@@ -1,6 +1,12 @@
 # Bundle Update Log
 
 ## 2026-09-13
+* **Enhancement**: [PROMPT.md](/PROMPT.md) gains a value-free **Consumer
+  Preamble** (6 lines) at the top — the only text that has to be pasted into
+  the system prompt of an LLM that cannot read this repo (GPT / Gemini /
+  Antigravity chat). Spec values live only in OKF; the preamble tells the
+  consumer where the authority is and how to read `status` / `trust_tier`,
+  so it never needs rewriting when the spec changes. Full version retained.
 * **Correction**: [cross-unit detector](/_lilith_safe/hallucination-patterns/cross-unit.md)
   list extended 9 → 14 names — added `typhon`, `prometheus`, `adam`, `qwen`,
   `sekhmet` so the LILITH clean-source guard covers the current

@@ -77,8 +77,11 @@ No SDK required — `cat` any file. Agents parse the frontmatter directly.
 
 ### Syncing the spec to an LLM that cannot read the repo
 
-For a durable, value-free system prompt that makes any LLM read this bundle
-before starting work, hand it [PROMPT.md](PROMPT.md).
+Paste the six-line **Consumer Preamble** at the top of [PROMPT.md](PROMPT.md)
+into the LLM's system prompt. It contains no spec values — only where the
+authority is and how to read `status` / `trust_tier` — so it never needs
+updating when the spec changes. The full version below it is for agents that
+need the step-by-step procedure.
 
 Agents with repository access (Antigravity, Devin, Devin CLI) should read this
 bundle directly — clone/pull `main`, or vendor it as a submodule. For chat UIs
