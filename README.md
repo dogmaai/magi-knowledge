@@ -77,6 +77,9 @@ No SDK required — `cat` any file. Agents parse the frontmatter directly.
 
 ### Syncing the spec to an LLM that cannot read the repo
 
+For a durable, value-free system prompt that makes any LLM read this bundle
+before starting work, hand it [PROMPT.md](PROMPT.md).
+
 Agents with repository access (Antigravity, Devin, Devin CLI) should read this
 bundle directly — clone/pull `main`, or vendor it as a submodule. For chat UIs
 and one-shot prompts, flatten a tree into a single pasteable file:
