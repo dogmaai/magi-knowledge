@@ -1,5 +1,22 @@
 # Bundle Update Log
 
+## 2026-09-13
+* **Enhancement**: [magi-moomoo](/system/services/magi-moomoo.md) now documents the
+  `POST /trade/place_order` server-side order gate (L0 three-state kill switch,
+  reduce-only detection, `qty ≤ 1000`, `source='magi-core'` trusted-caller label,
+  single-use `order_approvals` tokens, no POST retry) and the correct
+  `service_endpoints` keys (`magi-moomoo` for callers, `opend-proxy` for the
+  bridge tunnel).
+* **Correction**: [trades](/system/echidna-tables/trades.md) vocabulary updated to
+  match implementation — `result` gains `HOLD`, `AUTO_CLOSE`, `CANCELLED` and
+  `CONTAMINATED`; `trade_mode` corrected to `NORMAL`/`VIX_ONLY`/`SHADOW`/
+  `POSITION_GUARD`; `price_confirmed`, `exit_timestamp`, `requested_qty` and
+  unrealized-vs-realized `pnl_*` semantics documented.
+* **Creation**: [order-approvals](/system/echidna-tables/order-approvals.md),
+  [trades-quarantine](/system/echidna-tables/trades-quarantine.md) and
+  [trades-price-corrections](/system/echidna-tables/trades-price-corrections.md)
+  table docs.
+
 ## 2026-09-09
 * **Clarification**: [AGENTS.md](AGENTS.md) now makes human-verified `stable`
   OKF concepts authoritative for role, ownership, lifecycle and policy intent.
