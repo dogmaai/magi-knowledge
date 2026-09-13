@@ -1,21 +1,29 @@
 ---
 type: Service
 title: central-dogma
-description: Unified NL gateway — intent parsing, command execution, and risk policy (ARIEL).
+description: Unified NL gateway — intent parsing, command execution, and risk policy (ARIEL). DEPRECATED.
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-06-19T01:06:40Z }
-verified: { by: human:jun, at: 2026-06-19T01:06:40Z }
-stale_after: 2026-12-16T01:06:40Z
+status: deprecated
+generated: { by: devin/cloud, at: 2026-09-13T21:50:00Z }
+verified: { by: human:jun, at: 2026-09-13T21:50:00Z }
 tags: [service, central-dogma, gateway, ariel, intent]
 repo: dogmaai/central-dogma
 ---
 
+> **Deprecated.** `dogmaai/central-dogma` was archived on GitHub on
+> 2026-07-14 and is not deployed on Cloud Run or Cloud Scheduler. Its role
+> was absorbed by [magi-moni](magi-moni.md): the AKA-1 Telegram bot now hosts
+> the ported tools (`unblock_l4`, `trigger_job`, `trigger_optuna`,
+> `query_thoughts`) and policy engine, and the former central-dogma REST
+> client for TIALA operations was replaced by OpenClaw Gateway tool
+> invocations (magi-moni `lib/tiala.js`, `lib/openclaw.js`). This doc is kept
+> for historical reference only.
+
 # Overview
 
-central-dogma is the **unified gateway / control plane** for MAGI: it turns
+central-dogma was the **unified gateway / control plane** for MAGI: it turned
 natural language into structured trading queries, command executions, and risk
-operations. Hosts **ARIEL**, the local Ollama tool-calling agent.
+operations. It hosted **ARIEL**, the local Ollama tool-calling agent.
 
 # Key modules
 

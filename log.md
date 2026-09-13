@@ -20,6 +20,17 @@
   [trades-quarantine](/system/echidna-tables/trades-quarantine.md) and
   [trades-price-corrections](/system/echidna-tables/trades-price-corrections.md)
   table docs.
+* **Deprecation**: [central-dogma](/system/services/central-dogma.md) marked
+  `status: deprecated`. The `dogmaai/central-dogma` repository was archived on
+  GitHub on 2026-07-14, is not deployed on Cloud Run or Cloud Scheduler, and
+  magi-core carries no references to it. Its role was absorbed by
+  [magi-moni](/system/services/magi-moni.md): the AKA-1 Telegram bot hosts the
+  ported tools (`unblock_l4`, `trigger_job`, `trigger_optuna`,
+  `query_thoughts`) and policy engine, and the former central-dogma REST
+  client for TIALA operations was replaced by OpenClaw Gateway tool
+  invocations (magi-moni `lib/tiala.js`, `lib/openclaw.js`). The services index
+  moves the entry to a Retired section, and the bundle root drops ARIEL from
+  the list of operating agents.
 
 ## 2026-09-09
 * **Clarification**: [AGENTS.md](AGENTS.md) now makes human-verified `stable`
