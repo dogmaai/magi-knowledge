@@ -7,7 +7,7 @@ okf_version: "0.2"
 Single source of truth for MAGI system knowledge, expressed in the
 [Open Knowledge Format](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md)
 (OKF v0.2). Authored for both humans and the AI agents that operate MAGI
-(Devin, AKA-1, ARIEL) and for the LILITH training pipeline.
+(Devin, AKA-1) and for the LILITH training pipeline.
 
 The previous specification lived in `dogmaai/magi-stg` (`specifications/` and
 `docs/`); that repository is **archived** and its spec files carry a banner

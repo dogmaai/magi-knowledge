@@ -18,7 +18,12 @@ callers don't hard-code endpoints.
 | [magi-deep-research](magi-deep-research.md) | dogmaai/magi-deep-research | Weekday daily Deep Research brief via Devin Automation. |
 | [magi-model-health-check](magi-model-health-check.md) | dogmaai/magi-model-health-check | Periodic provider/model health checks. |
 | [lilith-training](lilith-training.md) | dogmaai/lilith-training | LILITH fine-tuning + anti-hallucination DPO pipeline. |
-| [central-dogma](central-dogma.md) | dogmaai/central-dogma | Central governance / shared source of truth (role to confirm). |
+
+# Retired
+
+| Service | Repo | Note |
+|---|---|---|
+| central-dogma | dogmaai/central-dogma (archived 2026-07-14) | Former NL gateway hosting ARIEL; role absorbed by magi-moni (AKA-1) + OpenClaw Gateway. Doc retained as `status: deprecated`. |
 
 # Infrastructure
 
