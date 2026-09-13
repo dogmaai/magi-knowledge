@@ -15,6 +15,8 @@ Two write-path conventions matter:
 # Core trading tables
 
 * [trades](trades.md) - Primary trade log (entry/exit, PnL, attribution).
+* [trades-quarantine](trades-quarantine.md) - Original snapshots of `CONTAMINATED` trades rows.
+* [trades-price-corrections](trades-price-corrections.md) - Pre-correction snapshots of quote-price fixes.
 * [thoughts](thoughts.md) - LLM reasoning log (one row per decision).
 * [sessions](sessions.md) - Per-session run summary (equity, PnL).
 * [views](views.md) - `trades_active` / `thoughts_active` VIEW definitions.
@@ -36,6 +38,7 @@ Two write-path conventions matter:
 * [llm-config](llm-config.md) - Provider/model registry (cost, status).
 * [optuna-params](optuna-params.md) - Optuna-tuned runtime parameters.
 * [service-endpoints](service-endpoints.md) - Dynamic service discovery URLs.
+* [order-approvals](order-approvals.md) - Single-use approval tokens for the magi-moomoo order gate.
 * [l4-probation](l4-probation.md) - Guard L4 blocked provider/side combos.
 * [lilith-hard-gate-events](lilith-hard-gate-events.md) - LILITH VIX hard-gate rewrites.
 * [constitution](constitution.md) - Versioned MAGI Constitution store.

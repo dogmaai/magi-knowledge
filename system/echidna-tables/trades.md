@@ -22,21 +22,22 @@ table_type: BASE TABLE
 | Column | Type | Description |
 |---|---|---|
 | session_id | STRING | FK → [sessions](sessions.md).session_id. |
-| timestamp | TIMESTAMP | Order time (UTC). |
+| timestamp | TIMESTAMP | Order time (UTC). On `AUTO_CLOSE` rows this is the close-event time. |
 | order_id | STRING | Broker order id. |
 | symbol | STRING | Ticker. |
 | side | STRING | `buy` / `sell`. |
-| qty | FLOAT64 | Filled quantity. |
-| price | FLOAT64 | Fill price. |
-| reason | STRING | Short rationale string. |
-| trade_mode | STRING | `live` / `paper` / `simulation`. |
+| qty | FLOAT64 | Filled quantity. Unconfirmed rows (`price_confirmed=FALSE`) carry the requested quantity until the evaluator reconciles the fill. |
+| requested_qty | FLOAT64 | Quantity requested at submission (written on `AUTO_CLOSE` rows). |
+| price | FLOAT64 | Fill price. NULL until the fill is confirmed. |
+| reason | STRING | Short rationale string (`STOP_LOSS`, `TAKE_PROFIT`, …). |
+| trade_mode | STRING | `NORMAL` / `VIX_ONLY` / `SHADOW` / `POSITION_GUARD`. |
 | llm_provider | STRING | Provider key (see [plm-units](/system/plm-units/)). |
-| unit_name | STRING | MAGI unit name (e.g. `MELCHIOR-1`). |
-| result | STRING | `WIN` / `LOSE` / null (open). |
+| unit_name | STRING | MAGI unit name (e.g. `MELCHIOR-1`). On `AUTO_CLOSE` rows this is the *executing* unit; FIFO-owner attribution is applied by the consumer (see L1.7 daily-loss). |
+| result | STRING | See [Result vocabulary](#result-vocabulary) below. |
 | exit_price | FLOAT64 | Exit fill price. |
-| exit_timestamp | TIMESTAMP | Exit time. |
-| pnl_amount | FLOAT64 | Realized PnL ($). |
-| pnl_percent | FLOAT64 | Realized PnL (%). |
+| exit_timestamp | TIMESTAMP | For `WIN`/`LOSE` the actual last close-event time; for `AUTO_CLOSE` the row's own timestamp; for `CANCELLED` the evaluation time. NULL while open/`HOLD`. |
+| pnl_amount | FLOAT64 | Realized PnL ($) for `WIN`/`LOSE`/`AUTO_CLOSE`; mark-to-market estimate while `HOLD`. |
+| pnl_percent | FLOAT64 | Realized PnL (%) for `WIN`/`LOSE`/`AUTO_CLOSE`; mark-to-market while `HOLD`. |
 | evaluation_date | DATE | Date result was evaluated. |
 | prompt_version | STRING | Constitution / prompt version tag. |
 | atr_at_execution | FLOAT64 | ATR-14 at entry. |
@@ -47,8 +48,24 @@ table_type: BASE TABLE
 | time_to_fill_ms | INT64 | Latency signal→fill. |
 | order_attempts | INT64 | Order submission attempts. |
 | broker | STRING | Executing broker (e.g. `alpaca`, `moomoo`). |
-| price_confirmed | BOOL | Whether fill price was confirmed. |
-| entry_price | FLOAT64 | Canonical entry price. |
+| price_confirmed | BOOL | `TRUE` = broker-confirmed fill. `FALSE` = submitted but unconfirmed (pending evaluator reconciliation — `price`/`pnl_*` may be null). `NULL` = legacy row predating the flag. |
+| entry_price | FLOAT64 | Canonical entry price. On `AUTO_CLOSE` rows this is the broker position's average entry. |
+
+# Result vocabulary
+
+| result | Meaning |
+|---|---|
+| *(null)* | Open, not yet evaluated. |
+| `HOLD` | Position still open (incl. partially closed). `pnl_*` is mark-to-market telemetry, not realized. |
+| `WIN` / `LOSE` | Realized outcome — requires the full entry qty to be covered by FIFO-attributed close events after the entry. |
+| `AUTO_CLOSE` | A close *event* row (the exit leg written by positionMgmt), not an entry. Its `pnl_amount`/`pnl_percent` are realized at the row's `timestamp`. |
+| `CANCELLED` | Order terminally failed with no fill (broker no-fill status). |
+| `CONTAMINATED` | Quarantined fabricated fill — broker history proved the order never filled. Original row preserved in `magi_core.trades_quarantine`. Consumers must exclude it; positive-match filters (`result IN ('WIN','LOSE')` etc.) do so automatically. |
+
+# Related tables
+
+* `magi_core.trades_quarantine` — full snapshot of every row marked `CONTAMINATED`, plus `quarantine_reason` / `quarantine_source` / `quarantined_at`.
+* `magi_core.trades_price_corrections` — original values of rows whose `price`/`qty`/`pnl_*` were backfilled with the broker `dealt_avg_price`/`dealt_qty`, plus `corrected_price` / `corrected_qty` / `backed_up_at`.
 
 # Joins
 
