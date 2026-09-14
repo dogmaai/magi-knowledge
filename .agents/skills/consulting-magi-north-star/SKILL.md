@@ -1,6 +1,9 @@
 ---
 name: consulting-magi-north-star
 description: Establish the authoritative magi-knowledge revision and safety boundaries before investigating, designing, implementing, reviewing, or documenting work in any dogmaai MAGI repository. Use for every MAGI task; do not use it as authority to deploy or change production systems.
+type: Workflow
+lilith_safe: false
+tags: [workflow, agents, okf, north-star, magi]
 ---
 
 # MAGI North Star
