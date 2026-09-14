@@ -1,5 +1,19 @@
 # Bundle Update Log
 
+## 2026-09-14
+* **Creation**: [consulting-magi-north-star](/.agents/skills/consulting-magi-north-star/SKILL.md)
+  adds a reusable, value-free OKF-first workflow for GPT/Codex, Devin and
+  Antigravity. It resolves each target repository's committed
+  `magi-knowledge` pin, reads the pinned `AGENTS.md` / `COLLABORATION.md` and
+  relevant safety boundaries, records exact revisions and lifecycle state,
+  and stops on inaccessible or contradictory authority instead of guessing.
+  Initial review baseline: `magi-core` pin
+  `8533a4b379fdabb27a704ab8982406d6db2e6428`; `magi-knowledge` main
+  `df6de9b57c0ff1cfb84d77c4df9e7c2d7a96e297`. This workflow does not grant
+  production-operation authority and does not alter trading or LILITH data
+  paths.
+
+
 ## 2026-09-13
 * **Enhancement**: [PROMPT.md](/PROMPT.md) gains a value-free **Consumer
   Preamble** (6 lines) at the top — the only text that has to be pasted into
