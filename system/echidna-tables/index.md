@@ -25,6 +25,9 @@ Two write-path conventions matter:
 # Intelligence & analysis
 
 * [market-research](market-research.md) - HERMES/ARIEL research cache.
+* [pre-trade-intelligence](pre-trade-intelligence.md) - HERMES:BRAVE per-symbol Brave/Gemini sentiment + key events.
+* [moomoo-snapshots](moomoo-snapshots.md) - HERMES:MOOMOO broker real-time market snapshots.
+* [focus-symbols](focus-symbols.md) - ISABEL daily focus list; the dynamic HERMES collection universe.
 * [consensus-signals](consensus-signals.md) - Cross-unit consensus detector.
 * [isabel-patterns](isabel-patterns.md) - ISABEL historical win/lose centroids.
 * [thought-quality-scores](thought-quality-scores.md) - Per-thought quality scoring.
@@ -36,6 +39,7 @@ Two write-path conventions matter:
 # Ops, config & governance
 
 * [llm-metrics](llm-metrics.md) - Per-call token / latency / cost telemetry.
+* [hermes-collection-runs](hermes-collection-runs.md) - Per-run HERMES collection outcomes (ok/degraded/error + counters); the dashboard up/down and error-rate signal.
 * [llm-config](llm-config.md) - Provider/model registry (cost, status).
 * [optuna-params](optuna-params.md) - Optuna-tuned runtime parameters.
 * [service-endpoints](service-endpoints.md) - Dynamic service discovery URLs.

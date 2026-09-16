@@ -1,5 +1,28 @@
 # Bundle Update Log
 
+## 2026-09-16
+* **Creation**: [hermes-observability](/system/services/hermes-observability.md) —
+  the `magi-hermes-intelligence` Grafana Cloud dashboard spec: panel
+  inventory, per-source freshness thresholds, the `hermes_collection_runs`
+  up/down + success/failure + error-rate surface, Git Sync / `provision.mjs`
+  provisioning and the CI verify workflow (magi-knowledge#51; implementation
+  in magi-core `feat/hermes-collection-runs`).
+* **Creation**: four ECHIDNA table docs that the dashboard and the HERMES
+  pipeline read/write — [hermes-collection-runs](/system/echidna-tables/hermes-collection-runs.md)
+  (new run ledger; DDL merged, table creation pending Jun's `bq` run),
+  [pre-trade-intelligence](/system/echidna-tables/pre-trade-intelligence.md)
+  (schema derived from writer code — no live INFORMATION_SCHEMA capture
+  available at this revision), [moomoo-snapshots](/system/echidna-tables/moomoo-snapshots.md)
+  and [focus-symbols](/system/echidna-tables/focus-symbols.md) (both from the
+  repo DDL). All `status: draft`, verified `devin/local`.
+* **Enhancement**: [magi-core](/system/services/magi-core.md) — Writes list
+  extended with the five HERMES tables and a cross-link to the observability
+  doc; frontmatter moved to `status: draft` (`generated`/`verified` by
+  `devin/local`, prior `human:jun` verification retained in the list)
+  pending Jun re-verification.
+* **Correction**: removed a stray `<<<<<<< HEAD` merge marker committed
+  into the 2026-09-13 section of this file.
+
 ## 2026-09-14
 * **Creation**: [consulting-magi-north-star](/.agents/skills/consulting-magi-north-star/SKILL.md)
   adds a reusable, value-free OKF-first workflow for GPT/Codex, Devin and
@@ -15,7 +38,6 @@
 
 
 ## 2026-09-13
-<<<<<<< HEAD
 * **Enhancement**: [PROMPT.md](/PROMPT.md) gains a value-free **Consumer
   Preamble** (6 lines) at the top — the only text that has to be pasted into
   the system prompt of an LLM that cannot read this repo (GPT / Gemini /
