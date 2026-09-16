@@ -3,10 +3,10 @@ type: Service
 title: magi-core
 description: The MAGI trading engine — trade loop, LLM orchestration, and guard layers.
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-09-07T00:10:05Z }
-verified: { by: human:jun, at: 2026-09-07T00:10:05Z }
-stale_after: 2027-03-06T00:10:05Z
+status: draft
+generated: { by: devin/local, at: 2026-09-16T01:30:00Z }
+verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }]
+stale_after: 2027-03-16T01:30:00Z
 tags: [service, magi-core, core, trading]
 repo: dogmaai/magi-core
 ---
@@ -51,7 +51,10 @@ trading unit. Other HERMES sources: `[HERMES:ALPHA_VANTAGE]` (raw API),
 (Ollama VIX analyst), `[HERMES:MOOMOO]` (broker real-time data),
 `[HERMES:X_SEARCH]` (xAI, social layer; see [ZEROEL](/system/plm-units/zeroel.md)).
 Secrets: `BRAVE_SEARCH_API_KEY`, `GEMINI_API_KEY` (`deploy.yml`); collection is a
-no-op when `BRAVE_SEARCH_API_KEY` is absent.
+no-op when `BRAVE_SEARCH_API_KEY` is absent. Operational view: see
+[hermes-observability](hermes-observability.md) (Grafana
+`magi-hermes-intelligence`); per-run outcomes are journaled to
+[hermes_collection_runs](/system/echidna-tables/hermes-collection-runs.md).
 
 ## Why Brave Search (decision record)
 
@@ -173,7 +176,12 @@ revision; magi-core is adding UTC.
 [sessions](/system/echidna-tables/sessions.md),
 [llm-metrics](/system/echidna-tables/llm-metrics.md),
 [consensus-signals](/system/echidna-tables/consensus-signals.md), guard_blocks,
-[lilith-hard-gate-events](/system/echidna-tables/lilith-hard-gate-events.md).
+[lilith-hard-gate-events](/system/echidna-tables/lilith-hard-gate-events.md),
+[pre_trade_intelligence](/system/echidna-tables/pre-trade-intelligence.md),
+[market_research](/system/echidna-tables/market-research.md),
+[moomoo_snapshots](/system/echidna-tables/moomoo-snapshots.md),
+[focus_symbols](/system/echidna-tables/focus-symbols.md),
+[hermes_collection_runs](/system/echidna-tables/hermes-collection-runs.md).
 
 # Depends on
 
