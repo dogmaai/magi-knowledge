@@ -21,10 +21,11 @@ can show up/down, per-run success/failure counts and error rate — signals
 that [pre_trade_intelligence](pre-trade-intelligence.md) alone cannot
 express, because a failed collection produces no row there.
 
-Code merged; table creation is a manual Jun step
-(`bq query ... < sql/create_hermes_collection_runs.sql`). Until the table
-exists the writer logs a failed insert (non-blocking by design) and the
-dashboard panels show "no data".
+Table created via `sql/create_hermes_collection_runs.sql` and schema
+live-verified (`bq show`) on 2026-09-16 — partitioned by
+`DATE(collected_at)`. If the table is ever missing, the writer logs a
+failed insert (non-blocking by design) and the dashboard panels show
+"no data".
 
 # Schema
 
