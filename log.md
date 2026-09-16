@@ -9,12 +9,14 @@
   in magi-core `feat/hermes-collection-runs`).
 * **Creation**: four ECHIDNA table docs that the dashboard and the HERMES
   pipeline read/write — [hermes-collection-runs](/system/echidna-tables/hermes-collection-runs.md)
-  (new run ledger; DDL merged, table creation pending Jun's `bq` run),
-  [pre-trade-intelligence](/system/echidna-tables/pre-trade-intelligence.md)
-  (schema derived from writer code — no live INFORMATION_SCHEMA capture
-  available at this revision), [moomoo-snapshots](/system/echidna-tables/moomoo-snapshots.md)
-  and [focus-symbols](/system/echidna-tables/focus-symbols.md) (both from the
-  repo DDL). All `status: draft`, verified `devin/local`.
+  (new run ledger; table created and schema live-verified via `bq show`
+  on 2026-09-16), [pre-trade-intelligence](/system/echidna-tables/pre-trade-intelligence.md),
+  [moomoo-snapshots](/system/echidna-tables/moomoo-snapshots.md)
+  and [focus-symbols](/system/echidna-tables/focus-symbols.md) — all three
+  schemas live-verified against `bq show` on 2026-09-16 (`key_events` /
+  `risk_factors` are STRING REPEATED, `raw_sources` is native JSON;
+  `pre_trade_intelligence` is unpartitioned). All `status: draft`,
+  verified `devin/local`, pending Jun re-verification.
 * **Enhancement**: [magi-core](/system/services/magi-core.md) — Writes list
   extended with the five HERMES tables and a cross-link to the observability
   doc; frontmatter moved to `status: draft` (`generated`/`verified` by

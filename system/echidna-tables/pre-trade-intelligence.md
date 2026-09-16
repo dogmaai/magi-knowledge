@@ -20,10 +20,8 @@ structured-output scoring (see the HERMES intelligence stack in
 it is processed cross-source intelligence; LILITH clean-source mode
 (`skipLLMProcessed`) skips this block.
 
-Note: column list below is derived from the writer code
-(`src/hermes.js` `saveHermesIntelligence`) and the dashboard read queries,
-not a live `INFORMATION_SCHEMA` capture — re-verify field types on next
-human review.
+Schema verified against the live table (`bq show`) on 2026-09-16.
+The table is **not partitioned** — `collected_at` is the freshness signal.
 
 # Schema
 
@@ -34,11 +32,11 @@ human review.
 | symbol | STRING | Ticker. |
 | sentiment | STRING | Sentiment label from Gemini. |
 | sentiment_score | FLOAT64 | Score in [-1, 1]. |
-| key_events | JSON / list | Structured event list from Gemini. |
-| risk_factors | JSON / list | Structured risk list from Gemini. |
+| key_events | STRING (REPEATED) | Structured event list from Gemini. |
+| risk_factors | STRING (REPEATED) | Structured risk list from Gemini. |
 | summary | STRING | Short English summary (<=150 chars per the response schema). |
 | source_count | INT64 | Number of Brave articles scored. |
-| raw_sources | STRING | JSON-serialized article list (title/description). |
+| raw_sources | JSON | Native JSON article list (title/description). |
 | collected_at | TIMESTAMP | Collection time — the freshness signal (`HERMES_REFRESH_INTERVAL_HOURS`, default 2h reuse window). |
 | model_used | STRING | Gemini model (`HERMES_GEMINI_MODEL`). |
 | created_at | TIMESTAMP | Insert time. |
