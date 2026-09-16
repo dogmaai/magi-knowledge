@@ -3,10 +3,10 @@ type: Service
 title: magi-moomoo
 description: MooMoo broker integration — account, positions, orders, market snapshots.
 lilith_safe: false
-status: stable
-generated: { by: devin/cli, at: 2026-09-14T05:48:57Z }
-verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
-stale_after: 2026-12-16T01:02:48Z
+status: draft
+generated: { by: devin/cli, at: 2026-09-16T07:25:00Z }
+verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: devin/cli, at: 2026-09-16T07:25:00Z }]
+stale_after: 2027-03-16T07:25:00Z
 tags: [service, moomoo, broker]
 repo: dogmaai/magi-moomoo
 ---
@@ -96,10 +96,51 @@ compute SA) or a shared secret.
 magi-core tracks reachability via `isMoomooAvailable()` / `setMoomooAvailable()`;
 [L-1](/system/guards/l-1.md) blocks trades when the broker is down.
 
+# Bridge routing (dual-route)
+
+Since 2026-09 (magi-moomoo#66, PRs #76–#78) the path to the on-prem bridge is
+dual-route, selected per request by `BRIDGE_ROUTE_MODE`:
+
+| Mode | Behaviour |
+|---|---|
+| `auto` (current) | Prefer the private route; fall back to the Cloudflare tunnel when the private route is down (network errors, failed `/health` probes, or gateway-class 502/503/504 responses count as route failures; other HTTP responses count as reachable). |
+| `private` | Private route only — no fallback. Planned steady state once the private path is proven stable. |
+| `legacy` | Cloudflare tunnel only; `BRIDGE_PRIVATE_URL` ignored. Clean rollback path. |
+
+**Private route** (`BRIDGE_PRIVATE_URL=http://10.42.0.10:11436`):
+
+```
+Cloud Run (Direct VPC Egress, --vpc-egress=private-ranges-only)
+  → magi-vpc / magi-subnet-tokyo (10.42.0.0/24, asia-northeast1)
+  → bridge-gw VM (e2-micro, 10.42.0.10, asia-northeast1-a, can-ip-forward)
+  → nftables DNAT tcp:11436 → WireGuard peer 10.99.0.2
+  → TIALA → moomoo-bridge (localhost:11436) → OpenD (localhost:11111)
+```
+
+WireGuard: `bridge-gw` is `10.99.0.1` (public endpoint `35.189.148.92:51820`,
+static IP `bridge-gw-ip`); TIALA is `10.99.0.2`. VPC firewall:
+`magi-allow-bridge` (tcp:11436 from 10.42.0.0/24) and `magi-allow-wg`
+(udp:51820 ingress, target tag `bridge-gw`). Setup scripts live in
+`scripts/setup-wireguard-*.sh`. Because egress is `private-ranges-only`,
+BigQuery (order gate, `opend-proxy` lookup) and the Cloudflare fallback keep
+using the default egress — no Cloud NAT is required.
+
+**Cloudflare route** — resolved from `service_endpoints` with
+`service='opend-proxy'` (cached; refreshed on stale-connection failures),
+then through the `moomoo-bridge` Named Tunnel to the same on-prem bridge.
+Required by `legacy` and by `auto` as the fallback leg; unused in `private`.
+
+`/route_status` reports `active_route`, per-route request/error counters with
+p50/p95 latency, `private_up`, and `fallback_events`. `POST
+/trade/place_order` is never retried on either route — the no-retry rule in
+the order gate section applies to routing too.
+
 # Discovery
 
 * Callers resolve magi-moomoo's URL from
   [service_endpoints](/system/echidna-tables/service-endpoints.md) with
   `service='magi-moomoo'`.
-* magi-moomoo resolves the OpenD bridge tunnel URL from the same table with
-  `service='opend-proxy'` (cached; refreshed on stale-connection failures).
+* magi-moomoo resolves the Cloudflare tunnel URL for the bridge from the
+  same table with `service='opend-proxy'` — the `legacy` route and the
+  `auto` fallback leg (see Bridge routing). The private route needs no
+  lookup: it is the static `BRIDGE_PRIVATE_URL` env var.
