@@ -32,6 +32,7 @@ callers don't hard-code endpoints.
 | [cloudflare](cloudflare.md) | infra (Cloudflare) | AI Search + R2 Data Catalog mirrors of this spec, Named Tunnels for TIALA services, AI Gateway `default`. |
 | [secrets-inventory](secrets-inventory.md) | infra (GCP Secret Manager, Grafana, Cloudflare, GitHub) | Ledger of the Grafana Cloud / Cloudflare / GitHub / GCP tokens: canonical name, scopes, source of truth, usage sites, rotation owner. |
 | [hermes-observability](hermes-observability.md) | dogmaai/magi-core (`grafana/`) | Grafana Cloud dashboard `magi-hermes-intelligence` — HERMES health, freshness, output and per-run failure telemetry. |
+| magi-vpc private bridge path | infra (GCP VPC + GCE + WireGuard) | Direct VPC Egress → `bridge-gw` VM → WireGuard to TIALA — the preferred [magi-moomoo](magi-moomoo.md) bridge route since 2026-09 (Cloudflare tunnel retained as fallback; see magi-moomoo.md#bridge-routing). |
 
 # Data backbone
 

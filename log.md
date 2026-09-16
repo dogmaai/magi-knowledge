@@ -1,6 +1,21 @@
 # Bundle Update Log
 
 ## 2026-09-16
+* **Enhancement**: [magi-moomoo](/system/services/magi-moomoo.md) —
+  documented the dual-route bridge path shipped in magi-moomoo#66 / PRs
+  #76–#78: `BRIDGE_ROUTE_MODE` (`auto`/`private`/`legacy`),
+  `BRIDGE_PRIVATE_URL`, the Cloud Run → Direct VPC Egress → `bridge-gw` VM →
+  WireGuard → TIALA topology, `/route_status`, and the Cloudflare tunnel as
+  the `auto` fallback leg. `status` moved to `draft` pending Jun
+  re-verification.
+* **Enhancement**: [cloudflare](/system/services/cloudflare.md) —
+  `moomoo-bridge` Named Tunnel re-labelled as the fallback leg of the
+  magi-moomoo dual-route path (retirement pending a private-route stability
+  observation period); `status` moved to `draft`.
+* **Creation**: [system-control](/system/echidna-tables/system-control.md) —
+  the ECHIDNA table behind the L0 kill switch and the magi-moomoo order
+  gate's HALTED/RUNNING/UNKNOWN read; schema live-verified via `bq show` on
+  2026-09-16. `status: draft`, verified `devin/cli`.
 * **Creation**: [hermes-observability](/system/services/hermes-observability.md) —
   the `magi-hermes-intelligence` Grafana Cloud dashboard spec: panel
   inventory, per-source freshness thresholds, the `hermes_collection_runs`
