@@ -37,7 +37,7 @@ Two write-path conventions matter:
 * [thought-quality-scores](thought-quality-scores.md) - Per-thought quality scoring.
 * [gemini-pattern-analysis](gemini-pattern-analysis.md) - Periodic Gemini *generic* win/lose pattern report (not causal analysis).
 * [fugu-sequential-patterns](fugu-sequential-patterns.md) - SEKHMET/`fugu-ultra` sequential **causal** outcome analysis.
-* [sekhmet-reviews](sekhmet-reviews.md) - Proposed SHADOW-only hard-case review ledger; code merged, table not yet created.
+* [sekhmet-reviews](sekhmet-reviews.md) - SHADOW-only hard-case review ledger; table created and visually verified by Jun on 2026-09-08, first inserted SHADOW row pending verification.
 * [daphne-feedback](daphne-feedback.md) - DAPHNE LP-taxonomy loss classification with a static causal flag (SQL-based).
 
 # Ops, config & governance

@@ -1,6 +1,30 @@
 # Bundle Update Log
 
 ## 2026-09-17
+* **Lint**: `scripts/okf_lint.py` now detects stale verification — a
+  `stable` doc whose every human `verified.at` predates `generated.at` is
+  an ERROR (the verification covers an older revision), and the same
+  condition on a `draft` doc is a WARN. Nine drafts currently warn, all
+  awaiting `human:jun` re-verification.
+* **Fix**: [echidna-tables index](/system/echidna-tables/index.md)
+  corrected its [sekhmet-reviews](system/echidna-tables/sekhmet-reviews.md)
+  entry — the index claimed "table not yet created" while the stable,
+  Jun-verified doc records the table created in BigQuery on 2026-09-08;
+  the index now matches the verified doc.
+* **Sync**: [magi-moomoo](/system/services/magi-moomoo.md) updated to the
+  hardened order-gate behaviour: legacy `source='magi-core'` trust now
+  requires the explicit `GATE_ALLOW_LEGACY_SOURCE=true` opt-in, deploy
+  fails closed without a trusted-caller allowlist, approval tokens are
+  consumed atomically in a BigQuery transaction, and the on-prem bridge
+  fails closed on REAL `/place_order` when `BRIDGE_AUTH_TOKEN` is unset.
+  Remains `draft` pending `human:jun` re-verification.
+* **Model change**: [order-approvals](/system/echidna-tables/order-approvals.md)
+  moved `stable` → `draft` — atomic token consumption now requires a
+  conditional `UPDATE` stamping `claim:<uuid>` on the `ISSUED` row (pure
+  `INSERT ... WHERE NOT EXISTS` cannot serialize under BigQuery snapshot
+  isolation, as concurrent appends do not conflict — Codex P1 on
+  magi-moomoo#81). `USED` rows remain append-only; the `ISSUED` row is
+  mutated once at consumption. Pending `human:jun` re-verification.
 * **Fix**: `scripts/okf_lint.py` — `CROSS_UNIT_NAMES` synced with the PLM
   registry: added `adam`, `qwen`, `sekhmet` (a non-detector `_lilith_safe`
   doc naming them previously passed the linter — Codex P1 on #63).

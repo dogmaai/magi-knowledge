@@ -13,6 +13,10 @@ Two responsibilities:
      - ``verified`` (optional) MUST be a ``{ by, at }`` mapping or a list of
        them, with §7 actors. ``status: stable`` REQUIRES a ``human:`` verifier
        — AI review alone only earns ``draft``.
+      Verification attests the current revision: a ``stable`` doc whose
+      every human ``verified.at`` predates ``generated.at`` is an ERROR,
+      and the same condition on a ``draft`` doc is a WARN (awaiting
+      re-verification).
      - ``stale_after`` MUST be an ISO 8601 instant; a stale doc is a WARN
        (an ERROR with ``--fail-on-stale``, used by the scheduled CI run).
      - A non-deprecated doc MUST NOT link to a ``status: deprecated`` doc.
@@ -127,6 +131,8 @@ def _check_trust(rel: str, fm: dict, now: datetime, errors: list, warnings: list
             errors.append(f"{rel}: generated.at {gen.get('at')!r} is not ISO 8601 with UTC offset")
 
     human_verified = False
+    human_current = False
+    gen_at = parse_datetime(gen.get("at")) if isinstance(gen, dict) else None
     for ev in verified_events(fm):
         if not isinstance(ev, dict):
             errors.append(f"{rel}: verified entry {ev!r} is not a {{ by, at }} mapping")
@@ -136,12 +142,29 @@ def _check_trust(rel: str, fm: dict, now: datetime, errors: list, warnings: list
             errors.append(f"{rel}: verified.by {by!r} is not a §7 actor")
         elif by.startswith("human:"):
             human_verified = True
-        if parse_datetime(ev.get("at")) is None:
+        ev_at = parse_datetime(ev.get("at"))
+        if ev_at is None:
             errors.append(f"{rel}: verified.at {ev.get('at')!r} is not ISO 8601 with UTC offset")
+        elif isinstance(by, str) and by.startswith("human:") and gen_at is not None and ev_at >= gen_at:
+            human_current = True
     if status == "stable" and not human_verified:
         errors.append(
             f"{rel}: 'status: stable' requires a 'verified' entry by a human: actor "
             f"(machine/AI review only qualifies for 'draft')"
+        )
+    elif status == "stable" and gen_at is not None and not human_current:
+        errors.append(
+            f"{rel}: 'status: stable' but every human verified.at predates "
+            f"generated.at {gen.get('at')!r} — the verification covers an "
+            f"older revision; re-verify or demote to 'draft'"
+        )
+    elif (
+        status == "draft" and gen_at is not None and human_verified
+        and not human_current
+    ):
+        warnings.append(
+            f"{rel}: human verification predates generated.at "
+            f"{gen.get('at')!r} — awaiting re-verification"
         )
 
     if "stale_after" in fm:
