@@ -5,9 +5,9 @@ description: Periodic Gemini-generated win/lose pattern report across recent tra
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=gemini_pattern_analysis&page=table
 lilith_safe: false
 status: stable
-generated: { by: devin/cloud, at: 2026-09-03T03:20:14Z }
-verified: { by: human:jun, at: 2026-09-03T03:20:14Z }
-stale_after: 2027-03-02T03:20:14Z
+generated: { by: devin/local, at: 2026-09-17T17:36:54Z }
+verified: { by: human:jun, at: 2026-09-17T17:36:54Z }
+stale_after: 2027-03-17T17:36:54Z
 tags: [echidna, bigquery, gemini, analysis, patterns]
 dataset: magi_core
 table_type: BASE TABLE
@@ -17,8 +17,8 @@ Periodic batch analysis where Gemini summarizes winning vs losing trade patterns
 Cross-unit processed intelligence — `lilith_safe: false`.
 
 This is **generic** pattern analysis (logical / quantitative), *not* causal
-analysis: causal analysis is written by SEKHMET to
-[fugu-sequential-patterns](fugu-sequential-patterns.md), and the SQL-based
+analysis: causal analysis was written by the retired SEKHMET analyzer to
+`fugu_sequential_patterns` (deprecated 2026-09-17), and the SQL-based
 static causal classification lives in [daphne-feedback](daphne-feedback.md).
 See [causal analysis ownership](/system/plm-units/index.md#causal-analysis-ownership).
 

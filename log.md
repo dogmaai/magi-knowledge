@@ -1,6 +1,28 @@
 # Bundle Update Log
 
 ## 2026-09-17
+* **Deprecation**: Retired the SEKHMET stack with Jun's approval —
+  [sekhmet](/system/plm-units/sekhmet.md) (no `fugu_sequential_patterns` row
+  since 2026-09-01; graceful-skip masked failures) and
+  [sekhmet-meta-verifier](/system/plm-units/sekhmet-meta-verifier.md) (first
+  scheduled run exited non-zero, `sekhmet_reviews` still empty) are
+  `deprecated`, as are their artifact docs
+  [fugu-sequential-patterns](/system/echidna-tables/fugu-sequential-patterns.md)
+  and [sekhmet-reviews](/system/echidna-tables/sekhmet-reviews.md). The LLM
+  causal-analysis role is unassigned; generic pattern analysis stays with
+  `magi-gemini-analyzer` and static classification with `magi-daphne-analyzer`.
+  Infra teardown (jobs, schedulers, `lib/fugu.js`, deploy.yml, dead `sakana`
+  personality in session.js) is pending. `magi-thought-quality-ranker` remains
+  the only Sakana consumer, under retirement review.
+* **Deprecation**: Sakana fully abolished per Jun's 2026-09-17 decision —
+  `magi-thought-quality-ranker` retired as Sakana's last consumer and
+  [thought-quality-scores](/system/echidna-tables/thought-quality-scores.md)
+  deprecated (its documented table never existed; the ranker actually wrote
+  `fugu_thought_quality_scores`, which has no consumer). magi-core removal
+  PR: `dogmaai/magi-core#477`. Sakana has no active consumer in MAGI.
+  Jun cancelled the Sakana account on 2026-09-17, so the `SAKANA_API_KEY`
+  credential is now dead and any leftover scheduled job can only fail
+  fast at the API call.
 * **Policy**: Added [Automated PR review bots](/COLLABORATION.md#automated-pr-review-bots)
   to COLLABORATION.md — the `auto-review.yml` Mistral/template `COMMENT`
   reviews are reference-only, never approve, and never satisfy independent

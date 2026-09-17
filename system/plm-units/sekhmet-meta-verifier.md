@@ -3,15 +3,22 @@ type: Analysis Component
 title: SEKHMET Meta Verifier
 description: Deployed weekly cost-bounded SHADOW reviewer for evaluated hard cases.
 lilith_safe: false
-status: stable
-generated: { by: "process:github-actions", at: 2026-09-08T09:17:58Z }
-verified: { by: "human:jun", at: 2026-09-08T09:17:58Z }
-stale_after: 2027-03-07T09:17:58Z
+status: deprecated
+generated: { by: devin/local, at: 2026-09-17T17:36:54Z }
+verified: { by: human:jun, at: 2026-09-17T17:36:54Z }
 tags: [sekhmet, sakana, fugu, shadow, hard-cases, offline-analysis]
 provider: sakana
 model: fugu-ultra
 unit_status: shadow-active
 ---
+
+> **Deprecated.** Retired on 2026-09-17 with Jun's approval, before the
+> approved four-run evaluation checkpoint. The first scheduled run
+> (`magi-sekhmet-meta-verifier-cxd5b`, 2026-09-12) exited non-zero and the
+> job never produced a `sekhmet_reviews` row — the review ledger remains
+> empty. The audit-only design, cost envelope and validation-SQL guardrails
+> below are kept for historical reference; reviving hard-case review requires
+> a new specification, Jun approval and independent review.
 
 # Status
 
