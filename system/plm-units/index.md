@@ -16,7 +16,6 @@ This whole tree is **cross-unit by definition** and therefore
 | [MELCHIOR-1](melchior-1.md) | google | gemini-3.8-flash | 0.954 | `magi-core-gemini` | shadow (`TRADE_MODE=SHADOW`) | Systematic multi-factor analyst |
 | [CASPER](casper.md) | deepseek | deepseek-v4-flash | 0.999 | `magi-core-deepseek` | shadow (`TRADE_MODE=SHADOW`) | Aggressive momentum hunter |
 | [QWEN](qwen.md) | qwen | qwen-plus | 0.5 base / 0.75 effective | `magi-core-qwen` | active | Independent systematic reasoner |
-| [LILITH](lilith.md) | lilith | lilith-v1.0-b2-prod | 0.5 | `magi-core-lilith` (canary) | active | Independent fine-tuned reasoner |
 | [TYPHON](typhon.md) | kimi | kimi-k2.6 | 0.5 base / 0.75 effective | `magi-core-kimi` | active | Contrarian deep-value analyst |
 | [ADAM](adam.md) | ollama | qwen2.5:7b | 1.0 | `magi-core-adam` | active | Collaborative analyst |
 | [PROMETHEUS](prometheus.md) | openai | gpt-5.6-luna | 0.5 | `magi-core-openai` | active | Probability-calibrated strategist |
@@ -26,8 +25,7 @@ This whole tree is **cross-unit by definition** and therefore
 `UNIT_WEIGHT_MULTIPLIERS` 1.5x boost, giving them an *effective* budget weight
 of `0.75` at runtime. CASPER and MELCHIOR-1 are in `TRADE_MODE=SHADOW`: they
 continue generating decisions and recording to `trades_shadow` /
-`thoughts_shadow`, but do not submit live broker orders. LILITH's canary sets
-`LILITH_AUTOTRADE=0`.
+`thoughts_shadow`, but do not submit live broker orders.
 
 TIARA remains documented as the legacy VIX-only Ollama identity; see
 [TIARA](tiara.md). The `magi-vix-oracle` job uses the Ollama provider with
@@ -39,12 +37,12 @@ TIARA remains documented as the legacy VIX-only Ollama identity; see
 |---|---|---|---|
 | [SEKHMET](sekhmet.md) | sakana | fugu-ultra | Offline sequential / **causal** outcome analysis (`magi-fugu-analyzer`); retired from the live roster |
 
-# Proposed SHADOW extensions
+# SHADOW extensions
 
-* [SEKHMET Meta Verifier](sekhmet-meta-verifier.md) is a `draft`, code-merged but
-  not deployed extension. It reviews a bounded batch of evaluated hard cases and
-  writes audit-only findings. It is not a live PLM and cannot affect orders,
-  guards, sizing, PLM prompts, or LILITH.
+* [SEKHMET Meta Verifier](sekhmet-meta-verifier.md) is a deployed, cost-bounded
+  SHADOW reviewer (`magi-sekhmet-meta-verifier`, weekly). It reviews a bounded
+  batch of evaluated hard cases and writes audit-only findings. It is not a live
+  PLM and cannot affect orders, guards, sizing, or PLM prompts.
 
 # Causal analysis ownership
 
@@ -63,17 +61,21 @@ Role boundaries, so the analyzers are not confused with each other:
 | [ANIMA](anima.md) | groq | DEPRECATED (#157) | [TYPHON](typhon.md) |
 | [ORACLE](oracle.md) | together | DEPRECATED (#139) | — |
 | [ZEROEL](zeroel.md) | xai | RETIRED (cost) | — |
+| [LILITH](lilith.md) | lilith | RETIRED (inference backend decommissioned) | — |
 
-`DEPRECATED_PROVIDERS = {together, groq, xai, sakana}` are excluded from
+`DEPRECATED_PROVIDERS = {together, groq, xai, sakana, lilith}` are excluded from
 budget-weight loading so they do not dilute active units' allocation. ZEROEL was
 retired because `xai` is in `DEPRECATED_PROVIDERS`; the disabled
 `magi-core-xai` PLM job cost approximately $47/month. `sakana` is listed there
 because SEKHMET left the live roster, but it still runs as the offline causal
-analyzer above.
+analyzer above. `lilith` is listed there because the LILITH canary was paused
+and `lilith-inference-svc` was decommissioned; the `magi-core-lilith` job and
+`magi-lilith-gate-monitor` were removed from `deploy.yml`.
 
-# Relationship to LILITH
+# Relationship to LILITH (historical)
 
-QWEN is the DashScope `qwen` provider and LILITH is the fine-tuned `lilith`
-provider; they are separate unit names and slots. Per the
+QWEN is the DashScope `qwen` provider and LILITH was the fine-tuned `lilith`
+provider; they were separate unit names and slots. Per the
 [clean-source rule](/_lilith_safe/constitution/clean-source-rule.md), LILITH
-ignores every other unit in this registry.
+ignored every other unit in this registry. The `_lilith_safe/` tree remains
+frozen as the historical training-data boundary.
