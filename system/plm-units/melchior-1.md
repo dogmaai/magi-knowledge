@@ -4,9 +4,9 @@ title: MELCHIOR-1
 description: Systematic multi-factor analyst; runs HERMES intelligence collection.
 lilith_safe: false
 status: stable
-generated: { by: devin/cloud, at: 2026-09-04T07:50:05Z }
-verified: { by: human:jun, at: 2026-09-04T07:50:05Z }
-stale_after: 2027-03-03T07:50:05Z
+generated: { by: devin/local, at: 2026-09-17T17:36:54Z }
+verified: { by: human:jun, at: 2026-09-17T17:36:54Z }
+stale_after: 2027-03-17T17:36:54Z
 tags: [plm, shadow, google, gemini, hermes]
 provider: google
 model: gemini-3.8-flash
@@ -25,8 +25,8 @@ and refresh HERMES data, but orders are recorded to shadow tables rather than
 submitted to the broker.
 
 MELCHIOR-1 owns **logical / quantitative and generic pattern analysis**. It is
-**not** the causal-analysis owner — causal analysis belongs to
-[SEKHMET](sekhmet.md) (Sakana `fugu-ultra`, `magi-fugu-analyzer`). See
+**not** the causal-analysis owner — that role belonged to the retired SEKHMET
+analyzer (deprecated 2026-09-17) and is currently unassigned. See
 [causal analysis ownership](index.md#causal-analysis-ownership).
 
 # Configuration

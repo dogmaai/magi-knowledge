@@ -1,6 +1,19 @@
 # Bundle Update Log
 
 ## 2026-09-17
+* **Deprecation**: Retired the SEKHMET stack with Jun's approval —
+  [sekhmet](/system/plm-units/sekhmet.md) (no `fugu_sequential_patterns` row
+  since 2026-09-01; graceful-skip masked failures) and
+  [sekhmet-meta-verifier](/system/plm-units/sekhmet-meta-verifier.md) (first
+  scheduled run exited non-zero, `sekhmet_reviews` still empty) are
+  `deprecated`, as are their artifact docs
+  [fugu-sequential-patterns](/system/echidna-tables/fugu-sequential-patterns.md)
+  and [sekhmet-reviews](/system/echidna-tables/sekhmet-reviews.md). The LLM
+  causal-analysis role is unassigned; generic pattern analysis stays with
+  `magi-gemini-analyzer` and static classification with `magi-daphne-analyzer`.
+  Infra teardown (jobs, schedulers, `lib/fugu.js`, deploy.yml, dead `sakana`
+  personality in session.js) is pending. `magi-thought-quality-ranker` remains
+  the only Sakana consumer, under retirement review.
 * **Policy**: Added [Automated PR review bots](/COLLABORATION.md#automated-pr-review-bots)
   to COLLABORATION.md — the `auto-review.yml` Mistral/template `COMMENT`
   reviews are reference-only, never approve, and never satisfy independent

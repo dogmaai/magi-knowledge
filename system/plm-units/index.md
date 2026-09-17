@@ -35,16 +35,16 @@ TIARA remains documented as the legacy VIX-only Ollama identity; see
 
 # Offline analysis units
 
-| Unit | Provider | Model | Role |
-|---|---|---|---|
-| [SEKHMET](sekhmet.md) | sakana | fugu-ultra | Offline sequential / **causal** outcome analysis (`magi-fugu-analyzer`); retired from the live roster |
+None currently — the SEKHMET offline analyzer was retired on 2026-09-17 (see
+*Deprecated units* below).
 
 # Proposed SHADOW extensions
 
-* [SEKHMET Meta Verifier](sekhmet-meta-verifier.md) is a `draft`, code-merged but
-  not deployed extension. It reviews a bounded batch of evaluated hard cases and
-  writes audit-only findings. It is not a live PLM and cannot affect orders,
-  guards, sizing, PLM prompts, or LILITH.
+* The SEKHMET Meta Verifier (`sekhmet-meta-verifier.md`, deprecated
+  2026-09-17) was a deployed SHADOW extension that reviewed a bounded batch
+  of evaluated hard cases and wrote audit-only findings. Its first scheduled
+  run exited non-zero and it produced no rows; it was retired before the
+  approved four-run evaluation checkpoint.
 
 # Causal analysis ownership
 
@@ -52,7 +52,7 @@ Role boundaries, so the analyzers are not confused with each other:
 
 | Owner | Model / method | Analysis type | Output |
 |---|---|---|---|
-| [SEKHMET](sekhmet.md) (`magi-fugu-analyzer`) | Sakana `fugu-ultra`, `reasoning_effort=high` | **Causal analysis** — sequential/time-ordered causal outcome reasoning (`causal_insights`, win/lose streaks, regime transitions) | [fugu-sequential-patterns](/system/echidna-tables/fugu-sequential-patterns.md) |
+| ~~SEKHMET~~ (`magi-fugu-analyzer`, retired 2026-09-17) | Sakana `fugu-ultra`, `reasoning_effort=high` | ~~**Causal analysis** — sequential/time-ordered causal outcome reasoning~~ — role retired; no LLM causal owner at present | `fugu_sequential_patterns` (deprecated) |
 | [MELCHIOR-1](melchior-1.md) (`magi-gemini-analyzer`) | Gemini (`gemini-3.8-flash`, AI Studio) | **Generic pattern analysis / logical & quantitative analysis** — WIN/LOSE reasoning tendencies. *Not* the causal-analysis owner | [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md) |
 | DAPHNE (`magi-daphne-analyzer`) | BigQuery SQL `REGEXP_CONTAINS` + static `IS_CAUSAL` map (Gemini used only for why-lost narrative / hint rewrites) | **Static causal classification** — LOSE trades into the LP taxonomy, causal vs non-causal by rule | [daphne-feedback](/system/echidna-tables/daphne-feedback.md) |
 
@@ -63,13 +63,15 @@ Role boundaries, so the analyzers are not confused with each other:
 | [ANIMA](anima.md) | groq | DEPRECATED (#157) | [TYPHON](typhon.md) |
 | [ORACLE](oracle.md) | together | DEPRECATED (#139) | — |
 | [ZEROEL](zeroel.md) | xai | RETIRED (cost) | — |
+| SEKHMET | sakana | RETIRED 2026-09-17 (offline analyzer produced no output for 16d; Meta Verifier first run failed, 0 rows) | — (LLM causal analysis unassigned) |
 
 `DEPRECATED_PROVIDERS = {together, groq, xai, sakana}` are excluded from
 budget-weight loading so they do not dilute active units' allocation. ZEROEL was
 retired because `xai` is in `DEPRECATED_PROVIDERS`; the disabled
 `magi-core-xai` PLM job cost approximately $47/month. `sakana` is listed there
-because SEKHMET left the live roster, but it still runs as the offline causal
-analyzer above.
+because SEKHMET left the live roster; its remaining offline analyzer roles were
+retired on 2026-09-17. Sakana's only remaining consumer is the semi-monthly
+`magi-thought-quality-ranker` job (also under retirement review).
 
 # Relationship to LILITH
 

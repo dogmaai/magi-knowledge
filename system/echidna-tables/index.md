@@ -36,8 +36,8 @@ Two write-path conventions matter:
 * [isabel-patterns](isabel-patterns.md) - ISABEL historical win/lose centroids.
 * [thought-quality-scores](thought-quality-scores.md) - Per-thought quality scoring.
 * [gemini-pattern-analysis](gemini-pattern-analysis.md) - Periodic Gemini *generic* win/lose pattern report (not causal analysis).
-* [fugu-sequential-patterns](fugu-sequential-patterns.md) - SEKHMET/`fugu-ultra` sequential **causal** outcome analysis.
-* [sekhmet-reviews](sekhmet-reviews.md) - SHADOW-only hard-case review ledger; table created and visually verified by Jun on 2026-09-08, first inserted SHADOW row pending verification.
+* `fugu_sequential_patterns` (deprecated 2026-09-17) - SEKHMET/`fugu-ultra` sequential **causal** outcome analysis; last row 2026-09-01, producer retired.
+* `sekhmet_reviews` (deprecated 2026-09-17) - SHADOW-only hard-case review ledger; created 2026-09-08, never received a row before the producer was retired.
 * [daphne-feedback](daphne-feedback.md) - DAPHNE LP-taxonomy loss classification with a static causal flag (SQL-based).
 
 # Ops, config & governance

@@ -4,17 +4,21 @@ title: fugu_sequential_patterns
 description: SEKHMET (Sakana fugu-ultra) offline sequential/causal outcome analysis of recent trades.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=fugu_sequential_patterns&page=table
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-08-20T05:49:46Z }
-verified: { by: human:jun, at: 2026-08-20T05:49:46Z }
-stale_after: 2027-02-16T05:49:46Z
+status: deprecated
+generated: { by: devin/local, at: 2026-09-17T17:36:54Z }
+verified: { by: human:jun, at: 2026-09-17T17:36:54Z }
 tags: [echidna, bigquery, sakana, fugu, causal, analysis]
 dataset: magi_core
 table_type: BASE TABLE
 ---
 
-Output of the [SEKHMET](/system/plm-units/sekhmet.md) causal analyzer
-(`magi-fugu-analyzer`, Mon & Fri 23:30 ET). One row per run: the last 90 days of
+> **Deprecated.** 2026-09-17: the producing SEKHMET analyzer was retired. The
+> last written row is dated 2026-09-01 — later runs exited 0 via the job's
+> graceful-skip path without writing. Kept for historical schema reference
+> only; the 22 existing rows remain queryable.
+
+Output of the retired SEKHMET causal analyzer
+(`magi-fugu-analyzer`, formerly Mon & Fri 23:30 ET). One row per run: the last 90 days of
 WIN/LOSE trades × thoughts read in strict timestamp order and analyzed by Sakana
 `fugu-ultra` (`reasoning_effort=high`). This is MAGI's **causal** analysis
 artifact; [gemini-pattern-analysis](gemini-pattern-analysis.md) is the generic
