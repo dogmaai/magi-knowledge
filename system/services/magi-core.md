@@ -161,10 +161,9 @@ revision; magi-core is adding UTC.
 | `magi-isabel-cache` | `magi-isabel-cache-daily` | `0 8 * * 1-5` (America/New_York) | Daily ISABEL pre-compute |
 | `magi-isabel-briefing` | `magi-isabel-briefing-daily` | `30 13 * * 1-5` (UTC) | ISABEL morning briefing |
 | `magi-position-guard` | `magi-position-guard-scheduler` | `*/15 9-16 * * 1-5` (America/New_York) | Intra-day exit enforcement |
-| `magi-shadow-evaluator` | `magi-shadow-evaluator-daily` | `30 21 * * 1-5` (America/New_York) | LILITH shadow trade evaluation |
+| `magi-shadow-evaluator` | `magi-shadow-evaluator-daily` | `30 21 * * 1-5` (America/New_York) | Shadow trade evaluation (`TRADE_MODE=SHADOW` units; legacy LILITH rows) |
 | `magi-sync-embeddings` | `magi-sync-embeddings-daily` | `0 8 * * 1-5` (America/New_York) | Thought embedding sync |
 | `magi-optuna-job` | `magi-optuna-optimizer` | `0 6 * * 1` (UTC) | Optuna batch optimization (see deploy.yml) |
-| `magi-lilith-gate-monitor` | `magi-lilith-gate-monitor-daily` | `30 22 * * 1-5` (America/New_York) | LILITH adapter drift check |
 | `magi-sm-token-rotate` | `magi-sm-token-rotate-30min` | `*/30 * * * *` (UTC) | Rotate MooMoo Synthetic Monitoring token |
 | `magi-fred-updater` | `magi-fred-updater-daily` | `0 2 * * *` (UTC) | Daily FRED macro data fetch |
 | `magi-watchdog` | `magi-watchdog-daily` | `0 23 * * 1-5` (UTC) | Trade activity monitor |

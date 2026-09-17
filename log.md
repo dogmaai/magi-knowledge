@@ -100,6 +100,25 @@
 * **Correction**: the order_intents verification record now names the
   immutable magi-core merge commit `c5dc811976539e855a404d2bb16d98a55bf1ab48`
   alongside the (now-deletable) branch name (Codex P1 on #65).
+* **Retirement**: [LILITH](/system/plm-units/lilith.md) moved to
+  `unit_status: retired` — the canary (`magi-core-lilith`, `LILITH_AUTOTRADE=0`)
+  was paused and `lilith-inference-svc` was decommissioned; `lilith` joined
+  `DEPRECATED_PROVIDERS` in `magi-core/lib/config.js` / `optuna_utils.py`, and
+  the `magi-core-lilith` + `magi-lilith-gate-monitor` jobs left `deploy.yml`.
+  Moved `stable` → `draft` pending `human:jun` re-verification.
+* **Retirement**: [lilith-training](/system/services/lilith-training.md) marked
+  retired — the pipeline no longer feeds a deployed model; the
+  `asia-southeast1` Cloud Run jobs are decommission candidates and
+  `dogmaai/lilith-training` can be archived. `stable` → `draft`.
+* **Fix**: [PLM unit registry](/system/plm-units/index.md) — LILITH moved to
+  the deprecated-units table; the SEKHMET Meta Verifier entry corrected from
+  "draft, code-merged but not deployed" to deployed weekly
+  (`magi-sekhmet-meta-verifier`, per the Jun-verified unit doc, deployed
+  2026-09-08); `DEPRECATED_PROVIDERS` list gained `lilith`; the LILITH
+  relationship note re-tensed as historical.
+* **Fix**: [magi-core](/system/services/magi-core.md) job table — removed the
+  retired `magi-lilith-gate-monitor` row and re-scoped `magi-shadow-evaluator`
+  to all `TRADE_MODE=SHADOW` units.
 
 ## 2026-09-16
 * **Enhancement**: [magi-moomoo](/system/services/magi-moomoo.md) —

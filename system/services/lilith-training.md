@@ -1,17 +1,21 @@
 ---
 type: Service
 title: lilith-training
-description: LILITH fine-tuning + anti-hallucination DPO pipeline (Qwen2.5-3B QLoRA).
+description: Retired LILITH fine-tuning + anti-hallucination DPO pipeline (Qwen2.5-3B QLoRA).
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-06-19T01:02:48Z }
-verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
-stale_after: 2026-12-16T01:02:48Z
-tags: [service, lilith, training, dpo, qlora]
+status: draft
+generated: { by: devin/cloud, at: 2026-09-17T17:34:00Z }
+tags: [service, lilith, training, dpo, qlora, retired]
 repo: dogmaai/lilith-training
 ---
 
 # Overview
+
+> **Retired (2026-09).** The LILITH unit was retired from the live roster and
+> `lilith-inference-svc` was decommissioned, so this pipeline no longer feeds a
+> deployed model. Its Cloud Run jobs in `asia-southeast1` (including the
+> `*-poc` / `*-diag` / `*-smoke` experiments and the dormant `*-prod` jobs) are
+> decommission candidates; `dogmaai/lilith-training` itself can be archived.
 
 The pipeline that produces the [LILITH](/system/plm-units/lilith.md) model:
 Qwen2.5-3B QLoRA on Cloud Run Jobs + NVIDIA L4 GPU, followed by
