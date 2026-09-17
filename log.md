@@ -14,6 +14,12 @@
   Infra teardown (jobs, schedulers, `lib/fugu.js`, deploy.yml, dead `sakana`
   personality in session.js) is pending. `magi-thought-quality-ranker` remains
   the only Sakana consumer, under retirement review.
+* **Deprecation**: Sakana fully abolished per Jun's 2026-09-17 decision —
+  `magi-thought-quality-ranker` retired as Sakana's last consumer and
+  [thought-quality-scores](/system/echidna-tables/thought-quality-scores.md)
+  deprecated (its documented table never existed; the ranker actually wrote
+  `fugu_thought_quality_scores`, which has no consumer). magi-core removal
+  PR: `dogmaai/magi-core#477`. Sakana has no active consumer in MAGI.
 * **Policy**: Added [Automated PR review bots](/COLLABORATION.md#automated-pr-review-bots)
   to COLLABORATION.md — the `auto-review.yml` Mistral/template `COMMENT`
   reviews are reference-only, never approve, and never satisfy independent

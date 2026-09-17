@@ -34,7 +34,7 @@ Two write-path conventions matter:
 * [focus-symbols](focus-symbols.md) - ISABEL daily focus list; the dynamic HERMES collection universe.
 * [consensus-signals](consensus-signals.md) - Cross-unit consensus detector.
 * [isabel-patterns](isabel-patterns.md) - ISABEL historical win/lose centroids.
-* [thought-quality-scores](thought-quality-scores.md) - Per-thought quality scoring.
+* `thought_quality_scores` (deprecated 2026-09-17) - Per-thought quality scoring; documented table never existed — producer actually wrote `fugu_thought_quality_scores` (retired).
 * [gemini-pattern-analysis](gemini-pattern-analysis.md) - Periodic Gemini *generic* win/lose pattern report (not causal analysis).
 * `fugu_sequential_patterns` (deprecated 2026-09-17) - SEKHMET/`fugu-ultra` sequential **causal** outcome analysis; last row 2026-09-01, producer retired.
 * `sekhmet_reviews` (deprecated 2026-09-17) - SHADOW-only hard-case review ledger; created 2026-09-08, never received a row before the producer was retired.

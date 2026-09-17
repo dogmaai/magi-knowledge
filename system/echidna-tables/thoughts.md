@@ -5,9 +5,9 @@ description: LLM reasoning log — one row per decision, with action, reasoning,
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=thoughts&page=table
 lilith_safe: false
 status: stable
-generated: { by: devin/cloud, at: 2026-06-19T01:02:48Z }
-verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
-stale_after: 2026-12-16T01:02:48Z
+generated: { by: devin/local, at: 2026-09-17T17:36:54Z }
+verified: { by: human:jun, at: 2026-09-17T17:36:54Z }
+stale_after: 2027-03-17T17:36:54Z
 tags: [echidna, bigquery, thoughts, reasoning, core]
 dataset: magi_core
 table_type: BASE TABLE
@@ -44,7 +44,7 @@ miner reads the view.
 
 * `thought_id` ← [trades](trades.md).thought_id
 * `session_id` → [sessions](sessions.md).session_id
-* `thought_id` → [thought-quality-scores](thought-quality-scores.md).thought_id
+* `thought_id` → `thought_quality_scores` (deprecated 2026-09-17).thought_id
 
 # Examples
 

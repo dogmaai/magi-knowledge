@@ -70,8 +70,9 @@ budget-weight loading so they do not dilute active units' allocation. ZEROEL was
 retired because `xai` is in `DEPRECATED_PROVIDERS`; the disabled
 `magi-core-xai` PLM job cost approximately $47/month. `sakana` is listed there
 because SEKHMET left the live roster; its remaining offline analyzer roles were
-retired on 2026-09-17. Sakana's only remaining consumer is the semi-monthly
-`magi-thought-quality-ranker` job (also under retirement review).
+retired on 2026-09-17, when the semi-monthly `magi-thought-quality-ranker`
+job — Sakana's last consumer — was retired with them. Sakana has no active
+consumer in MAGI.
 
 # Relationship to LILITH
 

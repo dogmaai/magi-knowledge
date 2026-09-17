@@ -134,8 +134,8 @@ separate names) as defined in `magi-core/.github/workflows/deploy.yml`:
 | `magi-fugu-analyzer` | `magi-fugu-analyzer-daily` | `30 23 * * 1,5` (America/New_York) | ~~SEKHMET~~ offline sequential / **causal** outcome analysis, Sakana `fugu-ultra` — retired 2026-09-17; no `fugu_sequential_patterns` row since 2026-09-01, teardown pending |
 | `magi-gemini-analyzer` | `magi-gemini-analyzer-daily` | `0 14 * * 1-5` (UTC) | Gemini **generic** WIN/LOSE pattern analysis (AI Studio `gemini-3.8-flash`); not causal analysis → [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md) |
 | `magi-daphne-analyzer` | `magi-daphne-analyzer-daily` | `0 22 * * 1-5` (America/New_York) | LP-taxonomy classification of LOSE trades in BigQuery SQL + static `IS_CAUSAL` flag → [daphne-feedback](/system/echidna-tables/daphne-feedback.md) |
-| `magi-thought-outcome-analyzer` | `magi-thought-outcome-analyzer-daily` | `0 23 * * 1-5` (America/New_York) | Links thoughts to realized outcomes (feeds the Fugu pass that follows at 23:30 ET) |
-| `magi-thought-quality-ranker` | `magi-thought-quality-ranker` | `0 0 1,15 * *` (UTC) | Semi-monthly thought quality ranking (`SAKANA_MODEL=fugu-ultra`) → [thought-quality-scores](/system/echidna-tables/thought-quality-scores.md) |
+| `magi-thought-outcome-analyzer` | `magi-thought-outcome-analyzer-daily` | `0 23 * * 1-5` (America/New_York) | Links thoughts to realized outcomes (formerly fed the retired 23:30 ET Fugu pass) |
+| `magi-thought-quality-ranker` | `magi-thought-quality-ranker` | `0 0 1,15 * *` (UTC) | ~~Semi-monthly thought quality ranking~~ (`SAKANA_MODEL=fugu-ultra`) — retired 2026-09-17 with the Sakana stack; wrote `fugu_thought_quality_scores` (no consumer) |
 | `magi-evaluator` | `magi-evaluator-daily` | `0 10 * * *` (Asia/Tokyo) | Trade outcome evaluation (daily) |
 
 Role boundaries: see
