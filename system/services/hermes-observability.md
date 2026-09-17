@@ -4,9 +4,9 @@ title: HERMES observability (Grafana)
 description: The magi-hermes-intelligence Grafana Cloud dashboard — what it shows, where the data comes from, and how it is provisioned and verified.
 lilith_safe: false
 status: draft
-generated: { by: devin/local, at: 2026-09-16T01:30:00Z }
-verified: { by: devin/local, at: 2026-09-16T01:30:00Z }
-stale_after: 2027-03-16T01:30:00Z
+generated: { by: devin/local, at: 2026-09-17T00:29:00Z }
+verified: [{ by: devin/local, at: 2026-09-16T01:30:00Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }]
+stale_after: 2027-03-17T00:29:00Z
 tags: [grafana, observability, hermes, dashboard, operations]
 repo: dogmaai/magi-core
 ---
@@ -62,7 +62,12 @@ explicit up/down and failure surface: last-run age, last run `status`
 error rate today (`failed / (attempted - skipped)`, matching the job's own
 degraded rule), outcomes-per-run timeseries and a recent-runs table.
 `no_news` (Brave returned nothing) is deliberately not counted as an
-error. **No rows at all = the job is not running.**
+error. **No rows at all means the ledger is empty — do NOT read that alone as
+"the job is not running"**: inserts are non-blocking by design, so a missing
+or unwritable `hermes_collection_runs` table (rollout gap, permissions,
+transient BQ failure) produces the same empty-dashboard state as a stopped
+job. Check the `magi-hermes-refresh` job logs for `[HERMES:RUN:BQ]` insert
+errors before concluding the job is down.
 
 **Collection Volume / Sentiment Intelligence / Broker Reality /
 Cost & Quality** — rows collected per hour per output table, latest
@@ -75,9 +80,9 @@ status values.
 
 | Symptom | Meaning |
 |---|---|
-| Last-run age red / no rows | `magi-hermes-refresh` not running or crashing before the run row write (a fatal error writes `status='error'`; a crash before that leaves no row). |
-| `status=error` row | Fatal job failure — see `error_message`. |
-| `status=degraded` | `failed >= ceil(attempted/2)` on active (non-skipped) attempts — same rule as the job's Telegram alert. |
+| Last-run age red / no rows | `magi-hermes-refresh` not running, crashing before the run row write (a fatal error writes `status='error'`; a crash before that leaves no row), **or** the ledger missing/unwritable — the writer logs `[HERMES:RUN:BQ]` insert failures non-blockingly, so check job logs before concluding the job is down. |
+| `status=error` row | Fatal job failure — see `error_message`. Also covers collector-level outages (`collectionError`: missing `BRAVE_SEARCH_API_KEY`, universe-resolution throw) since magi-core#470. |
+| `status=degraded` | `failed >= ceil((attempted - skipped)/2)` — half or more of the *active* (non-skipped) attempts failed — same rule as the job's Telegram alert (corrected denominator, magi-core#470). |
 | Freshness stat red without failed runs | Collection succeeded but upstream data is stale (e.g. snapshot phase empty) or the panel table is not being written. |
 | Coverage < 100% | Focus-universe symbols missing fresh `pre_trade_intelligence` rows — correlate with `no_news`/`failed`. |
 

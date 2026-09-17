@@ -1,5 +1,51 @@
 # Bundle Update Log
 
+## 2026-09-17
+* **Fix**: `scripts/okf_lint.py` — `CROSS_UNIT_NAMES` synced with the PLM
+  registry: added `adam`, `qwen`, `sekhmet` (a non-detector `_lilith_safe`
+  doc naming them previously passed the linter — Codex P1 on #63).
+* **Enhancement**: `scripts/check_unit_detector_sync.py` now also fails CI
+  when `okf_lint.CROSS_UNIT_NAMES` drifts from the registry, closing the
+  detector-vs-linter gap permanently.
+* **Boundary fix**: the widened linter immediately caught a live leak —
+  [echidna-priors](/_lilith_safe/distributions/echidna-priors.md) spelled
+  the renamed unit's name in the ISABEL data-sufficiency scope note. The
+  note now describes the pre-rename own-lineage label without naming it
+  (the exact filter string stays in `lilith-training`'s code); moved to
+  `draft` pending re-verification.
+* **Trust metadata**: [cross-unit detector](/_lilith_safe/hallucination-patterns/cross-unit.md)
+  moved `stable` → `draft` — the September unit_names additions were never
+  human-verified while the June `verified` event predated them (Codex P1 on
+  #63). Pending `human:jun` re-verification.
+* **Fix**: [trades-unverifiable](/system/echidna-tables/trades-unverifiable.md)
+  anti-join now uses the documented `order_id` key with `NOT EXISTS` (the
+  previous `id`-based snippet referenced a column absent from the published
+  [trades](/system/echidna-tables/trades.md) schema — Codex P2 on #63);
+  moved to `draft` pending re-verification.
+* **Fix**: [magi-moni](/system/services/magi-moni.md) now records the role
+  absorbed from the deprecated central-dogma (ported tools, policy engine,
+  OpenClaw/TIALA control — Codex P2 on #66); moved to `draft` pending
+  re-verification.
+* **Fix**: [hermes-observability](/system/services/hermes-observability.md)
+  no longer equates an empty `hermes_collection_runs` ledger with a stopped
+  job (missing/unwritable table produces the same state — check
+  `[HERMES:RUN:BQ]` job logs first), and records the corrected degraded
+  denominator `ceil((attempted - skipped)/2)` per magi-core#470 (Codex P2s
+  on #70).
+* **Fix**: [hermes-collection-runs](/system/echidna-tables/hermes-collection-runs.md)
+  cites magi-core `9ae8a966b732da5a735ad8c1a5554777fa07c215` (+ #470)
+  instead of the moving `feat/hermes-collection-runs` branch (Codex P1 on
+  #70); status formula and provenance refreshed.
+* **Fix**: [pre-trade-intelligence](/system/echidna-tables/pre-trade-intelligence.md)
+  records the magi-core revision (`9ae8a96`) behind the live-schema
+  correction and refreshes provenance timestamps (Codex P1/P2 on #71).
+* **Fix**: [echidna-tables index](/system/echidna-tables/index.md) qualifies
+  the blanket "schemas pulled live 2026-06-19" claim — post-June tables
+  carry per-document provenance (Codex P2 on #70).
+* **Correction**: the order_intents verification record now names the
+  immutable magi-core merge commit `c5dc811976539e855a404d2bb16d98a55bf1ab48`
+  alongside the (now-deletable) branch name (Codex P1 on #65).
+
 ## 2026-09-16
 * **Enhancement**: [magi-moomoo](/system/services/magi-moomoo.md) —
   documented the dual-route bridge path shipped in magi-moomoo#66 / PRs
@@ -73,7 +119,8 @@
   `UNKNOWN`/`LOST`/`RECONCILED` lifecycle, remark-embedded `intent_id` as the
   broker-side durable key, ORPHAN FILL alerting, and the fail-closed /
   reduce-only journal-write policy. Verified against `magi-core`
-  `fix/r10-order-intents` (`lib/order-intents.js`, `lib/moomoo.js`,
+  `fix/r10-order-intents` (merged as `c5dc811976539e855a404d2bb16d98a55bf1ab48`;
+  `lib/order-intents.js`, `lib/moomoo.js`,
   `trade-evaluator.mjs`) and the live `magi_core.order_intents` schema.
 * **Enhancement**: [magi-moomoo](/system/services/magi-moomoo.md) order-gate
   step 4 updated — the trusted-caller exemption is granted by OIDC subject

@@ -1,8 +1,12 @@
 # ECHIDNA — `magi_core` data catalog
 
 ECHIDNA is MAGI's BigQuery data warehouse: project `screen-share-459802`,
-dataset `magi_core`, location `US`. Schemas below were pulled live from
-`INFORMATION_SCHEMA` on 2026-06-19.
+dataset `magi_core`, location `US`. The core-table schemas were pulled live
+from `INFORMATION_SCHEMA` on 2026-06-19; tables added since carry their own
+per-document provenance (live `bq show` captures dated 2026-09-16 where
+noted, otherwise code-derived drafts pending live verification) — the
+per-doc frontmatter and schema notes are authoritative over this blanket
+statement.
 
 Two write-path conventions matter:
 

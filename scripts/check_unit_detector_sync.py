@@ -27,6 +27,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from okf_common import parse_frontmatter  # noqa: E402
+from okf_lint import CROSS_UNIT_NAMES  # noqa: E402
 
 REGISTRY = REPO_ROOT / "system" / "plm-units" / "index.md"
 DETECTOR = (
@@ -63,16 +64,22 @@ def detector_names() -> set[str]:
 def main() -> int:
     stems = registry_stems()
     detected = detector_names()
+    linter = {n.lower() for n in CROSS_UNIT_NAMES}
     missing = sorted(stems - detected)
+    linter_missing = sorted(stems - linter)
     extra = sorted(detected - stems - {"seraph", "balthasar"})
 
     print(f"registry stems : {sorted(stems)}")
     print(f"detector names : {sorted(detected)}")
+    print(f"linter names   : {sorted(linter)}")
 
     ok = True
     if missing:
         ok = False
         print(f"FAIL: registry units missing from detector list: {missing}")
+    if linter_missing:
+        ok = False
+        print(f"FAIL: registry units missing from okf_lint CROSS_UNIT_NAMES: {linter_missing}")
     if extra:
         # Retired/historical names are allowed to outlive the registry —
         # they must stay in the detector so old references still flag.

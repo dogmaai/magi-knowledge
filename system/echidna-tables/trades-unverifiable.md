@@ -4,10 +4,10 @@ title: trades_unverifiable
 description: Snapshot of trades rows that can never be proven real or fabricated (no broker ground truth survives).
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=trades_unverifiable&page=table
 lilith_safe: false
-status: stable
-generated: { by: devin/local, at: 2026-09-13T00:00:00Z }
-verified: { by: human:jun, at: 2026-09-13T00:00:00Z }
-stale_after: 2027-03-13T00:00:00Z
+status: draft
+generated: { by: devin/local, at: 2026-09-17T00:29:00Z }
+verified: [{ by: human:jun, at: 2026-09-13T00:00:00Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }]
+stale_after: 2027-03-17T00:29:00Z
 tags: [echidna, bigquery, trades, audit]
 dataset: magi_core
 table_type: BASE TABLE
@@ -23,9 +23,20 @@ Unlike `trades_quarantine` these rows are **not** marked `CONTAMINATED` —
 they are unproven, not disproven. Statistically ~9% are likely fabricated
 (the observed in-window never-fill rate), but which ones is unknowable.
 
-Consumers that need strictly verified data can anti-join
-(`id NOT IN (SELECT id FROM magi_core.trades_unverifiable)`); consumers that
-do not still get these rows with their recorded outcomes.
+Consumers that need strictly verified data can anti-join on the broker order
+id — the documented stable row key shared by both tables:
+
+```sql
+SELECT t.* FROM magi_core.trades t
+WHERE NOT EXISTS (
+  SELECT 1 FROM magi_core.trades_unverifiable u
+  WHERE u.order_id = t.order_id
+)
+```
+
+(`NOT EXISTS` rather than `NOT IN`, so a NULL `order_id` in the ledger cannot
+empty the result.) Consumers that do not filter still get these rows with
+their recorded outcomes.
 
 # Schema
 
