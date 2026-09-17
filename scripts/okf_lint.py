@@ -145,7 +145,7 @@ def _check_trust(rel: str, fm: dict, now: datetime, errors: list, warnings: list
         ev_at = parse_datetime(ev.get("at"))
         if ev_at is None:
             errors.append(f"{rel}: verified.at {ev.get('at')!r} is not ISO 8601 with UTC offset")
-        elif by.startswith("human:") and gen_at is not None and ev_at >= gen_at:
+        elif isinstance(by, str) and by.startswith("human:") and gen_at is not None and ev_at >= gen_at:
             human_current = True
     if status == "stable" and not human_verified:
         errors.append(
