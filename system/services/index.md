@@ -17,13 +17,13 @@ callers don't hard-code endpoints.
 | [aka-memory](aka-memory.md) | dogmaai/magi-moni | AKA long-term memory on TIALA + daily GCS backup. |
 | [magi-deep-research](magi-deep-research.md) | dogmaai/magi-deep-research | Weekday daily Deep Research brief via Devin Automation. |
 | [magi-model-health-check](magi-model-health-check.md) | dogmaai/magi-model-health-check | Periodic provider/model health checks. |
-| [lilith-training](lilith-training.md) | dogmaai/lilith-training | LILITH fine-tuning + anti-hallucination DPO pipeline. |
 
 # Retired
 
 | Service | Repo | Note |
 |---|---|---|
 | central-dogma | dogmaai/central-dogma (archived 2026-07-14) | Former NL gateway hosting ARIEL; role absorbed by magi-moni (AKA-1) + OpenClaw Gateway. Doc retained as `status: deprecated`. |
+| [lilith-training](lilith-training.md) | dogmaai/lilith-training (archive candidate) | Former LILITH fine-tuning + anti-hallucination DPO pipeline; retired 2026-09 with the LILITH unit. Doc retained as `status: draft` pending `human:jun` re-verification. |
 
 # Infrastructure
 
@@ -41,6 +41,8 @@ All services read/write ECHIDNA (`magi_core` BigQuery). See
 
 # Contamination note
 
-The arrows into LILITH are deliberately narrow: `lilith-training` reads **only**
-the [_lilith_safe/](/_lilith_safe/) tree of this bundle (enforced by
-`lilith_safe_loader.py`), never the services or tables in this `system/` tree.
+The arrows into LILITH were deliberately narrow: the retired `lilith-training`
+pipeline read **only** the [_lilith_safe/](/_lilith_safe/) tree of this bundle
+(enforced by `lilith_safe_loader.py`), never the services or tables in this
+`system/` tree. The boundary is retained as the historical specification of the
+retired line.

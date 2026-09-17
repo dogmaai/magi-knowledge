@@ -1,4 +1,4 @@
-# PLM Runtime Constitution (v3.8)
+# PLM Runtime Constitution (v3.9)
 
 The full swing-trading constitution that all PLM units receive as their system
 prompt. Built at runtime by `buildSwingConstitution()` in
@@ -12,8 +12,8 @@ changes in `lib/constitution.js`, update the corresponding section doc here.
 
 | Field | Value |
 |---|---|
-| Version | 3.8 |
-| Effective | 2026-08-24 |
+| Version | 3.9 |
+| Effective | 2026-09-17 |
 | Builder | `magi-core/lib/constitution.js` (`buildSwingConstitution`) |
 | BQ store | [constitution](/system/echidna-tables/constitution.md) table |
 
@@ -22,7 +22,7 @@ changes in `lib/constitution.js`, update the corresponding section doc here.
 | # | Section | Key rule | Mutable? |
 |---|---|---|---|
 | 1 | [IDENTITY](identity.md) | Competitive swing-trader mission | yes |
-| 2 | [NORTH STAR](north-star.md) | Four cardinal objectives (risk-adj return > alpha > survival > patterns) | yes |
+| 2 | [NORTH STAR](north-star.md) | Three cardinal objectives (risk-adj return > alpha > survival) | yes |
 | 3 | [YOUR EDGE](edge.md) | Six competitive advantages (timeframe, ensemble, ISABEL, HERMES, anti-crowding, adaptivity) | yes |
 | 4 | [EXPECTANCY DISCIPLINE](expectancy.md) | Profit = WR x avg_win - LR x avg_loss; R:R >= 2:1 | yes |
 | 5 | [ISABEL - Information Gateway](isabel-gateway.md) | Advisory only; unit decides | yes |
@@ -40,12 +40,13 @@ changes in `lib/constitution.js`, update the corresponding section doc here.
 
 # Relationship to LILITH-safe constitution
 
-The [LILITH-safe constitution](/_lilith_safe/constitution/) is a **strict
-subset**: it captures only the immutable, universal rules (clean-source, output
-envelope, risk-rules) that are safe to feed into training. The PLM constitution
-here is the **full version** that includes competitive framing, ISABEL advisory,
-HERMES intelligence, and the complete prohibitions list -- none of which LILITH
-may see.
+The [LILITH-safe constitution](/_lilith_safe/constitution/) was a **strict
+subset**: it captured only the immutable, universal rules (clean-source, output
+envelope, risk-rules) that were safe to feed into the retired LILITH training
+line. The PLM constitution here is the **full version** that includes
+competitive framing, ISABEL advisory, HERMES intelligence, and the complete
+prohibitions list -- none of which LILITH was permitted to see. This comparison
+is retained as the historical boundary specification.
 
 | Aspect | PLM (this tree) | LILITH-safe |
 |---|---|---|
