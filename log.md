@@ -20,6 +20,9 @@
   deprecated (its documented table never existed; the ranker actually wrote
   `fugu_thought_quality_scores`, which has no consumer). magi-core removal
   PR: `dogmaai/magi-core#477`. Sakana has no active consumer in MAGI.
+  Jun cancelled the Sakana account on 2026-09-17, so the `SAKANA_API_KEY`
+  credential is now dead and any leftover scheduled job can only fail
+  fast at the API call.
 * **Policy**: Added [Automated PR review bots](/COLLABORATION.md#automated-pr-review-bots)
   to COLLABORATION.md — the `auto-review.yml` Mistral/template `COMMENT`
   reviews are reference-only, never approve, and never satisfy independent
