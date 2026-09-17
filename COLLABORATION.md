@@ -194,6 +194,30 @@ actual eligible GitHub users/teams; model names are not GitHub reviewers.
 Do not claim merge enforcement until the repository checks and rules are
 configured and verified.
 
+## Automated PR review bots
+
+`.github/workflows/auto-review.yml` posts a template checklist review and a
+Mistral (`mistral-large-latest`) review on `pull_request` events. Both are
+`github-actions[bot]` `COMMENT` reviews; the Mistral review carries a
+`<!-- mistral-review sha=<head SHA> -->` marker and is skipped when the marker
+already exists for that head.
+
+- Enabled with the Mistral step: `magi-knowledge`, `magi-moni`, `magi-moomoo`,
+  `magi-price-tracker`, `magi-deep-research`, `magi-core`.
+- `magi-ui` intentionally runs the template review only (no Mistral step).
+- `lilith-training` intentionally has no auto-review workflow.
+
+These comments — like `gemini-code-assist` and `chatgpt-codex-connector`
+reviews — are reference information only. They never approve, never satisfy
+the independent-review requirement above, and never count as `verified` on
+any document. Sensitive-path changes still need a reviewer other than the
+implementer (or Jun).
+
+Jun approved on 2026-09-17 sending PR diffs — including private repositories
+such as `magi-core` — to the external Mistral API for this review workflow.
+That approval covers this workflow only; new external data egress still needs
+Jun's explicit decision.
+
 ## Drift checks: extend before adding
 
 Devin reports an existing `okf-drift` check in magi-core. Inspect its workflow,

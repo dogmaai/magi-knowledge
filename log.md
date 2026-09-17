@@ -1,6 +1,15 @@
 # Bundle Update Log
 
 ## 2026-09-17
+* **Policy**: Added [Automated PR review bots](/COLLABORATION.md#automated-pr-review-bots)
+  to COLLABORATION.md — the `auto-review.yml` Mistral/template `COMMENT`
+  reviews are reference-only, never approve, and never satisfy independent
+  review; records Jun's 2026-09-17 approval to send PR diffs (including
+  private `magi-core`) to the external Mistral API for this workflow only.
+* **Service**: Recorded the GitHub Actions `MISTRAL_API_KEY` injected copies
+  (six repos, GSM remains source of truth) in
+  [secrets-inventory](/system/services/secrets-inventory.md); `magi-ui` and
+  `lilith-training` deliberately excluded.
 * **Lint**: `scripts/okf_lint.py` now detects stale verification — a
   `stable` doc whose every human `verified.at` predates `generated.at` is
   an ERROR (the verification covers an older revision), and the same
