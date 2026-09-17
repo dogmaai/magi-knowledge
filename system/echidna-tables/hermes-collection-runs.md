@@ -5,16 +5,17 @@ description: One row per HERMES collection job run — the up/down, success/fail
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=hermes_collection_runs&page=table
 lilith_safe: false
 status: draft
-generated: { by: devin/local, at: 2026-09-16T01:30:00Z }
-verified: { by: devin/local, at: 2026-09-16T01:30:00Z }
-stale_after: 2027-03-16T01:30:00Z
+generated: { by: devin/local, at: 2026-09-17T00:29:00Z }
+verified: [{ by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-09-16T02:00:00Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }]
+stale_after: 2027-03-17T00:29:00Z
 tags: [echidna, bigquery, hermes, observability, operations]
 dataset: magi_core
 table_type: BASE TABLE
 ---
 
 `hermes_collection_runs` is the HERMES collection-job run ledger introduced
-for magi-knowledge#51 (magi-core `feat/hermes-collection-runs`). One row is
+for magi-knowledge#51 (magi-core `9ae8a966b732da5a735ad8c1a5554777fa07c215`,
+PR #465; status-rule corrections in magi-core PR #470). One row is
 appended per `magi-hermes-refresh` run so the
 [HERMES observability dashboard](/system/services/hermes-observability.md)
 can show up/down, per-run success/failure counts and error rate — signals
@@ -33,7 +34,7 @@ failed insert (non-blocking by design) and the dashboard panels show
 |---|---|---|
 | run_id | STRING | UUID per collection run. |
 | job | STRING | Producer job, e.g. `magi-hermes-refresh`. |
-| status | STRING | Run outcome: `ok` \| `degraded` \| `error`. `degraded` mirrors the job rule — `failed >= ceil(attempted/2)` with `attempted > skipped`; `error` is a fatal run failure. |
+| status | STRING | Run outcome: `ok` \| `degraded` \| `error`. `degraded` mirrors the job rule — `failed >= ceil((attempted - skipped)/2)` over *active* (non-skipped) attempts (denominator corrected in magi-core#470); `error` is a fatal run failure or a collector-level outage (`collectionError`, e.g. missing `BRAVE_SEARCH_API_KEY`) — all-zero counters with `error` mean the collector never ran, not that all symbols were fresh. |
 | attempted | INT64 | Symbols entered in the per-symbol collection loop. |
 | skipped | INT64 | Symbols skipped because a fresh row already existed (HERMES_REFRESH_INTERVAL_HOURS). |
 | succeeded | INT64 | Symbols for which a new pre_trade_intelligence row was inserted. |

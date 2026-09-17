@@ -3,10 +3,10 @@ type: Distribution Priors
 title: ECHIDNA Fitted Input Priors (LILITH-safe)
 description: Real aggregate input distributions fitted from ECHIDNA for LILITH distill grounding.
 lilith_safe: true
-status: stable
-generated: { by: devin/cloud, at: 2026-07-07T00:28:28Z }
-verified: { by: human:jun, at: 2026-07-07T00:28:28Z }
-stale_after: 2027-01-03T00:28:28Z
+status: draft
+generated: { by: devin/local, at: 2026-09-17T00:29:00Z }
+verified: [{ by: human:jun, at: 2026-07-07T00:28:28Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }]
+stale_after: 2027-03-17T00:29:00Z
 distribution_priors: true
 tags: [lilith, training, distill, distributions, clean-source]
 source_tables: [trades, trades_active, portfolio_snapshots]
@@ -29,13 +29,16 @@ per-symbol picks, no other unit's data.
 # Clean-source attestation
 
 * All figures are **aggregates** (frequencies / quantiles), never raw rows.
-* ISABEL data-sufficiency is scoped to **`unit_name IN ('LILITH', 'ADAM')` only**
-  (`ADAM` is the renamed qwen base-model unit; historical rows carry `LILITH`) —
-  LILITH's own decided-trade counts. No other MAGI unit's performance is present
-  or derivable. The embedded fit below was generated before the rename, when all
-  rows carried `LILITH`, so its numbers and `scope` string are LILITH-only and
-  identical to what the widened filter would return; the next regeneration will
-  carry the `IN ('LILITH','ADAM')` scope.
+* ISABEL data-sufficiency is scoped to **LILITH's own `unit_name` rows only,
+  including the pre-rename label of the same base-model lineage** — LILITH's
+  own decided-trade counts. No other MAGI unit's performance is present or
+  derivable, and the renamed unit's name is deliberately not spelled here
+  (cross-unit names must not appear in `_lilith_safe/`; the exact filter
+  string lives in `lilith-training/scripts/distill_analysis_methods.py`).
+  The embedded fit below was generated before the rename, when all rows
+  carried `LILITH`, so its numbers and `scope` string are LILITH-only and
+  identical to what the widened own-lineage filter would return; the next
+  regeneration will carry the widened scope.
 * No ticker-level picks, no Section markers, no cross-unit names.
 * `empirical` = observed; `applied` = what distill samples from, after a
   documented **coverage floor** that guarantees the safety-critical rare regimes

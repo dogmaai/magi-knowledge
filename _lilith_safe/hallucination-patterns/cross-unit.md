@@ -3,10 +3,10 @@ type: Hallucination Pattern
 title: HALLUCINATION_CROSS_UNIT
 description: LILITH reasoning references another MAGI unit (clean-source violation).
 lilith_safe: true
-status: stable
-generated: { by: devin/cloud, at: 2026-06-19T01:02:48Z }
-verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
-stale_after: 2026-12-16T01:02:48Z
+status: draft
+generated: { by: devin/local, at: 2026-09-17T00:29:00Z }
+verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }]
+stale_after: 2027-03-17T00:29:00Z
 cross_unit_detector: true
 tags: [lilith, dpo, anti-hallucination, clean-source]
 classification: HALLUCINATION_CROSS_UNIT

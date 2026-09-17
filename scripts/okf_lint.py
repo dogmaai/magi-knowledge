@@ -66,9 +66,12 @@ SYSTEM_DIR = BUNDLE_ROOT / "system"
 # Other MAGI units. Kept in sync with CROSS_UNIT_NAMES in
 # lilith-training/scripts/distill_analysis_methods.py — LILITH must never see
 # another unit's processed intelligence. LILITH itself is intentionally absent.
+# scripts/check_unit_detector_sync.py fails CI when this list drifts from the
+# plm-units registry.
 CROSS_UNIT_NAMES = (
     "sophia", "melchior", "anima", "casper", "oracle",
     "zeroel", "tiara", "seraph", "balthasar", "prometheus", "typhon",
+    "adam", "qwen", "sekhmet",
 )
 CROSS_UNIT_RE = re.compile(
     r"\b(" + "|".join(CROSS_UNIT_NAMES) + r")\b", re.IGNORECASE
