@@ -5,6 +5,8 @@ description: Retired independent reasoner; the fine-tuned LILITH line was decomm
 lilith_safe: false
 status: draft
 generated: { by: devin/cloud, at: 2026-09-17T17:34:00Z }
+verified: { by: human:jun, at: 2026-08-27T23:14:38Z }
+stale_after: 2027-02-23T23:14:38Z
 tags: [plm, retired, lilith, fine-tuned, independent]
 provider: lilith
 model: lilith-v1.0-b2-prod

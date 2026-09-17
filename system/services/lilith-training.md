@@ -5,6 +5,8 @@ description: Retired LILITH fine-tuning + anti-hallucination DPO pipeline (Qwen2
 lilith_safe: false
 status: draft
 generated: { by: devin/cloud, at: 2026-09-17T17:34:00Z }
+verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
+stale_after: 2026-12-16T01:02:48Z
 tags: [service, lilith, training, dpo, qlora, retired]
 repo: dogmaai/lilith-training
 ---

@@ -106,6 +106,11 @@
   `DEPRECATED_PROVIDERS` in `magi-core/lib/config.js` / `optuna_utils.py`, and
   the `magi-core-lilith` + `magi-lilith-gate-monitor` jobs left `deploy.yml`.
   Moved `stable` → `draft` pending `human:jun` re-verification.
+  Companion source revision: magi-core `82e9adf4ba7a6f0b77200365b185153b0e9503b9`
+  (PR [dogmaai/magi-core#476](https://github.com/dogmaai/magi-core/pull/476)
+  head — intended source change, not yet merged/deployed). Observed deployment
+  state: scheduler paused, `LILITH_AUTOTRADE=0`, `lilith-inference-svc` absent;
+  Cloud Run job/scheduler deletion remains pending Jun execution.
 * **Retirement**: [lilith-training](/system/services/lilith-training.md) marked
   retired — the pipeline no longer feeds a deployed model; the
   `asia-southeast1` Cloud Run jobs are decommission candidates and
@@ -119,6 +124,20 @@
 * **Fix**: [magi-core](/system/services/magi-core.md) job table — removed the
   retired `magi-lilith-gate-monitor` row and re-scoped `magi-shadow-evaluator`
   to all `TRADE_MODE=SHADOW` units.
+* **Constitution (Jun decision 2026-09-17)**: [NORTH STAR](system/constitution/north-star.md)
+  item 4 removed — the "fine-tune LILITH into MAGI's production specialist"
+  objective is deleted with the LILITH retirement, leaving three cardinal
+  objectives. Doc kept `stable` / `verified: human:jun` (decision taken in
+  review). Companion runtime change: `magi-core/lib/constitution.js` drops the
+  rendered item 4 and bumps the constitution header to v3.9 — see
+  [constitution index](system/constitution/index.md) Version 3.9.
+* **Fix (review)**: [services index](system/services/index.md) — `lilith-training`
+  moved from the active Services table to Retired; contamination note re-tensed
+  as historical (Codex P2 on #75).
+* **Fix (review)**: [lilith](system/plm-units/lilith.md) and
+  [lilith-training](system/services/lilith-training.md) — restored required
+  `verified` / `stale_after` lifecycle fields with their historical values
+  (gemini-code-assist on #75); docs remain `draft` pending re-verification.
 
 ## 2026-09-16
 * **Enhancement**: [magi-moomoo](/system/services/magi-moomoo.md) —
