@@ -4,7 +4,9 @@
 * **Clarification (draft)**: [JEV Decision Validator](/system/guards/jev.md)
   input contract — `analysis.confidence` preserves the raw LLM-reported
   value (pre-normalization) so `JEV_CONFIDENCE_INVALID` stays reachable.
-  Follow-up fix on `dogmaai/magi-core#480` (review feedback).
+  Adds `JEV_THOUGHT_ACTION_UNSUPPORTED` (block) for analysis actions
+  outside {BUY, SELL, HOLD}. Follow-up fixes on `dogmaai/magi-core#480`
+  (review feedback).
 
 ## 2026-09-18
 * **Creation (draft)**: [JEV Decision Validator](/system/guards/jev.md) —

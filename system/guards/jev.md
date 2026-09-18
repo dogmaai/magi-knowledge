@@ -43,6 +43,7 @@ belong to L1.6/L2.6/L2.7.
 | `JEV_THOUGHT_MISSING` | no linked log_analysis for the symbol | block |
 | `JEV_THOUGHT_SYMBOL_MISMATCH` | analysis symbol ≠ order symbol | block |
 | `JEV_THOUGHT_HOLD` | analysis action HOLD but an order was placed | block |
+| `JEV_THOUGHT_ACTION_UNSUPPORTED` | analysis action outside {BUY, SELL, HOLD} | block |
 | `JEV_THOUGHT_ACTION_MISMATCH` | BUY↔sell / SELL↔buy | block |
 | `JEV_REASONING_THIN` | analysis reasoning below minimum length | block |
 | `JEV_CONFIDENCE_EXTREME` | confidence ≥ 0.99 (uncalibrated certainty) | escalate |
