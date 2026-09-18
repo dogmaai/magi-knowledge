@@ -75,6 +75,12 @@ normalized `log_analysis` record kept per symbol in `src/globals.js`
 The registry is populated in the `log_analysis` handler and cleared when the
 order consumes it, alongside the existing thought_id/confidence linkage.
 
+`analysis.confidence` deliberately preserves the **raw** LLM-reported value,
+captured before the `safeFloat(...) ?? 0` normalization the handler applies
+for sizing. Missing or non-numeric confidence must reach JEV un-normalized —
+normalizing first would make `JEV_CONFIDENCE_INVALID` unreachable and hide
+miscalibrated units. Downstream consumers keep using the normalized value.
+
 # Recording
 
 Non-PASS verdicts are journaled through the existing guard-block path
