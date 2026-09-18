@@ -43,8 +43,10 @@ belong to L1.6/L2.6/L2.7.
 | `JEV_THOUGHT_MISSING` | no linked log_analysis for the symbol | block |
 | `JEV_THOUGHT_SYMBOL_MISMATCH` | analysis symbol ≠ order symbol | block |
 | `JEV_THOUGHT_HOLD` | analysis action HOLD but an order was placed | block |
+| `JEV_THOUGHT_ACTION_UNSUPPORTED` | analysis action outside {BUY, SELL, HOLD} | block |
 | `JEV_THOUGHT_ACTION_MISMATCH` | BUY↔sell / SELL↔buy | block |
 | `JEV_REASONING_THIN` | analysis reasoning below minimum length | block |
+| `JEV_ANALYSIS_BAD_TIMESTAMP` | analysis timestamp missing or invalid | block |
 | `JEV_CONFIDENCE_EXTREME` | confidence ≥ 0.99 (uncalibrated certainty) | escalate |
 | `JEV_THOUGHT_ID_MISMATCH` | echoed thought_id ≠ session registry | escalate |
 | `JEV_ANALYSIS_STALE` | analysis older than `JEV_MAX_ANALYSIS_AGE_MS` | escalate |
@@ -74,6 +76,12 @@ normalized `log_analysis` record kept per symbol in `src/globals.js`
 (`analysesBySymbol`: thoughtId, symbol, action, confidence, reasoning, ts).
 The registry is populated in the `log_analysis` handler and cleared when the
 order consumes it, alongside the existing thought_id/confidence linkage.
+
+`analysis.confidence` deliberately preserves the **raw** LLM-reported value,
+captured before the `safeFloat(...) ?? 0` normalization the handler applies
+for sizing. Missing or non-numeric confidence must reach JEV un-normalized —
+normalizing first would make `JEV_CONFIDENCE_INVALID` unreachable and hide
+miscalibrated units. Downstream consumers keep using the normalized value.
 
 # Recording
 
