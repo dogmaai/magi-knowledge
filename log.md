@@ -1,5 +1,20 @@
 # Bundle Update Log
 
+## 2026-09-18
+* **Enhancement**: `scripts/ai_search_r2_sync.py` now lists the managed
+  prefix once and uploads only objects whose ETag differs from the local
+  file's MD5 — an unchanged sync costs one `ListObjects` instead of a
+  `PutObject` per document (R2 Class A reduction; `--prune` unchanged).
+* **Enhancement**: `scripts/r2_catalog_sync.py` scans `okf.system` and
+  skips the Iceberg overwrite entirely when the built rows match the
+  table modulo volatile columns (`synced_at`, `source_revision`) — no
+  commit, no R2 writes; `--force` rewrites unconditionally. Column-set
+  mismatches still trigger the write so schema evolution keeps working.
+* **Docs**: [cloudflare](/system/services/cloudflare.md) and the
+  `syncing-spec-to-r2-data-catalog` / `configuring-cloudflare-ai-search`
+  runbooks updated for the change-detection behavior; `source_revision`
+  now records the revision that last changed content.
+
 ## 2026-09-17
 * **Fix**: `scripts/okf_lint.py` — `CROSS_UNIT_NAMES` synced with the PLM
   registry: added `adam`, `qwen`, `sekhmet` (a non-detector `_lilith_safe`

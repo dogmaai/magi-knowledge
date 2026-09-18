@@ -21,9 +21,12 @@ magi-knowledge (main)
 This is the analytical mirror of the spec; the retrieval mirror is the AI
 Search instance `magi-document`, which indexes the same tree as Markdown
 objects out of the **same bucket** (see `configuring-cloudflare-ai-search`).
-Both are caches; the repository is the source of truth. Every run **fully
-replaces** the table (`table.overwrite`), so the refresh is idempotent and
-leaves no stale rows.
+Both are caches; the repository is the source of truth. A run whose built
+rows already match the table **skips the write entirely** — no Iceberg
+commit, no R2 PUTs (volatile columns `synced_at` / `source_revision` are
+excluded from the comparison). When content did change, the run fully
+replaces the table (`table.overwrite`), so the refresh is idempotent and
+leaves no stale rows; `--force` rewrites unconditionally.
 
 Only the `system/` tree is ever synced. `_lilith_safe/` MUST NOT be written to
 this catalog — R2 SQL is a cross-unit surface. `r2_catalog_sync.py` refuses
@@ -106,6 +109,7 @@ pip install "pyiceberg[pyarrow]"
 cd magi-knowledge && git pull
 python scripts/r2_catalog_sync.py --dry-run           # row/char count, no network
 CLOUDFLARE_R2_CATALOG_TOKEN=<token> python scripts/r2_catalog_sync.py
+CLOUDFLARE_R2_CATALOG_TOKEN=<token> python scripts/r2_catalog_sync.py --force  # rewrite even when unchanged
 ```
 
 The script creates the namespace and table on first run
@@ -122,7 +126,9 @@ curl -s -H "Authorization: Bearer $CLOUDFLARE_R2_CATALOG_TOKEN" "$CAT/v1/namespa
 curl -s -H "Authorization: Bearer $CLOUDFLARE_R2_CATALOG_TOKEN" "$CAT/v1/namespaces/okf/tables"
 ```
 
-Then scan the table and confirm `source_revision` matches the merged commit:
+Then scan the table and confirm `source_revision` — it records the commit
+that last *changed the content*, which may be older than HEAD when recent
+merges produced no row changes (the run skips the write in that case):
 
 ```python
 from pyiceberg.catalog.rest import RestCatalog
