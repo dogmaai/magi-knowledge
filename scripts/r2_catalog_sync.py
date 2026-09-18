@@ -6,7 +6,9 @@ single Iceberg table (one row per concept document) so R2 SQL / Spark / DuckDB
 can query the MAGI spec next to the rest of the warehouse.
 
 The repository stays the source of truth: every run fully replaces the table
-contents, so the table is a cache that can be rebuilt at any time.
+contents, so the table is a cache that can be rebuilt at any time. Runs whose
+built rows match the table's current contents skip the overwrite entirely (no
+Iceberg commit, no R2 writes); pass ``--force`` to rewrite anyway.
 
 Requires `pyiceberg[pyarrow]` and a Cloudflare API token with *R2 Data Catalog*
 and *R2 Storage* write access (`CLOUDFLARE_R2_CATALOG_TOKEN`).
@@ -192,6 +194,36 @@ def _get_or_create_table(catalog: RestCatalog, identifier: str, schema: pa.Schem
             return catalog.load_table(identifier)
 
 
+# Columns regenerated on every run; they are excluded from the unchanged check
+# so a push that only advances git HEAD does not produce an empty commit.
+VOLATILE_COLUMNS = {"synced_at", "source_revision"}
+
+
+def _row_fingerprints(table: pa.Table) -> list[str]:
+    """Canonical per-row fingerprints over the non-volatile columns."""
+    cols = [n for n in table.schema.names if n not in VOLATILE_COLUMNS]
+    return sorted(
+        json.dumps(row, sort_keys=True, default=str)
+        for row in table.select(cols).to_pylist()
+    )
+
+
+def _content_matches(table, data: pa.Table) -> bool:
+    """True when the table already holds ``data`` modulo volatile columns.
+
+    A column-set mismatch (e.g. SCHEMA gained a field) counts as changed so
+    additive schema evolution still runs. Scan failures also count as changed:
+    overwriting is the recovery path.
+    """
+    try:
+        existing = table.scan().to_arrow()
+    except Exception:
+        return False
+    if set(existing.schema.names) != set(data.schema.names):
+        return False
+    return _row_fingerprints(existing) == _row_fingerprints(data)
+
+
 def sync(
     tree: str,
     account_id: str,
@@ -199,7 +231,13 @@ def sync(
     namespace: str,
     table_name: str,
     token: str,
-) -> int:
+    force: bool = False,
+) -> int | None:
+    """Mirror ``tree`` into the Iceberg table.
+
+    Returns the number of rows written, or ``None`` when the table already
+    holds identical content and the overwrite was skipped.
+    """
     data = pa.Table.from_pylist(build_rows(tree), schema=SCHEMA)
     catalog = RestCatalog(
         name="r2-data-catalog",
@@ -210,6 +248,8 @@ def sync(
     _ensure_namespace(catalog, namespace)
     identifier = f"{namespace}.{table_name}"
     table = _get_or_create_table(catalog, identifier, SCHEMA)
+    if not force and _content_matches(table, data):
+        return None
     # Additive schema evolution. Columns introduced after the table was first
     # created must be nullable at the Iceberg layer: adding a required field to
     # a table with historical rows is an incompatible schema change. Semantic
@@ -231,6 +271,11 @@ def main() -> int:
         "--dry-run",
         action="store_true",
         help="build the rows and print a summary without touching Cloudflare",
+    )
+    ap.add_argument(
+        "--force",
+        action="store_true",
+        help="rewrite the table even when the content is unchanged",
     )
     args = ap.parse_args()
 
@@ -266,12 +311,20 @@ def main() -> int:
         args.namespace,
         table_name,
         token,
+        force=args.force,
     )
-    print(
-        f"wrote {written} rows to {args.namespace}.{table_name} "
-        f"({args.account_id}_{args.bucket})",
-        file=sys.stderr,
-    )
+    if written is None:
+        print(
+            f"{args.namespace}.{table_name} is unchanged; skipped write "
+            f"({args.account_id}_{args.bucket})",
+            file=sys.stderr,
+        )
+    else:
+        print(
+            f"wrote {written} rows to {args.namespace}.{table_name} "
+            f"({args.account_id}_{args.bucket})",
+            file=sys.stderr,
+        )
     return 0
 
 
