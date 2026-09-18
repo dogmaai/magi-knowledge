@@ -10,6 +10,7 @@ implementations live in `src/paperGuards.js`. Blocks are logged to the
 | Layer | Name | Checks | On fail |
 |---|---|---|---|
 | [L0](l0-kill-switch.md) | Emergency Kill Switch | Global halt from `magi_core.system_control` | block all orders |
+| [JEV](jev.md) | Decision Validator (draft) | Order ↔ linked `log_analysis` consistency; typed PASS/BLOCK/ESCALATE verdict | warn (`JEV_MODE=shadow`) / block (`enforce`) |
 | Shadow short circuit | Shadow-mode recording | `isConfiguredShadowMode()` → `recordShadowOrder()`; no broker call | record |
 | [L-1](l-1.md) | Broker Availability | Broker reachable / tradable | block |
 | [L0](l0.md) | PositionManager | PositionManager veto on symbol/side | block |
@@ -28,7 +29,8 @@ implementations live in `src/paperGuards.js`. Blocks are logged to the
 | [L7](l7.md) | Composite Score (複合スコア層) | Optuna 1000-trial composite gate | block |
 
 The numeric labels are historical and the table is in actual code execution
-order. The L0 emergency kill switch runs first. The shadow-mode short circuit
+order. The L0 emergency kill switch runs first, then the JEV decision
+validator (draft — see [jev.md](jev.md)). The shadow-mode short circuit
 then applies `isConfiguredShadowMode()` and `recordShadowOrder()`; units in
 `TRADE_MODE=SHADOW` (MELCHIOR-1 and CASPER) never reach L-1 or below.
 

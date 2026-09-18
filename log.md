@@ -1,5 +1,16 @@
 # Bundle Update Log
 
+## 2026-09-18
+* **Creation (draft)**: [JEV Decision Validator](/system/guards/jev.md) —
+  deterministic typed validator on the `place_order` path (`magi-core`
+  Issue #479). Cross-checks the order against the session's linked
+  `log_analysis` (symbol/action/confidence consistency, reasoning
+  sufficiency, staleness) and emits `PASS`/`BLOCK`/`ESCALATE`. Not an LLM;
+  `JEV_MODE=shadow` records WARN_ONLY guard-block rows without stopping
+  orders — enforcement requires separate approval and independent review.
+  Also registered in the [guard pipeline order](/system/guards/index.md)
+  between L0 kill switch and the shadow short circuit.
+
 ## 2026-09-17
 * **Deprecation**: Retired the SEKHMET stack with Jun's approval —
   [sekhmet](/system/plm-units/sekhmet.md) (no `fugu_sequential_patterns` row
