@@ -46,6 +46,7 @@ belong to L1.6/L2.6/L2.7.
 | `JEV_THOUGHT_ACTION_UNSUPPORTED` | analysis action outside {BUY, SELL, HOLD} | block |
 | `JEV_THOUGHT_ACTION_MISMATCH` | BUY↔sell / SELL↔buy | block |
 | `JEV_REASONING_THIN` | analysis reasoning below minimum length | block |
+| `JEV_ANALYSIS_BAD_TIMESTAMP` | analysis timestamp missing or invalid | block |
 | `JEV_CONFIDENCE_EXTREME` | confidence ≥ 0.99 (uncalibrated certainty) | escalate |
 | `JEV_THOUGHT_ID_MISMATCH` | echoed thought_id ≠ session registry | escalate |
 | `JEV_ANALYSIS_STALE` | analysis older than `JEV_MAX_ANALYSIS_AGE_MS` | escalate |
