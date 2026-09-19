@@ -4,9 +4,9 @@ title: magi-core
 description: The MAGI trading engine — trade loop, LLM orchestration, and guard layers.
 lilith_safe: false
 status: draft
-generated: { by: devin/local, at: 2026-09-17T17:36:54Z }
+generated: { by: devin/local, at: 2026-09-19T03:20:00Z }
 verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }]
-stale_after: 2027-03-16T01:30:00Z
+stale_after: 2027-03-19T03:20:00Z
 tags: [service, magi-core, core, trading]
 repo: dogmaai/magi-core
 ---
@@ -174,7 +174,7 @@ revision; magi-core is adding UTC.
 [thoughts](/system/echidna-tables/thoughts.md),
 [sessions](/system/echidna-tables/sessions.md),
 [llm-metrics](/system/echidna-tables/llm-metrics.md),
-[consensus-signals](/system/echidna-tables/consensus-signals.md), guard_blocks,
+[consensus-signals](/system/echidna-tables/consensus-signals.md),
 [lilith-hard-gate-events](/system/echidna-tables/lilith-hard-gate-events.md),
 [pre_trade_intelligence](/system/echidna-tables/pre-trade-intelligence.md),
 [market_research](/system/echidna-tables/market-research.md),

@@ -2,8 +2,10 @@
 
 The sequential safety pipeline every trade tool-call passes through before an
 order is placed. It is orchestrated in `magi-core/src/llm.js`; the L4/L5/L7
-implementations live in `src/paperGuards.js`. Blocks are logged to the
-`guard_blocks` table via `logGuardBlock()`.
+implementations live in `src/paperGuards.js`. Blocks are logged via
+`logGuardBlock()` as guard-block rows in `magi_core.thoughts`
+(`action='BLOCKED'`, or `'WARN_ONLY'` for warn-only layers; `concerns`
+carries the layer id). There is no separate `guard_blocks` table.
 
 # Pipeline order
 
@@ -47,4 +49,5 @@ back to the specific constitutional section it enforces.
   exclusions, L7 weights.
 * `magi_core.system_control` — L0 emergency kill-switch state.
 * `magi_core.trades` — L1.7 per-unit realized P&L for the current ET day.
-* `guard_blocks` — every block, for audit.
+* `magi_core.thoughts` — every block as a guard-block row
+  (`action='BLOCKED'|'WARN_ONLY'`, `concerns=<layer>`), for audit.

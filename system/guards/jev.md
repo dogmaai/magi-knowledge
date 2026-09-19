@@ -4,7 +4,7 @@ title: JEV Decision Validator
 description: Deterministic typed validator on the place_order path — cross-checks the order against the session's linked log_analysis before the shadow/broker path. Not an LLM.
 lilith_safe: false
 status: draft
-generated: { by: devin/local, at: 2026-09-18T12:30:00Z }
+generated: { by: devin/local, at: 2026-09-19T03:20:00Z }
 tags: [guard, jev, validation, decision-integrity]
 layer: JEV
 on_fail: warn (JEV_MODE=shadow) / block (JEV_MODE=enforce)
@@ -104,9 +104,35 @@ measure false-positive rates before enforcement.
 
 * JEV never calls an LLM, never reads `_lilith_safe/`, and never modifies
   orders — it only accepts, rejects (enforce), or annotates (shadow).
+* JEV runs on the LLM `place_order` tool path only. PositionManager
+  `AUTO_CLOSE` exits call `executeMoomooOrder` directly and never reach JEV —
+  out of scope by design, but it matters for enforce planning (JEV cannot
+  block or annotate risk-reducing auto-closes).
 * Enabling `JEV_MODE=enforce`, changing the check set, or moving JEV inside
   the order path's blocking sequence requires Jun approval and independent
   review.
+
+# Open items (2026-09-19 shadow-phase review)
+
+Observed while verifying the merged implementation (`magi-core` PR #480,
+deployed 2026-09-18 in `JEV_MODE=shadow`; first verdicts expected with the
+2026-09-21 session batch). These are known gaps or candidates, not
+spec-code violations:
+
+* In `shadow` mode a `validateDecision` exception journals to console only —
+  no `thoughts` row — so shadow-period evaluation cannot count validator
+  failures. Candidate: emit a WARN_ONLY guard-block row on validator error.
+* `JEV_MAX_ANALYSIS_AGE_MS` has no upper bound; a misconfigured huge value
+  silently disables `JEV_ANALYSIS_STALE`. Candidate: sanity ceiling.
+* An analysis `ts` in the future yields a negative age and passes
+  `JEV_ANALYSIS_STALE`. Candidate: bound negative age.
+* Integration coverage: tests exercise `lib/jev.js` only; the `src/llm.js`
+  wiring (enforce return, WARN_ONLY journaling, validator-error fail-closed)
+  is untested.
+* Candidate spec additions raised in review, **not implemented, awaiting Jun
+  decision**: a richer typed verdict record (`analysis_age_ms`, per-check
+  `checks` map, `validator_version`, `evaluated_at`), a position-consistency
+  check, and a risk-reducing classification input.
 
 # Citations
 
