@@ -86,10 +86,11 @@ miscalibrated units. Downstream consumers keep using the normalized value.
 # Recording
 
 Non-PASS verdicts are journaled through the existing guard-block path
-(`logGuardBlock` → `thoughts` row with `action=WARN_ONLY` or `BLOCKED`,
-`concerns='JEV'`). PASS verdicts log to console only so the table is not
-flooded with uninformative rows. Shadow-mode evaluation uses these rows to
-measure false-positive rates before enforcement.
+(`logGuardBlock` → [`thoughts`](/system/echidna-tables/thoughts.md) row with
+`action=WARN_ONLY` or `BLOCKED`, `concerns='JEV'`). PASS verdicts log to
+console only so the table is not flooded with uninformative rows. Shadow-mode
+evaluation uses these rows to measure false-positive rates before
+enforcement.
 
 # Constitution basis
 
@@ -119,18 +120,20 @@ deployed 2026-09-18 in `JEV_MODE=shadow`; first verdicts expected with the
 2026-09-21 session batch). These are known gaps or candidates, not
 spec-code violations:
 
-* In `shadow` mode a `validateDecision` exception journals to console only —
-  no `thoughts` row — so shadow-period evaluation cannot count validator
-  failures. Candidate: emit a WARN_ONLY guard-block row on validator error.
-* `JEV_MAX_ANALYSIS_AGE_MS` has no upper bound; a misconfigured huge value
-  silently disables `JEV_ANALYSIS_STALE`. Candidate: sanity ceiling.
-* An analysis `ts` in the future yields a negative age and passes
+* **Medium** — In `shadow` mode a `validateDecision` exception journals to
+  console only — no [`thoughts`](/system/echidna-tables/thoughts.md) row — so
+  shadow-period evaluation cannot count validator failures. Candidate: emit a
+  WARN_ONLY guard-block row on validator error.
+* **Medium** — `JEV_MAX_ANALYSIS_AGE_MS` has no upper bound; a misconfigured
+  huge value silently disables `JEV_ANALYSIS_STALE`. Candidate: sanity ceiling.
+* **Low** — An analysis `ts` in the future yields a negative age and passes
   `JEV_ANALYSIS_STALE`. Candidate: bound negative age.
-* Integration coverage: tests exercise `lib/jev.js` only; the `src/llm.js`
-  wiring (enforce return, WARN_ONLY journaling, validator-error fail-closed)
-  is untested.
-* Candidate spec additions raised in review, **not implemented, awaiting Jun
-  decision**: a richer typed verdict record (`analysis_age_ms`, per-check
+* **Medium** — Integration coverage: tests exercise `lib/jev.js` only; the
+  `src/llm.js` wiring (enforce return, WARN_ONLY journaling, validator-error
+  fail-closed) is untested. Required before any `JEV_MODE=enforce` proposal
+  (Phase 2 gate).
+* **Awaiting Jun decision** — Candidate spec additions raised in review, not
+  implemented: a richer typed verdict record (`analysis_age_ms`, per-check
   `checks` map, `validator_version`, `evaluated_at`), a position-consistency
   check, and a risk-reducing classification input.
 

@@ -6,7 +6,7 @@ lilith_safe: false
 status: draft
 generated: { by: devin/local, at: 2026-09-19T03:20:00Z }
 verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }]
-stale_after: 2027-03-19T03:20:00Z
+stale_after: 2027-03-16T01:30:00Z
 tags: [service, magi-core, core, trading]
 repo: dogmaai/magi-core
 ---

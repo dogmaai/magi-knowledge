@@ -4,8 +4,8 @@ title: thoughts
 description: LLM reasoning log — one row per decision, with action, reasoning, and confidence.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=thoughts&page=table
 lilith_safe: false
-status: stable
-generated: { by: devin/local, at: 2026-09-17T17:36:54Z }
+status: draft
+generated: { by: devin/local, at: 2026-09-19T03:25:00Z }
 verified: { by: human:jun, at: 2026-09-17T17:36:54Z }
 stale_after: 2027-03-17T17:36:54Z
 tags: [echidna, bigquery, thoughts, reasoning, core]
@@ -17,6 +17,12 @@ table_type: BASE TABLE
 [`thoughts_active`](views.md) VIEW filters it; the LILITH `rejected`-example
 miner reads the view.
 
+Guard layers also append audit rows via `logGuardBlock()` — `id` prefixed
+`block_`, `action` and `trade_mode` set to `BLOCKED` (`WARN_ONLY` for
+warn-only layers), `concerns` carrying the layer id (e.g. `L7`, `JEV`), and
+`reasoning` the block reason. These document blocked decisions, not LLM
+reasoning.
+
 # Schema
 
 | Column | Type | Description |
@@ -24,15 +30,15 @@ miner reads the view.
 | session_id | STRING | FK → [sessions](sessions.md).session_id. |
 | timestamp | TIMESTAMP | Decision time (UTC). |
 | content | STRING | Raw model completion. |
-| trade_mode | STRING | `live` / `paper` / `simulation`. |
+| trade_mode | STRING | `live` / `paper` / `simulation`; `BLOCKED` / `WARN_ONLY` on guard-block rows. |
 | llm_provider | STRING | Provider key. |
 | unit_name | STRING | MAGI unit name. |
 | symbol | STRING | Ticker under consideration. |
-| action | STRING | `BUY` / `SELL` / `HOLD`. |
+| action | STRING | `BUY` / `SELL` / `HOLD`; `BLOCKED` / `WARN_ONLY` on guard-block rows. |
 | reasoning | STRING | Parsed reasoning / thesis. |
 | hypothesis | STRING | Stated hypothesis. |
 | confidence | FLOAT64 | Self-reported confidence `0.0–1.0`. |
-| concerns | STRING | Stated risks/concerns. |
+| concerns | STRING | Stated risks/concerns; guard layer id (e.g. `L7`, `JEV`) on guard-block rows. |
 | prompt_version | STRING | Constitution / prompt version. |
 | thought_id | STRING | PK; FK target for [trades](trades.md).thought_id. |
 | vix_estimate | FLOAT64 | VIX level estimate at decision. |

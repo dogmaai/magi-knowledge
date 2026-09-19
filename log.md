@@ -11,11 +11,16 @@
 * **Fix**: Guard-block audit destination corrected — the `guard_blocks`
   table never existed; `logGuardBlock()` writes guard-block rows to
   `magi_core.thoughts` (`action='BLOCKED'|'WARN_ONLY'`,
-  `concerns=<layer>`). Fixed [guards index](/system/guards/index.md),
-  [l6](/system/guards/l6.md) (status `stable` → `draft` per lifecycle —
-  the prior `human:jun` verification predates this generation; one-word
-  table-name fix awaiting Jun re-verification), and the
-  [magi-core](/system/services/magi-core.md) writes list.
+  `concerns=<layer>`; no data/audit impact — historical blocks already
+  live in `thoughts`). Fixed [guards index](/system/guards/index.md),
+  [l6](/system/guards/l6.md), the
+  [magi-core](/system/services/magi-core.md) writes list, and the
+  [thoughts](/system/echidna-tables/thoughts.md) schema (documented
+  `action`/`trade_mode` guard-block values and `concerns` layer-id
+  usage). `l6` and `thoughts` flip `stable` → `draft` per lifecycle —
+  the prior `human:jun` verifications predate these generations;
+  awaiting Jun re-verification. `stale_after` deadlines kept unchanged —
+  unverified revisions do not extend the re-verification window.
 * **Review notes (draft)**: [JEV Decision Validator](/system/guards/jev.md)
   gained an *Open items* section from the 2026-09-19 shadow-phase
   implementation review (`magi-core` PR #480 deployed 2026-09-18 in
