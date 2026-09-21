@@ -17,10 +17,11 @@
   [magi-core](/system/services/magi-core.md) writes list, and the
   [thoughts](/system/echidna-tables/thoughts.md) schema (documented
   `action`/`trade_mode` guard-block values and `concerns` layer-id
-  usage). `l6` and `thoughts` flip `stable` → `draft` per lifecycle —
-  the prior `human:jun` verifications predate these generations;
-  awaiting Jun re-verification. `stale_after` deadlines kept unchanged —
-  unverified revisions do not extend the re-verification window.
+  usage). `l6` and `thoughts` flipped `stable` → `draft` per lifecycle —
+  the prior `human:jun` verifications predated these generations —
+  then **re-verified and restored to `stable` by Jun on 2026-09-21**.
+  `stale_after` deadlines kept unchanged — unverified revisions do not
+  extend the re-verification window.
 * **Review notes (draft)**: [JEV Decision Validator](/system/guards/jev.md)
   gained a prioritized *Open items* section from the 2026-09-19
   shadow-phase implementation review (`magi-core` PR #480, deployed
