@@ -128,7 +128,7 @@ spec-code violations:
   huge value silently disables `JEV_ANALYSIS_STALE`. Candidate: sanity ceiling.
 * **Low** — An analysis `ts` in the future yields a negative age and passes
   `JEV_ANALYSIS_STALE`. Candidate: bound negative age.
-* **Medium** — Integration coverage: tests exercise `lib/jev.js` only; the
+* **High** — Integration coverage: tests exercise `lib/jev.js` only; the
   `src/llm.js` wiring (enforce return, WARN_ONLY journaling, validator-error
   fail-closed) is untested. Required before any `JEV_MODE=enforce` proposal
   (Phase 2 gate).

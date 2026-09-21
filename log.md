@@ -22,15 +22,10 @@
   awaiting Jun re-verification. `stale_after` deadlines kept unchanged —
   unverified revisions do not extend the re-verification window.
 * **Review notes (draft)**: [JEV Decision Validator](/system/guards/jev.md)
-  gained an *Open items* section from the 2026-09-19 shadow-phase
-  implementation review (`magi-core` PR #480 deployed 2026-09-18 in
-  `JEV_MODE=shadow`; zero verdicts so far — first session batch runs
-  2026-09-21): shadow-mode validator errors journal to console only,
-  `JEV_MAX_ANALYSIS_AGE_MS` lacks an upper bound, future analysis
-  timestamps bypass `JEV_ANALYSIS_STALE`, `AUTO_CLOSE` exits bypass JEV
-  by design, and llm.js wiring lacks integration tests. Candidate spec
-  additions (richer verdict record, position-consistency check,
-  risk-reducing input) recorded as awaiting Jun decision.
+  gained a prioritized *Open items* section from the 2026-09-19
+  shadow-phase implementation review (`magi-core` PR #480, deployed
+  `JEV_MODE=shadow`; first verdicts expected 2026-09-21) — see the doc
+  for the items.
 
 ## 2026-09-18
 * **Creation (draft)**: [JEV Decision Validator](/system/guards/jev.md) —
