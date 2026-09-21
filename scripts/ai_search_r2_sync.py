@@ -7,6 +7,11 @@ Cloudflare AI Search can extract the schema fields defined for the instance.
 The repository remains the source of truth; this script is a one-way push of
 the current ``system/`` tree into an R2-backed AI Search data source.
 
+Objects whose remote ETag already matches the local file's MD5 are skipped,
+so unchanged syncs cost a prefix listing instead of a PUT per document. When
+the listing fails the run degrades to uploading every file (``--prune`` still
+treats a listing failure as fatal).
+
 Usage:
     python scripts/ai_search_r2_sync.py --bucket magi-system --prefix okf/system --dry-run
     AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... \
@@ -21,6 +26,7 @@ existing R2 objects before printing deletions.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 import sys
@@ -138,9 +144,13 @@ def upload_file(
         subprocess.run(cmd, check=True)
 
 
-def list_managed_keys(bucket: str, prefix: str, endpoint: str) -> set[str]:
-    """List every object key under ``prefix`` using S3 pagination."""
-    keys: set[str] = set()
+def list_managed_objects(bucket: str, prefix: str, endpoint: str) -> dict[str, str]:
+    """List every object under ``prefix`` as ``{key: etag}`` using S3 pagination.
+
+    Raises ``RuntimeError`` when the listing fails; callers decide whether the
+    failure is fatal (``--prune``) or degrades to upload-all (change detection).
+    """
+    objects: dict[str, str] = {}
     continuation_token: str | None = None
 
     while True:
@@ -170,17 +180,25 @@ def list_managed_keys(bucket: str, prefix: str, endpoint: str) -> set[str]:
             response = json.loads(result.stdout)
         except (OSError, subprocess.CalledProcessError, json.JSONDecodeError) as exc:
             detail = getattr(exc, "stderr", None) or str(exc)
-            print(f"Failed to list R2 objects for pruning: {detail}", file=sys.stderr)
-            sys.exit(1)
+            raise RuntimeError(detail)
 
-        keys.update(
-            item["Key"]
-            for item in response.get("Contents", [])
-            if isinstance(item.get("Key"), str)
-        )
+        for item in response.get("Contents", []):
+            if isinstance(item.get("Key"), str):
+                objects[item["Key"]] = str(item.get("ETag") or "").strip('"')
         continuation_token = response.get("NextContinuationToken")
         if not continuation_token:
-            return keys
+            return objects
+
+
+def _object_is_current(local_path: Path, etag: str | None) -> bool:
+    """True when the remote ETag equals the local file's content MD5.
+
+    R2/S3 ETags of single-part PUTs are the content MD5. Multipart ETags carry
+    a ``-<parts>`` suffix and never match, so those objects are re-uploaded.
+    """
+    if not etag or "-" in etag:
+        return False
+    return etag == hashlib.md5(local_path.read_bytes()).hexdigest()
 
 
 def delete_file(
@@ -261,6 +279,25 @@ def main() -> None:
     prefix = args.prefix.strip("/")
     expected_keys: set[str] = set()
 
+    # One listing serves both change detection and --prune. Skip it only for a
+    # plain dry run (no credentials needed to print upload commands).
+    remote_objects: dict[str, str] | None = None
+    if not args.dry_run or args.prune:
+        try:
+            remote_objects = list_managed_objects(args.bucket, prefix, args.endpoint)
+        except RuntimeError as exc:
+            if args.prune:
+                print(
+                    f"Failed to list R2 objects for pruning: {exc}",
+                    file=sys.stderr,
+                )
+                sys.exit(1)
+            print(
+                f"Could not list remote objects ({exc}); uploading all files.",
+                file=sys.stderr,
+            )
+
+    skipped = 0
     for concept_path in iter_concept_files(tree_root):
         concept = load_concept(BUNDLE_ROOT, concept_path)
         rel_within_tree = concept_path.relative_to(tree_root).as_posix()
@@ -268,6 +305,11 @@ def main() -> None:
             rel_within_tree = rel_within_tree[:-3]
         key = f"{prefix}/{rel_within_tree}.md"
         expected_keys.add(key)
+        if remote_objects is not None and _object_is_current(
+            concept_path, remote_objects.get(key)
+        ):
+            skipped += 1
+            continue
         metadata = build_metadata(concept.frontmatter)
         upload_file(
             local_path=concept_path,
@@ -278,6 +320,8 @@ def main() -> None:
             dry_run=args.dry_run,
             content_type=args.content_type,
         )
+    if remote_objects is not None:
+        print(f"Skipped {skipped} unchanged object(s).")
 
     if args.prune:
         if not expected_keys:
@@ -287,7 +331,7 @@ def main() -> None:
             )
             sys.exit(1)
 
-        existing_keys = list_managed_keys(args.bucket, prefix, args.endpoint)
+        existing_keys = set(remote_objects) if remote_objects is not None else set()
         stale_keys = {
             key for key in existing_keys
             if key.endswith(".md") and key not in expected_keys

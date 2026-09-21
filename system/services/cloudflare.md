@@ -35,6 +35,9 @@ live in `.agents/skills/` and are referenced below rather than duplicated.
 * Objects are uploaded by `scripts/ai_search_r2_sync.py` (workflow
   `ai-search-sync.yml`, on push to `main`) with the OKF frontmatter fields
   (`type`, `lilith_safe`, `version`, `status`, `tags`) as custom metadata.
+  The sync lists the managed prefix once and re-uploads only objects whose
+  ETag differs from the local file's MD5, so unchanged runs cost a single
+  `ListObjects` instead of a PUT per document.
 * The index refreshes on a 6 h schedule; an immediate re-index is a
   `PATCH .../autorag/rags/magi-document/sync`.
 * Runbook: `.agents/skills/configuring-cloudflare-ai-search/SKILL.md`
@@ -48,7 +51,10 @@ live in `.agents/skills/` and are referenced below rather than duplicated.
   set to the git short SHA that was synced.
 * Refreshed by the `R2 Data Catalog Sync` workflow
   (`.github/workflows/r2-catalog-sync.yml`) on merges to `main` that touch
-  `system/`; `scripts/r2_catalog_sync.py` fully replaces the table each run.
+  `system/`; `scripts/r2_catalog_sync.py` scans the table and skips the
+  overwrite entirely when the built rows match (no Iceberg commit, no R2
+  writes), so `source_revision` records the revision that last changed the
+  content. `--force` rewrites unconditionally.
 * Consumers: R2 SQL Studio, Spark, DuckDB, PyIceberg — analytical access
   only. Runtime PLM units do not read it.
 * Runbook: `.agents/skills/syncing-spec-to-r2-data-catalog/SKILL.md`

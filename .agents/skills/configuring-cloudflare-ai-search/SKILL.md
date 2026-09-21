@@ -28,7 +28,10 @@ Docs: <https://developers.cloudflare.com/ai-search/configuration/>
 
 Documents are uploaded by `scripts/ai_search_r2_sync.py` (GitHub Actions
 workflow `ai-search-sync.yml` on push to `main`), which sets the custom
-metadata via S3 `x-amz-meta-*` headers (`aws s3 cp --metadata`).
+metadata via S3 `x-amz-meta-*` headers (`aws s3 cp --metadata`). The sync
+lists the prefix once and skips objects whose ETag already matches the local
+file's MD5, so an unchanged run costs one `ListObjects` instead of a PUT per
+document; only new/changed files are uploaded (plus `--prune` deletions).
 
 ## API access
 
