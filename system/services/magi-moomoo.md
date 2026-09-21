@@ -4,9 +4,9 @@ title: magi-moomoo
 description: MooMoo broker integration — account, positions, orders, market snapshots.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-09-16T07:25:00Z }
+generated: { by: devin/cli, at: 2026-09-17T04:43:35Z }
 verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: devin/cli, at: 2026-09-16T07:25:00Z }]
-stale_after: 2027-03-16T07:25:00Z
+stale_after: 2027-03-17T04:43:35Z
 tags: [service, moomoo, broker]
 repo: dogmaai/magi-moomoo
 ---
@@ -58,13 +58,29 @@ server-side gate (`lib/order-gate.mjs`) before being forwarded to the bridge.
    order-placing magi-core jobs run as.
 
    The request-body `source` field is observational only and cannot
-   confer trust once the allowlist is set. While
-   `GATE_TRUSTED_CALLER_EMAILS` is unset, the legacy
-   `source='magi-core'` label is still accepted — **spoofable: any
-   caller with invoke access can bypass the approval requirement**, so
-   this is a transition mode only, not a safe steady state; the allowlist
-   MUST be configured for the gate to provide real authentication. A
-   warning is logged on startup and once per process on first use.
+   confer trust once the allowlist is set. The legacy
+   `source='magi-core'` label is disabled by default: it is honoured only
+   when `GATE_TRUSTED_CALLER_EMAILS` is unset AND the explicit opt-in
+   `GATE_ALLOW_LEGACY_SOURCE=true` is set — **spoofable: any caller with
+   invoke access can bypass the approval requirement**, so this is a
+   transition mode only, not a safe steady state. The deploy workflow
+   refuses to deploy when the allowlist is unset and legacy mode is not
+   explicitly enabled, so a REAL-capable deployment cannot silently fall
+   back to body-label trust. A warning is logged on startup and once per
+   process on first legacy use.
+
+   Token consumption is atomic: inside one BigQuery multi-statement
+   transaction the gate runs a conditional `UPDATE` that stamps a unique
+   per-request `claim:<uuid>` onto the token's `ISSUED` row (`order_id`
+   column, only while `NULL` and no `USED` row exists), then appends the
+   `USED` audit event. BigQuery serializes concurrent transactions that
+   modify the same row, so only one claimant commits; the loser aborts,
+   retries, sees the row already claimed, and its claim read-back fails —
+   a token cannot be spent twice. Note: pure append-only consumption is
+   NOT safe under BigQuery snapshot isolation (concurrent appends do not
+   conflict), which is why the claim rides on an `UPDATE` — the `ISSUED`
+   row is mutated exactly once at consumption; `USED` rows remain
+   append-only.
 5. `approval_token` and `source` are consumed by the gate and never forwarded
    to the bridge.
 6. `POST /trade/place_order` is never retried — a failed non-idempotent order
@@ -75,14 +91,12 @@ writing an `ISSUED` row after a confirmed user approval; the model cannot
 self-authorize.
 
 **Trust model of `source`**: it is a request-body label, *not*
-cryptographically verified. The gate trusts it because (a) only
-authenticated callers can reach the service (Cloud Run OIDC) and
-(b) only first-party application code sets it — LLM tool arguments cannot
-influence it. Any caller able to reach the endpoint and craft the body
-could spoof `magi-core` and bypass the token requirement; a stronger
-boundary would verify caller identity in the OIDC token (requires
-per-service service accounts — the services currently share the default
-compute SA) or a shared secret.
+cryptographically verified. It confers authorization only under the
+explicit `GATE_ALLOW_LEGACY_SOURCE=true` opt-in described above; with the
+allowlist configured it is observational metadata. Any caller able to
+reach the endpoint and craft the body could otherwise spoof `magi-core`
+and bypass the token requirement — the stronger boundary is the OIDC
+trusted-caller check in step 4.
 
 # Used by
 
@@ -134,6 +148,16 @@ Required by `legacy` and by `auto` as the fallback leg; unused in `private`.
 p50/p95 latency, `private_up`, and `fallback_events`. `POST
 /trade/place_order` is never retried on either route — the no-retry rule in
 the order gate section applies to routing too.
+
+**Bridge authentication** — the on-prem bridge (`bridge/moomoo_bridge.py`)
+is itself authenticated, so a caller that reaches the bridge directly cannot
+skip the Cloud Run gate. With `BRIDGE_AUTH_TOKEN` set, every endpoint except
+`GET /health` requires `Authorization: Bearer <token>` (the proxy sends the
+secret `MOOMOO_BRIDGE_AUTH_TOKEN`). When the token is unset, read-only and
+SIMULATE endpoints keep legacy behaviour during rollout, but a REAL
+`/place_order` fails closed with HTTP 403 — an unauthenticated bridge can
+never place a real-money order. `/health` reports `auth_required` so
+monitors can detect an unprotected deployment.
 
 # Discovery
 

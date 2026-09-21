@@ -16,7 +16,6 @@ This whole tree is **cross-unit by definition** and therefore
 | [MELCHIOR-1](melchior-1.md) | google | gemini-3.8-flash | 0.954 | `magi-core-gemini` | shadow (`TRADE_MODE=SHADOW`) | Systematic multi-factor analyst |
 | [CASPER](casper.md) | deepseek | deepseek-v4-flash | 0.999 | `magi-core-deepseek` | shadow (`TRADE_MODE=SHADOW`) | Aggressive momentum hunter |
 | [QWEN](qwen.md) | qwen | qwen-plus | 0.5 base / 0.75 effective | `magi-core-qwen` | active | Independent systematic reasoner |
-| [LILITH](lilith.md) | lilith | lilith-v1.0-b2-prod | 0.5 | `magi-core-lilith` (canary) | active | Independent fine-tuned reasoner |
 | [TYPHON](typhon.md) | kimi | kimi-k2.6 | 0.5 base / 0.75 effective | `magi-core-kimi` | active | Contrarian deep-value analyst |
 | [ADAM](adam.md) | ollama | qwen2.5:7b | 1.0 | `magi-core-adam` | active | Collaborative analyst |
 | [PROMETHEUS](prometheus.md) | openai | gpt-5.6-luna | 0.5 | `magi-core-openai` | active | Probability-calibrated strategist |
@@ -26,8 +25,7 @@ This whole tree is **cross-unit by definition** and therefore
 `UNIT_WEIGHT_MULTIPLIERS` 1.5x boost, giving them an *effective* budget weight
 of `0.75` at runtime. CASPER and MELCHIOR-1 are in `TRADE_MODE=SHADOW`: they
 continue generating decisions and recording to `trades_shadow` /
-`thoughts_shadow`, but do not submit live broker orders. LILITH's canary sets
-`LILITH_AUTOTRADE=0`.
+`thoughts_shadow`, but do not submit live broker orders.
 
 TIARA remains documented as the legacy VIX-only Ollama identity; see
 [TIARA](tiara.md). The `magi-vix-oracle` job uses the Ollama provider with
@@ -35,16 +33,16 @@ TIARA remains documented as the legacy VIX-only Ollama identity; see
 
 # Offline analysis units
 
-| Unit | Provider | Model | Role |
-|---|---|---|---|
-| [SEKHMET](sekhmet.md) | sakana | fugu-ultra | Offline sequential / **causal** outcome analysis (`magi-fugu-analyzer`); retired from the live roster |
+None currently — the SEKHMET offline analyzer was retired on 2026-09-17 (see
+*Deprecated units* below).
 
-# Proposed SHADOW extensions
+# SHADOW extensions
 
-* [SEKHMET Meta Verifier](sekhmet-meta-verifier.md) is a `draft`, code-merged but
-  not deployed extension. It reviews a bounded batch of evaluated hard cases and
-  writes audit-only findings. It is not a live PLM and cannot affect orders,
-  guards, sizing, PLM prompts, or LILITH.
+* The SEKHMET Meta Verifier (`sekhmet-meta-verifier.md`, deprecated
+  2026-09-17) was a deployed SHADOW extension that reviewed a bounded batch
+  of evaluated hard cases and wrote audit-only findings. Its first scheduled
+  run exited non-zero and it produced no rows; it was retired before the
+  approved four-run evaluation checkpoint.
 
 # Causal analysis ownership
 
@@ -52,7 +50,7 @@ Role boundaries, so the analyzers are not confused with each other:
 
 | Owner | Model / method | Analysis type | Output |
 |---|---|---|---|
-| [SEKHMET](sekhmet.md) (`magi-fugu-analyzer`) | Sakana `fugu-ultra`, `reasoning_effort=high` | **Causal analysis** — sequential/time-ordered causal outcome reasoning (`causal_insights`, win/lose streaks, regime transitions) | [fugu-sequential-patterns](/system/echidna-tables/fugu-sequential-patterns.md) |
+| ~~SEKHMET~~ (`magi-fugu-analyzer`, retired 2026-09-17) | Sakana `fugu-ultra`, `reasoning_effort=high` | ~~**Causal analysis** — sequential/time-ordered causal outcome reasoning~~ — role retired; no LLM causal owner at present | `fugu_sequential_patterns` (deprecated) |
 | [MELCHIOR-1](melchior-1.md) (`magi-gemini-analyzer`) | Gemini (`gemini-3.8-flash`, AI Studio) | **Generic pattern analysis / logical & quantitative analysis** — WIN/LOSE reasoning tendencies. *Not* the causal-analysis owner | [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md) |
 | DAPHNE (`magi-daphne-analyzer`) | BigQuery SQL `REGEXP_CONTAINS` + static `IS_CAUSAL` map (Gemini used only for why-lost narrative / hint rewrites) | **Static causal classification** — LOSE trades into the LP taxonomy, causal vs non-causal by rule | [daphne-feedback](/system/echidna-tables/daphne-feedback.md) |
 
@@ -63,17 +61,24 @@ Role boundaries, so the analyzers are not confused with each other:
 | [ANIMA](anima.md) | groq | DEPRECATED (#157) | [TYPHON](typhon.md) |
 | [ORACLE](oracle.md) | together | DEPRECATED (#139) | — |
 | [ZEROEL](zeroel.md) | xai | RETIRED (cost) | — |
+| SEKHMET | sakana | RETIRED 2026-09-17 (offline analyzer produced no output for 16d; Meta Verifier first run failed, 0 rows) | — (LLM causal analysis unassigned) |
+| [LILITH](lilith.md) | lilith | RETIRED (inference backend decommissioned) | — |
 
-`DEPRECATED_PROVIDERS = {together, groq, xai, sakana}` are excluded from
+`DEPRECATED_PROVIDERS = {together, groq, xai, sakana, lilith}` are excluded from
 budget-weight loading so they do not dilute active units' allocation. ZEROEL was
 retired because `xai` is in `DEPRECATED_PROVIDERS`; the disabled
 `magi-core-xai` PLM job cost approximately $47/month. `sakana` is listed there
-because SEKHMET left the live roster, but it still runs as the offline causal
-analyzer above.
+because SEKHMET left the live roster; its remaining offline analyzer roles were
+retired on 2026-09-17, when the semi-monthly `magi-thought-quality-ranker`
+job — Sakana's last consumer — was retired with them. Sakana has no active
+consumer in MAGI. `lilith` is listed there because the LILITH canary was paused
+and `lilith-inference-svc` was decommissioned; the `magi-core-lilith` job and
+`magi-lilith-gate-monitor` were removed from `deploy.yml`.
 
-# Relationship to LILITH
+# Relationship to LILITH (historical)
 
-QWEN is the DashScope `qwen` provider and LILITH is the fine-tuned `lilith`
-provider; they are separate unit names and slots. Per the
+QWEN is the DashScope `qwen` provider and LILITH was the fine-tuned `lilith`
+provider; they were separate unit names and slots. Per the
 [clean-source rule](/_lilith_safe/constitution/clean-source-rule.md), LILITH
-ignores every other unit in this registry.
+ignored every other unit in this registry. The `_lilith_safe/` tree remains
+frozen as the historical training-data boundary.

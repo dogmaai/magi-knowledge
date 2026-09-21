@@ -1,0 +1,204 @@
+name: Auto Review on PR
+
+on:
+  pull_request:
+    types: [opened, ready_for_review, synchronize, reopened]
+
+permissions:
+  pull-requests: write
+  contents: read
+
+jobs:
+  auto-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create auto review
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const repo = context.repo;
+
+            // 既存の自動レビューを確認
+            const existingReviews = await github.rest.pulls.listReviews({
+              owner: repo.owner,
+              repo: repo.repo,
+              pull_number: pr.number
+            });
+
+            // 自動レビューが既に存在する場合はスキップ
+            const autoReviewExists = existingReviews.data.some(
+              review => review.body && review.body.includes('自動レビュー')
+            );
+
+            if (autoReviewExists) {
+              console.log('Auto review already exists, skipping creation...');
+              return;
+            }
+
+            // 変更ファイルを取得
+            const files = await github.rest.pulls.listFiles({
+              owner: repo.owner,
+              repo: repo.repo,
+              pull_number: pr.number,
+              per_page: 100
+            });
+
+            // ファイルタイプを分析
+            const fileExtensions = {};
+            files.data.forEach(file => {
+              const ext = file.filename.split('.').pop() || 'no-extension';
+              fileExtensions[ext] = (fileExtensions[ext] || 0) + 1;
+            });
+
+            // レビュー内容を構築
+            const reviewLines = [
+              '## 自動レビュー',
+              '',
+              '**PR情報:**',
+              `- タイトル: ${pr.title}`,
+              `- 作成者: @${pr.user.login}`,
+              `- ターゲット: \`${pr.base.ref}\` ← \`${pr.head.ref}\``,
+              `- 状態: ${pr.state}`,
+              '',
+              '**変更統計:**',
+              `- ファイル数: ${pr.changed_files}`,
+              `- 追加行: +${pr.additions}`,
+              `- 削除行: -${pr.deletions}`,
+              '',
+            ];
+            let reviewBody = reviewLines.join('\n');
+
+            // ファイルタイプ別のチェック項目
+            if (fileExtensions['js'] || fileExtensions['ts']) {
+              reviewBody += `**JavaScript/TypeScript:**\n- [ ] 型定義の確認\n- [ ] 非同期処理のエラーハンドリング\n- [ ] Null/Undefinedの取り扱い\n`;
+            }
+
+            if (fileExtensions['py']) {
+              reviewBody += `**Python:**\n- [ ] PEP 8準拠\n- [ ] 型ヒントの使用\n- [ ] 例外処理の適切性\n`;
+            }
+
+            if (fileExtensions['md']) {
+              reviewBody += `**Markdown:**\n- [ ] 文書の整合性\n- [ ] リンクの有効性\n- [ ] 書式の適切性\n`;
+            }
+
+            if (fileExtensions['yml'] || fileExtensions['yaml']) {
+              reviewBody += `**YAML:**\n- [ ] インデントの正確性\n- [ ] 必須フィールドの存在\n- [ ] 構文の有効性\n`;
+            }
+
+            reviewBody += `\n**一般的なチェック項目:**\n- [ ] コードの品質\n- [ ] テストカバレッジ\n- [ ] ドキュメントの更新\n- [ ] セキュリティの考慮\n- [ ] パフォーマンスへの影響\n\n---\n\n*このレビューは自動的に作成されました。詳細なレビューを実施します。*\n*レビュアー: @dogmaai が割り当てられています。*\n`;
+
+            // レビューを作成
+            await github.rest.pulls.createReview({
+              owner: repo.owner,
+              repo: repo.repo,
+              pull_number: pr.number,
+              event: 'COMMENT',
+              body: reviewBody
+            });
+
+            console.log(`Auto review created for ${repo.owner}/${repo.repo}#${pr.number}`);
+
+            // レビュアーを割り当て
+            try {
+              await github.rest.pulls.requestReviewers({
+                owner: repo.owner,
+                repo: repo.repo,
+                pull_number: pr.number,
+                reviewers: ['dogmaai']
+              });
+              console.log(`Reviewer assigned: @dogmaai`);
+            } catch (error) {
+              console.log(`Failed to assign reviewer: ${error.message}`);
+            }
+
+      - name: Add PR comment for tracking
+        if: success()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const repo = context.repo;
+
+            const commentBody = '🤖 **自動レビューが作成されました**\n\n- レビューID: 自動生成\n- 状態: 確認中\n- 対象: 全ファイル\n- 次のステップ: @dogmaai が詳細レビューを実施します\n\nレビューを確認する\n';
+
+            await github.rest.issues.createComment({
+              owner: repo.owner,
+              repo: repo.repo,
+              issue_number: pr.number,
+              body: commentBody
+            });
+
+      - name: Mistral code review
+        if: success()
+        continue-on-error: true
+        env:
+          MISTRAL_API_KEY: ${{ secrets.MISTRAL_API_KEY }}
+          MISTRAL_MODEL: mistral-large-latest
+        uses: actions/github-script@v6
+        with:
+          script: |
+            if (!process.env.MISTRAL_API_KEY) {
+              console.log('MISTRAL_API_KEY not set, skipping Mistral review');
+              return;
+            }
+            const pr = context.payload.pull_request;
+            const repo = context.repo;
+
+            // 同一 head SHA への重複レビュー防止
+            const marker = `<!-- mistral-review sha=${pr.head.sha} -->`;
+            const existing = await github.rest.pulls.listReviews({
+              owner: repo.owner,
+              repo: repo.repo,
+              pull_number: pr.number,
+              per_page: 100
+            });
+            if (existing.data.some(r => r.body && r.body.includes(marker))) {
+              console.log('Mistral review already exists for this head SHA');
+              return;
+            }
+
+            // diff 取得（大きすぎる場合は切り詰め）
+            const diffResp = await github.rest.pulls.get({
+              owner: repo.owner,
+              repo: repo.repo,
+              pull_number: pr.number,
+              mediaType: { format: 'diff' }
+            });
+            let diff = diffResp.data;
+            const MAX = 30000;
+            if (diff.length > MAX) diff = diff.slice(0, MAX) + '\n... (truncated)';
+
+            const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${process.env.MISTRAL_API_KEY}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                model: process.env.MISTRAL_MODEL,
+                temperature: 0.2,
+                max_tokens: 2000,
+                messages: [
+                  { role: 'system', content: 'あなたはシニアソフトウェアエンジニアです。以下のPull Requestのdiffをレビューし、日本語のMarkdownで回答してください。構成: ## 概要 / ## 良い点 / ## 指摘事項（各項目に重要度: 高/中/低を付記）/ ## 推奨アクション。問題がなければ指摘事項に「なし」と明記してください。' },
+                  { role: 'user', content: `PRタイトル: ${pr.title}\n\n${diff}` }
+                ]
+              })
+            });
+            if (!res.ok) {
+              throw new Error(`Mistral API ${res.status}: ${await res.text()}`);
+            }
+            const data = await res.json();
+            const reviewText = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) || '(no output)';
+
+            await github.rest.pulls.createReview({
+              owner: repo.owner,
+              repo: repo.repo,
+              pull_number: pr.number,
+              event: 'COMMENT',
+              body: `${marker}\n## 🧠 Mistral レビュー (\`${process.env.MISTRAL_MODEL}\`)\n\n${reviewText}`
+            });
+            console.log('Mistral review posted');

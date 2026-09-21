@@ -1,21 +1,27 @@
 ---
 type: PLM Unit
 title: LILITH
-description: Independent reasoner; fine-tuned LILITH model served from lilith-inference-svc.
+description: Retired independent reasoner; the fine-tuned LILITH line was decommissioned.
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-08-27T23:14:38Z }
+status: draft
+generated: { by: devin/cloud, at: 2026-09-17T17:34:00Z }
 verified: { by: human:jun, at: 2026-08-27T23:14:38Z }
 stale_after: 2027-02-23T23:14:38Z
-tags: [plm, active, lilith, fine-tuned, independent]
+tags: [plm, retired, lilith, fine-tuned, independent]
 provider: lilith
 model: lilith-v1.0-b2-prod
-unit_status: active
-budget_weight_normal: 0.5
-cloud_run_job: magi-core-lilith / lilith-inference-svc
+unit_status: retired
+budget_weight_normal: excluded
+cloud_run_job: retired — magi-core-lilith removed from deploy.yml; lilith-inference-svc decommissioned
 ---
 
 # Overview
+
+> **Retired (2026-09).** The LILITH canary (`magi-core-lilith`, `LILITH_AUTOTRADE=0`)
+> was paused, the `lilith-inference-svc` serving side was decommissioned, and the
+> `lilith` provider was added to `DEPRECATED_PROVIDERS` so it no longer receives
+> budget weight or a deployed Cloud Run job. The sections below are retained as
+> the historical record of the unit.
 
 LILITH is the **independent reasoner** for the `lilith` provider. Its model is
 `LILITH_VERSION` (`lilith-v1.0-b2-prod`), served by `lilith-inference-svc`.

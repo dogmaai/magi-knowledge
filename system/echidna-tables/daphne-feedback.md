@@ -5,9 +5,9 @@ description: DAPHNE loss-pattern (LP) classification of LOSE trades with a stati
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=daphne_feedback&page=table
 lilith_safe: false
 status: stable
-generated: { by: devin/cloud, at: 2026-08-20T05:49:46Z }
-verified: { by: human:jun, at: 2026-08-20T05:49:46Z }
-stale_after: 2027-02-16T05:49:46Z
+generated: { by: devin/local, at: 2026-09-17T17:36:54Z }
+verified: { by: human:jun, at: 2026-09-17T17:36:54Z }
+stale_after: 2027-03-17T17:36:54Z
 tags: [echidna, bigquery, daphne, causal, feedback]
 dataset: magi_core
 table_type: BASE TABLE
@@ -18,7 +18,8 @@ post-close). LOSE trades from the last 90 days are classified into the **LP
 taxonomy in BigQuery SQL** (`REGEXP_CONTAINS`), aggregated per provider, and
 flagged causal / non-causal from the **static `IS_CAUSAL` map** in the job — this
 is rule-based classification, *not* LLM causal inference. LLM causal reasoning
-belongs to [SEKHMET](/system/plm-units/sekhmet.md). Gemini (Vertex) is used only
+was assigned to the retired SEKHMET analyzer (deprecated 2026-09-17) and is
+currently unassigned. Gemini (Vertex) is used only
 to write the why-lost narrative and to rewrite ineffective hints.
 
 # Schema

@@ -4,7 +4,7 @@ title: magi-core
 description: The MAGI trading engine — trade loop, LLM orchestration, and guard layers.
 lilith_safe: false
 status: draft
-generated: { by: devin/local, at: 2026-09-16T01:30:00Z }
+generated: { by: devin/local, at: 2026-09-19T03:20:00Z }
 verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }]
 stale_after: 2027-03-16T01:30:00Z
 tags: [service, magi-core, core, trading]
@@ -131,11 +131,11 @@ separate names) as defined in `magi-core/.github/workflows/deploy.yml`:
 
 | Cloud Run Job | Scheduler | Schedule (TZ) | Role |
 |---|---|---|---|
-| `magi-fugu-analyzer` | `magi-fugu-analyzer-daily` | `30 23 * * 1,5` (America/New_York) | [SEKHMET](/system/plm-units/sekhmet.md) offline sequential / **causal** outcome analysis, Sakana `fugu-ultra`, `reasoning_effort=high` → [fugu-sequential-patterns](/system/echidna-tables/fugu-sequential-patterns.md) |
+| `magi-fugu-analyzer` | `magi-fugu-analyzer-daily` | `30 23 * * 1,5` (America/New_York) | ~~SEKHMET~~ offline sequential / **causal** outcome analysis, Sakana `fugu-ultra` — retired 2026-09-17; no `fugu_sequential_patterns` row since 2026-09-01, teardown pending |
 | `magi-gemini-analyzer` | `magi-gemini-analyzer-daily` | `0 14 * * 1-5` (UTC) | Gemini **generic** WIN/LOSE pattern analysis (AI Studio `gemini-3.8-flash`); not causal analysis → [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md) |
 | `magi-daphne-analyzer` | `magi-daphne-analyzer-daily` | `0 22 * * 1-5` (America/New_York) | LP-taxonomy classification of LOSE trades in BigQuery SQL + static `IS_CAUSAL` flag → [daphne-feedback](/system/echidna-tables/daphne-feedback.md) |
-| `magi-thought-outcome-analyzer` | `magi-thought-outcome-analyzer-daily` | `0 23 * * 1-5` (America/New_York) | Links thoughts to realized outcomes (feeds the Fugu pass that follows at 23:30 ET) |
-| `magi-thought-quality-ranker` | `magi-thought-quality-ranker` | `0 0 1,15 * *` (UTC) | Semi-monthly thought quality ranking (`SAKANA_MODEL=fugu-ultra`) → [thought-quality-scores](/system/echidna-tables/thought-quality-scores.md) |
+| `magi-thought-outcome-analyzer` | `magi-thought-outcome-analyzer-daily` | `0 23 * * 1-5` (America/New_York) | Links thoughts to realized outcomes (formerly fed the retired 23:30 ET Fugu pass) |
+| `magi-thought-quality-ranker` | `magi-thought-quality-ranker` | `0 0 1,15 * *` (UTC) | ~~Semi-monthly thought quality ranking~~ (`SAKANA_MODEL=fugu-ultra`) — retired 2026-09-17 with the Sakana stack; wrote `fugu_thought_quality_scores` (no consumer) |
 | `magi-evaluator` | `magi-evaluator-daily` | `0 10 * * *` (Asia/Tokyo) | Trade outcome evaluation (daily) |
 
 Role boundaries: see
@@ -161,10 +161,9 @@ revision; magi-core is adding UTC.
 | `magi-isabel-cache` | `magi-isabel-cache-daily` | `0 8 * * 1-5` (America/New_York) | Daily ISABEL pre-compute |
 | `magi-isabel-briefing` | `magi-isabel-briefing-daily` | `30 13 * * 1-5` (UTC) | ISABEL morning briefing |
 | `magi-position-guard` | `magi-position-guard-scheduler` | `*/15 9-16 * * 1-5` (America/New_York) | Intra-day exit enforcement |
-| `magi-shadow-evaluator` | `magi-shadow-evaluator-daily` | `30 21 * * 1-5` (America/New_York) | LILITH shadow trade evaluation |
+| `magi-shadow-evaluator` | `magi-shadow-evaluator-daily` | `30 21 * * 1-5` (America/New_York) | Shadow trade evaluation (`TRADE_MODE=SHADOW` units; legacy LILITH rows) |
 | `magi-sync-embeddings` | `magi-sync-embeddings-daily` | `0 8 * * 1-5` (America/New_York) | Thought embedding sync |
 | `magi-optuna-job` | `magi-optuna-optimizer` | `0 6 * * 1` (UTC) | Optuna batch optimization (see deploy.yml) |
-| `magi-lilith-gate-monitor` | `magi-lilith-gate-monitor-daily` | `30 22 * * 1-5` (America/New_York) | LILITH adapter drift check |
 | `magi-sm-token-rotate` | `magi-sm-token-rotate-30min` | `*/30 * * * *` (UTC) | Rotate MooMoo Synthetic Monitoring token |
 | `magi-fred-updater` | `magi-fred-updater-daily` | `0 2 * * *` (UTC) | Daily FRED macro data fetch |
 | `magi-watchdog` | `magi-watchdog-daily` | `0 23 * * 1-5` (UTC) | Trade activity monitor |
@@ -175,7 +174,7 @@ revision; magi-core is adding UTC.
 [thoughts](/system/echidna-tables/thoughts.md),
 [sessions](/system/echidna-tables/sessions.md),
 [llm-metrics](/system/echidna-tables/llm-metrics.md),
-[consensus-signals](/system/echidna-tables/consensus-signals.md), guard_blocks,
+[consensus-signals](/system/echidna-tables/consensus-signals.md),
 [lilith-hard-gate-events](/system/echidna-tables/lilith-hard-gate-events.md),
 [pre_trade_intelligence](/system/echidna-tables/pre-trade-intelligence.md),
 [market_research](/system/echidna-tables/market-research.md),

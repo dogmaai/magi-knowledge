@@ -1,6 +1,63 @@
 # Bundle Update Log
 
+## 2026-09-19
+* **Clarification (draft)**: [JEV Decision Validator](/system/guards/jev.md)
+  input contract — `analysis.confidence` preserves the raw LLM-reported
+  value (pre-normalization) so `JEV_CONFIDENCE_INVALID` stays reachable.
+  Adds `JEV_THOUGHT_ACTION_UNSUPPORTED` (block) for analysis actions
+  outside {BUY, SELL, HOLD} and `JEV_ANALYSIS_BAD_TIMESTAMP` (block) for
+  missing/invalid analysis timestamps. Follow-up fixes on
+  `dogmaai/magi-core#480` (review feedback).
+* **Fix**: Guard-block audit destination corrected — the `guard_blocks`
+  table never existed; `logGuardBlock()` writes guard-block rows to
+  `magi_core.thoughts` (`action='BLOCKED'|'WARN_ONLY'`,
+  `concerns=<layer>`; no data/audit impact — historical blocks already
+  live in `thoughts`). Fixed [guards index](/system/guards/index.md),
+  [l6](/system/guards/l6.md), the
+  [magi-core](/system/services/magi-core.md) writes list, and the
+  [thoughts](/system/echidna-tables/thoughts.md) schema (documented
+  `action`/`trade_mode` guard-block values and `concerns` layer-id
+  usage). `l6` and `thoughts` flipped `stable` → `draft` per lifecycle —
+  the prior `human:jun` verifications predated these generations —
+  then **re-verified and restored to `stable` by Jun on 2026-09-21**.
+  `stale_after` deadlines kept unchanged — unverified revisions do not
+  extend the re-verification window.
+* **Review notes (draft)**: [JEV Decision Validator](/system/guards/jev.md)
+  gained a prioritized *Open items* section from the 2026-09-19
+  shadow-phase implementation review (`magi-core` PR #480, deployed
+  `JEV_MODE=shadow`; first verdicts expected 2026-09-21) — see the doc
+  for the items.
+* **2026-09-21 shadow results + decisions (draft)**: first JEV data —
+  45 evaluations, 36 PASS / 9 `WARN_ONLY` / 0 errors / 0 enforce leaks.
+  All 9 violations were exits (4× `JEV_THOUGHT_HOLD` drift detections,
+  5× `JEV_THOUGHT_MISSING` incl. consumed-analysis re-orders).
+  Decisions recorded in [jev](/system/guards/jev.md): risk-reducing
+  orders are never JEV-blocked even in enforce (carve-out,
+  `magi-core#485`); analysis consumption stays at broker-attempt
+  (anti-double-fill); enforce remains unscheduled pending further
+  shadow observation on the fixed build.
+* **Correction (draft)**: [L6 Market Regime](/system/guards/l6.md) — the
+  prior text attributed `WARN_ONLY` rows to `HIGH_FEAR`; per
+  `magi-core/src/llm.js` the row is written for `EXTREME_FEAR`/`PANIC`
+  (`HIGH_FEAR` is console-only). Also documented that the hard BUY→HOLD
+  gate (`applyHardGate`) is wired only into the LILITH provider lane —
+  standard providers have no hard VIX block, diverging from
+  `risk-rules` (`EXTREME_FEAR` BUY system-blocked). **Jun decision
+  2026-09-21: option A — tighten the standard lane to match the
+  constitution** (`dogmaai/magi-core#484` adds the hard gate with a
+  risk-reducing-cover exemption, fail-closed on lookup failure);
+  `l6.md` wording to be re-aligned once the code lands.
+
 ## 2026-09-18
+* **Creation (draft)**: [JEV Decision Validator](/system/guards/jev.md) —
+  deterministic typed validator on the `place_order` path (`magi-core`
+  Issue #479). Cross-checks the order against the session's linked
+  `log_analysis` (symbol/action/confidence consistency, reasoning
+  sufficiency, staleness) and emits `PASS`/`BLOCK`/`ESCALATE`. Not an LLM;
+  `JEV_MODE=shadow` records WARN_ONLY guard-block rows without stopping
+  orders — enforcement requires separate approval and independent review.
+  Also registered in the [guard pipeline order](/system/guards/index.md)
+  between L0 kill switch and the shadow short circuit.
 * **Enhancement**: `scripts/ai_search_r2_sync.py` now lists the managed
   prefix once and uploads only objects whose ETag differs from the local
   file's MD5 — an unchanged sync costs one `ListObjects` instead of a
@@ -16,6 +73,61 @@
   now records the revision that last changed content.
 
 ## 2026-09-17
+* **Deprecation**: Retired the SEKHMET stack with Jun's approval —
+  [sekhmet](/system/plm-units/sekhmet.md) (no `fugu_sequential_patterns` row
+  since 2026-09-01; graceful-skip masked failures) and
+  [sekhmet-meta-verifier](/system/plm-units/sekhmet-meta-verifier.md) (first
+  scheduled run exited non-zero, `sekhmet_reviews` still empty) are
+  `deprecated`, as are their artifact docs
+  [fugu-sequential-patterns](/system/echidna-tables/fugu-sequential-patterns.md)
+  and [sekhmet-reviews](/system/echidna-tables/sekhmet-reviews.md). The LLM
+  causal-analysis role is unassigned; generic pattern analysis stays with
+  `magi-gemini-analyzer` and static classification with `magi-daphne-analyzer`.
+  Infra teardown (jobs, schedulers, `lib/fugu.js`, deploy.yml, dead `sakana`
+  personality in session.js) is pending. `magi-thought-quality-ranker` remains
+  the only Sakana consumer, under retirement review.
+* **Deprecation**: Sakana fully abolished per Jun's 2026-09-17 decision —
+  `magi-thought-quality-ranker` retired as Sakana's last consumer and
+  [thought-quality-scores](/system/echidna-tables/thought-quality-scores.md)
+  deprecated (its documented table never existed; the ranker actually wrote
+  `fugu_thought_quality_scores`, which has no consumer). magi-core removal
+  PR: `dogmaai/magi-core#477`. Sakana has no active consumer in MAGI.
+  Jun cancelled the Sakana account on 2026-09-17, so the `SAKANA_API_KEY`
+  credential is now dead and any leftover scheduled job can only fail
+  fast at the API call.
+* **Policy**: Added [Automated PR review bots](/COLLABORATION.md#automated-pr-review-bots)
+  to COLLABORATION.md — the `auto-review.yml` Mistral/template `COMMENT`
+  reviews are reference-only, never approve, and never satisfy independent
+  review; records Jun's 2026-09-17 approval to send PR diffs (including
+  private `magi-core`) to the external Mistral API for this workflow only.
+* **Service**: Recorded the GitHub Actions `MISTRAL_API_KEY` injected copies
+  (six repos, GSM remains source of truth) in
+  [secrets-inventory](/system/services/secrets-inventory.md); `magi-ui` and
+  `lilith-training` deliberately excluded.
+* **Lint**: `scripts/okf_lint.py` now detects stale verification — a
+  `stable` doc whose every human `verified.at` predates `generated.at` is
+  an ERROR (the verification covers an older revision), and the same
+  condition on a `draft` doc is a WARN. Nine drafts currently warn, all
+  awaiting `human:jun` re-verification.
+* **Fix**: [echidna-tables index](/system/echidna-tables/index.md)
+  corrected its [sekhmet-reviews](system/echidna-tables/sekhmet-reviews.md)
+  entry — the index claimed "table not yet created" while the stable,
+  Jun-verified doc records the table created in BigQuery on 2026-09-08;
+  the index now matches the verified doc.
+* **Sync**: [magi-moomoo](/system/services/magi-moomoo.md) updated to the
+  hardened order-gate behaviour: legacy `source='magi-core'` trust now
+  requires the explicit `GATE_ALLOW_LEGACY_SOURCE=true` opt-in, deploy
+  fails closed without a trusted-caller allowlist, approval tokens are
+  consumed atomically in a BigQuery transaction, and the on-prem bridge
+  fails closed on REAL `/place_order` when `BRIDGE_AUTH_TOKEN` is unset.
+  Remains `draft` pending `human:jun` re-verification.
+* **Model change**: [order-approvals](/system/echidna-tables/order-approvals.md)
+  moved `stable` → `draft` — atomic token consumption now requires a
+  conditional `UPDATE` stamping `claim:<uuid>` on the `ISSUED` row (pure
+  `INSERT ... WHERE NOT EXISTS` cannot serialize under BigQuery snapshot
+  isolation, as concurrent appends do not conflict — Codex P1 on
+  magi-moomoo#81). `USED` rows remain append-only; the `ISSUED` row is
+  mutated once at consumption. Pending `human:jun` re-verification.
 * **Fix**: `scripts/okf_lint.py` — `CROSS_UNIT_NAMES` synced with the PLM
   registry: added `adam`, `qwen`, `sekhmet` (a non-detector `_lilith_safe`
   doc naming them previously passed the linter — Codex P1 on #63).
@@ -60,6 +172,44 @@
 * **Correction**: the order_intents verification record now names the
   immutable magi-core merge commit `c5dc811976539e855a404d2bb16d98a55bf1ab48`
   alongside the (now-deletable) branch name (Codex P1 on #65).
+* **Retirement**: [LILITH](/system/plm-units/lilith.md) moved to
+  `unit_status: retired` — the canary (`magi-core-lilith`, `LILITH_AUTOTRADE=0`)
+  was paused and `lilith-inference-svc` was decommissioned; `lilith` joined
+  `DEPRECATED_PROVIDERS` in `magi-core/lib/config.js` / `optuna_utils.py`, and
+  the `magi-core-lilith` + `magi-lilith-gate-monitor` jobs left `deploy.yml`.
+  Moved `stable` → `draft` pending `human:jun` re-verification.
+  Companion source revision: magi-core `82e9adf4ba7a6f0b77200365b185153b0e9503b9`
+  (PR [dogmaai/magi-core#476](https://github.com/dogmaai/magi-core/pull/476)
+  head — intended source change, not yet merged/deployed). Observed deployment
+  state: scheduler paused, `LILITH_AUTOTRADE=0`, `lilith-inference-svc` absent;
+  Cloud Run job/scheduler deletion remains pending Jun execution.
+* **Retirement**: [lilith-training](/system/services/lilith-training.md) marked
+  retired — the pipeline no longer feeds a deployed model; the
+  `asia-southeast1` Cloud Run jobs are decommission candidates and
+  `dogmaai/lilith-training` can be archived. `stable` → `draft`.
+* **Fix**: [PLM unit registry](/system/plm-units/index.md) — LILITH moved to
+  the deprecated-units table; the SEKHMET Meta Verifier entry corrected from
+  "draft, code-merged but not deployed" to deployed weekly
+  (`magi-sekhmet-meta-verifier`, per the Jun-verified unit doc, deployed
+  2026-09-08); `DEPRECATED_PROVIDERS` list gained `lilith`; the LILITH
+  relationship note re-tensed as historical.
+* **Fix**: [magi-core](/system/services/magi-core.md) job table — removed the
+  retired `magi-lilith-gate-monitor` row and re-scoped `magi-shadow-evaluator`
+  to all `TRADE_MODE=SHADOW` units.
+* **Constitution (Jun decision 2026-09-17)**: [NORTH STAR](system/constitution/north-star.md)
+  item 4 removed — the "fine-tune LILITH into MAGI's production specialist"
+  objective is deleted with the LILITH retirement, leaving three cardinal
+  objectives. Doc kept `stable` / `verified: human:jun` (decision taken in
+  review). Companion runtime change: `magi-core/lib/constitution.js` drops the
+  rendered item 4 and bumps the constitution header to v3.9 — see
+  [constitution index](system/constitution/index.md) Version 3.9.
+* **Fix (review)**: [services index](system/services/index.md) — `lilith-training`
+  moved from the active Services table to Retired; contamination note re-tensed
+  as historical (Codex P2 on #75).
+* **Fix (review)**: [lilith](system/plm-units/lilith.md) and
+  [lilith-training](system/services/lilith-training.md) — restored required
+  `verified` / `stale_after` lifecycle fields with their historical values
+  (gemini-code-assist on #75); docs remain `draft` pending re-verification.
 
 ## 2026-09-16
 * **Enhancement**: [magi-moomoo](/system/services/magi-moomoo.md) —

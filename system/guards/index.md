@@ -2,14 +2,19 @@
 
 The sequential safety pipeline every trade tool-call passes through before an
 order is placed. It is orchestrated in `magi-core/src/llm.js`; the L4/L5/L7
-implementations live in `src/paperGuards.js`. Blocks are logged to the
-`guard_blocks` table via `logGuardBlock()`.
+implementations live in `src/paperGuards.js`. Blocks are logged via
+`logGuardBlock()` as guard-block rows in
+[`magi_core.thoughts`](/system/echidna-tables/thoughts.md)
+(`action='BLOCKED'`, or `'WARN_ONLY'` for warn-only layers; `concerns`
+carries the layer id). There is no separate `guard_blocks` table —
+historical blocks already live in `thoughts`, so nothing is lost.
 
 # Pipeline order
 
 | Layer | Name | Checks | On fail |
 |---|---|---|---|
 | [L0](l0-kill-switch.md) | Emergency Kill Switch | Global halt from `magi_core.system_control` | block all orders |
+| [JEV](jev.md) | Decision Validator (draft) | Order ↔ linked `log_analysis` consistency; typed PASS/BLOCK/ESCALATE verdict | warn (`JEV_MODE=shadow`) / block (`enforce`) |
 | Shadow short circuit | Shadow-mode recording | `isConfiguredShadowMode()` → `recordShadowOrder()`; no broker call | record |
 | [L-1](l-1.md) | Broker Availability | Broker reachable / tradable | block |
 | [L0](l0.md) | PositionManager | PositionManager veto on symbol/side | block |
@@ -28,7 +33,8 @@ implementations live in `src/paperGuards.js`. Blocks are logged to the
 | [L7](l7.md) | Composite Score (複合スコア層) | Optuna 1000-trial composite gate | block |
 
 The numeric labels are historical and the table is in actual code execution
-order. The L0 emergency kill switch runs first. The shadow-mode short circuit
+order. The L0 emergency kill switch runs first, then the JEV decision
+validator (draft — see [jev.md](jev.md)). The shadow-mode short circuit
 then applies `isConfiguredShadowMode()` and `recordShadowOrder()`; units in
 `TRADE_MODE=SHADOW` (MELCHIOR-1 and CASPER) never reach L-1 or below.
 
@@ -45,4 +51,6 @@ back to the specific constitutional section it enforces.
   exclusions, L7 weights.
 * `magi_core.system_control` — L0 emergency kill-switch state.
 * `magi_core.trades` — L1.7 per-unit realized P&L for the current ET day.
-* `guard_blocks` — every block, for audit.
+* [`magi_core.thoughts`](/system/echidna-tables/thoughts.md) — every block
+  as a guard-block row (`action='BLOCKED'|'WARN_ONLY'`, `concerns=<layer>`),
+  for audit.

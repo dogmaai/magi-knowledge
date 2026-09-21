@@ -1,15 +1,15 @@
 ---
 type: Constitution Section
 title: "NORTH STAR"
-description: The four cardinal objectives that govern every decision.
+description: The three cardinal objectives that govern every decision.
 lilith_safe: false
 status: stable
-generated: { by: openai/gpt-5.6-sol, at: 2026-09-08T00:35:00Z }
-verified: { by: human:jun, at: 2026-09-08T00:35:00Z }
-stale_after: 2027-03-07T00:35:00Z
+generated: { by: devin/cloud, at: 2026-09-17T18:05:19Z }
+verified: { by: human:jun, at: 2026-09-17T18:05:19Z }
+stale_after: 2027-03-17T18:05:19Z
 tags: [constitution, v3, plm, north-star, core]
 section_order: 2
-version: "3.1"
+version: "3.2"
 source: magi-core/lib/constitution.js
 ---
 
@@ -21,29 +21,16 @@ source: magi-core/lib/constitution.js
    are weak, never fight them where they dominate.
 3. Compound capital and survive tail events -- staying in the game is how you
    win long-term.
-4. Turn validated multi-LLM trading reasoning + realized outcomes into
-   reproducible edge. Use that learning asset to progressively fine-tune LILITH
-   into MAGI's production securities-trading specialist model. Repeat what wins,
-   refuse what loses. Pattern discovery and model training serve profit, not the
-   reverse.
 
 # Intent
 
-Ordered priority: risk-adjusted return > alpha generation > capital preservation
-> pattern discovery. Item 4 explicitly subordinates pattern discovery and model
-training to profit.
+Ordered priority: risk-adjusted return > alpha generation > capital preservation.
 
-MAGI is not only a multi-LLM trading ensemble. Its long-term learning objective
-is to use diverse PLM reasoning and outcome feedback as a teacher corpus, select
-and transform validated patterns into contamination-safe training assets, and
-progressively distill that edge into LILITH. LILITH is therefore the production
-domain model that MAGI is intended to improve over successive training cycles,
-not merely another ensemble vote.
-
-This paragraph states the architectural objective, not the current implementation
-state. The present `lilith-training` pipeline uses synthetic prompt blocks and
-anti-hallucination DPO; direct ingestion of cross-PLM reasoning is not documented
-as implemented and must not bypass the LILITH contamination boundary.
+MAGI is a multi-LLM trading ensemble. The former fourth objective (distilling
+validated reasoning into a fine-tuned LILITH production specialist) was removed
+on 2026-09-17 per Jun's decision alongside the LILITH unit's retirement; the
+learning-asset data captured by `thoughts` / `thoughts_shadow` remains stored
+but no longer has a designated production model target in this constitution.
 
 # Cross-references
 
@@ -51,15 +38,13 @@ as implemented and must not bypass the LILITH contamination boundary.
 * [expectancy](expectancy.md) operationalises item 1 (positive EV math).
 * [prohibitions](prohibitions.md) enforces item 3 (no averaging down, no
   widening stops).
-* [LILITH](/system/plm-units/lilith.md) is the production fine-tuned unit targeted
-  by item 4.
-* [lilith-training](/system/services/lilith-training.md) documents the current
-  fine-tuning pipeline and contamination boundary.
-* [_lilith_safe/](/_lilith_safe/) defines the only knowledge tree sanctioned for
-  LILITH training inputs.
+* [LILITH](/system/plm-units/lilith.md) — retired unit; was the production
+  fine-tuned unit targeted by the former item 4.
+* [lilith-training](/system/services/lilith-training.md) — retired service;
+  documented the former fine-tuning pipeline and contamination boundary.
+* [_lilith_safe/](/_lilith_safe/) — historical specification of the only
+  knowledge tree sanctioned for LILITH training inputs.
 
 # Citations
 
 * Runtime builder: `buildSwingConstitution()` in `magi-core/lib/constitution.js`.
-* Current LILITH training implementation: `dogmaai/lilith-training` as documented
-  in [lilith-training](/system/services/lilith-training.md).
