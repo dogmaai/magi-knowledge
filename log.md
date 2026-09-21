@@ -27,6 +27,15 @@
   shadow-phase implementation review (`magi-core` PR #480, deployed
   `JEV_MODE=shadow`; first verdicts expected 2026-09-21) — see the doc
   for the items.
+* **2026-09-21 shadow results + decisions (draft)**: first JEV data —
+  45 evaluations, 36 PASS / 9 `WARN_ONLY` / 0 errors / 0 enforce leaks.
+  All 9 violations were exits (4× `JEV_THOUGHT_HOLD` drift detections,
+  5× `JEV_THOUGHT_MISSING` incl. consumed-analysis re-orders).
+  Decisions recorded in [jev](/system/guards/jev.md): risk-reducing
+  orders are never JEV-blocked even in enforce (carve-out,
+  `magi-core#485`); analysis consumption stays at broker-attempt
+  (anti-double-fill); enforce remains unscheduled pending further
+  shadow observation on the fixed build.
 * **Correction (draft)**: [L6 Market Regime](/system/guards/l6.md) — the
   prior text attributed `WARN_ONLY` rows to `HIGH_FEAR`; per
   `magi-core/src/llm.js` the row is written for `EXTREME_FEAR`/`PANIC`

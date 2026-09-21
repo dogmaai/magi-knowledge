@@ -59,7 +59,14 @@ Verdict precedence: `BLOCK` > `ESCALATE` > `PASS`.
   `logGuardBlock('JEV', …)` as `WARN_ONLY` rows with `skipNotify`; orders are
   never stopped.
 * `JEV_MODE=enforce`: `BLOCK`/`ESCALATE` reject the order (`blocked_by:
-  'jev'`) and notify the operator.
+  'jev'`) and notify the operator. **Exception (Jun decision
+  2026-09-21):** a non-PASS verdict on a *risk-reducing* order (an exit
+  or a pure short cover, measured via `isIncreasingExposure` against
+  live positions) never blocks — it is journaled as `WARN_ONLY`
+  instead. Positions must always be unwindable, same principle as the
+  validator-error policy below, L0 degraded mode, and L1.7.
+  Position-lookup failure treats the order as risk-increasing
+  (fail-closed).
 * `JEV_MODE=off`: validator skipped.
 
 Tunables: `JEV_MIN_REASONING_LEN` (20), `JEV_MIN_REASON_LEN` (4),
@@ -74,8 +81,12 @@ enforce mode.
 `validateDecision({ params, analysis, config, now })` where `analysis` is the
 normalized `log_analysis` record kept per symbol in `src/globals.js`
 (`analysesBySymbol`: thoughtId, symbol, action, confidence, reasoning, ts).
-The registry is populated in the `log_analysis` handler and cleared when the
-order consumes it, alongside the existing thought_id/confidence linkage.
+The registry is populated in the `log_analysis` handler and consumed when the
+order **reaches the broker** (or is shadow-recorded) — a validation alone does
+not consume it, so an order blocked by a later guard can be retried against the
+same analysis. Consumption happens even when the fill is unconfirmed
+(conservative: the order may be live at the broker, and a retained analysis
+could justify a duplicate). A retry therefore requires a fresh `log_analysis`.
 
 `analysis.confidence` deliberately preserves the **raw** LLM-reported value,
 captured before the `safeFloat(...) ?? 0` normalization the handler applies
@@ -128,14 +139,25 @@ spec-code violations:
   huge value silently disables `JEV_ANALYSIS_STALE`. Candidate: sanity ceiling.
 * **Low** — An analysis `ts` in the future yields a negative age and passes
   `JEV_ANALYSIS_STALE`. Candidate: bound negative age.
-* **High** — Integration coverage: tests exercise `lib/jev.js` only; the
-  `src/llm.js` wiring (enforce return, WARN_ONLY journaling, validator-error
-  fail-closed) is untested. Required before any `JEV_MODE=enforce` proposal
-  (Phase 2 gate).
+* **Resolved 2026-09-21** — First shadow data (45 evaluations across the
+  Monday session batch): 36 PASS, 9 non-PASS `WARN_ONLY` rows, 0 validator
+  errors, 0 enforce leaks. All 9 violations were exit orders: 4×
+  `JEV_THOUGHT_HOLD` (HOLD analysis followed by a SELL — true drift
+  detections) and 5× `JEV_THOUGHT_MISSING` (exits with no same-session
+  analysis, plus re-orders after a consumed analysis — correct
+  anti-reuse). Jun decision: exits are never JEV-blocked → carve-out
+  implemented in `magi-core#485`.
+* **High** — Integration coverage: partially addressed —
+  `llm-place-order.test.js` now covers the enforce reject, the exit
+  carve-out journaling, and lookup fail-closed (`magi-core#485`);
+  remaining wiring paths still untested. Required before any
+  `JEV_MODE=enforce` proposal (Phase 2 gate).
 * **Awaiting Jun decision** — Candidate spec additions raised in review, not
   implemented: a richer typed verdict record (`analysis_age_ms`, per-check
-  `checks` map, `validator_version`, `evaluated_at`), a position-consistency
-  check, and a risk-reducing classification input.
+  `checks` map, `validator_version`, `evaluated_at`) and a
+  position-consistency check. (The risk-reducing input was resolved
+  2026-09-21 — handled in the enforce path via live-position
+  `isIncreasingExposure`, not as a validator input.)
 
 # Citations
 
