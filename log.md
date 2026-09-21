@@ -33,8 +33,11 @@
   (`HIGH_FEAR` is console-only). Also documented that the hard BUY→HOLD
   gate (`applyHardGate`) is wired only into the LILITH provider lane —
   standard providers have no hard VIX block, diverging from
-  `risk-rules` (`EXTREME_FEAR` BUY system-blocked). Flagged open for
-  Jun; not resolved by the agent.
+  `risk-rules` (`EXTREME_FEAR` BUY system-blocked). **Jun decision
+  2026-09-21: option A — tighten the standard lane to match the
+  constitution** (`dogmaai/magi-core#484` adds the hard gate with a
+  risk-reducing-cover exemption, fail-closed on lookup failure);
+  `l6.md` wording to be re-aligned once the code lands.
 
 ## 2026-09-18
 * **Creation (draft)**: [JEV Decision Validator](/system/guards/jev.md) —
