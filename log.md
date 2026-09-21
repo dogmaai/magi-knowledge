@@ -1,5 +1,14 @@
 # Bundle Update Log
 
+## 2026-09-21
+* **Update (draft)**: [l6](/system/guards/l6.md) — standard-lane
+  `EXTREME_FEAR`/`PANIC` BUY is now **hard-blocked** per
+  [risk-rules](/_lilith_safe/constitution/risk-rules.md), resolving the
+  warn-only divergence (Jun option A, `dogmaai/magi-core#484` merged).
+  Short-cover BUYs stay allowed via `isIncreasingExposure`; lookup
+  failure fails closed; `HIGH_FEAR` stays warn-only. `on_fail` flipped
+  to `block`; `stable` → `draft` pending Jun re-verification.
+
 ## 2026-09-19
 * **Clarification (draft)**: [JEV Decision Validator](/system/guards/jev.md)
   input contract — `analysis.confidence` preserves the raw LLM-reported
