@@ -8,6 +8,45 @@
   outside {BUY, SELL, HOLD} and `JEV_ANALYSIS_BAD_TIMESTAMP` (block) for
   missing/invalid analysis timestamps. Follow-up fixes on
   `dogmaai/magi-core#480` (review feedback).
+* **Fix**: Guard-block audit destination corrected — the `guard_blocks`
+  table never existed; `logGuardBlock()` writes guard-block rows to
+  `magi_core.thoughts` (`action='BLOCKED'|'WARN_ONLY'`,
+  `concerns=<layer>`; no data/audit impact — historical blocks already
+  live in `thoughts`). Fixed [guards index](/system/guards/index.md),
+  [l6](/system/guards/l6.md), the
+  [magi-core](/system/services/magi-core.md) writes list, and the
+  [thoughts](/system/echidna-tables/thoughts.md) schema (documented
+  `action`/`trade_mode` guard-block values and `concerns` layer-id
+  usage). `l6` and `thoughts` flipped `stable` → `draft` per lifecycle —
+  the prior `human:jun` verifications predated these generations —
+  then **re-verified and restored to `stable` by Jun on 2026-09-21**.
+  `stale_after` deadlines kept unchanged — unverified revisions do not
+  extend the re-verification window.
+* **Review notes (draft)**: [JEV Decision Validator](/system/guards/jev.md)
+  gained a prioritized *Open items* section from the 2026-09-19
+  shadow-phase implementation review (`magi-core` PR #480, deployed
+  `JEV_MODE=shadow`; first verdicts expected 2026-09-21) — see the doc
+  for the items.
+* **2026-09-21 shadow results + decisions (draft)**: first JEV data —
+  45 evaluations, 36 PASS / 9 `WARN_ONLY` / 0 errors / 0 enforce leaks.
+  All 9 violations were exits (4× `JEV_THOUGHT_HOLD` drift detections,
+  5× `JEV_THOUGHT_MISSING` incl. consumed-analysis re-orders).
+  Decisions recorded in [jev](/system/guards/jev.md): risk-reducing
+  orders are never JEV-blocked even in enforce (carve-out,
+  `magi-core#485`); analysis consumption stays at broker-attempt
+  (anti-double-fill); enforce remains unscheduled pending further
+  shadow observation on the fixed build.
+* **Correction (draft)**: [L6 Market Regime](/system/guards/l6.md) — the
+  prior text attributed `WARN_ONLY` rows to `HIGH_FEAR`; per
+  `magi-core/src/llm.js` the row is written for `EXTREME_FEAR`/`PANIC`
+  (`HIGH_FEAR` is console-only). Also documented that the hard BUY→HOLD
+  gate (`applyHardGate`) is wired only into the LILITH provider lane —
+  standard providers have no hard VIX block, diverging from
+  `risk-rules` (`EXTREME_FEAR` BUY system-blocked). **Jun decision
+  2026-09-21: option A — tighten the standard lane to match the
+  constitution** (`dogmaai/magi-core#484` adds the hard gate with a
+  risk-reducing-cover exemption, fail-closed on lookup failure);
+  `l6.md` wording to be re-aligned once the code lands.
 
 ## 2026-09-18
 * **Creation (draft)**: [JEV Decision Validator](/system/guards/jev.md) —
