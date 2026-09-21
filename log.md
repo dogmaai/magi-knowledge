@@ -26,6 +26,14 @@
   shadow-phase implementation review (`magi-core` PR #480, deployed
   `JEV_MODE=shadow`; first verdicts expected 2026-09-21) — see the doc
   for the items.
+* **Correction (draft)**: [L6 Market Regime](/system/guards/l6.md) — the
+  prior text attributed `WARN_ONLY` rows to `HIGH_FEAR`; per
+  `magi-core/src/llm.js` the row is written for `EXTREME_FEAR`/`PANIC`
+  (`HIGH_FEAR` is console-only). Also documented that the hard BUY→HOLD
+  gate (`applyHardGate`) is wired only into the LILITH provider lane —
+  standard providers have no hard VIX block, diverging from
+  `risk-rules` (`EXTREME_FEAR` BUY system-blocked). Flagged open for
+  Jun; not resolved by the agent.
 
 ## 2026-09-18
 * **Creation (draft)**: [JEV Decision Validator](/system/guards/jev.md) —
