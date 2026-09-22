@@ -23,8 +23,10 @@
   (`magi-core-boreas` + `magi-scheduler-boreas`, `TRADE_MODE=NORMAL`,
   `45 14,16,18,20 * * 1-5` UTC) prepared on magi-core branch
   `feat/boreas-ollama-unit`. Jun decided on 2026-09-22 to enter live NORMAL
-  directly rather than SHADOW; the doc stays `status: draft` pending Jun's
-  human verification before `stable`, and deploy remains Jun's.
+  directly rather than SHADOW. Jun subsequently reviewed and confirmed the
+  doc content, so `boreas.md` is `stable` (`verified: human:jun`
+  2026-09-22) — required by the okf-drift gate, which rejects deployed jobs
+  mapping to non-stable unit docs. Deploy remains Jun's.
 * **Retirement**: [SOPHIA-5](/system/plm-units/sophia-5.md) moved to
   `unit_status: retired` — Jun decided on 2026-09-22 that the hosted-Mistral
   unit retires because the Mistral-family slot moves to local BOREAS.
@@ -36,8 +38,9 @@
   `isabel-cache.mjs` rosters (all on magi-core branch
   `feat/retire-sophia-mistral`). `magi-core-job` +
   `magi-scheduler-mistral` leave `deploy.yml`; live GCP resource
-  deletion remains Jun's. Doc demoted `stable` → `draft` pending Jun
-  re-verification.
+  deletion remains Jun's. Jun subsequently reviewed and confirmed the
+  retirement doc, so `sophia-5.md` is back to `stable` (`verified:
+  human:jun` 2026-09-22).
 
 ## 2026-09-21
 * **Update**: [ZEROEL](/system/plm-units/zeroel.md) and
