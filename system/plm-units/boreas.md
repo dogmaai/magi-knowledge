@@ -66,6 +66,10 @@ pay a model-reload penalty each turn.
 * The Ollama provider path is shared with [ADAM](adam.md) and legacy
   [TIARA](tiara.md); BOREAS does not displace either — it is an additional
   unit on the same provider/budget slot.
+* BOREAS succeeds [SOPHIA-5](sophia-5.md): the hosted-Mistral unit was
+  retired on 2026-09-22 because the Mistral-family slot moved to this
+  self-hosted model. BOREAS also takes over as surge-detector
+  `SECONDARY_JOB` (`magi-core-boreas`).
 * Inference reaches TIALA through the same `OLLAMA_BASE_URL` path as ADAM
   (Cloudflare `magi-ollama` Named Tunnel; see
   [cloudflare](/system/services/cloudflare.md)).

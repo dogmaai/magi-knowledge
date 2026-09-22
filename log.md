@@ -25,6 +25,19 @@
   `feat/boreas-ollama-unit`. Jun decided on 2026-09-22 to enter live NORMAL
   directly rather than SHADOW; the doc stays `status: draft` pending Jun's
   human verification before `stable`, and deploy remains Jun's.
+* **Retirement**: [SOPHIA-5](/system/plm-units/sophia-5.md) moved to
+  `unit_status: retired` — Jun decided on 2026-09-22 that the hosted-Mistral
+  unit retires because the Mistral-family slot moves to local BOREAS.
+  `mistral` joins `DEPRECATED_PROVIDERS` and `mistral_NORMAL` leaves
+  `BASE_BUDGET_WEIGHTS`; provider/unit/model defaults move to
+  `qwen`/`QWEN`/`qwen-plus`; surge detector repoints to
+  `PRIMARY_JOB=magi-core-qwen` / `SECONDARY_JOB=magi-core-boreas`; `mistral`
+  leaves `isabel/l4-batch.js`, `health-monitor.js`, `off-hours-chat.mjs` and
+  `isabel-cache.mjs` rosters (all on magi-core branch
+  `feat/retire-sophia-mistral`). `magi-core-job` +
+  `magi-scheduler-mistral` leave `deploy.yml`; live GCP resource
+  deletion remains Jun's. Doc demoted `stable` → `draft` pending Jun
+  re-verification.
 
 ## 2026-09-21
 * **Update**: [ZEROEL](/system/plm-units/zeroel.md) and
