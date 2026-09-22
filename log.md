@@ -20,9 +20,11 @@
   Ollama PLM unit running the Mistral-family `ministral-3:14b` locally on
   TIALA (weights on the external SSD at
   `/Volumes/Extention_SSD/ollama-models/`). Deploy wiring
-  (`magi-core-boreas` + `magi-scheduler-boreas`, `TRADE_MODE=SHADOW`,
+  (`magi-core-boreas` + `magi-scheduler-boreas`, `TRADE_MODE=NORMAL`,
   `45 14,16,18,20 * * 1-5` UTC) prepared on magi-core branch
-  `feat/boreas-ollama-unit`; awaits Jun's verification and deploy.
+  `feat/boreas-ollama-unit`. Jun decided on 2026-09-22 to enter live NORMAL
+  directly rather than SHADOW; the doc stays `status: draft` pending Jun's
+  human verification before `stable`, and deploy remains Jun's.
 
 ## 2026-09-21
 * **Update**: [ZEROEL](/system/plm-units/zeroel.md) and

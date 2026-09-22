@@ -1,15 +1,15 @@
 ---
 type: PLM Unit
 title: BOREAS
-description: Local Mistral-family Ollama unit (ministral-3:14b) on TIALA, entering in SHADOW mode.
+description: Local Mistral-family Ollama unit (ministral-3:14b) on TIALA, entering live NORMAL trading per Jun's 2026-09-22 decision.
 lilith_safe: false
 status: draft
 generated: { by: devin/cloud, at: 2026-09-22T00:10:00Z }
 stale_after: 2027-03-22T00:10:00Z
-tags: [plm, ollama, self-hosted, mistral, ministral, shadow, proposed]
+tags: [plm, ollama, self-hosted, mistral, ministral, proposed]
 provider: ollama
 model: ministral-3:14b
-unit_status: shadow
+unit_status: active
 budget_weight_normal: 1.0
 cloud_run_job: magi-core-boreas
 ---
@@ -28,10 +28,13 @@ target), shared with the existing `qwen2.5:7b` / `qwen3.5:9b` models.
 Like [ADAM](adam.md), BOREAS uses the `ollama` provider path with an explicit
 `UNIT_NAME=BOREAS` override, so the session prompt resolves to the shared
 `[BOREAS IDENTITY - COLLABORATIVE ANALYST]` block in
-`magi-core/src/session.js`. It enters in `TRADE_MODE=SHADOW` — the same
-onboarding convention as [CASPER](casper.md) and [MELCHIOR-1](melchior-1.md) —
-so it generates decisions into `trades_shadow` / `thoughts_shadow` without
-submitting live orders. Promotion to live trading is a separate decision.
+`magi-core/src/session.js`. Jun decided on 2026-09-22 to onboard it directly
+in `TRADE_MODE=NORMAL` (live order submission via `BROKER=moomoo`), skipping
+the SHADOW onboarding convention used by [CASPER](casper.md) and
+[MELCHIOR-1](melchior-1.md). Because the `ollama` provider is shared, BOREAS
+and ADAM each draw the full `ollama_NORMAL` budget weight per session — the
+combined ollama-provider capital allocation is therefore 2× the single-unit
+share until Optuna re-optimizes the weights.
 
 Note the naming: the `mistral` *provider* is [SOPHIA-5](sophia-5.md) (the
 Mistral API). BOREAS is a Mistral-*family open weight* served by the `ollama`
@@ -44,11 +47,11 @@ provider, not the Mistral API.
 | Provider | `ollama` |
 | Unit name | `BOREAS` (`UNIT_NAME=BOREAS`) |
 | Model | `ministral-3:14b` (`OLLAMA_MODEL=ministral-3:14b`) |
-| Trade mode | `TRADE_MODE=SHADOW` |
+| Trade mode | `TRADE_MODE=NORMAL` (live) |
 | Budget weight (NORMAL) | `1.0` (shares `ollama_NORMAL`) |
 | Cloud Run job | `magi-core-boreas` |
 | Cloud Scheduler | `magi-scheduler-boreas`, `45 14,16,18,20 * * 1-5` UTC |
-| Memory / timeout / retries | `512Mi` / `10m` / `0` |
+| Memory / timeout / retries | `512Mi` / `15m` / `0` |
 
 The `:45` minute keeps the standard 14/16/18/20 UTC weekday cadence without
 colliding with the other PLM minute slots (`:15` ADAM, `:30` SOPHIA-5, `:40`
@@ -71,8 +74,8 @@ pay a model-reload penalty each turn.
 
 # Trading history & performance
 
-SHADOW unit: query `trades_shadow` / `thoughts_shadow` where
-`unit_name='BOREAS'` once deployed.
+Live unit: query `trades` / `thoughts` where `unit_name='BOREAS'` once
+deployed.
 
 # Citations
 
