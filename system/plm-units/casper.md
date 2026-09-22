@@ -3,9 +3,9 @@ type: PLM Unit
 title: CASPER
 description: Aggressive momentum hunter — acts decisively on directional signals.
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/local, at: 2026-09-22T01:30:00Z }
-verified: { by: human:jun, at: 2026-08-27T23:14:38Z }
+verified: { by: human:jun, at: 2026-09-22T01:45:00Z }
 stale_after: 2027-02-23T23:14:38Z
 tags: [plm, deepseek, momentum]
 provider: deepseek
