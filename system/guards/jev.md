@@ -3,16 +3,18 @@ type: Guard Layer
 title: JEV Decision Validator
 description: Deterministic typed validator on the place_order path — cross-checks the order against the session's linked log_analysis before the shadow/broker path. Not an LLM.
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/local, at: 2026-09-19T03:20:00Z }
+verified: { by: human:jun, at: 2026-09-22T01:09:00Z }
+stale_after: 2027-03-22T01:09:00Z
 tags: [guard, jev, validation, decision-integrity]
 layer: JEV
 on_fail: warn (JEV_MODE=shadow) / block (JEV_MODE=enforce)
 ---
 
-> **Draft.** Proposed in `magi-core` Issue #479. `JEV_MODE=shadow` records
-> verdicts without stopping orders; enforcement requires a separate change,
-> Jun approval, and independent review.
+> Implemented in `magi-core` (#480, #485). `JEV_MODE=shadow` (default)
+> records verdicts without stopping orders; enforcement requires a separate
+> change, Jun approval, and independent review.
 
 # Purpose
 
