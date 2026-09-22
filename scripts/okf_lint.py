@@ -67,11 +67,12 @@ BUNDLE_ROOT = _SCRIPT_DIR.parent
 LILITH_SAFE_DIR = BUNDLE_ROOT / "_lilith_safe"
 SYSTEM_DIR = BUNDLE_ROOT / "system"
 
-# Other MAGI units. Kept in sync with CROSS_UNIT_NAMES in
-# lilith-training/scripts/distill_analysis_methods.py — LILITH must never see
-# another unit's processed intelligence. LILITH itself is intentionally absent.
+# Other MAGI units. LILITH must never see another unit's processed
+# intelligence. LILITH itself is intentionally absent.
 # scripts/check_unit_detector_sync.py fails CI when this list drifts from the
-# plm-units registry.
+# plm-units registry. lilith-training does not keep a manual copy — its
+# CROSS_UNIT_NAMES is sourced at runtime from the detector doc
+# (_lilith_safe/hallucination-patterns/cross-unit.md) via lilith_knowledge.py.
 CROSS_UNIT_NAMES = (
     "sophia", "melchior", "anima", "casper", "oracle",
     "zeroel", "tiara", "seraph", "balthasar", "prometheus", "typhon",
