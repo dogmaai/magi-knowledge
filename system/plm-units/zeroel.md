@@ -3,8 +3,8 @@ type: PLM Unit
 title: ZEROEL
 description: Retired realtime news / X social-signal algo trader powered by Grok.
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-09-06T23:55:32Z }
+status: draft
+generated: { by: devin/local, at: 2026-09-22T00:50:00Z }
 verified: { by: human:jun, at: 2026-09-06T23:55:32Z }
 stale_after: 2027-03-05T23:55:32Z
 tags: [plm, retired, xai, grok, news, social]
@@ -19,7 +19,8 @@ cloud_run_job: magi-core-xai
 
 ZEROEL is retired and its code has been fully removed. The `magi-core-xai`
 Cloud Run job was disabled in `magi-core/.github/workflows/deploy.yml`, and
-no xAI scheduler or Cloud Run job exists. All xAI models routed to
+a `gcloud` inventory of `asia-northeast1`/`asia-southeast1` on 2026-09-22
+confirmed no xAI scheduler or Cloud Run job exists. All xAI models routed to
 `grok-4.3` ($1.25/$2.50 per M tokens), and the PLM job alone cost
 approximately $47/month.
 

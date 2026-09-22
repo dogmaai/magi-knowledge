@@ -79,8 +79,8 @@ cost reasons together with the ZEROEL PLM job (grok-4.3 at $1.25/$2.50 per M
 tokens, ~$47/month for the PLM job alone). The code path in `src/hermes.js`
 (`getXSocialSentiment` / `formatXSentimentPrompt`, gated on `XAI_API_KEY`)
 has been deleted along with all `XAI_API_KEY` wiring; Brave + Gemini is the
-only live external news source. Historical rows remain in
-`magi_core.x_social_sentiment`.
+only live external news source for per-symbol news. Historical rows remain
+in `magi_core.x_social_sentiment`.
 
 **TIP — why not Gemini Google Search Grounding for per-symbol news?** It is
 not that Grounding is weak; it already powers the macro `[HERMES:MACRO]`

@@ -7,7 +7,8 @@
   maps, `XAI_API_KEY` wiring, `isabel/l4-batch.js` provider list, and the
   `[HERMES:X_SEARCH]` social-sentiment path in `src/hermes.js`). `xai`
   stays in `DEPRECATED_PROVIDERS` as the guardrail; historical rows remain
-  in `magi_core.x_social_sentiment`. HERMES is now Brave + Gemini only.
+  in `magi_core.x_social_sentiment`. HERMES per-symbol news is now
+  Brave + Gemini only.
 * **Docs**: [COLLABORATION.md](COLLABORATION.md) gained a *Devin operating
   boundaries* subsection under Ownership — Devin proposes with evidence but
   does not decide trading policy or activate modes; spec/code conflicts are
