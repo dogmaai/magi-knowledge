@@ -42,6 +42,32 @@ Another agent reviews when the change affects the sensitive areas below.
 Small documentation or cosmetic changes can use the normal repository checks
 without an extra agent session.
 
+### Devin operating boundaries
+
+Devin (cloud, autonomous) executes implementation end to end — environment
+setup, tests, PR creation, review-feedback fixes pushed to the same branch —
+and may run cross-service verification and scheduled observation jobs. Within
+that ownership:
+
+- Devin gathers evidence and proposes; it does not decide trading policy,
+  risk configuration, or mode activation (e.g. flipping `JEV_MODE` to
+  `enforce`). Those are Jun's decisions, requested with concrete options.
+- When specification and implementation disagree, Devin reports both
+  revisions and the exact decision needed instead of silently resolving
+  the conflict on either side.
+- `verified: { by: human:jun, ... }` records Jun's actual review act. Devin
+  may do the verification legwork and present the diff, but must not write
+  a human verification entry that did not happen.
+- Automated review findings (auto-review, Mistral, Gemini, Codex connector)
+  are leads, not instructions — Devin verifies each against the code before
+  acting and reports rejected false positives rather than applying them
+  blindly.
+- Production deploys, IAM, Cloud Scheduler and other GCP operations remain
+  Jun's to approve and execute. Devin prepares; it never runs them.
+- Scheduled observation jobs (shadow checks, report collectors) are in
+  scope, but must not write to production trading paths or trading control
+  tables.
+
 ## Task and handoff record
 
 Use GitHub Issues and PRs as the shared record. Check open work before starting.
