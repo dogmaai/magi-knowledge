@@ -75,7 +75,7 @@ SYSTEM_DIR = BUNDLE_ROOT / "system"
 CROSS_UNIT_NAMES = (
     "sophia", "melchior", "anima", "casper", "oracle",
     "zeroel", "tiara", "seraph", "balthasar", "prometheus", "typhon",
-    "adam", "qwen", "sekhmet",
+    "adam", "qwen", "sekhmet", "boreas",
 )
 CROSS_UNIT_RE = re.compile(
     r"\b(" + "|".join(CROSS_UNIT_NAMES) + r")\b", re.IGNORECASE

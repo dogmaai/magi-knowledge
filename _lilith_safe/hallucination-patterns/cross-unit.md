@@ -4,13 +4,13 @@ title: HALLUCINATION_CROSS_UNIT
 description: LILITH reasoning references another MAGI unit (clean-source violation).
 lilith_safe: true
 status: draft
-generated: { by: devin/local, at: 2026-09-17T00:29:00Z }
+generated: { by: devin/cloud, at: 2026-09-22T00:25:00Z }
 verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }]
 stale_after: 2027-03-17T00:29:00Z
 cross_unit_detector: true
 tags: [lilith, dpo, anti-hallucination, clean-source]
 classification: HALLUCINATION_CROSS_UNIT
-unit_names: [sophia, melchior, anima, casper, oracle, zeroel, tiara, seraph, balthasar, typhon, prometheus, adam, qwen, sekhmet]
+unit_names: [sophia, melchior, anima, casper, oracle, zeroel, tiara, seraph, balthasar, typhon, prometheus, adam, qwen, sekhmet, boreas]
 ---
 
 # Trigger
@@ -34,9 +34,11 @@ matched case-insensitively as whole words, plus the phrases "other unit",
 "other llm", "other ai":
 
 `sophia`, `melchior`, `anima`, `casper`, `oracle`, `zeroel`, `tiara`,
-`seraph`, `balthasar`, `typhon`, `prometheus`, `adam`, `qwen`, `sekhmet`.
+`seraph`, `balthasar`, `typhon`, `prometheus`, `adam`, `qwen`, `sekhmet`,
+`boreas`.
 
-Current-roster stems (`typhon`, `prometheus`, `adam`, `qwen`, `sekhmet`)
+Current-roster stems (`typhon`, `prometheus`, `adam`, `qwen`, `sekhmet`,
+`boreas`)
 cover `SOPHIA-5`-/`MELCHIOR-1`-style suffixed spellings via whole-word
 matching and retired/offline units via the retained legacy names. The list
 is verified against the `system/plm-units/` registry by
