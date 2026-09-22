@@ -1,6 +1,13 @@
 # Bundle Update Log
 
 ## 2026-09-21
+* **Docs**: [COLLABORATION.md](COLLABORATION.md) gained a *Devin operating
+  boundaries* subsection under Ownership — Devin proposes with evidence but
+  does not decide trading policy or activate modes; spec/code conflicts are
+  reported to Jun with options; `verified: human:jun` entries record Jun's
+  actual review act only; automated review findings are leads verified
+  against code, not instructions; deploys/GCP ops stay Jun's; observation
+  jobs must not write to trading paths.
 * **Update (draft)**: [l6](/system/guards/l6.md) — standard-lane
   `EXTREME_FEAR`/`PANIC` BUY is now **hard-blocked** per
   [risk-rules](/_lilith_safe/constitution/risk-rules.md), resolving the
