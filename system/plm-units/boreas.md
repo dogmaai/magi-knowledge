@@ -3,8 +3,9 @@ type: PLM Unit
 title: BOREAS
 description: Local Mistral-family Ollama unit (ministral-3:14b) on TIALA, entering live NORMAL trading per Jun's 2026-09-22 decision.
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/cloud, at: 2026-09-22T00:10:00Z }
+verified: { by: human:jun, at: 2026-09-22T22:10:45Z }
 stale_after: 2027-03-22T00:10:00Z
 tags: [plm, ollama, self-hosted, mistral, ministral, proposed]
 provider: ollama

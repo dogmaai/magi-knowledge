@@ -3,9 +3,9 @@ type: PLM Unit
 title: SOPHIA-5
 description: RETIRED — hosted-Mistral strategist / golden-reasoning unit; the Mistral-family slot moved to local BOREAS.
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/cloud, at: 2026-09-22T12:00:00Z }
-verified: { by: human:jun, at: 2026-08-27T23:14:38Z }
+verified: { by: human:jun, at: 2026-09-22T22:10:45Z }
 stale_after: 2027-02-23T23:14:38Z
 tags: [plm, retired, mistral]
 provider: mistral
