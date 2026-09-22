@@ -16,6 +16,13 @@
   `stable` (`verified: human:jun` 2026-09-22). `jev.md` also gained the
   `verified`/`stale_after` fields it was missing, and its banner now notes
   the merged implementation (#480, #485).
+* **Creation (draft)**: [BOREAS](/system/plm-units/boreas.md) — proposed
+  Ollama PLM unit running the Mistral-family `ministral-3:14b` locally on
+  TIALA (weights on the external SSD at
+  `/Volumes/Extention_SSD/ollama-models/`). Deploy wiring
+  (`magi-core-boreas` + `magi-scheduler-boreas`, `TRADE_MODE=SHADOW`,
+  `45 14,16,18,20 * * 1-5` UTC) prepared on magi-core branch
+  `feat/boreas-ollama-unit`; awaits Jun's verification and deploy.
 
 ## 2026-09-21
 * **Update**: [ZEROEL](/system/plm-units/zeroel.md) and

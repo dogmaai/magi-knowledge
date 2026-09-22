@@ -19,6 +19,7 @@ This whole tree is **cross-unit by definition** and therefore
 | [TYPHON](typhon.md) | kimi | kimi-k2.6 | 0.5 base / 0.75 effective | `magi-core-kimi` | active | Contrarian deep-value analyst |
 | [ADAM](adam.md) | ollama | qwen2.5:7b | 1.0 | `magi-core-adam` | active | Collaborative analyst |
 | [PROMETHEUS](prometheus.md) | openai | gpt-5.6-luna | 0.5 | `magi-core-openai` | active | Probability-calibrated strategist |
+| [BOREAS](boreas.md) *(draft)* | ollama | ministral-3:14b | 1.0 | `magi-core-boreas` | shadow (`TRADE_MODE=SHADOW`) | Collaborative analyst (local Mistral family on TIALA) |
 
 `budget_weight_normal` mirrors the base `BUDGET_WEIGHTS` runtime mapping. The
 `qwen_NORMAL` (QWEN) and `kimi_NORMAL` (TYPHON) providers receive a
