@@ -12,13 +12,13 @@ This whole tree is **cross-unit by definition** and therefore
 
 | Unit | Provider | Model | Budget (NORMAL) | Cloud Run job | Status | Persona |
 |---|---|---|---|---|---|---|
-| [SOPHIA-5](sophia-5.md) | mistral | mistral-small-2603 | 0.774 | `magi-core-job` | active | Strategist / golden reasoning (default) |
 | [MELCHIOR-1](melchior-1.md) | google | gemini-3.8-flash | 0.954 | `magi-core-gemini` | shadow (`TRADE_MODE=SHADOW`) | Systematic multi-factor analyst |
 | [CASPER](casper.md) | deepseek | deepseek-v4-flash | 0.999 | `magi-core-deepseek` | active | Aggressive momentum hunter |
 | [QWEN](qwen.md) | qwen | qwen-plus | 0.5 base / 0.75 effective | `magi-core-qwen` | active | Independent systematic reasoner |
 | [TYPHON](typhon.md) | kimi | kimi-k2.6 | 0.5 base / 0.75 effective | `magi-core-kimi` | active | Contrarian deep-value analyst |
 | [ADAM](adam.md) | ollama | qwen2.5:7b | 1.0 | `magi-core-adam` | active | Collaborative analyst |
 | [PROMETHEUS](prometheus.md) | openai | gpt-5.6-luna | 0.5 | `magi-core-openai` | active | Probability-calibrated strategist |
+| [BOREAS](boreas.md) *(draft)* | ollama | ministral-3:14b | 1.0 | `magi-core-boreas` | active | Collaborative analyst (local Mistral family on TIALA) |
 
 `budget_weight_normal` mirrors the base `BUDGET_WEIGHTS` runtime mapping. The
 `qwen_NORMAL` (QWEN) and `kimi_NORMAL` (TYPHON) providers receive a
@@ -64,8 +64,9 @@ Role boundaries, so the analyzers are not confused with each other:
 | [ZEROEL](zeroel.md) | xai | RETIRED (cost) | — |
 | SEKHMET | sakana | RETIRED 2026-09-17 (offline analyzer produced no output for 16d; Meta Verifier first run failed, 0 rows) | — (LLM causal analysis unassigned) |
 | [LILITH](lilith.md) | lilith | RETIRED (inference backend decommissioned) | — |
+| [SOPHIA-5](sophia-5.md) | mistral | RETIRED 2026-09-22 (hosted Mistral slot moved to local BOREAS; provider defaults + surge primary moved to QWEN) | [BOREAS](boreas.md) |
 
-`DEPRECATED_PROVIDERS = {together, groq, xai, sakana, lilith}` are excluded from
+`DEPRECATED_PROVIDERS = {together, groq, xai, sakana, lilith, mistral}` are excluded from
 budget-weight loading so they do not dilute active units' allocation. ZEROEL was
 retired because `xai` is in `DEPRECATED_PROVIDERS`; the disabled
 `magi-core-xai` PLM job cost approximately $47/month. `sakana` is listed there
@@ -74,7 +75,11 @@ retired on 2026-09-17, when the semi-monthly `magi-thought-quality-ranker`
 job — Sakana's last consumer — was retired with them. Sakana has no active
 consumer in MAGI. `lilith` is listed there because the LILITH canary was paused
 and `lilith-inference-svc` was decommissioned; the `magi-core-lilith` job and
-`magi-lilith-gate-monitor` were removed from `deploy.yml`.
+`magi-lilith-gate-monitor` were removed from `deploy.yml`. `mistral` is listed
+there because SOPHIA-5 was retired on 2026-09-22 in favor of the self-hosted
+BOREAS unit; `magi-core-job` and `magi-scheduler-mistral` were removed from
+`deploy.yml`, and `getLLMProvider`/`getUnitName`/`getLLMModel` defaults moved
+to `qwen`/`QWEN`/`qwen-plus`.
 
 # Relationship to LILITH (historical)
 
