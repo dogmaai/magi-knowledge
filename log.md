@@ -1,6 +1,11 @@
 # Bundle Update Log
 
 ## 2026-09-22
+* **Update (draft)**: [CASPER](/system/plm-units/casper.md) promoted back to
+  LIVE per Jun's decision — `TRADE_MODE=SHADOW` removed from
+  `magi-core-deepseek` in `deploy.yml` (magi-core PR). `casper.md` demoted
+  to `draft` pending Jun re-verification; [index](/system/plm-units/index.md)
+  updated. MELCHIOR-1 remains in SHADOW.
 * **Verified**: [jev](/system/guards/jev.md), [l6](/system/guards/l6.md) and
   [zeroel](/system/plm-units/zeroel.md) re-verified by Jun and returned to
   `stable` (`verified: human:jun` 2026-09-22). `jev.md` also gained the
