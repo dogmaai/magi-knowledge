@@ -14,7 +14,7 @@ historical blocks already live in `thoughts`, so nothing is lost.
 | Layer | Name | Checks | On fail |
 |---|---|---|---|
 | [L0](l0-kill-switch.md) | Emergency Kill Switch | Global halt from `magi_core.system_control` | block all orders |
-| [JEV](jev.md) | Decision Validator (draft) | Order ↔ linked `log_analysis` consistency; typed PASS/BLOCK/ESCALATE verdict | warn (`JEV_MODE=shadow`) / block (`enforce`) |
+| [JEV](jev.md) | Decision Validator | Order ↔ linked `log_analysis` consistency; typed PASS/BLOCK/ESCALATE verdict | warn (`JEV_MODE=shadow`) / block (`enforce`) |
 | Shadow short circuit | Shadow-mode recording | `isConfiguredShadowMode()` → `recordShadowOrder()`; no broker call | record |
 | [L-1](l-1.md) | Broker Availability | Broker reachable / tradable | block |
 | [L0](l0.md) | PositionManager | PositionManager veto on symbol/side | block |
@@ -34,9 +34,9 @@ historical blocks already live in `thoughts`, so nothing is lost.
 
 The numeric labels are historical and the table is in actual code execution
 order. The L0 emergency kill switch runs first, then the JEV decision
-validator (draft — see [jev.md](jev.md)). The shadow-mode short circuit
+validator (see [jev.md](jev.md)). The shadow-mode short circuit
 then applies `isConfiguredShadowMode()` and `recordShadowOrder()`; units in
-`TRADE_MODE=SHADOW` (MELCHIOR-1 and CASPER) never reach L-1 or below.
+`TRADE_MODE=SHADOW` (MELCHIOR-1) never reach L-1 or below.
 
 # Constitution basis
 
