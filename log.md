@@ -1,5 +1,12 @@
 # Bundle Update Log
 
+## 2026-09-22
+* **Verified**: [jev](/system/guards/jev.md), [l6](/system/guards/l6.md) and
+  [zeroel](/system/plm-units/zeroel.md) re-verified by Jun and returned to
+  `stable` (`verified: human:jun` 2026-09-22). `jev.md` also gained the
+  `verified`/`stale_after` fields it was missing, and its banner now notes
+  the merged implementation (#480, #485).
+
 ## 2026-09-21
 * **Update**: [ZEROEL](/system/plm-units/zeroel.md) and
   [magi-core](/system/services/magi-core.md) — xAI/Grok code fully removed
