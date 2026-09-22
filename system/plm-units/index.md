@@ -14,7 +14,7 @@ This whole tree is **cross-unit by definition** and therefore
 |---|---|---|---|---|---|---|
 | [SOPHIA-5](sophia-5.md) | mistral | mistral-small-2603 | 0.774 | `magi-core-job` | active | Strategist / golden reasoning (default) |
 | [MELCHIOR-1](melchior-1.md) | google | gemini-3.8-flash | 0.954 | `magi-core-gemini` | shadow (`TRADE_MODE=SHADOW`) | Systematic multi-factor analyst |
-| [CASPER](casper.md) | deepseek | deepseek-v4-flash | 0.999 | `magi-core-deepseek` | shadow (`TRADE_MODE=SHADOW`) | Aggressive momentum hunter |
+| [CASPER](casper.md) | deepseek | deepseek-v4-flash | 0.999 | `magi-core-deepseek` | active | Aggressive momentum hunter |
 | [QWEN](qwen.md) | qwen | qwen-plus | 0.5 base / 0.75 effective | `magi-core-qwen` | active | Independent systematic reasoner |
 | [TYPHON](typhon.md) | kimi | kimi-k2.6 | 0.5 base / 0.75 effective | `magi-core-kimi` | active | Contrarian deep-value analyst |
 | [ADAM](adam.md) | ollama | qwen2.5:7b | 1.0 | `magi-core-adam` | active | Collaborative analyst |
@@ -23,9 +23,10 @@ This whole tree is **cross-unit by definition** and therefore
 `budget_weight_normal` mirrors the base `BUDGET_WEIGHTS` runtime mapping. The
 `qwen_NORMAL` (QWEN) and `kimi_NORMAL` (TYPHON) providers receive a
 `UNIT_WEIGHT_MULTIPLIERS` 1.5x boost, giving them an *effective* budget weight
-of `0.75` at runtime. CASPER and MELCHIOR-1 are in `TRADE_MODE=SHADOW`: they
-continue generating decisions and recording to `trades_shadow` /
-`thoughts_shadow`, but do not submit live broker orders.
+of `0.75` at runtime. MELCHIOR-1 is in `TRADE_MODE=SHADOW`: it continues
+generating decisions and recording to `trades_shadow` / `thoughts_shadow`,
+but does not submit live broker orders. CASPER was promoted back to LIVE on
+2026-09-22.
 
 TIARA remains documented as the legacy VIX-only Ollama identity; see
 [TIARA](tiara.md). The `magi-vix-oracle` job uses the Ollama provider with
