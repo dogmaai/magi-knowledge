@@ -17,18 +17,23 @@ cloud_run_job: magi-core-xai
 
 # Overview
 
-ZEROEL is retired. The `magi-core-xai` Cloud Run job is commented out in
-`magi-core/.github/workflows/deploy.yml` as "DISABLED: magi-core-xai
-(xAI/ZEROEL)". All xAI models route to `grok-4.3` ($1.25/$2.50 per M tokens),
-and the PLM job alone cost approximately $47/month.
+ZEROEL is retired and its code has been fully removed. The `magi-core-xai`
+Cloud Run job was disabled in `magi-core/.github/workflows/deploy.yml`, and
+no xAI scheduler or Cloud Run job exists. All xAI models routed to
+`grok-4.3` ($1.25/$2.50 per M tokens), and the PLM job alone cost
+approximately $47/month.
 
-The ZEROEL persona block still exists in `magi-core/src/session.js` for
-historical compatibility. The X (Twitter) social layer `[HERMES:X_SEARCH]`
-(xAI Responses API, `X_SEARCH_REFRESH_HOURS = 24` in `magi-core/src/hermes.js`,
-writing to `magi_core.x_social_sentiment`) is also **not in use** — dropped for
-cost reasons along with the PLM job (confirmed by @dogmaai 2026-09-06). The code
-path remains but is gated on `XAI_API_KEY`; see the HERMES decision record in
+The ZEROEL persona block (`src/session.js`), the `xai` provider dispatch
+path (`src/llm.js`), the provider/unit/model map entries and the
+`XAI_API_KEY` secret wiring (`lib/config.js`, `lib/secrets.js`,
+`src/globals.js`, `isabel/l4-batch.js`) have all been deleted. The X
+(Twitter) social layer `[HERMES:X_SEARCH]` (xAI Responses API in
+`src/hermes.js`, writing to `magi_core.x_social_sentiment`) was dropped for
+cost reasons along with the PLM job (confirmed by @dogmaai 2026-09-06) and
+its code is now removed as well; historical rows remain in the table. See
+the HERMES decision record in
 [magi-core](/system/services/magi-core.md#why-brave-search-decision-record).
+`xai` stays in `DEPRECATED_PROVIDERS` so nothing can select it again.
 
 # Configuration
 
@@ -41,8 +46,8 @@ path remains but is gated on `XAI_API_KEY`; see the HERMES decision record in
 
 # Relationships
 
-* HERMES retains the social layer through
-  `[HERMES:X_SEARCH]` (xAI Responses API, 24-hour refresh).
+* HERMES no longer has an X social layer; `[HERMES:X_SEARCH]` (xAI
+  Responses API) was removed with the rest of the xAI integration.
 * The surge detector now uses [CASPER](casper.md) as its second opinion after
   [SOPHIA-5](sophia-5.md); it no longer escalates to ZEROEL.
 
@@ -53,6 +58,5 @@ Query historical [trades](/system/echidna-tables/trades.md) where
 
 # Citations
 
-* `magi-core/src/session.js` (ZEROEL identity); `magi-core/src/hermes.js`
-  (X search); `magi-core/.github/workflows/deploy.yml` (disabled job).
-* `magi-core/lib/config.js` (`DEPRECATED_PROVIDERS`, budget weights).
+* `magi-core/.github/workflows/deploy.yml` (removed job note);
+  `magi-core/lib/config.js` (`DEPRECATED_PROVIDERS` keeps `xai` excluded).

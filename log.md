@@ -1,6 +1,13 @@
 # Bundle Update Log
 
 ## 2026-09-21
+* **Update**: [ZEROEL](/system/plm-units/zeroel.md) and
+  [magi-core](/system/services/magi-core.md) — xAI/Grok code fully removed
+  from magi-core (provider dispatch, ZEROEL persona, provider/model/unit
+  maps, `XAI_API_KEY` wiring, `isabel/l4-batch.js` provider list, and the
+  `[HERMES:X_SEARCH]` social-sentiment path in `src/hermes.js`). `xai`
+  stays in `DEPRECATED_PROVIDERS` as the guardrail; historical rows remain
+  in `magi_core.x_social_sentiment`. HERMES is now Brave + Gemini only.
 * **Docs**: [COLLABORATION.md](COLLABORATION.md) gained a *Devin operating
   boundaries* subsection under Ownership — Devin proposes with evidence but
   does not decide trading policy or activate modes; spec/code conflicts are
