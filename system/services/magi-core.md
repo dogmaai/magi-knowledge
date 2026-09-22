@@ -48,8 +48,7 @@ The Brave-consuming LLM is therefore Gemini only (HERMES analyst role), not a
 trading unit. Other HERMES sources: `[HERMES:ALPHA_VANTAGE]` (raw API),
 `[HERMES:MARKET_RESEARCH]` (Gemini + Google Search Grounding →
 [market-research](/system/echidna-tables/market-research.md)), `[HERMES:ORACLE]`
-(Ollama VIX analyst), `[HERMES:MOOMOO]` (broker real-time data),
-`[HERMES:X_SEARCH]` (xAI, social layer; see [ZEROEL](/system/plm-units/zeroel.md)).
+(Ollama VIX analyst), `[HERMES:MOOMOO]` (broker real-time data).
 Secrets: `BRAVE_SEARCH_API_KEY`, `GEMINI_API_KEY` (`deploy.yml`); collection is a
 no-op when `BRAVE_SEARCH_API_KEY` is absent. Operational view: see
 [hermes-observability](hermes-observability.md) (Grafana
@@ -75,11 +74,13 @@ The rationale, as confirmed by @dogmaai on 2026-09-06:
   `[HERMES:MARKET_RESEARCH]` report, and Alpha Vantage / MooMoo supply raw
   quantitative data; Brave covers traditional-media, per-symbol headlines.
 
-**xAI `[HERMES:X_SEARCH]` is not in use.** The X social layer was dropped for
+**xAI `[HERMES:X_SEARCH]` is removed.** The X social layer was dropped for
 cost reasons together with the ZEROEL PLM job (grok-4.3 at $1.25/$2.50 per M
 tokens, ~$47/month for the PLM job alone). The code path in `src/hermes.js`
-remains and is gated on `XAI_API_KEY`, but it is not part of the operating
-HERMES stack; Brave + Gemini is the only live external news source.
+(`getXSocialSentiment` / `formatXSentimentPrompt`, gated on `XAI_API_KEY`)
+has been deleted along with all `XAI_API_KEY` wiring; Brave + Gemini is the
+only live external news source for per-symbol news. Historical rows remain
+in `magi_core.x_social_sentiment`.
 
 **TIP — why not Gemini Google Search Grounding for per-symbol news?** It is
 not that Grounding is weak; it already powers the macro `[HERMES:MACRO]`
