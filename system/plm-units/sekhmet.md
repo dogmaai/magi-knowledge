@@ -4,7 +4,7 @@ title: SEKHMET
 description: Offline sequential/causal outcome analyzer (Sakana fugu-ultra); retired from the live PLM roster.
 lilith_safe: false
 status: deprecated
-generated: { by: devin/local, at: 2026-09-17T17:36:54Z }
+generated: { by: devin/local, at: 2026-09-23T01:27:00Z }
 verified: { by: human:jun, at: 2026-09-17T17:36:54Z }
 tags: [plm, offline-analysis, causal, sakana, fugu]
 provider: sakana
@@ -20,9 +20,12 @@ budget_weight_normal: excluded
 > feedback loop. Generic pattern analysis continues via `magi-gemini-analyzer`
 > ([gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md))
 > and static causal classification via `magi-daphne-analyzer`
-> ([daphne-feedback](/system/echidna-tables/daphne-feedback.md)). Teardown of
-> the Cloud Run job, scheduler, `lib/fugu.js` injection and deploy.yml entries
-> is pending. This doc is kept for historical reference only.
+> ([daphne-feedback](/system/echidna-tables/daphne-feedback.md)). Teardown
+> completed 2026-09-23: the `magi-fugu-analyzer` Cloud Run job, the
+> `magi-fugu-analyzer-daily` scheduler and the `fugu_sequential_patterns`
+> table were deleted per Jun's instruction (`lib/fugu.js` injection and
+> deploy.yml entries were already removed at retirement). This doc is kept
+> for historical reference only.
 
 # Overview
 

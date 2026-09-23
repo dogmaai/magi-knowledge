@@ -4,7 +4,7 @@ title: SEKHMET Meta Verifier
 description: Deployed weekly cost-bounded SHADOW reviewer for evaluated hard cases.
 lilith_safe: false
 status: deprecated
-generated: { by: devin/local, at: 2026-09-17T17:36:54Z }
+generated: { by: devin/local, at: 2026-09-23T01:27:00Z }
 verified: { by: human:jun, at: 2026-09-17T17:36:54Z }
 tags: [sekhmet, sakana, fugu, shadow, hard-cases, offline-analysis]
 provider: sakana
@@ -15,8 +15,9 @@ unit_status: shadow-active
 > **Deprecated.** Retired on 2026-09-17 with Jun's approval, before the
 > approved four-run evaluation checkpoint. The first scheduled run
 > (`magi-sekhmet-meta-verifier-cxd5b`, 2026-09-12) exited non-zero and the
-> job never produced a `sekhmet_reviews` row — the review ledger remains
-> empty. The audit-only design, cost envelope and validation-SQL guardrails
+> job never produced a `sekhmet_reviews` row — the review ledger remained
+> empty and was dropped on 2026-09-23 (teardown: job, weekly scheduler and
+> table all deleted). The audit-only design, cost envelope and validation-SQL guardrails
 > below are kept for historical reference; reviving hard-case review requires
 > a new specification, Jun approval and independent review.
 
@@ -27,8 +28,9 @@ The implementation is deployed from `magi-core`
 `34208044793` completed successfully on 2026-09-08. Jun created and visually
 verified `magi_core.sekhmet_reviews` in BigQuery location `US`.
 
-The weekly job is active. The first successful SHADOW review row remains an
-operational verification item in `magi-core` Issue #429.
+The weekly job was retired on 2026-09-17 before producing a row; the
+`magi-sekhmet-meta-verifier` job, its weekly scheduler and the
+`sekhmet_reviews` table were all deleted on 2026-09-23.
 
 # Purpose
 

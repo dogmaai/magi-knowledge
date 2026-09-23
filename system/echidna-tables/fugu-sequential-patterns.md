@@ -5,7 +5,7 @@ description: SEKHMET (Sakana fugu-ultra) offline sequential/causal outcome analy
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=fugu_sequential_patterns&page=table
 lilith_safe: false
 status: deprecated
-generated: { by: devin/local, at: 2026-09-17T17:36:54Z }
+generated: { by: devin/local, at: 2026-09-23T01:27:00Z }
 verified: { by: human:jun, at: 2026-09-17T17:36:54Z }
 tags: [echidna, bigquery, sakana, fugu, causal, analysis]
 dataset: magi_core
@@ -14,8 +14,9 @@ table_type: BASE TABLE
 
 > **Deprecated.** 2026-09-17: the producing SEKHMET analyzer was retired. The
 > last written row is dated 2026-09-01 — later runs exited 0 via the job's
-> graceful-skip path without writing. Kept for historical schema reference
-> only; the 22 existing rows remain queryable.
+> graceful-skip path without writing. Table dropped 2026-09-23 per Jun's
+> teardown instruction (22 rows at drop time); kept for historical schema
+> reference only.
 
 Output of the retired SEKHMET causal analyzer
 (`magi-fugu-analyzer`, formerly Mon & Fri 23:30 ET). One row per run: the last 90 days of

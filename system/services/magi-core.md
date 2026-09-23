@@ -4,7 +4,7 @@ title: magi-core
 description: The MAGI trading engine — trade loop, LLM orchestration, and guard layers.
 lilith_safe: false
 status: draft
-generated: { by: devin/local, at: 2026-09-19T03:20:00Z }
+generated: { by: devin/local, at: 2026-09-23T01:27:00Z }
 verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }]
 stale_after: 2027-03-16T01:30:00Z
 tags: [service, magi-core, core, trading]
@@ -117,8 +117,8 @@ itself; its only market input is the MooMoo broker.
 | Input | `getMoomooSnapshot()` batch snapshot of `INTELLIGENCE_SYMBOLS` via [magi-moomoo](/system/services/magi-moomoo.md) | ETFs (`SPY`, `QQQ`) are filtered out — the trading system is cash-equity only. |
 | Gate (`lib/surge.js`) | `change_pct` vs previous close must reach `SURGE_THRESHOLD` (default `+2.0`) or `CRASH_THRESHOLD` (default `-2.0`) on a quote younger than `SURGE_MAX_QUOTE_AGE_SEC` (default 300s) during 09:30-16:00 ET | The broker snapshot has no pre/post-market ticks, so outside RTH `change_pct` is the previous session's move and is ignored unless `SURGE_TRADE_OUTSIDE_RTH=true`. |
 | Re-trigger guards | Cloud Run executions API history of the PLM jobs (each surge run carries `SURGE_SYMBOLS` / `SURGE_CONTEXT` env overrides) | `SURGE_COOLDOWN_MIN` (default 45), `SURGE_RETRIGGER_DELTA_PCT` (default 1.0); `0` disables a guard. |
-| Primary reaction | Cloud Run Jobs API `:run` of `magi-core-job` → Mistral / [SOPHIA-5](/system/plm-units/sophia-5.md) | Chosen for the most structured swing-trade reasoning (ISABEL L4) and no rate limit on the paid tier. `src/session.js` injects `formatSurgePromptSection()` so the unit focuses on the surged symbols. |
-| Secondary reaction (2+ simultaneous surges) | `magi-core-deepseek` → DeepSeek / [CASPER](/system/plm-units/casper.md) | Second opinion; xAI was dropped as secondary trigger for cost. |
+| Primary reaction | Cloud Run Jobs API `:run` of `magi-core-qwen` → Qwen / QWEN | SOPHIA-5's successor since 2026-09-22 (`surge-detector.js` `PRIMARY_JOB`); `src/session.js` injects `formatSurgePromptSection()` so the unit focuses on the surged symbols. |
+| Secondary reaction (2+ simultaneous surges) | `magi-core-boreas` → local ministral-3:14b / [BOREAS](/system/plm-units/boreas.md) | Second opinion (`SECONDARY_JOB`); replaced DeepSeek/CASPER 2026-09-22. |
 | Notification | `sendTelegramNotification` (`TelegramCategory.REVIEW`) | Suppressed while cooled down unless `SURGE_ALERT_ON_COOLDOWN=true`. |
 
 Secrets: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` (`deploy.yml`). The Scheduler
@@ -132,11 +132,11 @@ separate names) as defined in `magi-core/.github/workflows/deploy.yml`:
 
 | Cloud Run Job | Scheduler | Schedule (TZ) | Role |
 |---|---|---|---|
-| `magi-fugu-analyzer` | `magi-fugu-analyzer-daily` | `30 23 * * 1,5` (America/New_York) | ~~SEKHMET~~ offline sequential / **causal** outcome analysis, Sakana `fugu-ultra` — retired 2026-09-17; no `fugu_sequential_patterns` row since 2026-09-01, teardown pending |
+| `magi-fugu-analyzer` | `magi-fugu-analyzer-daily` | `30 23 * * 1,5` (America/New_York) | ~~SEKHMET~~ offline sequential / **causal** outcome analysis, Sakana `fugu-ultra` — retired 2026-09-17; no `fugu_sequential_patterns` row since 2026-09-01; job + scheduler deleted 2026-09-23, table dropped |
 | `magi-gemini-analyzer` | `magi-gemini-analyzer-daily` | `0 14 * * 1-5` (UTC) | Gemini **generic** WIN/LOSE pattern analysis (AI Studio `gemini-3.8-flash`); not causal analysis → [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md) |
 | `magi-daphne-analyzer` | `magi-daphne-analyzer-daily` | `0 22 * * 1-5` (America/New_York) | LP-taxonomy classification of LOSE trades in BigQuery SQL + static `IS_CAUSAL` flag → [daphne-feedback](/system/echidna-tables/daphne-feedback.md) |
 | `magi-thought-outcome-analyzer` | `magi-thought-outcome-analyzer-daily` | `0 23 * * 1-5` (America/New_York) | Links thoughts to realized outcomes (formerly fed the retired 23:30 ET Fugu pass) |
-| `magi-thought-quality-ranker` | `magi-thought-quality-ranker` | `0 0 1,15 * *` (UTC) | ~~Semi-monthly thought quality ranking~~ (`SAKANA_MODEL=fugu-ultra`) — retired 2026-09-17 with the Sakana stack; wrote `fugu_thought_quality_scores` (no consumer) |
+| `magi-thought-quality-ranker` | `magi-thought-quality-ranker` | `0 0 1,15 * *` (UTC) | ~~Semi-monthly thought quality ranking~~ (`SAKANA_MODEL=fugu-ultra`) — retired 2026-09-17 with the Sakana stack; wrote `fugu_thought_quality_scores` (no consumer); job + scheduler deleted 2026-09-23, tables dropped |
 | `magi-evaluator` | `magi-evaluator-daily` | `0 10 * * *` (Asia/Tokyo) | Trade outcome evaluation (daily) |
 
 Role boundaries: see
@@ -176,7 +176,7 @@ revision; magi-core is adding UTC.
 [sessions](/system/echidna-tables/sessions.md),
 [llm-metrics](/system/echidna-tables/llm-metrics.md),
 [consensus-signals](/system/echidna-tables/consensus-signals.md),
-[lilith-hard-gate-events](/system/echidna-tables/lilith-hard-gate-events.md),
+`lilith_hard_gate_events` (dropped 2026-09-23),
 [pre_trade_intelligence](/system/echidna-tables/pre-trade-intelligence.md),
 [market_research](/system/echidna-tables/market-research.md),
 [moomoo_snapshots](/system/echidna-tables/moomoo-snapshots.md),

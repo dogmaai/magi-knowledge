@@ -4,14 +4,20 @@ title: lilith_hard_gate_events
 description: Audit log of LILITH VIX hard-gate action rewrites (e.g. BUY blocked in EXTREME_FEAR).
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=lilith_hard_gate_events&page=table
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-06-19T01:02:48Z }
+status: deprecated
+generated: { by: devin/local, at: 2026-09-23T01:27:00Z }
 verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
-stale_after: 2026-12-16T01:02:48Z
 tags: [echidna, bigquery, lilith, vix, guard, audit]
 dataset: magi_core
 table_type: BASE TABLE
 ---
+
+> **Deprecated.** 2026-09-23: LILITH retired (inference backend
+> decommissioned) and this table was dropped per Jun's teardown instruction
+> (last row 2026-06-12, 39 rows). The sibling gate ledgers
+> `lilith_confidence_gate_events` and `lilith_forecast_gate_events` —
+> undocumented, writer-only — were dropped in the same action. Kept for
+> historical schema reference only.
 
 Audit trail of the VIX hard-gate rewriting a LILITH action (e.g. forcing a BUY
 to HOLD/SELL under `EXTREME_FEAR`). This is an *operational audit* of LILITH in
