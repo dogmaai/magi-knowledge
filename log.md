@@ -1,5 +1,35 @@
 # Bundle Update Log
 
+## 2026-09-23
+* **Teardown executed (Jun-approved)**: all retired GCP resources deleted —
+  Sakana/SEKHMET jobs + schedulers (`magi-fugu-analyzer`, `magi-sekhmet-meta-verifier`,
+  `magi-thought-quality-ranker`), the LILITH pair (`magi-core-lilith`,
+  `magi-lilith-gate-monitor`), and the SOPHIA-5 remnants (`magi-core-job`,
+  `magi-scheduler-mistral`). Seven retired `magi_core` tables dropped:
+  `sekhmet_reviews`, `fugu_sequential_patterns`, `fugu_thought_quality_scores`,
+  `thought_quality_rankings`, `lilith_hard_gate_events`,
+  `lilith_confidence_gate_events`, `lilith_forecast_gate_events`. Live shadow
+  tables (`trades_shadow`, `thoughts_shadow`, `lilith_training_examples`)
+  preserved — `magi-shadow-evaluator` still writes them.
+* **Update**: [lilith-hard-gate-events](/system/echidna-tables/lilith-hard-gate-events.md)
+  demoted to `deprecated` (table dropped); deprecated notes on
+  [sekhmet-reviews](/system/echidna-tables/sekhmet-reviews.md),
+  [fugu-sequential-patterns](/system/echidna-tables/fugu-sequential-patterns.md)
+  and [thought-quality-scores](/system/echidna-tables/thought-quality-scores.md)
+  now record the drops. [lilith](/system/plm-units/lilith.md),
+  [sophia-5](/system/plm-units/sophia-5.md) and
+  [sekhmet-meta-verifier](/system/plm-units/sekhmet-meta-verifier.md) record
+  the completed resource teardown.
+* **Fix**: [magi-core](/system/services/magi-core.md) surge table — primary
+  reaction corrected to `magi-core-qwen` (QWEN) and secondary to
+  `magi-core-boreas` (BOREAS), matching `surge-detector.js`
+  `PRIMARY_JOB`/`SECONDARY_JOB` (stale since the 2026-09-22 SOPHIA-5
+  retirement); offline-job rows marked with the 2026-09-23 deletions.
+* **Companion (magi-core)**: dead-code removal PRs #494–#505 — LILITH provider
+  path (`src/lilith.js`, `runLilithSession`, dispatch), orphaned DDL,
+  dangerous legacy eval scripts, dead re-exports/getters, `lib/grafana-ml.js`,
+  retired-provider scratch test + doc, `GRAFANA_ML_TOKEN` alias.
+
 ## 2026-09-22
 * **Update (draft)**: [CASPER](/system/plm-units/casper.md) promoted back to
   LIVE per Jun's decision — `TRADE_MODE=SHADOW` removed from

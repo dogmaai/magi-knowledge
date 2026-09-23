@@ -4,7 +4,7 @@ title: LILITH
 description: Retired independent reasoner; the fine-tuned LILITH line was decommissioned.
 lilith_safe: false
 status: draft
-generated: { by: devin/cloud, at: 2026-09-17T17:34:00Z }
+generated: { by: devin/local, at: 2026-09-23T01:27:00Z }
 verified: { by: human:jun, at: 2026-08-27T23:14:38Z }
 stale_after: 2027-02-23T23:14:38Z
 tags: [plm, retired, lilith, fine-tuned, independent]
@@ -12,7 +12,7 @@ provider: lilith
 model: lilith-v1.0-b2-prod
 unit_status: retired
 budget_weight_normal: excluded
-cloud_run_job: retired — magi-core-lilith removed from deploy.yml; lilith-inference-svc decommissioned
+cloud_run_job: retired — magi-core-lilith removed from deploy.yml; lilith-inference-svc decommissioned; magi-core-lilith + magi-core-lilith-scheduler + magi-lilith-gate-monitor(+ -daily) deleted from GCP 2026-09-23; provider session path (src/lilith.js, runLilithSession) removed in magi-core#494
 ---
 
 # Overview
@@ -20,7 +20,12 @@ cloud_run_job: retired — magi-core-lilith removed from deploy.yml; lilith-infe
 > **Retired (2026-09).** The LILITH canary (`magi-core-lilith`, `LILITH_AUTOTRADE=0`)
 > was paused, the `lilith-inference-svc` serving side was decommissioned, and the
 > `lilith` provider was added to `DEPRECATED_PROVIDERS` so it no longer receives
-> budget weight or a deployed Cloud Run job. The sections below are retained as
+> budget weight or a deployed Cloud Run job. On 2026-09-23 the remaining GCP
+> resources (`magi-core-lilith`, `magi-core-lilith-scheduler`,
+> `magi-lilith-gate-monitor` + `-daily`) were deleted and the three retired
+> gate ledgers (`lilith_hard_gate_events`, `lilith_confidence_gate_events`,
+> `lilith_forecast_gate_events`) were dropped; the provider session path was
+> removed in magi-core#494. The sections below are retained as
 > the historical record of the unit.
 
 LILITH is the **independent reasoner** for the `lilith` provider. Its model is
@@ -55,7 +60,7 @@ covers both this canary job and the `lilith-inference-svc` serving side.
 
 The VIX hard-gate can rewrite a LILITH action (e.g. BUY → HOLD under
 `EXTREME_FEAR`); every rewrite is audited in
-[lilith-hard-gate-events](/system/echidna-tables/lilith-hard-gate-events.md).
+`lilith_hard_gate_events` (table dropped 2026-09-23).
 
 # Training
 

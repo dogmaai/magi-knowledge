@@ -5,7 +5,7 @@ description: Per-thought quality scoring (structure, sentiment, keywords, embedd
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=thought_quality_scores&page=table
 lilith_safe: false
 status: deprecated
-generated: { by: devin/local, at: 2026-09-17T17:36:54Z }
+generated: { by: devin/local, at: 2026-09-23T01:27:00Z }
 verified: { by: human:jun, at: 2026-09-17T17:36:54Z }
 tags: [echidna, bigquery, quality, scoring]
 dataset: magi_core
@@ -15,8 +15,9 @@ table_type: BASE TABLE
 > **Deprecated.** 2026-09-17: the Sakana `fugu-ultra` Thought Quality Ranker
 > job was retired with the rest of the SEKHMET/Sakana stack. This doc's table
 > `thought_quality_scores` does not exist in `magi_core`; the ranker actually
-> wrote `fugu_thought_quality_scores` (157 rows, no consumer). Kept for
-> historical reference only.
+> wrote `fugu_thought_quality_scores` and `thought_quality_rankings` — both
+> dropped 2026-09-23 per Jun's teardown instruction (157 + 42 rows at drop
+> time). Kept for historical reference only.
 
 Scores each thought across six sub-scores and a predicted win probability.
 

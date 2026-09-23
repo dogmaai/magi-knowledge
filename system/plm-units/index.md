@@ -75,7 +75,10 @@ retired on 2026-09-17, when the semi-monthly `magi-thought-quality-ranker`
 job — Sakana's last consumer — was retired with them. Sakana has no active
 consumer in MAGI. `lilith` is listed there because the LILITH canary was paused
 and `lilith-inference-svc` was decommissioned; the `magi-core-lilith` job and
-`magi-lilith-gate-monitor` were removed from `deploy.yml`. `mistral` is listed
+`magi-lilith-gate-monitor` were removed from `deploy.yml` (all retired GCP
+jobs/schedulers — Sakana/SEKHMET stack, LILITH pair, and `magi-core-job` +
+`magi-scheduler-mistral` — were deleted on 2026-09-23, and the retired
+BigQuery ledgers were dropped the same day). `mistral` is listed
 there because SOPHIA-5 was retired on 2026-09-22 in favor of the self-hosted
 BOREAS unit; `magi-core-job` and `magi-scheduler-mistral` were removed from
 `deploy.yml`, and `getLLMProvider`/`getUnitName`/`getLLMModel` defaults moved

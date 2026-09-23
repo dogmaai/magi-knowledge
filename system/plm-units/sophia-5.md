@@ -3,8 +3,8 @@ type: PLM Unit
 title: SOPHIA-5
 description: RETIRED — hosted-Mistral strategist / golden-reasoning unit; the Mistral-family slot moved to local BOREAS.
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-09-22T12:00:00Z }
+status: draft
+generated: { by: devin/local, at: 2026-09-23T01:27:00Z }
 verified: { by: human:jun, at: 2026-09-22T22:10:45Z }
 stale_after: 2027-02-23T23:14:38Z
 tags: [plm, retired, mistral]
@@ -12,7 +12,7 @@ provider: mistral
 model: mistral-small-2603
 unit_status: retired
 budget_weight_normal: excluded
-cloud_run_job: retired — magi-core-job + magi-scheduler-mistral removed from deploy.yml (magi-core branch feat/retire-sophia-mistral); existing GCP resources pending Jun deletion
+cloud_run_job: retired — magi-core-job + magi-scheduler-mistral removed from deploy.yml (magi-core#492); GCP resources deleted 2026-09-23 per Jun's instruction
 ---
 
 # Overview
@@ -23,9 +23,9 @@ cloud_run_job: retired — magi-core-job + magi-scheduler-mistral removed from d
 > provider, zero API cost). The `mistral` provider joined
 > `DEPRECATED_PROVIDERS` in `magi-core/lib/config.js` / `optuna_utils.py`,
 > `mistral_NORMAL` (0.774) was removed from `BASE_BUDGET_WEIGHTS`, and the
-> `magi-core-job` + `magi-scheduler-mistral` deploy steps left `deploy.yml`.
-> Pausing/deleting the live `magi-scheduler-mistral` and `magi-core-job`
-> Cloud Run resources remains Jun's action.
+> `magi-core-job` + `magi-scheduler-mistral` deploy steps left `deploy.yml`,
+> and both GCP resources were deleted on 2026-09-23 (the scheduler had been
+> PAUSED since retirement).
 
 SOPHIA-5 was the **strategist** (戦略家) and the system's default unit:
 `getUnitName()` returned `SOPHIA-5` for any provider not explicitly mapped,

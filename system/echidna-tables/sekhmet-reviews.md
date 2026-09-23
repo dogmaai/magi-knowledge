@@ -5,7 +5,7 @@ description: SHADOW-only audit ledger for deployed SEKHMET hard-case reviews.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=sekhmet_reviews&page=table
 lilith_safe: false
 status: deprecated
-generated: { by: devin/local, at: 2026-09-17T17:36:54Z }
+generated: { by: devin/local, at: 2026-09-23T01:27:00Z }
 verified: { by: human:jun, at: 2026-09-17T17:36:54Z }
 tags: [echidna, bigquery, sekhmet, shadow, audit]
 dataset: magi_core
@@ -14,7 +14,8 @@ table_type: BASE TABLE
 
 > **Deprecated.** 2026-09-17: the producing SEKHMET Meta Verifier was retired
 > before its first successful run; this table was created on 2026-09-08 and
-> has never contained a row. Kept for historical schema reference only.
+> has never contained a row. Dropped 2026-09-23 per Jun's teardown
+> instruction; kept for historical schema reference only.
 
 # Status and boundary
 

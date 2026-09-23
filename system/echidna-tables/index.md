@@ -34,10 +34,10 @@ Two write-path conventions matter:
 * [focus-symbols](focus-symbols.md) - ISABEL daily focus list; the dynamic HERMES collection universe.
 * [consensus-signals](consensus-signals.md) - Cross-unit consensus detector.
 * [isabel-patterns](isabel-patterns.md) - ISABEL historical win/lose centroids.
-* `thought_quality_scores` (deprecated 2026-09-17) - Per-thought quality scoring; documented table never existed — producer actually wrote `fugu_thought_quality_scores` (retired).
+* `thought_quality_scores` (deprecated 2026-09-17) - Per-thought quality scoring; documented table never existed — producer actually wrote `fugu_thought_quality_scores` / `thought_quality_rankings` (retired; both dropped 2026-09-23).
 * [gemini-pattern-analysis](gemini-pattern-analysis.md) - Periodic Gemini *generic* win/lose pattern report (not causal analysis).
-* `fugu_sequential_patterns` (deprecated 2026-09-17) - SEKHMET/`fugu-ultra` sequential **causal** outcome analysis; last row 2026-09-01, producer retired.
-* `sekhmet_reviews` (deprecated 2026-09-17) - SHADOW-only hard-case review ledger; created 2026-09-08, never received a row before the producer was retired.
+* `fugu_sequential_patterns` (deprecated 2026-09-17) - SEKHMET/`fugu-ultra` sequential **causal** outcome analysis; last row 2026-09-01, producer retired; table dropped 2026-09-23.
+* `sekhmet_reviews` (deprecated 2026-09-17) - SHADOW-only hard-case review ledger; created 2026-09-08, never received a row before the producer was retired; dropped 2026-09-23.
 * [daphne-feedback](daphne-feedback.md) - DAPHNE LP-taxonomy loss classification with a static causal flag (SQL-based).
 
 # Ops, config & governance
@@ -51,5 +51,5 @@ Two write-path conventions matter:
 * [system-control](system-control.md) - Global emergency kill-switch state read by L0 and the magi-moomoo order gate.
 * [order-intents](order-intents.md) - Append-only order-intent journal; broker-response-loss recovery via remark-embedded intent ids (R10).
 * [l4-probation](l4-probation.md) - Guard L4 blocked provider/side combos.
-* [lilith-hard-gate-events](lilith-hard-gate-events.md) - LILITH VIX hard-gate rewrites.
+* [lilith-hard-gate-events](lilith-hard-gate-events.md) - LILITH VIX hard-gate rewrites (deprecated 2026-09-23; table dropped — sibling ledgers `lilith_confidence_gate_events` / `lilith_forecast_gate_events` dropped in the same action).
 * [constitution](constitution.md) - Versioned MAGI Constitution store.
