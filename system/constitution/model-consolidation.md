@@ -4,10 +4,10 @@ title: "MODEL CONSOLIDATION"
 description: Evidence-based consolidation of the ensemble's trade-decision core toward 1-2 units. Documentation-level objective; NOT part of the runtime prompt tree.
 lilith_safe: false
 status: draft
-generated: { by: devin/local, at: 2026-09-25T10:30:00Z }
-stale_after: 2027-03-25T10:30:00Z
+generated: { by: devin/local, at: 2026-09-25T11:15:00Z }
+stale_after: 2027-03-25T11:15:00Z
 tags: [constitution, consolidation, ensemble, learning, draft]
-version: "0.1"
+version: "0.2"
 source: none — documentation-level objective, not emitted by buildSwingConstitution()
 ---
 
@@ -22,9 +22,12 @@ source: none — documentation-level objective, not emitted by buildSwingConstit
 ## Objective
 
 The ensemble's **trade-decision core** converges to 1–2 units, selected by
-measured evidence under identical conditions. The current phase is a
-preparation period: collect decision data that makes such a comparison
-possible before reducing candidates.
+measured evidence under identical conditions. A final candidate is not
+restricted to an unmodified existing unit: it may be an existing unit, an
+existing unit improved by accumulating verified decision methods, or — only
+where Jun has separately approved it — a unit updated by additional
+training. The current phase is a preparation period: collect decision data
+that makes such a comparison possible before reducing candidates.
 
 This objective answers "what are the stored learning assets (`thoughts`,
 `thoughts_shadow`, `trades` outcomes) for?" — the question left open when the
@@ -33,9 +36,13 @@ specialist) was removed on 2026-09-17.
 
 ## What this is NOT — explicit boundaries
 
-* **Not distillation.** The retired item 4 stays retired: no dedicated
-  fine-tuned production unit is reintroduced, and the `_lilith_safe/` data
-  boundary is neither reused nor loosened by this objective.
+* **Not a LILITH revival, and not a data-boundary change.** The retired
+  item 4 stays retired: this proposal does not permit reintroducing a
+  dedicated fine-tuned production unit, and it neither reuses nor loosens
+  the `_lilith_safe/` data boundary. It does not, however, prohibit
+  improving a candidate unit through verified decision methods, nor
+  evaluating additional training (weight updates) where the method and the
+  learning-data boundary have separate approval.
 * **Not whole-system consolidation.** "The trade-decision core is 1–2 units"
   and "all system information processing is limited to 1–2 models" are
   different claims. Whether HERMES collection, ISABEL memory, DAPHNE review
@@ -106,8 +113,10 @@ Compare, on identical same-time / same-information / same-symbol samples:
 4. If and only if need and data justify it, compare additional training
    (weight updates) — input-level improvement and weight-level learning are
    never conflated.
-5. Compare single / pair / full ensemble under identical conditions and the
-   criteria above; select only with Jun's approval after independent review.
+5. Compare single / pair / full ensemble — where a "unit" may be an
+   existing model or one improved under steps 3–4 — under identical
+   conditions and the criteria above; select only with Jun's approval after
+   independent review.
 
 ## Research hypotheses (not yet validated)
 
@@ -126,6 +135,9 @@ impact on profit, the expected horizon, and the falsification condition.
 * Cost assumptions where fills/fees cannot be confirmed.
 * Scope of "1–2": decision core only (this document) vs. wider processing —
   undecided.
+* Learning method and learning-data boundary for any additional training
+  evaluated under procedure step 4 — each requires separate Jun approval;
+  nothing in this document pre-approves a boundary.
 
 ## Cross-references
 
