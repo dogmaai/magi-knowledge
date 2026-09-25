@@ -1,6 +1,13 @@
 # Bundle Update Log
 
 ## 2026-09-25
+* **Review fix (PR #93 follow-up, P2)**:
+  [model-consolidation](/system/constitution/model-consolidation.md) v0.2 —
+  scope clarified so the non-goal is specifically reviving the retired
+  LILITH unit or reusing/loosening the `_lilith_safe/` boundary. Final
+  consolidation candidates may include units improved by verified decision
+  methods or by additional training whose method and learning-data
+  boundary Jun separately approves (both left as open decisions).
 * **Re-verification (Jun)**: [NORTH STAR](/system/constitution/north-star.md)
   returns to `status: stable` (`verified.by: human:jun` at
   2026-09-25T11:07:05Z). The v3.3 text — three objectives plus the
