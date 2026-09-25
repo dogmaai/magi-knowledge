@@ -15,10 +15,12 @@
   [PLM unit registry](/system/plm-units/index.md) note that `qwen3.5:9b` is no
   longer deployed; the [magi-core service map](/system/services/magi-core.md)
   drops the `magi-vix-oracle` job row.
-* Physical teardown of the Cloud Run job `magi-vix-oracle` and scheduler
-  `magi-vix-premarket` is pending Jun's operation (tracking via the linked
-  magi-core PR teardown checklist). The `vix_comparison` and `symbol_vix`
-  tables are kept — they remain live writers/readers.
+* **Teardown executed (Jun-approved)**: Cloud Run job `magi-vix-oracle` and
+  Cloud Scheduler `magi-vix-premarket` deleted on 2026-09-25 (verified
+  NOT_FOUND in asia-northeast1). The `vix_comparison` and `symbol_vix`
+  tables are kept — they remain live writers/readers. TIALA's local Ollama
+  `qwen3.5:9b` model removal is optional (only a `lib/config.js` fallback
+  default references it).
 
 ## 2026-09-23
 * **Teardown executed (Jun-approved)**: all retired GCP resources deleted —
