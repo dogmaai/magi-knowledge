@@ -3,13 +3,13 @@ type: Constitution Section
 title: "NORTH STAR"
 description: The three cardinal objectives that govern every decision.
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-09-17T18:05:19Z }
+status: draft
+generated: { by: devin/local, at: 2026-09-25T10:30:00Z }
 verified: { by: human:jun, at: 2026-09-17T18:05:19Z }
 stale_after: 2027-03-17T18:05:19Z
 tags: [constitution, v3, plm, north-star, core]
 section_order: 2
-version: "3.2"
+version: "3.3"
 source: magi-core/lib/constitution.js
 ---
 
@@ -29,13 +29,21 @@ Ordered priority: risk-adjusted return > alpha generation > capital preservation
 MAGI is a multi-LLM trading ensemble. The former fourth objective (distilling
 validated reasoning into a fine-tuned LILITH production specialist) was removed
 on 2026-09-17 per Jun's decision alongside the LILITH unit's retirement; the
-learning-asset data captured by `thoughts` / `thoughts_shadow` remains stored
-but no longer has a designated production model target in this constitution.
+learning-asset data captured by `thoughts` / `thoughts_shadow` remains stored.
+
+The preparation-phase objective for those learning assets is defined in
+[model-consolidation](model-consolidation.md) (draft): consolidate the
+ensemble's trade-decision core to 1-2 units selected by measured evidence
+under identical conditions. This is selection within the existing ensemble —
+it is not the retired distillation objective, does not revive a dedicated
+fine-tuned production unit, and does not change the LILITH data boundary.
 
 # Cross-references
 
 * [edge](edge.md) operationalises item 2.
 * [expectancy](expectancy.md) operationalises item 1 (positive EV math).
+* [model-consolidation](model-consolidation.md) — draft: evidence-based
+  selection of the trade-decision core toward 1-2 units.
 * [prohibitions](prohibitions.md) enforces item 3 (no averaging down, no
   widening stops).
 * [LILITH](/system/plm-units/lilith.md) — retired unit; was the production

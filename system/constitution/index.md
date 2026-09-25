@@ -38,6 +38,12 @@ changes in `lib/constitution.js`, update the corresponding section doc here.
 | 15 | [ISABEL REFERENCE](isabel-reference.md) | Runtime-injected ISABEL feedback | **dynamic** |
 | 16 | [Available Tools](tools.md) | Tool-call interface (get_price, place_order, etc.) | yes |
 
+# Related specifications (not runtime prompt sections)
+
+* [model-consolidation](model-consolidation.md) — **draft**: evidence-based
+  consolidation of the ensemble's trade-decision core toward 1-2 units.
+  Documentation-level policy; not emitted by `buildSwingConstitution()`.
+
 # Relationship to LILITH-safe constitution
 
 The [LILITH-safe constitution](/_lilith_safe/constitution/) was a **strict
