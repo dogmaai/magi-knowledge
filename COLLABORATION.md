@@ -90,6 +90,41 @@ Once agreement is reached, execute. Do not send acknowledgement-only replies
 or restart an agreed discussion. Report again for a concrete result or a new
 blocker.
 
+## Resource lifecycle and OKF synchronization
+
+Infrastructure and schema changes must keep the OKF bundle and the live
+environment in step with the code. A code-only retirement is not done until
+the physical teardown is recorded.
+
+### Retired-resource teardown
+
+A PR that retires a Cloud Run job, Cloud Scheduler entry, BigQuery table,
+secret or other GCP resource must:
+
+- include a teardown checklist in the PR description — target job,
+  scheduler, dataset/table, secret, IAM binding and env entries, each marked
+  "to delete", "keep" or "already absent";
+- name the pending physical deletions explicitly, because production GCP
+  changes remain Jun's operation;
+- open or link a tracking Issue that stays open until Jun confirms the
+  deletions; a "cleanup pending" state must not live only in a code comment.
+
+One-shot teardown helper scripts are removed in a follow-up PR once the run
+is confirmed, or their execution is recorded in the tracking Issue — they
+must not persist as dead scripts.
+
+### OKF synchronization
+
+- Adding or dropping a BigQuery table, Cloud Run job or scheduler requires a
+  corresponding OKF update in the same task — a `magi-knowledge` PR or a
+  linked tracking Issue opened alongside the implementation PR.
+- Every BigQuery table referenced by MAGI must have a concept document under
+  `system/echidna-tables/` (or an explicit entry there naming it
+  legacy/external); undocumented ledgers are drift.
+- When a `magi-knowledge` change affecting another repository merges, that
+  repository's `vendor/magi-knowledge` pin follows in its next change;
+  report the pin used.
+
 ## Consultation protocol
 
 A development agent that is blocked, uncertain, or choosing between materially
