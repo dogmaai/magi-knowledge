@@ -3,10 +3,10 @@ type: Constitution Section
 title: "NORTH STAR"
 description: The three cardinal objectives that govern every decision.
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/local, at: 2026-09-25T10:30:00Z }
-verified: { by: human:jun, at: 2026-09-17T18:05:19Z }
-stale_after: 2027-03-17T18:05:19Z
+verified: { by: human:jun, at: 2026-09-25T11:07:05Z }
+stale_after: 2027-03-25T11:07:05Z
 tags: [constitution, v3, plm, north-star, core]
 section_order: 2
 version: "3.3"
