@@ -1,6 +1,13 @@
 # Bundle Update Log
 
 ## 2026-09-25
+* **Re-verification (Jun)**: [NORTH STAR](/system/constitution/north-star.md)
+  returns to `status: stable` (`verified.by: human:jun` at
+  2026-09-25T11:07:05Z). The v3.3 text — three objectives plus the
+  [model-consolidation](/system/constitution/model-consolidation.md)
+  reference — is confirmed to match the runtime prompt built by
+  `lib/constitution.js`; the referenced model-consolidation doc itself stays
+  `draft` (documentation-level proposal, not a runtime section).
 * **Retirement**: the `magi-vix-oracle` Cloud Run job (`MODE=VIX_ONLY`, Ollama
   `qwen3.5:9b` — the "VIX担当のQwen") was retired. Its LLM analysis
   (`handleVixOnlyMode` / `callOracleOllama` in `magi-core/lib/vix.js`) was
