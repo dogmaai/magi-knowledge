@@ -25,7 +25,7 @@ TIARA no longer has its own PLM trading job. Until 2026-09-25 the only
 deployment using `LLM_PROVIDER=ollama` without a `UNIT_NAME` override was
 `magi-vix-oracle` (`MODE=VIX_ONLY`); that job was retired and replaced by
 deterministic aggregation inside `magi-isabel-cache` (see
-[ORACLE](oracle.md#oracle-vix-specialist--retired-2026-09-25)). The remaining
+[ORACLE](oracle.md#oracle-vix-specialist-retired-2026-09-25)). The remaining
 Ollama deployments set explicit models — [ADAM](adam.md) uses `qwen2.5:7b` and
 [BOREAS](boreas.md) uses `ministral-3:14b` — so `qwen3.5:9b` is no longer
 deployed anywhere; it survives only as the `OLLAMA_MODEL` fallback default in

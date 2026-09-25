@@ -32,7 +32,7 @@ TIARA remains documented as the legacy VIX-only Ollama identity; see
 [TIARA](tiara.md). The `magi-vix-oracle` job (`MODE=VIX_ONLY`, Ollama
 `qwen3.5:9b`) was retired on 2026-09-25; daily VIX/sVIX aggregation is now
 deterministic inside `magi-isabel-cache` — see
-[ORACLE](oracle.md#oracle-vix-specialist--retired-2026-09-25).
+[ORACLE](oracle.md#oracle-vix-specialist-retired-2026-09-25).
 
 # Offline analysis units
 
