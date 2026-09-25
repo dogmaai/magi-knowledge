@@ -21,6 +21,15 @@
   tables are kept — they remain live writers/readers. TIALA's local Ollama
   `qwen3.5:9b` model removal is optional (only a `lib/config.js` fallback
   default references it).
+* **Proposal (draft, awaiting Jun verification)**:
+  [model-consolidation](/system/constitution/model-consolidation.md) records
+  the preparation-phase objective — consolidate the ensemble's trade-decision
+  core to 1-2 units selected by evidence under identical conditions. It is
+  ensemble selection, not the retired item-4 distillation; the LILITH data
+  boundary is unchanged and no unit is preselected.
+  [NORTH STAR](/system/constitution/north-star.md) references the draft and
+  drops to `status: draft` pending re-verification; the runtime prompt text
+  (the three objectives) is unchanged.
 
 ## 2026-09-23
 * **Teardown executed (Jun-approved)**: all retired GCP resources deleted —
