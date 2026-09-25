@@ -1,6 +1,26 @@
 # Bundle Update Log
 
 ## 2026-09-25
+* **Retirement**: the `magi-vix-oracle` Cloud Run job (`MODE=VIX_ONLY`, Ollama
+  `qwen3.5:9b` — the "VIX担当のQwen") was retired. Its LLM analysis
+  (`handleVixOnlyMode` / `callOracleOllama` in `magi-core/lib/vix.js`) was
+  removed along with the deploy + `magi-vix-premarket` scheduler steps in
+  `deploy.yml`. Replacement: deterministic, zero-LLM aggregation —
+  `runVixAggregation()` (writes `magi_analytics_us.vix_comparison` with
+  `unit_name='HERMES'`, `llm_provider='none'`) and `calculateSymbolVix()`
+  (writes `symbol_vix`, `together_analysis` now NULL) run inside the
+  `magi-isabel-cache` job in the same 08:00 ET weekday slot.
+* **Enhancement**: [ORACLE](/system/plm-units/oracle.md) documents the retired
+  VIX-specialist name reuse; [TIARA](/system/plm-units/tiara.md) and the
+  [PLM unit registry](/system/plm-units/index.md) note that `qwen3.5:9b` is no
+  longer deployed; the [magi-core service map](/system/services/magi-core.md)
+  drops the `magi-vix-oracle` job row.
+* **Teardown executed (Jun-approved)**: Cloud Run job `magi-vix-oracle` and
+  Cloud Scheduler `magi-vix-premarket` deleted on 2026-09-25 (verified
+  NOT_FOUND in asia-northeast1). The `vix_comparison` and `symbol_vix`
+  tables are kept — they remain live writers/readers. TIALA's local Ollama
+  `qwen3.5:9b` model removal is optional (only a `lib/config.js` fallback
+  default references it).
 * **Proposal (draft, awaiting Jun verification)**:
   [model-consolidation](/system/constitution/model-consolidation.md) records
   the preparation-phase objective — consolidate the ensemble's trade-decision
