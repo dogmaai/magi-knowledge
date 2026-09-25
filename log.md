@@ -1,5 +1,25 @@
 # Bundle Update Log
 
+## 2026-09-25
+* **Retirement**: the `magi-vix-oracle` Cloud Run job (`MODE=VIX_ONLY`, Ollama
+  `qwen3.5:9b` — the "VIX担当のQwen") was retired. Its LLM analysis
+  (`handleVixOnlyMode` / `callOracleOllama` in `magi-core/lib/vix.js`) was
+  removed along with the deploy + `magi-vix-premarket` scheduler steps in
+  `deploy.yml`. Replacement: deterministic, zero-LLM aggregation —
+  `runVixAggregation()` (writes `magi_analytics_us.vix_comparison` with
+  `unit_name='HERMES'`, `llm_provider='none'`) and `calculateSymbolVix()`
+  (writes `symbol_vix`, `together_analysis` now NULL) run inside the
+  `magi-isabel-cache` job in the same 08:00 ET weekday slot.
+* **Enhancement**: [ORACLE](/system/plm-units/oracle.md) documents the retired
+  VIX-specialist name reuse; [TIARA](/system/plm-units/tiara.md) and the
+  [PLM unit registry](/system/plm-units/index.md) note that `qwen3.5:9b` is no
+  longer deployed; the [magi-core service map](/system/services/magi-core.md)
+  drops the `magi-vix-oracle` job row.
+* Physical teardown of the Cloud Run job `magi-vix-oracle` and scheduler
+  `magi-vix-premarket` is pending Jun's operation (tracking via the linked
+  magi-core PR teardown checklist). The `vix_comparison` and `symbol_vix`
+  tables are kept — they remain live writers/readers.
+
 ## 2026-09-23
 * **Teardown executed (Jun-approved)**: all retired GCP resources deleted —
   Sakana/SEKHMET jobs + schedulers (`magi-fugu-analyzer`, `magi-sekhmet-meta-verifier`,

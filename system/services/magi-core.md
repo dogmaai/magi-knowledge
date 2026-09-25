@@ -4,7 +4,7 @@ title: magi-core
 description: The MAGI trading engine — trade loop, LLM orchestration, and guard layers.
 lilith_safe: false
 status: draft
-generated: { by: devin/local, at: 2026-09-23T01:27:00Z }
+generated: { by: devin/cloud, at: 2026-09-25T00:00:00Z }
 verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }]
 stale_after: 2027-03-16T01:30:00Z
 tags: [service, magi-core, core, trading]
@@ -27,7 +27,7 @@ and writes the core ECHIDNA tables.
 | `src/positionMgmt.js` / `positionManager.js` | Position management + L0 guard. |
 | `src/hermes.js` | HERMES intelligence (see [HERMES intelligence stack](#hermes-intelligence-stack)). |
 | `surge-detector.js` / `lib/surge.js` | Intraday surge/crash watcher (see [Surge detector](#surge-detector)). |
-| `lib/vix.js` | VIX regime detection (L6, hard gate). |
+| `lib/vix.js` | VIX regime detection (L6, hard gate) + deterministic daily VIX aggregation (`runVixAggregation`). |
 | `lib/config.js` | Unit/model mapping + budget weights. |
 | `lib/bigquery.js` | ECHIDNA writers (`safeInsert`, validators). |
 | `lib/constitution.js` | Constitution prompt builder. |
@@ -150,7 +150,6 @@ revision; magi-core is adding UTC.
 
 | Cloud Run Job | Scheduler | Schedule (TZ) | Role |
 |---|---|---|---|
-| `magi-vix-oracle` | `magi-vix-premarket` | `0 8 * * 1-5` (America/New_York) | HERMES ORACLE / VIX premarket |
 | `magi-sentiment-monitor` | `magi-sentiment-monitor-schedule` | `*/15 13-22 * * 1-5` (UTC) | HERMES sentiment monitor |
 | `magi-hermes-refresh` | `magi-hermes-refresh-1h` | `0 13-21 * * 1-5` (UTC) | HERMES intra-day refresh |
 | `magi-isabel-l4` | `magi-isabel-l4-scheduler` | `0 8 * * 1-5` (America/New_York) | ISABEL L4 pattern analysis |
@@ -159,7 +158,7 @@ revision; magi-core is adding UTC.
 | `magi-off-hours-chat` | `magi-off-hours-chat-weekend-scheduler` | `0 12 * * 6,0` (America/New_York) | Off-hours weekend unit round-table |
 | `magi-surge-detector` | `magi-surge-detector-scheduler` | `*/5 9-15 * * 1-5` (America/New_York) | Intraday surge/crash watcher |
 | `magi-daily-report` | `magi-daily-report-scheduler` | `0 23 * * 1-5` (UTC) | Daily report |
-| `magi-isabel-cache` | `magi-isabel-cache-daily` | `0 8 * * 1-5` (America/New_York) | Daily ISABEL pre-compute |
+| `magi-isabel-cache` | `magi-isabel-cache-daily` | `0 8 * * 1-5` (America/New_York) | Daily ISABEL pre-compute + deterministic VIX/sVIX aggregation (absorbed retired `magi-vix-oracle`) |
 | `magi-isabel-briefing` | `magi-isabel-briefing-daily` | `30 13 * * 1-5` (UTC) | ISABEL morning briefing |
 | `magi-position-guard` | `magi-position-guard-scheduler` | `*/15 9-16 * * 1-5` (America/New_York) | Intra-day exit enforcement |
 | `magi-shadow-evaluator` | `magi-shadow-evaluator-daily` | `30 21 * * 1-5` (America/New_York) | Shadow trade evaluation (`TRADE_MODE=SHADOW` units; legacy LILITH rows) |
