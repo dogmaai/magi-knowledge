@@ -1,5 +1,14 @@
 # Bundle Update Log
 
+## 2026-09-26
+* **Enhancement**: Documented the thought↔trade attribution-integrity contract
+  in [thoughts](/system/echidna-tables/thoughts.md) and [trades](/system/echidna-tables/trades.md)
+  — `thought_id` remains the join key, and `symbol` / `llm_provider` /
+  `session_id` / `trade_mode` must agree (`IS NOT DISTINCT FROM`);
+  inconsistent pairs are excluded and counted. Implemented in magi-core#516
+  (post-merge review follow-up to #514; production measurement: 56 of 1025
+  id-matched WIN/LOSE pairs had a symbol mismatch).
+
 ## 2026-09-25
 * **Review fix (PR #93 follow-up, P2)**:
   [model-consolidation](/system/constitution/model-consolidation.md) v0.2 —
