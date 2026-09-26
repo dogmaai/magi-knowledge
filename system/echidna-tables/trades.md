@@ -4,8 +4,8 @@ title: trades
 description: Primary trade log — entry/exit, PnL, and unit attribution for every order.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=trades&page=table
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-06-19T01:02:48Z }
+status: draft
+generated: { by: devin/local, at: 2026-09-26T08:45:00Z }
 verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
 stale_after: 2026-12-16T01:02:48Z
 tags: [echidna, bigquery, trades, core]
@@ -70,7 +70,10 @@ table_type: BASE TABLE
 # Joins
 
 * `session_id` → [sessions](sessions.md).session_id
-* `thought_id` → [thoughts](thoughts.md).thought_id
+* `thought_id` → [thoughts](thoughts.md).thought_id — subject to the
+  attribution-integrity contract in [thoughts](thoughts.md) (`symbol`,
+  `llm_provider`, `session_id`, `trade_mode` must agree; inconsistent pairs
+  are excluded and counted, not silently adopted).
 * `llm_provider` / `unit_name` → [plm-units](/system/plm-units/)
 
 # Examples

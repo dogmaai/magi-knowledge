@@ -4,8 +4,8 @@ title: thoughts
 description: LLM reasoning log — one row per decision, with action, reasoning, and confidence.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=thoughts&page=table
 lilith_safe: false
-status: stable
-generated: { by: devin/local, at: 2026-09-19T03:25:00Z }
+status: draft
+generated: { by: devin/local, at: 2026-09-26T08:45:00Z }
 verified: { by: human:jun, at: 2026-09-21T22:11:42Z }
 stale_after: 2027-03-17T17:36:54Z
 tags: [echidna, bigquery, thoughts, reasoning, core]
@@ -48,9 +48,24 @@ reasoning.
 
 # Joins
 
-* `thought_id` ← [trades](trades.md).thought_id
+* `thought_id` ← [trades](trades.md).thought_id — primary key; subject to the
+  attribution-integrity contract below.
 * `session_id` → [sessions](sessions.md).session_id
 * `thought_id` → `thought_quality_scores` (deprecated 2026-09-17).thought_id
+
+# Attribution integrity
+
+`thought_id` is the primary join key between thoughts and trades, but the
+same id can be reused for a different trade (production has shown e.g. a META
+trade joined to an NVDA thought). A pair is a valid learning/reporting sample
+only when the surrounding metadata agrees — `symbol`, `llm_provider`,
+`session_id` and `trade_mode` must match under `IS NOT DISTINCT FROM`
+semantics (NULL vs NULL is consistent; NULL vs a value is a mismatch).
+Consumers MUST exclude inconsistent pairs and report exclusion counts; they
+must never fall back to `session_id`+`symbol` joins and must not treat
+trades with no consistent thought as labelled samples. Enforced in magi-core
+by `lib/learning-join.js` (`consistentThoughtJoinOn`) and
+`optuna_utils.THOUGHT_JOIN_CONDITION` (magi-core#516).
 
 # Examples
 
