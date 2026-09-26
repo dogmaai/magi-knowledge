@@ -87,9 +87,10 @@ system prompt に貼り付けてください。ここには仕様値は含まれ
 エージェント向けです。
 
 リポジトリアクセスがあるエージェント（Antigravity / Devin / Devin CLI）は、
-このバンドルを直接読むべきです（`main` を clone/pull するか submodule として vendor）。
-チャット UI や one-shot prompt では、1 つの tree を貼り付け可能な単一ファイルへ
-flatten してください。
+このバンドルを直接読むべきです（`main` を clone/pull するか、submodule として
+`vendor` ディレクトリに取り込む）。チャット UI や one-shot prompt では、
+1 つの tree（ディレクトリツリー）を、貼り付け可能な単一ファイルへ `flatten`
+（平坦化）してください。
 
 ```bash
 python scripts/okf_export.py                      # system/ tree (~90 KB)

@@ -36,9 +36,9 @@ structurally:
 
 # Knowledge authority: trust & lifecycle
 
-このリポジトリが **authority** であり、OKF はその表現形式にすぎません
+このリポジトリが **権威ある正本（authority）** であり、OKF はその表現形式にすぎません
 （GitHub は保管とバージョン管理、GPT・Devin・Gemini・Antigravity・人間は
-consumers）。consumer が canonical knowledge と仮説を区別できるよう、
+利用者（consumers）です）。利用者が正準知識（canonical knowledge）と仮説を区別できるよう、
 `system/` と `_lilith_safe/` 配下のすべての concept は OKF v0.2 の trust/lifecycle
 ファミリー（SPEC §5, §7）を持ち、`scripts/okf_lint.py` がそれを強制します。
 

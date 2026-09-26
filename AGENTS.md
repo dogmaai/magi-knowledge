@@ -32,7 +32,7 @@ tags: [workflow, agents, development]
 - 機微な変更には [COLLABORATION.md](COLLABORATION.md) に定義された
   独立レビューが必要です。リポジトリ固有のデプロイルールは引き続き有効であり、
   本文書は本番運用の権限を付与しません。
-- 承認済み変更では、関連 concept 文書と `log.md` を更新してください。
+- 承認された変更は、必ず対応する concept 文書と `log.md` に反映してください。
   生成物は直接編集せず、再生成してください。
 
 Run the existing gates from the repository root:
