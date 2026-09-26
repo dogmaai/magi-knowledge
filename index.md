@@ -4,20 +4,20 @@ okf_version: "0.2"
 
 # MAGI Knowledge Bundle
 
-Single source of truth for MAGI system knowledge, expressed in the
+MAGI システム知識の single source of truth を、
 [Open Knowledge Format](https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md)
-(OKF v0.2). Authored for both humans and the AI agents that operate MAGI
-(Devin, AKA-1) and for the LILITH training pipeline.
+（OKF v0.2）で表現したバンドルです。人間と MAGI を運用する AI エージェント
+（Devin, AKA-1）、および LILITH 学習パイプラインの双方を対象に作成されています。
 
-The previous specification lived in `dogmaai/magi-stg` (`specifications/` and
-`docs/`); that repository is **archived** and its spec files carry a banner
-pointing here. This bundle is now the only authoritative source. See
-[log.md](log.md) for the change history.
+以前の仕様は `dogmaai/magi-stg`（`specifications/` と `docs/`）にありましたが、
+当該リポジトリは **archived** され、仕様ファイルには本バンドルへの誘導バナーが
+付与されています。現在の権威ある唯一の情報源はこのバンドルです。
+変更履歴は [log.md](log.md) を参照してください。
 
 # Trees
 
-* [_lilith_safe/](_lilith_safe/) - Clean-source ground truth the LILITH training pipeline MAY consume. Contamination-guarded.
-* [system/](system/) - Full-system knowledge (ECHIDNA tables, PLM unit registry, services, guard layers). MUST NOT flow into LILITH.
+* [_lilith_safe/](_lilith_safe/) - LILITH 学習パイプラインが消費してよい clean-source ground truth。汚染境界で保護。
+* [system/](system/) - Full-system knowledge（ECHIDNA tables, PLM unit registry, services, guard layers）。LILITH へ流入させてはならない。
 
 # The LILITH contamination boundary
 
@@ -32,15 +32,15 @@ structurally:
   name, a unit win-rate, or a Section 5 / ticker pick — and if any doc's
   `lilith_safe` flag disagrees with its location.
 
-See [_lilith_safe/index.md](_lilith_safe/) for details.
+詳細は [_lilith_safe/index.md](_lilith_safe/index.md) を参照してください。
 
 # Knowledge authority: trust & lifecycle
 
-This repository is the **authority**; OKF is only the format it is expressed in
-(GitHub is storage/versioning; GPT, Devin, Gemini, Antigravity and humans are
-consumers). So that a consumer can tell canonical knowledge from a hypothesis,
-every concept under `system/` and `_lilith_safe/` carries the OKF v0.2 trust and
-lifecycle family (SPEC §5, §7) and `scripts/okf_lint.py` enforces it:
+このリポジトリが **権威ある正本（authority）** であり、OKF はその表現形式にすぎません
+（GitHub は保管とバージョン管理、GPT・Devin・Gemini・Antigravity・人間は
+利用者（consumers）です）。利用者が正準知識（canonical knowledge）と仮説を区別できるよう、
+`system/` と `_lilith_safe/` 配下のすべての concept は OKF v0.2 の trust/lifecycle
+ファミリー（SPEC §5, §7）を持ち、`scripts/okf_lint.py` がそれを強制します。
 
 | Key | Meaning | Rule |
 |---|---|---|
@@ -49,13 +49,14 @@ lifecycle family (SPEC §5, §7) and `scripts/okf_lint.py` enforces it:
 | `verified: { by, at }` (or a list) | who confirmed the content | `status: stable` REQUIRES a `human:` verifier — AI review alone earns only `draft` |
 | `stale_after` | absolute instant after which the doc must be re-verified | stale = WARN in PR CI, ERROR in the scheduled freshness run |
 
-Lifecycle: AI writes a hypothesis (`draft`, `generated.by: devin/cloud`) → a
-human reviews and merges (`verified.by: human:jun`) → `stable` → later either
-re-verified (new `verified` entry, new `stale_after`) or `deprecated` with a
-link to its successor. Consumers derive a trust tier from `verified` (§5.3):
-*unverified* / *machine-confirmed* / *human-reviewed*; the R2 Data Catalog
-(`trust_tier`, `verified_at`) and AI Search (`status`) mirrors expose the same
-signals so agents that read the mirrors instead of the repo can filter on them.
+Lifecycle は次の通りです。AI が仮説を書く（`draft`, `generated.by: devin/cloud`）→
+人間がレビューしてマージする（`verified.by: human:jun`）→ `stable` →
+その後は再検証（新しい `verified` エントリと `stale_after`）または後継リンク付きで
+`deprecated` に移行します。consumer は `verified`（§5.3）から trust tier
+（*unverified* / *machine-confirmed* / *human-reviewed*）を導出します。
+R2 Data Catalog（`trust_tier`, `verified_at`）と AI Search（`status`）のミラーも
+同じシグナルを公開するため、リポジトリではなくミラーを読むエージェントでも
+同等にフィルタできます。
 
-Domain lifecycles (e.g. a PLM unit being `active` / `shadow` / `retired`) live
-in `unit_status`, never in `status`.
+ドメイン固有のライフサイクル（例: PLM unit の `active` / `shadow` / `retired`）は
+`status` ではなく `unit_status` に記述します。
