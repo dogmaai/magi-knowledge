@@ -47,11 +47,15 @@ Two paths, both reproducible:
    already exist unmanaged — outside `grafana/git-sync/` Git Sync would
    report persistent "already exists and is not managed" warnings and (at
    repo root) `MissingFolderMetadata` warnings plus junk folders.
-2. **Manual upsert** — `DRY_RUN=1 DASHBOARDS_DIR=grafana/git-sync node
-   grafana/provision.mjs` to preview;
-   `GRAFANA_SA_TOKEN=… DASHBOARDS_DIR=grafana/git-sync node
-   grafana/provision.mjs` to push. The token lives
-   in GCP Secret Manager (`GRAFANA_SA_TOKEN`), see
+2. **Manual upsert** — `provision.mjs` scans `grafana/` by default, so
+   point `DASHBOARDS_DIR` at the Git Sync scope to reach this dashboard:
+
+   ```bash
+   DRY_RUN=1 DASHBOARDS_DIR=grafana/git-sync node grafana/provision.mjs          # preview
+   GRAFANA_SA_TOKEN=… DASHBOARDS_DIR=grafana/git-sync node grafana/provision.mjs # push
+   ```
+
+   The token lives in GCP Secret Manager (`GRAFANA_SA_TOKEN`), see
    [secrets-inventory](secrets-inventory.md).
 
 # Panels and how to read them
