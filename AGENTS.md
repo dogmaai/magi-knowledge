@@ -8,32 +8,32 @@ tags: [workflow, agents, development]
 
 # Agent instructions
 
-Read [index.md](index.md), [README.md](README.md) and
-[COLLABORATION.md](COLLABORATION.md) before changing this bundle.
-Then read the relevant documents under `system/` or `_lilith_safe/`.
+[index.md](index.md)、[README.md](README.md)、[COLLABORATION.md](COLLABORATION.md) を
+このバンドルに変更を加える前に必ず読んでください。
+そのうえで、作業対象に応じて `system/` または `_lilith_safe/` 配下の関連文書を確認してください。
 
-- This repository is the shared specification. The old `magi-stg`
-  specification is archived; exports and Cloudflare mirrors are derived.
-- Check open Issues/PRs before starting. Use one implementation owner and
-  preserve the existing branch on handoff or review fixes.
-- Preserve the LILITH contamination boundary. Never copy full-system
-  knowledge or development instructions into `_lilith_safe/`.
-- Concept Markdown requires a non-empty `type` frontmatter field.
-  `system/` concepts use `lilith_safe: false`; training concepts use
-  `lilith_safe: true`. Follow the reserved-file rules in `okf_common.py`.
-- Compare disputed values against the implementation and record the source
-  revision. If access is blocked, report it; do not guess current defaults,
-  deployed settings or the resolution of a policy conflict.
-- For role, ownership, lifecycle and policy intent, a human-verified `stable`
-  OKF concept is authoritative. Historical code paths, comments, names and
-  disabled jobs do not override it. Treat a disagreement as implementation
-  drift, report both revisions, and do not infer that a retired or offline unit
-  participates in live trading.
-- Sensitive changes require independent review as listed in
-  [COLLABORATION.md](COLLABORATION.md). Repository-specific deployment rules
-  continue to apply; this document grants no production-operation authority.
-- Update the relevant concept documents and `log.md` for approved changes.
-  Regenerate exports rather than editing generated copies.
+- このリポジトリは共有仕様の正本です。旧 `magi-stg` 仕様はアーカイブ済みで、
+  export と Cloudflare ミラーは派生物です。
+- 着手前に未解決の Issue / PR を確認してください。実装担当は 1 名に統一し、
+  ハンドオフやレビュー修正時も既存ブランチを維持してください。
+- LILITH 汚染境界を厳守してください。`system/` 側の知識や開発手順を
+  `_lilith_safe/` にコピーしてはいけません。
+- Concept Markdown には空でない `type` frontmatter が必須です。
+  `system/` の concept は `lilith_safe: false`、学習向け concept は
+  `lilith_safe: true` を使用します。`okf_common.py` の予約ファイル規則に従ってください。
+- 値に不一致がある場合は実装と照合し、参照したリビジョンを記録してください。
+  アクセスできない場合はその事実を報告し、現行デフォルト・デプロイ設定・
+  ポリシー衝突の解決を推測しないでください。
+- 役割・所有権・ライフサイクル・ポリシー意図については、人手検証済み
+  `stable` の OKF concept が権威です。過去のコードパス、コメント、名称、
+  無効化済みジョブはこれを上書きしません。不一致は実装ドリフトとして扱い、
+  両方のリビジョンを報告してください。退役／停止中ユニットが live trading に
+  参加していると推定してはいけません。
+- 機微な変更には [COLLABORATION.md](COLLABORATION.md) に定義された
+  独立レビューが必要です。リポジトリ固有のデプロイルールは引き続き有効であり、
+  本文書は本番運用の権限を付与しません。
+- 承認済み変更では、関連 concept 文書と `log.md` を更新してください。
+  生成物は直接編集せず、再生成してください。
 
 Run the existing gates from the repository root:
 
@@ -42,5 +42,5 @@ python scripts/okf_lint.py
 python scripts/test_lilith_safe_loader.py
 ```
 
-Report the actual results in the PR, using Summary, Key Changes and
-Verification. Stop acknowledgement loops once agreement is reached.
+PR には実際の実行結果を Summary / Key Changes / Verification の形式で記載してください。
+合意に達したら、確認だけの往復（acknowledgement loop）は止めてください。

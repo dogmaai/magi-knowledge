@@ -1,8 +1,8 @@
 # magi-knowledge
 
-OKF v0.2 knowledge bundle for the MAGI trading system. A directory of markdown
-files with YAML frontmatter — readable by humans, parseable by agents, diffable
-in git, with **no required tooling** to consume.
+MAGI 取引システム向けの OKF v0.2 ナレッジバンドルです。YAML frontmatter 付き
+Markdown を集約したディレクトリで、人間が読めてエージェントが解析でき、
+Git で差分確認でき、利用に **専用ツールを必須としない** 形をとっています。
 
 ```
 magi-knowledge/
@@ -27,26 +27,26 @@ magi-knowledge/
 
 ## Development agents
 
-Start with [AGENTS.md](AGENTS.md) and the shared
-[collaboration workflow](COLLABORATION.md) for GPT/Codex, Devin and Antigravity.
-The workflow covers task ownership, handoffs, independent review and extending
-existing drift checks.
+[AGENTS.md](AGENTS.md) と、GPT/Codex・Devin・Antigravity 共通の
+[collaboration workflow](COLLABORATION.md) から読み始めてください。
+このワークフローは、タスク所有者、ハンドオフ、独立レビュー、
+既存ドリフトチェックの拡張方針を定義しています。
 
 ## Why this exists
 
-MAGI knowledge was scattered across code comments, `magi-stg/specifications`,
-Devin knowledge notes, and per-repo READMEs. This bundle consolidates the parts
-that multiple agents need to agree on — BigQuery schemas, the PLM unit roster,
-and the ground-truth definitions the LILITH training pipeline depends on — into
-one diffable, agent-readable corpus.
+MAGI の知識は、コードコメント、`magi-stg/specifications`、Devin の
+ナレッジノート、各リポジトリ README に分散していました。このバンドルは、
+複数エージェントが共通認識として持つべき内容（BigQuery スキーマ、
+PLM ユニット一覧、LILITH 学習パイプラインが依存する正本定義）を、
+差分可能かつエージェント可読な 1 つのコーパスに統合します。
 
 ## The LILITH contamination boundary (read this first)
 
-LILITH is an **independent reasoner**: per the MAGI Constitution it must decide
-only from its own verifiable data, never from another unit's processed
-intelligence, and never from Section 5 ("Jun Review Only") ticker picks.
+LILITH は **独立した推論器** です。MAGI Constitution に従い、判断は
+LILITH 自身の検証可能データのみに基づかなければならず、他ユニットの加工済み
+インテリジェンスや Section 5（"Jun Review Only"）の ticker picks は参照しません。
 
-To make that boundary impossible to cross by accident:
+この境界を誤って越えられないよう、次の仕組みで強制しています。
 
 | Mechanism | Guarantee |
 |---|---|
@@ -57,7 +57,8 @@ To make that boundary impossible to cross by accident:
 
 ## Trust & lifecycle (what is canonical?)
 
-Every concept carries OKF v0.2 trust frontmatter, enforced by `okf_lint.py`:
+すべての concept は OKF v0.2 の trust frontmatter を持ち、
+`okf_lint.py` で強制されます。
 
 ```yaml
 status: stable                                          # draft | stable | deprecated
@@ -66,26 +67,29 @@ verified: { by: human:jun, at: 2026-08-27T07:28:31Z }    # who confirmed it
 stale_after: 2027-02-23T07:28:31Z                        # re-verify by this instant
 ```
 
-`stable` requires a `human:` verifier; AI-authored, AI-reviewed content stays
-`draft`. Linking to a `deprecated` doc from a live one fails CI. Stale docs
-warn on every PR and fail the weekly freshness run (`okf_lint.py --fail-on-stale`).
-See [index.md](index.md#knowledge-authority-trust--lifecycle) for the rationale.
+`stable` には `human:` verifier が必須です。AI 作成・AI レビューのみの内容は
+`draft` のままです。現役文書から `deprecated` 文書へリンクすると CI は失敗します。
+期限切れ（stale）文書は各 PR で警告され、週次 freshness run
+（`okf_lint.py --fail-on-stale`）では失敗します。
+背景は [index.md](index.md#knowledge-authority-trust--lifecycle) を参照してください。
 
 ## Consuming the bundle
 
-No SDK required — `cat` any file. Agents parse the frontmatter directly.
+SDK は不要です。任意のファイルを `cat` して読めます。エージェントは
+frontmatter を直接解析します。
 
 ### Syncing the spec to an LLM that cannot read the repo
 
-Paste the six-line **Consumer Preamble** at the top of [PROMPT.md](PROMPT.md)
-into the LLM's system prompt. It contains no spec values — only where the
-authority is and how to read `status` / `trust_tier` — so it never needs
-updating when the spec changes. The full version below it is for agents that
-need the step-by-step procedure.
+[PROMPT.md](PROMPT.md) 冒頭の 6 行 **Consumer Preamble** を、対象 LLM の
+system prompt に貼り付けてください。ここには仕様値は含まれず、
+権威の所在と `status` / `trust_tier` の読み方だけを定義しているため、
+仕様更新時にも通常は修正不要です。下段の完全版は、手順を段階的に必要とする
+エージェント向けです。
 
-Agents with repository access (Antigravity, Devin, Devin CLI) should read this
-bundle directly — clone/pull `main`, or vendor it as a submodule. For chat UIs
-and one-shot prompts, flatten a tree into a single pasteable file:
+リポジトリアクセスがあるエージェント（Antigravity / Devin / Devin CLI）は、
+このバンドルを直接読むべきです（`main` を clone/pull するか submodule として vendor）。
+チャット UI や one-shot prompt では、1 つの tree を貼り付け可能な単一ファイルへ
+flatten してください。
 
 ```bash
 python scripts/okf_export.py                      # system/ tree (~90 KB)
@@ -93,14 +97,14 @@ python scripts/okf_export.py --tree _lilith_safe  # LILITH-safe tree only
 python scripts/okf_export.py -o /tmp/magi-spec.md
 ```
 
-One run exports exactly one tree, and a doc whose `lilith_safe` flag disagrees
-with its tree aborts the export — the digest can never mix the two sides of the
-contamination boundary. Output goes to stdout by default, so no generated copy
-is committed: regenerate instead of editing a digest.
+1 回の実行で export される tree は必ず 1 つだけです。`lilith_safe` フラグが
+tree と不一致の文書がある場合は export を中断するため、digest が境界の両側を
+混在させることはできません。既定出力は stdout なので生成物をコミットせずに済みます。
+digest を直接編集せず、再生成してください。
 
-The LILITH training pipeline (`dogmaai/lilith-training`) vendors this bundle
-(git submodule at `vendor/magi-knowledge`, or a build-time fetch) and reads it
-**only** through `LilithSafeKnowledge`:
+LILITH 学習パイプライン（`dogmaai/lilith-training`）は、このバンドルを
+vendor（`vendor/magi-knowledge` の git submodule、または build-time fetch）し、
+**必ず** `LilithSafeKnowledge` 経由でのみ読み込みます。
 
 ```python
 from lilith_safe_loader import LilithSafeKnowledge
@@ -112,8 +116,8 @@ forbidden_names = kb.cross_unit_names()   # detector list, never prompt text
 
 ## CI
 
-`.github/workflows/okf-conformance.yml` runs the linter and the loader smoke
-test on every PR. Both are pure-stdlib Python 3.11 (no pip install).
+`.github/workflows/okf-conformance.yml` は、各 PR で linter と loader smoke test
+を実行します。どちらも pure-stdlib Python 3.11 で動作し、`pip install` は不要です。
 
 Run locally:
 
