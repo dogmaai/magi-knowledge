@@ -4,8 +4,8 @@ title: HERMES observability (Grafana)
 description: The magi-hermes-intelligence Grafana Cloud dashboard — what it shows, where the data comes from, and how it is provisioned and verified.
 lilith_safe: false
 status: draft
-generated: { by: devin/local, at: 2026-09-17T00:29:00Z }
-verified: [{ by: devin/local, at: 2026-09-16T01:30:00Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }]
+generated: { by: devin/local, at: 2026-09-26T23:11:00Z }
+verified: [{ by: devin/local, at: 2026-09-16T01:30:00Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }, { by: devin/local, at: 2026-09-26T23:11:00Z }]
 stale_after: 2027-03-17T00:29:00Z
 tags: [grafana, observability, hermes, dashboard, operations]
 repo: dogmaai/magi-core
@@ -24,7 +24,7 @@ queries: [pre_trade_intelligence](/system/echidna-tables/pre-trade-intelligence.
 * Grafana Cloud: `https://aka.grafana.net`, dashboard uid
   `magi-hermes-intelligence` ("MAGI HERMES Intelligence"), tags `magi`,
   `hermes`, timezone `Asia/Tokyo`, refresh `1m`.
-* Source of truth: `magi-core/grafana/hermes-intelligence.json`.
+* Source of truth: `magi-core/grafana/git-sync/hermes-intelligence.json`.
 * Datasource: `grafana-bigquery-datasource` uid `bflevhqrd7xtsb` →
   `screen-share-459802.magi_core`, location `US`. Every BigQuery target and
   the `$symbol` template variable must carry `location: 'US'` — enforced by
@@ -36,13 +36,21 @@ queries: [pre_trade_intelligence](/system/echidna-tables/pre-trade-intelligence.
 Two paths, both reproducible:
 
 1. **Git Sync** — the Grafana provisioning repository watches
-   `dogmaai/magi-core`; merging the JSON to `main` syncs the dashboard
-   automatically. `grafana/verify-hermes-dashboard.mjs` waits for Git Sync
+   `dogmaai/magi-core` with `spec.github.path = grafana/git-sync/`; merging
+   the JSON to `main` syncs the dashboard automatically.
+   `grafana/verify-hermes-dashboard.mjs` waits for Git Sync
    (`status.sync.lastRef` must reach or descend from the pushed SHA), then
    executes every panel query via `/api/ds/query`. Runs in CI
    (`.github/workflows/provision-hermes-grafana.yml`) on push to `main`.
-2. **Manual upsert** — `DRY_RUN=1 node grafana/provision.mjs` to preview;
-   `GRAFANA_SA_TOKEN=… node grafana/provision.mjs` to push. The token lives
+   The path scope is deliberate: sibling `grafana/*.json` files carry
+   `${DS_BIGQUERY}` placeholders for manual upsert, and their dashboards
+   already exist unmanaged — outside `grafana/git-sync/` Git Sync would
+   report persistent "already exists and is not managed" warnings and (at
+   repo root) `MissingFolderMetadata` warnings plus junk folders.
+2. **Manual upsert** — `DRY_RUN=1 DASHBOARDS_DIR=grafana/git-sync node
+   grafana/provision.mjs` to preview;
+   `GRAFANA_SA_TOKEN=… DASHBOARDS_DIR=grafana/git-sync node
+   grafana/provision.mjs` to push. The token lives
    in GCP Secret Manager (`GRAFANA_SA_TOKEN`), see
    [secrets-inventory](secrets-inventory.md).
 

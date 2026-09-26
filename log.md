@@ -1,5 +1,15 @@
 # Bundle Update Log
 
+## 2026-09-27
+* **Fix**: [hermes-observability](/system/services/hermes-observability.md)
+  — the Git Sync repository (`rv5tbk`) now scopes `spec.github.path` to
+  `grafana/git-sync/`; the dashboard source of truth moved to
+  `magi-core/grafana/git-sync/hermes-intelligence.json` (magi-core#523).
+  This separates Git Sync-managed resources from the `provision.mjs`
+  manual-upsert dashboards in `grafana/`, clearing the
+  `MissingFolderMetadata` and unmanaged-UID-conflict warnings on the
+  provisioning page.
+
 ## 2026-09-26
 * **Enhancement**: Documented the thought↔trade attribution-integrity contract
   in [thoughts](/system/echidna-tables/thoughts.md) and [trades](/system/echidna-tables/trades.md)
