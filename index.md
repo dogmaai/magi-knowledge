@@ -32,7 +32,7 @@ structurally:
   name, a unit win-rate, or a Section 5 / ticker pick — and if any doc's
   `lilith_safe` flag disagrees with its location.
 
-詳細は [_lilith_safe/index.md](_lilith_safe/) を参照してください。
+詳細は [_lilith_safe/index.md](_lilith_safe/index.md) を参照してください。
 
 # Knowledge authority: trust & lifecycle
 
