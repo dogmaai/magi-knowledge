@@ -1,5 +1,11 @@
 # Bundle Update Log
 
+## 2026-10-01
+* **Creation (draft)**: [position_guard_evals](/system/echidna-tables/position-guard-evals.md)
+  — per-position evaluation ledger for `checkAndClosePositions()`, introduced
+  by issue #99 (R1) after the P-1 finding that short positions were absent
+  from `position_list_query` and blew past the -3.5% short stop undetected.
+
 ## 2026-09-27
 * **Fix**: [hermes-observability](/system/services/hermes-observability.md)
   — the Git Sync repository (`rv5tbk`) now scopes `spec.github.path` to
