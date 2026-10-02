@@ -27,7 +27,7 @@ deployment using `LLM_PROVIDER=ollama` without a `UNIT_NAME` override was
 deterministic aggregation inside `magi-isabel-cache` (see
 [ORACLE](oracle.md#oracle-vix-specialist-retired-2026-09-25)). The remaining
 Ollama deployments set explicit models — [ADAM](adam.md) uses `qwen2.5:7b` and
-[BOREAS](boreas.md) uses `ministral-3:14b` — so `qwen3.5:9b` is no longer
+[BOREAS](boreas.md) uses `ministral-3:8b-ctx32k` — so `qwen3.5:9b` is no longer
 deployed anywhere; it survives only as the `OLLAMA_MODEL` fallback default in
 `lib/config.js`.
 

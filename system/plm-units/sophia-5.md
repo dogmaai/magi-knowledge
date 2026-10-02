@@ -19,7 +19,7 @@ cloud_run_job: retired — magi-core-job + magi-scheduler-mistral removed from d
 
 > **Retired (2026-09-22).** Jun decided to retire the hosted-Mistral unit
 > because the Mistral-family trading slot moved to the self-hosted
-> [BOREAS](boreas.md) unit (`ministral-3:14b` on TIALA via the `ollama`
+> [BOREAS](boreas.md) unit (`ministral-3:8b-ctx32k` on TIALA via the `ollama`
 > provider, zero API cost). The `mistral` provider joined
 > `DEPRECATED_PROVIDERS` in `magi-core/lib/config.js` / `optuna_utils.py`,
 > `mistral_NORMAL` (0.774) was removed from `BASE_BUDGET_WEIGHTS`, and the
@@ -38,7 +38,7 @@ Succession on retirement:
 
 | Former role | Successor |
 |---|---|
-| Scheduled PLM (golden reasoning) | [BOREAS](boreas.md) — local `ministral-3:14b` |
+| Scheduled PLM (golden reasoning) | [BOREAS](boreas.md) — local `ministral-3:8b-ctx32k` |
 | Provider/unit/model defaults | `qwen` / [QWEN](qwen.md) / `qwen-plus` (Jun, 2026-09-22) |
 | Surge detector `PRIMARY_JOB` | `magi-core-qwen` (QWEN) |
 | Surge detector `SECONDARY_JOB` | `magi-core-boreas` (BOREAS) |

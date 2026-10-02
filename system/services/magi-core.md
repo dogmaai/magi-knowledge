@@ -118,7 +118,7 @@ itself; its only market input is the MooMoo broker.
 | Gate (`lib/surge.js`) | `change_pct` vs previous close must reach `SURGE_THRESHOLD` (default `+2.0`) or `CRASH_THRESHOLD` (default `-2.0`) on a quote younger than `SURGE_MAX_QUOTE_AGE_SEC` (default 300s) during 09:30-16:00 ET | The broker snapshot has no pre/post-market ticks, so outside RTH `change_pct` is the previous session's move and is ignored unless `SURGE_TRADE_OUTSIDE_RTH=true`. |
 | Re-trigger guards | Cloud Run executions API history of the PLM jobs (each surge run carries `SURGE_SYMBOLS` / `SURGE_CONTEXT` env overrides) | `SURGE_COOLDOWN_MIN` (default 45), `SURGE_RETRIGGER_DELTA_PCT` (default 1.0); `0` disables a guard. |
 | Primary reaction | Cloud Run Jobs API `:run` of `magi-core-qwen` → Qwen / QWEN | SOPHIA-5's successor since 2026-09-22 (`surge-detector.js` `PRIMARY_JOB`); `src/session.js` injects `formatSurgePromptSection()` so the unit focuses on the surged symbols. |
-| Secondary reaction (2+ simultaneous surges) | `magi-core-boreas` → local ministral-3:14b / [BOREAS](/system/plm-units/boreas.md) | Second opinion (`SECONDARY_JOB`); replaced DeepSeek/CASPER 2026-09-22. |
+| Secondary reaction (2+ simultaneous surges) | `magi-core-boreas` → local ministral-3:8b-ctx32k / [BOREAS](/system/plm-units/boreas.md) | Second opinion (`SECONDARY_JOB`); replaced DeepSeek/CASPER 2026-09-22. |
 | Notification | `sendTelegramNotification` (`TelegramCategory.REVIEW`) | Suppressed while cooled down unless `SURGE_ALERT_ON_COOLDOWN=true`. |
 
 Secrets: `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` (`deploy.yml`). The Scheduler

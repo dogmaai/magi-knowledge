@@ -4,7 +4,7 @@ title: BOREAS
 description: Local Mistral-family Ollama unit (ministral-3:8b-ctx32k) on TIALA, entering live NORMAL trading per Jun's 2026-09-22 decision.
 lilith_safe: false
 status: stable
-generated: { by: devin/cloud, at: 2026-09-22T00:10:00Z }
+generated: { by: devin/cloud, at: 2026-10-02T00:00:00Z }
 verified: { by: human:jun, at: 2026-10-02T00:00:00Z }
 stale_after: 2027-03-22T00:10:00Z
 tags: [plm, ollama, self-hosted, mistral, ministral, proposed]
@@ -63,9 +63,11 @@ The `:45` minute keeps the standard 14/16/18/20 UTC weekday cadence without
 colliding with the other PLM minute slots (`:15` ADAM, `:30` SOPHIA-5, `:40`
 TYPHON, `:50` PROMETHEUS, `:54` CASPER, `:55` QWEN) and leaves a 30-minute
 gap after ADAM's `:15` runs — relevant because ADAM and BOREAS share TIALA's
-single GPU, and `qwen2.5:7b` + `ministral-3:8b` (~11 GB combined with KV
-cache) are at the edge of the ~10.7 GB Metal budget, so simultaneous runs
-can still pay a model-reload penalty.
+single GPU: `qwen2.5:7b` (~4.7 GB) + `ministral-3:8b` (6.0 GB) weights alone
+already total ~10.7 GB against the ~10.7 GB Metal budget, and BOREAS's
+~4.5 GB KV cache at `num_ctx 32768` pushes the combined footprint to ~15 GB.
+The two models cannot stay resident together, so simultaneous runs still pay
+a model-reload penalty.
 
 # Relationships
 
