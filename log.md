@@ -1,6 +1,14 @@
 # Bundle Update Log
 
 ## 2026-10-02
+* **Rotation (Jun-approved, Devin-executed)**: `CLOUDFLARE_API_TOKEN` in
+  [secrets-inventory](/system/services/secrets-inventory.md) — the previous
+  user-scoped token was deleted on Cloudflare's side (verify → Invalid API
+  Token; found during the PR #107 tunnel-doc sync). New account-scoped token
+  `magi-tunnel-devin-20261002` (Cloudflare Tunnel:Edit + DNS:Edit on
+  khaos.company) minted via the Global API Key and stored as GCP Secret
+  Manager `CLOUDFLARE_API_TOKEN` version 2. No injected copies exist outside
+  Secret Manager.
 * **Creation (draft)**: [model-cohorting](/system/constitution/model-cohorting.md)
   — cohort-reset rule: a model change makes a unit a statistically new
   entity; evaluation aggregates (ISABEL patterns, L4 probation, scorecards)
