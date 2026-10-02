@@ -29,7 +29,9 @@ inside the `magi-position-guard` Cloud Run job (15-minute cadence,
 Before this ledger, only close decisions and deferrals were logged — a
 position absent from `position_list_query` was completely invisible, which is
 the failure mode suspected behind the 2026-09 short-position losses that blew
-past the -3.5% short stop (see magi-knowledge#99, P-1). Diffing this table
+past the short stop (default -3.5% of entry — see
+[position-management](../constitution/position-management.md), mutable)
+(see magi-knowledge#99, P-1). Diffing this table
 against open entries in [trades](trades.md) exposes positions the guard never
 evaluated.
 
@@ -47,7 +49,7 @@ evaluated.
 | avg_cost | FLOAT64 | Broker average cost basis. |
 | current_price | FLOAT64 | Broker-reported current price at evaluation. |
 | effective_pnl_pct | FLOAT64 | Side-adjusted P&L % used for the decision. |
-| applied_stop_pct | FLOAT64 | Stop threshold applied (-5 long / -3.5 short). |
+| applied_stop_pct | FLOAT64 | Stop threshold actually applied at evaluation time. Configurable, not fixed: long = `STOP_LOSS_PCT` env (default -5%); short = `STOP_LOSS_PCT * SHORT_SL_TIGHTEN` env (default 0.7 → -3.5%) via `getShortStopLossThreshold()` in `magi-core/lib/short-sl-guard.js`. Values outside these defaults may appear when env overrides are set. Verified against magi-core `b890c73` (`src/positionMgmt.js`). |
 | prior_tp_taken | BOOL | Whether a first TAKE_PROFIT scale-out already fired for this entry. |
 | close_reason | STRING | `STOP_LOSS` / `TAKE_PROFIT` / `TAKE_PROFIT_HIGH` / `BREAKEVEN_STOP` / NULL. |
 | outcome | STRING | `NONE` / `DEFERRED` / `ORDER_FILLED` / `ORDER_PENDING_FILL` / `ORDER_FAILED` / `ERROR`. |
