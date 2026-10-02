@@ -30,8 +30,8 @@ Before this ledger, only close decisions and deferrals were logged — a
 position absent from `position_list_query` was completely invisible, which is
 the failure mode suspected behind the 2026-09 short-position losses that blew
 past the short stop (default -3.5% of entry — see
-[position-management](../constitution/position-management.md), mutable)
-(see magi-knowledge#99, P-1). Diffing this table
+[position-management](../constitution/position-management.md), mutable;
+see magi-knowledge#99, P-1). Diffing this table
 against open entries in [trades](trades.md) exposes positions the guard never
 evaluated.
 

@@ -5,7 +5,7 @@ description: LLM reasoning log — one row per decision, with action, reasoning,
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=thoughts&page=table
 lilith_safe: false
 status: draft
-generated: { by: devin/local, at: 2026-09-26T08:45:00Z }
+generated: { by: devin/local, at: 2026-10-02T09:05:00Z }
 verified: { by: human:jun, at: 2026-09-21T22:11:42Z }
 stale_after: 2027-03-17T17:36:54Z
 tags: [echidna, bigquery, thoughts, reasoning, core]
