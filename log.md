@@ -1,6 +1,14 @@
 # Bundle Update Log
 
 ## 2026-10-02
+* **Creation (draft)**: [model-cohorting](/system/constitution/model-cohorting.md)
+  — cohort-reset rule: a model change makes a unit a statistically new
+  entity; evaluation aggregates (ISABEL patterns, L4 probation, scorecards)
+  key on `(unit_name, model_version)` and do not carry across the boundary.
+  Depends on `thoughts.model_version` (magi-core#544); aggregation-key
+  implementation is a separate phase (magi-core#545). Cross-referenced from
+  [constitution/index](/system/constitution/index.md) and
+  [plm-units/index](/system/plm-units/index.md).
 * **Reclassification + freeze (Jun-approved)**: [guards/index](/system/guards/index.md) —
   layers now carry a `Class` column: `risk-control` (deterministic hard
   guards, never learned), `statistical-gate` (Optuna/probation/similarity

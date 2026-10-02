@@ -43,6 +43,10 @@ changes in `lib/constitution.js`, update the corresponding section doc here.
 * [model-consolidation](model-consolidation.md) — **draft**: evidence-based
   consolidation of the ensemble's trade-decision core toward 1-2 units.
   Documentation-level policy; not emitted by `buildSwingConstitution()`.
+* [model-cohorting](model-cohorting.md) — **draft**: cohort-reset rule —
+  a model change makes a unit a statistically new entity; aggregates key on
+  `(unit_name, model_version)` and do not carry across the boundary.
+  Documentation-level policy; not emitted by `buildSwingConstitution()`.
 
 # Relationship to LILITH-safe constitution
 
