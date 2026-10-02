@@ -1,6 +1,10 @@
 # Bundle Update Log
 
 ## 2026-10-02
+* **Schema sync**: [thoughts](/system/echidna-tables/thoughts.md) — documented
+  the new `side` column (guard-block rows carry buy/sell direction;
+  previously sent by `logGuardBlock` but silently dropped by
+  `ignoreUnknownValues`). Column added via DDL per magi-core#535.
 * **Enhancement**: [magi-moni](/system/services/magi-moni.md) — AKA-1's LLM
   consolidated to a single provider, Gemini `gemini-3.8-flash`
   (`GEMINI_MODEL`). The Sakana AI (`fugu`) caller was removed (the provider
