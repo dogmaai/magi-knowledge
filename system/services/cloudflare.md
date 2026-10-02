@@ -4,7 +4,7 @@ title: Cloudflare (AI Search, R2 Data Catalog, Named Tunnel, AI Gateway)
 description: How MAGI uses Cloudflare — the magi-document AI Search mirror and okf.system Iceberg mirror of this spec on the magi-system bucket, the Named Tunnels exposing TIALA services, and the default AI Gateway behind AI Search.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-09-16T07:25:00Z }
+generated: { by: devin/cli, at: 2026-10-03T00:00:00Z }
 verified: [{ by: human:jun, at: 2026-09-03T09:04:15Z }, { by: devin/cli, at: 2026-09-16T07:25:00Z }]
 stale_after: 2027-03-16T07:25:00Z
 tags: [service, cloudflare, r2, ai-search, tunnel, ai-gateway]
@@ -63,19 +63,27 @@ live in `.agents/skills/` and are referenced below rather than duplicated.
 # 3. Named Tunnels — TIALA services
 
 `cloudflared` Named Tunnels give TIALA-hosted services fixed hostnames
-instead of rotating `*.trycloudflare.com` Quick Tunnel URLs. All ingresses
-are plain `http://localhost:<port>`; the tunnel gRPC setting stays disabled.
+(`<name>.khaos.company` in the `khaos.company` zone) instead of rotating
+`*.trycloudflare.com` Quick Tunnel URLs. All ingresses are plain
+`http://localhost:<port>`; the tunnel gRPC setting stays disabled.
 
-| Service | Origin on TIALA | Consumer |
-|---|---|---|
-| `moomoo-bridge` (`opend-proxy`) | Flask, `localhost:11436` | [magi-moomoo](magi-moomoo.md) proxy → magi-core — since 2026-09 the **fallback** leg of magi-moomoo's dual-route bridge path (private WireGuard route preferred; see magi-moomoo.md). Retirement planned after a private-route stability observation period. |
-| `ollama` | Ollama REST API | ADAM ([PLM unit](/system/plm-units/adam.md)) |
-| `openclaw-gateway` | OpenClaw Gateway | AKA / [magi-moni](magi-moni.md), Devin |
+| Tunnel | Public hostname | Origin on TIALA | Consumer |
+|---|---|---|---|
+| `magi-bridge` | `bridge.khaos.company` (`service='opend-proxy'`) | Flask, `localhost:11436` | [magi-moomoo](magi-moomoo.md) proxy → magi-core — since 2026-09 the **fallback** leg of magi-moomoo's dual-route bridge path (private WireGuard route preferred; see magi-moomoo.md). Retirement planned after a private-route stability observation period. |
+| `magi-ollama` | `ollama.khaos.company` | Ollama REST API | [ADAM](/system/plm-units/adam.md) and [BOREAS](/system/plm-units/boreas.md) (legacy: [TIARA](/system/plm-units/tiara.md)) |
+| `magi-openclaw` | `openclaw.khaos.company` | OpenClaw Gateway | AKA / [magi-moni](magi-moni.md), Devin |
 
-Tunnel URLs are registered in
+Tunnel names follow the magi-moomoo setup-script defaults
+(`OLLAMA_TUNNEL_NAME=magi-ollama`, `OPENCLAW_TUNNEL_NAME=magi-openclaw`,
+`CLOUDFLARE_TUNNEL_NAME=magi-bridge`); they are not verified against the
+Cloudflare API from this bundle. URL discovery is split: `magi-bridge` and
+`magi-openclaw` hostnames are registered in
 [service_endpoints](/system/echidna-tables/service-endpoints.md) by
-`register-tunnel.py`, so callers discover them dynamically. Setup scripts and
-protocol guidance are in `dogmaai/magi-moomoo` (`scripts/README.md`,
+`register-tunnel.py` (`service='opend-proxy'` / `service='openclaw'`), while
+the `magi-ollama` hostname is not in that table — PLM jobs receive it via the
+`OLLAMA_BASE_URL` secret in GCP Secret Manager (`deploy.yml`
+`--set-secrets`). Setup scripts and protocol guidance are in
+`dogmaai/magi-moomoo` (`scripts/README.md`,
 `scripts/setup-*-named-tunnel.sh`,
 `.agents/skills/cloudflare-tunnel-protocols/SKILL.md`).
 
