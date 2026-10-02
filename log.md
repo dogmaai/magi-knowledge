@@ -14,23 +14,24 @@
   `https://ollama.khaos.company`, verified live: Ollama 0.35.0).
   Deployed `magi-moomoo` re-confirmed `BRIDGE_ROUTE_MODE=auto` with
   `BRIDGE_PRIVATE_URL=http://10.42.0.10:11436` (private WireGuard route
-  preferred, Cloudflare tunnel fallback). Operational finding reported to
-  Jun: the `CLOUDFLARE_API_TOKEN` copy in Secret Manager currently fails
-  Cloudflare auth (error 10000); rotation is Jun's.
-* **Rotation executed (Jun-approved, cloud Devin session)**: `CLOUDFLARE_API_TOKEN`
-  — prior SM copy returned API error 1000 (invalid, not expired). A new
-  scoped token (Account Tunnel Edit + Zone DNS Edit on `khaos.company`)
-  was minted via `CLOUDFLARE_GLOBAL_API_KEY` and stored as SM
-  `CLOUDFLARE_API_TOKEN` **version 2** (v1 disabled). Verified live:
-  `cfd_tunnel` list returns `magi-bridge` / `magi-ollama` /
-  `magi-openclaw` (all `healthy`), and zone DNS read confirms
-  `bridge`/`ollama`/`openclaw.khaos.company` CNAME →
-  `<id>.cfargotunnel.com`. Tunnel names in
-  [cloudflare](/system/services/cloudflare.md) §3 are now API-verified;
-  [secrets-inventory](/system/services/secrets-inventory.md) updated
-  (`stable` → `draft` pending Jun re-verification).
+  preferred, Cloudflare tunnel fallback). The dead `CLOUDFLARE_API_TOKEN`
+  found during this sync was rotated (see the 2026-10-02 entry); the
+  rotated token then API-verified the tunnel names — `cfd_tunnel` lists
+  `magi-bridge`/`magi-ollama`/`magi-openclaw` (all `healthy`) and the
+  hostnames CNAME to `<id>.cfargotunnel.com`. The
+  [secrets-inventory](/system/services/secrets-inventory.md) tunnel names
+  were corrected to match (`stable` → `draft` pending Jun
+  re-verification).
 
 ## 2026-10-02
+* **Rotation (Jun-approved, Devin-executed)**: `CLOUDFLARE_API_TOKEN` in
+  [secrets-inventory](/system/services/secrets-inventory.md) — the previous
+  user-scoped token was deleted on Cloudflare's side (verify → Invalid API
+  Token; found during the PR #107 tunnel-doc sync). New account-scoped token
+  `magi-tunnel-devin-20261002` (Cloudflare Tunnel:Edit + DNS:Edit on
+  khaos.company) minted via the Global API Key and stored as GCP Secret
+  Manager `CLOUDFLARE_API_TOKEN` version 2. No injected copies exist outside
+  Secret Manager.
 * **Creation (draft)**: [model-cohorting](/system/constitution/model-cohorting.md)
   — cohort-reset rule: a model change makes a unit a statistically new
   entity; evaluation aggregates (ISABEL patterns, L4 probation, scorecards)
