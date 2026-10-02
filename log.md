@@ -1,5 +1,18 @@
 # Bundle Update Log
 
+## 2026-10-02
+* **Enhancement**: [magi-moni](/system/services/magi-moni.md) — AKA-1's LLM
+  consolidated to a single provider, Gemini `gemini-3.8-flash`
+  (`GEMINI_MODEL`). The Sakana AI (`fugu`) caller was removed (the provider
+  is in magi-core `DEPRECATED_PROVIDERS` since 2026-09-17) and the
+  Ollama-on-TIALA fallback (`OLLAMA_BASE_URL` / `OLLAMA_MODEL=qwen3.5:9b`)
+  was removed — `qwen3.5:9b` is no longer deployed on TIALA anyway (see
+  2026-09-25). TIALA's Ollama service stays: it still serves the
+  ADAM/BOREAS/TIARA PLM units via the `magi-ollama` tunnel. Also corrected
+  the stale "Claude/Gemini" description of AKA-1 (the implementation ran
+  Sakana/Ollama/Gemini, never Claude). Implementation: magi-moni
+  `lib/llm.js` / `lib/config.js` / `deploy.yml`.
+
 ## 2026-10-01
 * **Creation (draft)**: [position_guard_evals](/system/echidna-tables/position-guard-evals.md)
   — per-position evaluation ledger for `checkAndClosePositions()`, introduced
