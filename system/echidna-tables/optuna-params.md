@@ -4,8 +4,8 @@ title: optuna_params
 description: Optuna-tuned runtime parameters (budget weights, thresholds) with provenance.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=optuna_params&page=table
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-06-19T01:02:48Z }
+status: draft
+generated: { by: devin/local, at: 2026-10-02T11:30:00Z }
 verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
 stale_after: 2026-12-16T01:02:48Z
 tags: [echidna, bigquery, optuna, tuning, params]
@@ -15,6 +15,13 @@ table_type: BASE TABLE
 
 Key/value store of Optuna-optimized runtime parameters (e.g. per-provider budget
 weights, guard thresholds) with the trial provenance behind each value.
+
+> **Writer frozen 2026-10-02.** Re-optimization is suspended (Jun decision,
+> Issue #99 Fable review item D): `magi-optuna-job` runs with
+> `OPTUNA_FREEZE=true` and the weekly `magi-optuna-optimizer` scheduler is
+> paused. Rows are no longer overwritten; the last written values remain in
+> effect for `lib/optuna.js` / `loadBudgetWeights()`. `updated_at` will stop
+> advancing — that is expected, not staleness.
 
 # Schema
 

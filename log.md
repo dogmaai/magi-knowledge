@@ -1,6 +1,18 @@
 # Bundle Update Log
 
 ## 2026-10-02
+* **Reclassification + freeze (Jun-approved)**: [guards/index](/system/guards/index.md) —
+  layers now carry a `Class` column: `risk-control` (deterministic hard
+  guards, never learned), `statistical-gate` (Optuna/probation/similarity
+  driven — parameters frozen), plus bookkeeping `validator`/`pipeline`.
+  Optuna re-optimization suspended: `magi-optuna-job` runs with
+  `OPTUNA_FREEZE=true`, weekly `magi-optuna-optimizer` scheduler unmanaged
+  (Jun pauses the existing one). Last `optuna_params` rows stay in effect.
+  Per-layer demotion of blocking statistical gates to warn-only is a separate
+  reviewed decision. Source: Issue #99 Fable review item D.
+* **Status change**: [optuna_params](/system/echidna-tables/optuna-params.md) —
+  `stable` → `draft` pending human re-verification after adding the
+  writer-frozen note (`updated_at` no longer advances; expected, not stale).
 * **Change**: [BOREAS](/system/plm-units/boreas.md) — model replaced
   `ministral-3:14b` → `ministral-3:8b-ctx32k` (Modelfile `num_ctx 32768`).
   The 14b Q4_K_M (~16.8 GB) exceeded TIALA's 16 GB RAM, thrashing at
