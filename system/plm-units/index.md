@@ -34,6 +34,16 @@ TIARA remains documented as the legacy VIX-only Ollama identity; see
 deterministic inside `magi-isabel-cache` — see
 [ORACLE](oracle.md#oracle-vix-specialist-retired-2026-09-25).
 
+## Model changes and cohort identity
+
+A `model` change on an active unit is a **cohort boundary**: statistics do
+not carry over to the new model. See the draft
+[model-cohorting](/system/constitution/model-cohorting.md) rule —
+aggregates key on `(unit_name, model_version)`, not `unit_name` alone.
+When a unit's model is replaced, the unit doc records the effective date so
+cohort boundaries stay reconstructable from history (e.g.
+[BOREAS](boreas.md), 2026-10-02).
+
 # Offline analysis units
 
 None currently — the SEKHMET offline analyzer was retired on 2026-09-17 (see
