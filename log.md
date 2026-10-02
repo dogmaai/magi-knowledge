@@ -17,6 +17,18 @@
   preferred, Cloudflare tunnel fallback). Operational finding reported to
   Jun: the `CLOUDFLARE_API_TOKEN` copy in Secret Manager currently fails
   Cloudflare auth (error 10000); rotation is Jun's.
+* **Rotation executed (Jun-approved, cloud Devin session)**: `CLOUDFLARE_API_TOKEN`
+  — prior SM copy returned API error 1000 (invalid, not expired). A new
+  scoped token (Account Tunnel Edit + Zone DNS Edit on `khaos.company`)
+  was minted via `CLOUDFLARE_GLOBAL_API_KEY` and stored as SM
+  `CLOUDFLARE_API_TOKEN` **version 2** (v1 disabled). Verified live:
+  `cfd_tunnel` list returns `magi-bridge` / `magi-ollama` /
+  `magi-openclaw` (all `healthy`), and zone DNS read confirms
+  `bridge`/`ollama`/`openclaw.khaos.company` CNAME →
+  `<id>.cfargotunnel.com`. Tunnel names in
+  [cloudflare](/system/services/cloudflare.md) §3 are now API-verified;
+  [secrets-inventory](/system/services/secrets-inventory.md) updated
+  (`stable` → `draft` pending Jun re-verification).
 
 ## 2026-10-02
 * **Creation (draft)**: [model-cohorting](/system/constitution/model-cohorting.md)

@@ -73,11 +73,12 @@ live in `.agents/skills/` and are referenced below rather than duplicated.
 | `magi-ollama` | `ollama.khaos.company` | Ollama REST API | [ADAM](/system/plm-units/adam.md) and [BOREAS](/system/plm-units/boreas.md) (legacy: [TIARA](/system/plm-units/tiara.md)) |
 | `magi-openclaw` | `openclaw.khaos.company` | OpenClaw Gateway | AKA / [magi-moni](magi-moni.md), Devin |
 
-Tunnel names follow the magi-moomoo setup-script defaults
-(`OLLAMA_TUNNEL_NAME=magi-ollama`, `OPENCLAW_TUNNEL_NAME=magi-openclaw`,
-`CLOUDFLARE_TUNNEL_NAME=magi-bridge`); they are not verified against the
-Cloudflare API from this bundle. URL discovery is split: `magi-bridge` and
-`magi-openclaw` hostnames are registered in
+Tunnel names are verified via the Cloudflare Tunnel API (2026-10-03,
+`cfd_tunnel` list: `magi-bridge`/`magi-ollama`/`magi-openclaw`, all
+`healthy`; each hostname is a CNAME to `<id>.cfargotunnel.com`) and match
+the magi-moomoo setup-script defaults (`OLLAMA_TUNNEL_NAME`,
+`OPENCLAW_TUNNEL_NAME`, `CLOUDFLARE_TUNNEL_NAME`). URL discovery is split:
+the `magi-bridge` and `magi-openclaw` hostnames are registered in
 [service_endpoints](/system/echidna-tables/service-endpoints.md) by
 `register-tunnel.py` (`service='opend-proxy'` / `service='openclaw'`), while
 the `magi-ollama` hostname is not in that table — PLM jobs receive it via the
