@@ -35,6 +35,7 @@ reasoning.
 | unit_name | STRING | MAGI unit name. |
 | symbol | STRING | Ticker under consideration. |
 | action | STRING | `BUY` / `SELL` / `HOLD`; `BLOCKED` / `WARN_ONLY` on guard-block rows. |
+| side | STRING | Trade direction (`buy`/`sell`) written by `logGuardBlock` on guard-block rows; NULL elsewhere and for rows predating the column (added 2026-10-02, magi-core#535). |
 | reasoning | STRING | Parsed reasoning / thesis. |
 | hypothesis | STRING | Stated hypothesis. |
 | confidence | FLOAT64 | Self-reported confidence `0.0–1.0`. |

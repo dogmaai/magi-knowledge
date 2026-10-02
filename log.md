@@ -1,5 +1,11 @@
 # Bundle Update Log
 
+## 2026-10-02
+* **Schema sync**: [thoughts](/system/echidna-tables/thoughts.md) — documented
+  the new `side` column (guard-block rows carry buy/sell direction;
+  previously sent by `logGuardBlock` but silently dropped by
+  `ignoreUnknownValues`). Column added via DDL per magi-core#535.
+
 ## 2026-10-01
 * **Creation (draft)**: [position_guard_evals](/system/echidna-tables/position-guard-evals.md)
   — per-position evaluation ledger for `checkAndClosePositions()`, introduced
