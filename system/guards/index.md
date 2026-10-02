@@ -11,32 +11,53 @@ historical blocks already live in `thoughts`, so nothing is lost.
 
 # Pipeline order
 
-| Layer | Name | Checks | On fail |
-|---|---|---|---|
-| [L0](l0-kill-switch.md) | Emergency Kill Switch | Global halt from `magi_core.system_control` | block all orders |
-| [JEV](jev.md) | Decision Validator | Order ↔ linked `log_analysis` consistency; typed PASS/BLOCK/ESCALATE verdict | warn (`JEV_MODE=shadow`) / block (`enforce`) |
-| Shadow short circuit | Shadow-mode recording | `isConfiguredShadowMode()` → `recordShadowOrder()`; no broker call | record |
-| [L-1](l-1.md) | Broker Availability | Broker reachable / tradable | block |
-| [L0](l0.md) | PositionManager | PositionManager veto on symbol/side | block |
-| [L0.5](l0-5.md) | Cash Account Guard | Block new short SELLs in cash accounts | block |
-| [L0.9](l0-9.md) | HOLD / zero-quantity | Reject missing or non-positive quantities | block |
-| [L1](l1.md) | Data Validation (データ検証層) | Required params present and valid | block |
-| [L1.6](l1-6.md) | Sellable Quantity | Clamp exit SELL to `can_sell_qty` | block or clamp |
-| [L2.6/L2.7](l2.md) | Entry Sizing | Confidence-band and short-entry sizing (warn-only) | warn |
-| [L3](l3.md) | Symbol Exclusion | Symbol on `L3_EXCLUDED_SYMBOLS` (optuna_params) | block BUY |
-| [L1.5](l1-5.md) | Position Sizing (Hard Limit) | Max concurrent positions; max position % | block |
-| [L1.7](l1-7.md) | Daily-loss Kill Switch | Per-unit realized P&L against daily loss limit | block risk increases |
-| [L2](l2.md) | Confidence (コンフィデンス層) | `confidence >= L2_THRESHOLD` (Optuna) | block |
-| [L4](l4.md) | Direction Suitability (方向適性層) | Provider/side probation | block |
-| [L5](l5.md) | Thought Similarity (思考類似度層) | Reasoning too similar to past losers | block |
-| [L6](l6.md) | Market Regime (市場環境層) | VIX regime vs side | warn |
-| [L7](l7.md) | Composite Score (複合スコア層) | Optuna 1000-trial composite gate | block |
+| Layer | Name | Checks | On fail | Class |
+|---|---|---|---|---|
+| [L0](l0-kill-switch.md) | Emergency Kill Switch | Global halt from `magi_core.system_control` | block all orders | risk-control |
+| [JEV](jev.md) | Decision Validator | Order ↔ linked `log_analysis` consistency; typed PASS/BLOCK/ESCALATE verdict | warn (`JEV_MODE=shadow`) / block (`enforce`) | validator |
+| Shadow short circuit | Shadow-mode recording | `isConfiguredShadowMode()` → `recordShadowOrder()`; no broker call | record | pipeline |
+| [L-1](l-1.md) | Broker Availability | Broker reachable / tradable | block | risk-control |
+| [L0](l0.md) | PositionManager | PositionManager veto on symbol/side | block | risk-control |
+| [L0.5](l0-5.md) | Cash Account Guard | Block new short SELLs in cash accounts | block | risk-control |
+| [L0.9](l0-9.md) | HOLD / zero-quantity | Reject missing or non-positive quantities | block | risk-control |
+| [L1](l1.md) | Data Validation (データ検証層) | Required params present and valid | block | risk-control |
+| [L1.6](l1-6.md) | Sellable Quantity | Clamp exit SELL to `can_sell_qty` | block or clamp | risk-control |
+| [L2.6/L2.7](l2.md) | Entry Sizing | Confidence-band and short-entry sizing (warn-only) | warn | statistical-gate |
+| [L3](l3.md) | Symbol Exclusion | Symbol on `L3_EXCLUDED_SYMBOLS` (optuna_params) | block BUY | statistical-gate |
+| [L1.5](l1-5.md) | Position Sizing (Hard Limit) | Max concurrent positions; max position % | block | risk-control |
+| [L1.7](l1-7.md) | Daily-loss Kill Switch | Per-unit realized P&L against daily loss limit | block risk increases | risk-control |
+| [L2](l2.md) | Confidence (コンフィデンス層) | `confidence >= L2_THRESHOLD` (Optuna) | block | statistical-gate |
+| [L4](l4.md) | Direction Suitability (方向適性層) | Provider/side probation | block | statistical-gate |
+| [L5](l5.md) | Thought Similarity (思考類似度層) | Reasoning too similar to past losers | block | statistical-gate |
+| [L6](l6.md) | Market Regime (市場環境層) | VIX regime vs side | warn | statistical-gate |
+| [L7](l7.md) | Composite Score (複合スコア層) | Optuna 1000-trial composite gate | block | statistical-gate |
 
 The numeric labels are historical and the table is in actual code execution
 order. The L0 emergency kill switch runs first, then the JEV decision
 validator (see [jev.md](jev.md)). The shadow-mode short circuit
 then applies `isConfiguredShadowMode()` and `recordShadowOrder()`; units in
 `TRADE_MODE=SHADOW` (MELCHIOR-1) never reach L-1 or below.
+
+# Classes
+
+Reclassified 2026-10-02 (Jun-approved, Issue #99 Fable review item D — "reduce
+degrees of freedom": too many learned gates for too little live data).
+
+* **risk-control** — deterministic protective controls: kill switches, broker
+  reachability, quantity/position hard limits, data validation. They block on
+  rule violations and are never learned from data. These are "guards" in the
+  strict sense.
+* **statistical-gate** — layers whose thresholds, lists or weights come from
+  fitted statistics (Optuna `optuna_params`, L4 probation state, L5 similarity,
+  confidence calibration). Their **re-optimization is frozen** as of
+  2026-10-02: `magi-optuna-job` runs with `OPTUNA_FREEZE=true` and the weekly
+  `magi-optuna-optimizer` scheduler is paused; the last `optuna_params` rows
+  remain in effect. Whether a blocking statistical-gate is demoted to
+  warn-only observation is a **per-layer decision requiring independent
+  review** — L7 already runs warn-only in the implementation (drift recorded
+  in Issue #99), while L2/L3/L4/L5 still block.
+* **validator** / **pipeline** — bookkeeping classes for the JEV decision
+  validator and the shadow-mode short circuit; not risk controls.
 
 # Constitution basis
 
