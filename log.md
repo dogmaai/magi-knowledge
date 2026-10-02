@@ -1,6 +1,14 @@
 # Bundle Update Log
 
 ## 2026-10-02
+* **Change**: [BOREAS](/system/plm-units/boreas.md) — model replaced
+  `ministral-3:14b` → `ministral-3:8b-ctx32k` (Modelfile `num_ctx 32768`).
+  The 14b Q4_K_M (~16.8 GB) exceeded TIALA's 16 GB RAM, thrashing at
+  ~130 tok/s and timing out through the Cloudflare tunnel (HTTP 524).
+  Approved by Jun on 2026-10-02; pairs with magi-core#536 (SSE streaming +
+  ollama prompt budget). Cross-references synced in
+  [plm-units/index](/system/plm-units/index.md), [SOPHIA-5](/system/plm-units/sophia-5.md),
+  [TIARA](/system/plm-units/tiara.md) and [magi-core](/system/services/magi-core.md).
 * **Schema sync**: [thoughts](/system/echidna-tables/thoughts.md) — documented
   the new `side` column (guard-block rows carry buy/sell direction;
   previously sent by `logGuardBlock` but silently dropped by
