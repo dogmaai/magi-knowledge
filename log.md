@@ -11,7 +11,12 @@
   [guards/index.md](system/guards/index.md) updated: L2/L3 rows now `warn`,
   new `L1.6.RECON` row records the opposite-direction promotion — the
   ledger↔broker reconciler (magi-core#547) blocks risk-increasing orders on
-  divergence (`RECON_FAIL_CLOSED=false` reverts). L4/L5/L7 spec rows still
+  divergence (`RECON_FAIL_CLOSED=false` reverts). Same-day follow-up (magi-core
+  #558 review): [trading-universe.md](system/constitution/trading-universe.md)
+  prompt template `BLOCKED (L3)` → `ADVISORY (L3)` so the constitution no
+  longer forbids the very trades warn-only L3 is meant to measure;
+  [prohibitions.md](system/constitution/prohibitions.md) L2/L3 enforcement
+  rows annotated advisory. Both flipped `stable` → `draft`. L4/L5/L7 spec rows still
   say `block` while implementation is warn-only — pre-existing drift from
   Issue #99, left visible pending a spec decision.
 * **Sync (verification)**: [cloudflare](/system/services/cloudflare.md) §3 —
