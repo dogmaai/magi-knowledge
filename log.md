@@ -1,6 +1,16 @@
 # Bundle Update Log
 
 ## 2026-10-03
+* **Re-verification (Jun-approved 2026-10-03)**: the guard/schema docs
+  recorded under the 2026-10-03 entries above are re-stamped `stable` with
+  `verified: human:jun` — [l2](system/guards/l2.md),
+  [l3](system/guards/l3.md),
+  [trading-universe](system/constitution/trading-universe.md),
+  [prohibitions](system/constitution/prohibitions.md) and
+  [thoughts](system/echidna-tables/thoughts.md). Note this approves the
+  docs as written (L2/L3 default `block` + dormant opt-in warn-only); it is
+  NOT the demotion decision itself — `L2_WARN_ONLY`/`L3_WARN_ONLY`
+  activation still requires Jun's explicit call.
 * **Auto-review persona (magi-core#564 companion)**: `.github/workflows/auto-review.yml`
   Mistral step system prompt changed from the generic senior-engineer persona
   to a strict, neutral code reviewer — evidence required per finding, nits
