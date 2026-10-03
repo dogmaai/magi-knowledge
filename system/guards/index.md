@@ -22,11 +22,12 @@ historical blocks already live in `thoughts`, so nothing is lost.
 | [L0.9](l0-9.md) | HOLD / zero-quantity | Reject missing or non-positive quantities | block | risk-control |
 | [L1](l1.md) | Data Validation (データ検証層) | Required params present and valid | block | risk-control |
 | [L1.6](l1-6.md) | Sellable Quantity | Clamp exit SELL to `can_sell_qty` | block or clamp | risk-control |
+| L1.6.RECON | Ledger↔broker Reconciliation | Open ledger net qty vs broker position list per symbol | block risk increases (`RECON_FAIL_CLOSED`) | risk-control |
 | [L2.6/L2.7](l2.md) | Entry Sizing | Confidence-band and short-entry sizing (warn-only) | warn | statistical-gate |
-| [L3](l3.md) | Symbol Exclusion | Symbol on `L3_EXCLUDED_SYMBOLS` (optuna_params) | block BUY | statistical-gate |
+| [L3](l3.md) | Symbol Exclusion | Symbol on `L3_EXCLUDED_SYMBOLS` (optuna_params) | warn (`L3_WARN_ONLY`) | statistical-gate |
 | [L1.5](l1-5.md) | Position Sizing (Hard Limit) | Max concurrent positions; max position % | block | risk-control |
 | [L1.7](l1-7.md) | Daily-loss Kill Switch | Per-unit realized P&L against daily loss limit | block risk increases | risk-control |
-| [L2](l2.md) | Confidence (コンフィデンス層) | `confidence >= L2_THRESHOLD` (Optuna) | block | statistical-gate |
+| [L2](l2.md) | Confidence (コンフィデンス層) | `confidence >= L2_THRESHOLD` (Optuna, frozen) | warn (`L2_WARN_ONLY`) | statistical-gate |
 | [L4](l4.md) | Direction Suitability (方向適性層) | Provider/side probation | block | statistical-gate |
 | [L5](l5.md) | Thought Similarity (思考類似度層) | Reasoning too similar to past losers | block | statistical-gate |
 | [L6](l6.md) | Market Regime (市場環境層) | VIX regime vs side | warn | statistical-gate |
@@ -54,8 +55,14 @@ degrees of freedom": too many learned gates for too little live data).
   `magi-optuna-optimizer` scheduler is paused; the last `optuna_params` rows
   remain in effect. Whether a blocking statistical-gate is demoted to
   warn-only observation is a **per-layer decision requiring independent
-  review** — L7 already runs warn-only in the implementation (drift recorded
-  in Issue #99), while L2/L3/L4/L5 still block.
+  review**. As of 2026-10-03: **L2 and L3 are demoted to warn-only** in the
+  implementation (magi-core#548 — would-be blocks are journaled as `WARN_ONLY`
+  rows for counterfactual analysis; `L2_WARN_ONLY=false` / `L3_WARN_ONLY=false`
+  restore hard blocking). L4/L5/L7 already run warn-only in the
+  implementation (drift recorded in Issue #99 — spec rows pending update).
+  L1.6.RECON moved the opposite direction: promoted from warn-only
+  observation to fail-closed blocking of risk-increasing orders on
+  ledger↔broker divergence (magi-core#547; `RECON_FAIL_CLOSED=false` reverts).
 * **validator** / **pipeline** — bookkeeping classes for the JEV decision
   validator and the shadow-mode short circuit; not risk controls.
 

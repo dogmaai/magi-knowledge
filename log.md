@@ -1,6 +1,19 @@
 # Bundle Update Log
 
 ## 2026-10-03
+* **Guard demotion (Jun-delegated SWE judgment, magi-core#548 / Issue #99
+  Fable item D)**: [L2](system/guards/l2.md) and [L3](system/guards/l3.md)
+  demoted from `block` to `warn` — the last hard statistical gates. Orders
+  that would have been rejected now proceed and journal a `WARN_ONLY`
+  thoughts row so counterfactual outcomes are measurable.
+  `L2_WARN_ONLY=false` / `L3_WARN_ONLY=false` restore hard blocking. Both
+  docs flipped `stable` → `draft` pending Jun re-verification.
+  [guards/index.md](system/guards/index.md) updated: L2/L3 rows now `warn`,
+  new `L1.6.RECON` row records the opposite-direction promotion — the
+  ledger↔broker reconciler (magi-core#547) blocks risk-increasing orders on
+  divergence (`RECON_FAIL_CLOSED=false` reverts). L4/L5/L7 spec rows still
+  say `block` while implementation is warn-only — pre-existing drift from
+  Issue #99, left visible pending a spec decision.
 * **Sync (verification)**: [cloudflare](/system/services/cloudflare.md) §3 —
   Named Tunnel table now records the actual tunnel names and public
   hostnames verified against deploy config and DNS: `magi-bridge` →
