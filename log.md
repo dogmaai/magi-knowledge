@@ -1,6 +1,13 @@
 # Bundle Update Log
 
 ## 2026-10-03
+* **Auto-review persona (magi-core#564 companion)**: `.github/workflows/auto-review.yml`
+  Mistral step system prompt changed from the generic senior-engineer persona
+  to a strict, neutral code reviewer — evidence required per finding, nits
+  still reported at 低 severity, `## 良い点` section removed, `max_tokens`
+  2000 → 4000. No concept-doc change: the persona text is an OKF-undefined
+  implementation detail, and the COLLABORATION.md description of the bot
+  (`COMMENT` review, sha marker, skip-if-exists) is unchanged.
 * **Schema sync (magi-core#544)**: [thoughts](/system/echidna-tables/thoughts.md)
   schema table gained `model_version` (served-model id at decision time —
   cohort key per [model-cohorting](/system/constitution/model-cohorting.md))
