@@ -3,8 +3,8 @@ type: Guard Layer
 title: JEV Decision Validator
 description: Deterministic typed validator on the place_order path — cross-checks the order against the session's linked log_analysis before the shadow/broker path. Not an LLM.
 lilith_safe: false
-status: stable
-generated: { by: devin/local, at: 2026-09-19T03:20:00Z }
+status: draft
+generated: { by: devin/local, at: 2026-10-03T00:00:00Z }
 verified: { by: human:jun, at: 2026-09-22T01:09:00Z }
 stale_after: 2027-03-22T01:09:00Z
 tags: [guard, jev, validation, decision-integrity]
@@ -26,9 +26,13 @@ the shadow/broker path. It performs no LLM calls and no I/O.
 
 # Pipeline position
 
-Runs inside `place_order` in `magi-core/src/llm.js`, immediately **after the
-L0 emergency kill switch and before the shadow-mode short circuit**, so every
-unit (live and `TRADE_MODE=SHADOW`) receives a verdict.
+Runs inside `place_order` in `magi-core/src/llm.js`, **after the L0
+emergency kill switch and L1.6.RECON, and before the shadow-mode short
+circuit**, so every unit (live and `TRADE_MODE=SHADOW`) receives a verdict.
+Orders blocked by L1.6.RECON (ledger↔broker divergence) return before
+reaching JEV, so they receive no JEV verdict and do not consume the linked
+analysis — a retry once reconciliation succeeds is validated against the
+same analysis.
 
 # Verdicts
 
