@@ -6,7 +6,10 @@
   hostnames verified against deploy config and DNS: `magi-bridge` →
   `bridge.khaos.company` (opend-proxy fallback leg), `magi-ollama` →
   `ollama.khaos.company` (ADAM + BOREAS), `magi-openclaw` →
-  `openclaw.khaos.company`. Corrected two drifts: the `ollama` tunnel
+  `openclaw.khaos.company`. The same naming was applied to the §Overview
+  table, [magi-moomoo](/system/services/magi-moomoo.md) and the
+  `cloudflare-tunnel-protocols` skill for consistency. Corrected two
+  drifts: the `ollama` tunnel
   consumer list named only ADAM (BOREAS was added 2026-09-22), and the
   blanket claim that tunnel URLs are registered in `service_endpoints` —
   `magi-ollama` is not registered there; its URL reaches PLM jobs via the

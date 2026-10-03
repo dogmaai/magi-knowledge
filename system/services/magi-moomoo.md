@@ -4,7 +4,7 @@ title: magi-moomoo
 description: MooMoo broker integration — account, positions, orders, market snapshots.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-09-17T04:43:35Z }
+generated: { by: devin/cli, at: 2026-10-02T23:50:00Z }
 verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: devin/cli, at: 2026-09-16T07:25:00Z }]
 stale_after: 2027-03-17T04:43:35Z
 tags: [service, moomoo, broker]
@@ -141,7 +141,7 @@ using the default egress — no Cloud NAT is required.
 
 **Cloudflare route** — resolved from `service_endpoints` with
 `service='opend-proxy'` (cached; refreshed on stale-connection failures),
-then through the `moomoo-bridge` Named Tunnel to the same on-prem bridge.
+then through the `magi-bridge` Named Tunnel to the same on-prem bridge.
 Required by `legacy` and by `auto` as the fallback leg; unused in `private`.
 
 `/route_status` reports `active_route`, per-route request/error counters with

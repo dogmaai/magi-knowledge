@@ -16,9 +16,9 @@ The Cloudflare **gRPC** setting (`Allow gRPC connections to the origin server`) 
 
 All services exposed through MAGI's Cloudflare tunnels use HTTP(S) only:
 
-- `moomoo-bridge` (Flask, `http://localhost:11436`)
-- `ollama` (HTTP REST API, `http://localhost:${OLLAMA_PORT}`)
-- `openclaw-gateway` (HTTP, `http://localhost:${OPENCLAW_PORT}`)
+- `magi-bridge` (Flask, `http://localhost:11436`)
+- `magi-ollama` (HTTP REST API, `http://localhost:${OLLAMA_PORT}`)
+- `magi-openclaw` (HTTP, `http://localhost:${OPENCLAW_PORT}`)
 
 None of the tunnel ingress definitions in `magi-moomoo/scripts/setup-*-named-tunnel.sh` declare `service: tcp://` or a gRPC endpoint. They all use `service: http://localhost:<port>` with `originRequest.httpHostHeader` when needed.
 

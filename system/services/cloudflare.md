@@ -20,7 +20,7 @@ Cloudflare is infrastructure, not a MAGI repository. The account
 |---|---|---|---|
 | 1 | AI Search (AutoRAG) | instance `magi-document` | Retrieval mirror of this bundle's `system/` tree. |
 | 2 | R2 + R2 Data Catalog (Apache Iceberg) | bucket `magi-system`, table `okf.system` | Analytical (SQL) mirror of the same tree. |
-| 3 | Named Tunnel (`cloudflared`) | `moomoo-bridge`, `ollama`, `openclaw-gateway` on TIALA | Stable HTTPS hostnames for on-prem services. |
+| 3 | Named Tunnel (`cloudflared`) | `magi-bridge`, `magi-ollama`, `magi-openclaw` on TIALA | Stable HTTPS hostnames for on-prem services. |
 | 4 | AI Gateway | gateway `default` | Carries AI Search's own model calls (separate from `magi-llm`). |
 
 Both spec mirrors (1, 2) are **caches**: this repository is the source of
