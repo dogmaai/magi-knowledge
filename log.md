@@ -1,6 +1,16 @@
 # Bundle Update Log
 
 ## 2026-10-03
+* **Pipeline-order fix (drift correction)**: [index](system/guards/index.md)
+  and [jev](system/guards/jev.md) placed L1.6.RECON between L1.6 (sellable
+  quantity) and L2.6/L2.7, but the implementation
+  (`magi-core/src/llm.js`, #557) runs it immediately after the L0 kill
+  switch — before JEV and before the shadow-mode short circuit. Moved the
+  table row and updated the prose to match the code: divergent state halts
+  every unit including `TRADE_MODE=SHADOW`, and orders blocked by
+  L1.6.RECON receive no JEV verdict and do not consume the linked analysis.
+  Doc-side fix only; the code position is the safer fail-closed placement.
+  Both docs were Jun-verified `stable` — needs Jun re-verification.
 * **Re-verification (Jun-approved 2026-10-03)**: the guard/schema docs
   recorded under the 2026-10-03 entries above are re-stamped `stable` with
   `verified: human:jun` — [l2](system/guards/l2.md),

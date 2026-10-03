@@ -14,6 +14,7 @@ historical blocks already live in `thoughts`, so nothing is lost.
 | Layer | Name | Checks | On fail | Class |
 |---|---|---|---|---|
 | [L0](l0-kill-switch.md) | Emergency Kill Switch | Global halt from `magi_core.system_control` | block all orders | risk-control |
+| L1.6.RECON | Ledger↔broker Reconciliation | Open ledger net qty vs broker position list per symbol | block risk increases (`RECON_FAIL_CLOSED`) | risk-control |
 | [JEV](jev.md) | Decision Validator | Order ↔ linked `log_analysis` consistency; typed PASS/BLOCK/ESCALATE verdict | warn (`JEV_MODE=shadow`) / block (`enforce`) | validator |
 | Shadow short circuit | Shadow-mode recording | `isConfiguredShadowMode()` → `recordShadowOrder()`; no broker call | record | pipeline |
 | [L-1](l-1.md) | Broker Availability | Broker reachable / tradable | block | risk-control |
@@ -22,7 +23,6 @@ historical blocks already live in `thoughts`, so nothing is lost.
 | [L0.9](l0-9.md) | HOLD / zero-quantity | Reject missing or non-positive quantities | block | risk-control |
 | [L1](l1.md) | Data Validation (データ検証層) | Required params present and valid | block | risk-control |
 | [L1.6](l1-6.md) | Sellable Quantity | Clamp exit SELL to `can_sell_qty` | block or clamp | risk-control |
-| L1.6.RECON | Ledger↔broker Reconciliation | Open ledger net qty vs broker position list per symbol | block risk increases (`RECON_FAIL_CLOSED`) | risk-control |
 | [L2.6/L2.7](l2.md) | Entry Sizing | Confidence-band and short-entry sizing (warn-only) | warn | statistical-gate |
 | [L3](l3.md) | Symbol Exclusion | Symbol on `L3_EXCLUDED_SYMBOLS` (optuna_params) | block BUY (opt-in warn via `L3_WARN_ONLY=true`) | statistical-gate |
 | [L1.5](l1-5.md) | Position Sizing (Hard Limit) | Max concurrent positions; max position % | block | risk-control |
@@ -34,8 +34,11 @@ historical blocks already live in `thoughts`, so nothing is lost.
 | [L7](l7.md) | Composite Score (複合スコア層) | Optuna 1000-trial composite gate | block | statistical-gate |
 
 The numeric labels are historical and the table is in actual code execution
-order. The L0 emergency kill switch runs first, then the JEV decision
-validator (see [jev.md](jev.md)). The shadow-mode short circuit
+order. The L0 emergency kill switch runs first, then L1.6.RECON (fail-closed
+while ledger↔broker divergence is unconfirmed — it deliberately precedes JEV
+and the shadow short circuit so divergent state halts every unit, including
+`TRADE_MODE=SHADOW`), then the JEV decision validator (see
+[jev.md](jev.md)). The shadow-mode short circuit
 then applies `isConfiguredShadowMode()` and `recordShadowOrder()`; units in
 `TRADE_MODE=SHADOW` (MELCHIOR-1) never reach L-1 or below.
 
