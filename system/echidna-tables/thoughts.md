@@ -46,6 +46,8 @@ reasoning.
 | vix_regime | STRING | VIX regime label. |
 | reasoning_content | STRING | Extended chain-of-thought (when provided). |
 | ariel_context_used | BOOL | Whether ARIEL market context was injected. |
+| feedback_injected | BOOL | A/B holdout flag: TRUE = feedback injected, FALSE = HOLDOUT arm, NULL = no assignment (added earlier; see `alter_thoughts_add_feedback_injected.sql`). |
+| model_version | STRING | Served-model identifier at decision time (e.g. `gemini-3.8-flash`, `ministral-3:8b-ctx32k`); also written on guard-block rows. Cohort key per [model-cohorting](/system/constitution/model-cohorting.md): `cohort = (unit_name, model_version)`. NULL for rows predating the column (added 2026-10-03, magi-core#544). |
 
 # Joins
 

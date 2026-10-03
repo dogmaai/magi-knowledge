@@ -1,6 +1,13 @@
 # Bundle Update Log
 
 ## 2026-10-03
+* **Schema sync (magi-core#544)**: [thoughts](/system/echidna-tables/thoughts.md)
+  schema table gained `model_version` (served-model id at decision time —
+  cohort key per [model-cohorting](/system/constitution/model-cohorting.md))
+  and the previously undocumented `feedback_injected` row. The doc was
+  already `draft`; still pending Jun re-verification.
+
+## 2026-10-03
 * **Sync (verification)**: [cloudflare](/system/services/cloudflare.md) §3 —
   Named Tunnel table now records the actual tunnel names and public
   hostnames verified against deploy config and DNS: `magi-bridge` →
