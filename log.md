@@ -4,13 +4,22 @@
 * **Pipeline-order fix (drift correction)**: [index](system/guards/index.md)
   and [jev](system/guards/jev.md) placed L1.6.RECON between L1.6 (sellable
   quantity) and L2.6/L2.7, but the implementation
-  (`magi-core/src/llm.js`, #557) runs it immediately after the L0 kill
-  switch — before JEV and before the shadow-mode short circuit. Moved the
-  table row and updated the prose to match the code: divergent state halts
-  every unit including `TRADE_MODE=SHADOW`, and orders blocked by
-  L1.6.RECON receive no JEV verdict and do not consume the linked analysis.
-  Doc-side fix only; the code position is the safer fail-closed placement.
-  Both docs were Jun-verified `stable` — needs Jun re-verification.
+  (`magi-core/src/llm.js` `place_order`, magi-core#557) runs it immediately
+  after the L0 kill switch — before JEV and before the shadow-mode short
+  circuit (verified: L0 L533-571, L1.6.RECON L573-597, JEV L599-655, shadow
+  short-circuit L658). Moved the table row and updated the prose to match
+  the code: divergent state halts every unit including `TRADE_MODE=SHADOW`,
+  and orders blocked by L1.6.RECON receive no JEV verdict and do not
+  consume the linked analysis. Doc-side fix only; the code position is
+  fail-closed by construction — the check sits before any shadow/broker
+  effect and blocks whenever divergence is detected *or* the reconciler
+  could not confirm consistency, so placing it earliest minimizes the
+  window where a divergent ledger can drive orders. `jev.md` was edited
+  while `stable`, so `status` reverted to `draft` and its `generated.at`
+  was re-stamped — Jun re-verification needed: confirm the pipeline
+  ordering claims against `magi-core/src/llm.js` (lines above) and the
+  two added behavioral notes (SHADOW units also halted; RECON-blocked
+  orders get no JEV verdict, analysis unconsumed).
 * **Re-verification (Jun-approved 2026-10-03)**: the guard/schema docs
   recorded under the 2026-10-03 entries above are re-stamped `stable` with
   `verified: human:jun` — [l2](system/guards/l2.md),

@@ -35,8 +35,9 @@ historical blocks already live in `thoughts`, so nothing is lost.
 
 The numeric labels are historical and the table is in actual code execution
 order. The L0 emergency kill switch runs first, then L1.6.RECON (fail-closed
-while ledger↔broker divergence is unconfirmed — it deliberately precedes JEV
-and the shadow short circuit so divergent state halts every unit, including
+when ledger↔broker divergence is detected or cannot be verified — it
+deliberately precedes JEV and the shadow short circuit so divergent state
+halts every unit, including
 `TRADE_MODE=SHADOW`), then the JEV decision validator (see
 [jev.md](jev.md)). The shadow-mode short circuit
 then applies `isConfiguredShadowMode()` and `recordShadowOrder()`; units in
