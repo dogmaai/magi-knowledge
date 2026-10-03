@@ -24,6 +24,9 @@ The prompt template is:
 ```text
 ${generateTradingUniverseText()}
 Scan 5-8 symbols per session using get_price. Prioritize symbols with strong ISABEL win rates.
+// default (L3 blocking):
+BLOCKED (L3): ${getExcludedSymbols().join(', ')} - no new BUY and no new SHORT. Only closing an existing position in these is allowed.
+// when L3_WARN_ONLY=true (opt-in warn-only mode):
 ADVISORY (L3): ${getExcludedSymbols().join(', ')} - these symbols are under exclusion review. Prefer other names for new BUY/SHORT; if you trade one anyway, justify it explicitly in your reasoning. Closing an existing position is always allowed.
 ```
 
@@ -38,10 +41,10 @@ ADVISORY (L3): ${getExcludedSymbols().join(', ')} - these symbols are under excl
 
 - Scan 5-8 symbols per session.
 - Prioritize symbols with strong ISABEL win rates.
-- L3-listed symbols are advisory under the warn-only demotion (magi-core#548):
-  new BUY/SHORT on them is discouraged rather than blocked; warned trades are
-  journaled (`WARN_ONLY` thoughts) for measurement. `L3_WARN_ONLY=false`
-  restores the hard block.
+- L3-listed symbols must not be traded by default (enforced by the
+  [L3 guard](/system/guards/l3.md)). With `L3_WARN_ONLY=true` (opt-in
+  warn-only, magi-core#548) the prompt renders the list as `ADVISORY (L3)`
+  and warned trades are journaled (`WARN_ONLY` thoughts) for measurement.
 
 # Cross-references
 

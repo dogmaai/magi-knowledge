@@ -38,8 +38,8 @@ Some prohibitions are enforced programmatically by the guard pipeline:
 | Prohibition | Guard |
 |---|---|
 | Repeating proven losing patterns | [L5 (Thought Similarity)](/system/guards/l5.md) |
-| Trading L3-excluded symbols | [L3 (Symbol Exclusion)](/system/guards/l3.md) — advisory (warn-only as of magi-core#548) |
-| Low-confidence trades | [L2 (Confidence)](/system/guards/l2.md) — advisory (warn-only as of magi-core#548) |
+| Trading L3-excluded symbols | [L3 (Symbol Exclusion)](/system/guards/l3.md) — opt-in warn-only via `L3_WARN_ONLY=true` (magi-core#548) |
+| Low-confidence trades | [L2 (Confidence)](/system/guards/l2.md) — opt-in warn-only via `L2_WARN_ONLY=true` (magi-core#548) |
 | Probation-blocked direction | [L4 (Direction Suitability)](/system/guards/l4.md) |
 
 Other prohibitions (e.g. "no averaging down") rely on the LLM respecting the
