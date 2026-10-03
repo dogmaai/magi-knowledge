@@ -8,7 +8,8 @@
   `src/llm.js place_order` at insert time. WARN_ONLY guard thoughts carry
   no `thought_id`, so this column is the exact per-trade
   "would have been blocked" link for the 30-day counterfactual study.
-  Implementation: magi-core `feat/warn-only-trade-flag`;
+  Implementation: magi-core#570, merged as
+  `a66291ec4b0c2eae3e6dbeb4a66cfa09e178056c`;
   DDL `sql/alter_trades_add_warn_only_layers.sql` (Jun applies manually).
   [trades](system/echidna-tables/trades.md) was already `draft`, so only
   `generated.at` was re-stamped — Jun re-verification still pending.
