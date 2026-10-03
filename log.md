@@ -1,6 +1,25 @@
 # Bundle Update Log
 
 ## 2026-10-03
+* **Guard warn-only opt-in (magi-core#548 / Issue #99 Fable item D)**:
+  [L2](system/guards/l2.md) and [L3](system/guards/l3.md) gained an explicit
+  opt-in warn-only mode — `L2_WARN_ONLY=true` / `L3_WARN_ONLY=true` let
+  would-be-rejected orders proceed while journaling a `WARN_ONLY` thoughts
+  row for counterfactual measurement. Default remains `on_fail: block`
+  pending the per-layer demotion decision and independent review. Both
+  docs flipped `stable` → `draft` pending Jun re-verification.
+  [guards/index.md](system/guards/index.md) updated: L2/L3 rows now `warn`,
+  new `L1.6.RECON` row records the opposite-direction promotion — the
+  ledger↔broker reconciler (magi-core#547) blocks risk-increasing orders on
+  divergence (`RECON_FAIL_CLOSED=false` reverts). Same-day follow-up (magi-core
+  #558 review): the constitution prompt is now flag-driven —
+  [trading-universe.md](system/constitution/trading-universe.md) documents both
+  the default `BLOCKED (L3)` template and the `ADVISORY (L3)` variant rendered
+  when `L3_WARN_ONLY=true`;
+  [prohibitions.md](system/constitution/prohibitions.md) L2/L3 enforcement
+  rows annotated as opt-in warn-only. Both flipped `stable` → `draft`. L4/L5/L7 spec rows still
+  say `block` while implementation is warn-only — pre-existing drift from
+  Issue #99, left visible pending a spec decision.
 * **Sync (verification)**: [cloudflare](/system/services/cloudflare.md) §3 —
   Named Tunnel table now records the actual tunnel names and public
   hostnames verified against deploy config and DNS: `magi-bridge` →

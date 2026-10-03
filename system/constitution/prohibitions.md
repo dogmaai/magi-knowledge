@@ -3,7 +3,7 @@ type: Constitution Section
 title: "PROHIBITIONS"
 description: Forbidden actions -- violations of these invalidate the trade.
 lilith_safe: false
-status: stable
+status: draft
 generated: { by: devin/cloud, at: 2026-08-23T22:14:10Z }
 verified: { by: human:jun, at: 2026-08-23T22:14:10Z }
 stale_after: 2027-02-19T22:14:10Z
@@ -38,8 +38,8 @@ Some prohibitions are enforced programmatically by the guard pipeline:
 | Prohibition | Guard |
 |---|---|
 | Repeating proven losing patterns | [L5 (Thought Similarity)](/system/guards/l5.md) |
-| Trading L3-excluded symbols | [L3 (Symbol Exclusion)](/system/guards/l3.md) |
-| Low-confidence trades | [L2 (Confidence)](/system/guards/l2.md) |
+| Trading L3-excluded symbols | [L3 (Symbol Exclusion)](/system/guards/l3.md) — opt-in warn-only via `L3_WARN_ONLY=true` (magi-core#548) |
+| Low-confidence trades | [L2 (Confidence)](/system/guards/l2.md) — opt-in warn-only via `L2_WARN_ONLY=true` (magi-core#548) |
 | Probation-blocked direction | [L4 (Direction Suitability)](/system/guards/l4.md) |
 
 Other prohibitions (e.g. "no averaging down") rely on the LLM respecting the
