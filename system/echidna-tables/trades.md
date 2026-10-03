@@ -5,7 +5,7 @@ description: Primary trade log — entry/exit, PnL, and unit attribution for eve
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=trades&page=table
 lilith_safe: false
 status: draft
-generated: { by: devin/local, at: 2026-09-26T08:45:00Z }
+generated: { by: devin/local, at: 2026-10-03T09:45:00Z }
 verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
 stale_after: 2026-12-16T01:02:48Z
 tags: [echidna, bigquery, trades, core]
@@ -50,6 +50,7 @@ table_type: BASE TABLE
 | broker | STRING | Executing broker (e.g. `alpaca`, `moomoo`). |
 | price_confirmed | BOOL | `TRUE` = broker-confirmed fill. `FALSE` = submitted but unconfirmed (pending evaluator reconciliation — `price`/`pnl_*` may be null). `NULL` = legacy row predating the flag. |
 | entry_price | FLOAT64 | Canonical entry price. On `AUTO_CLOSE` rows this is the broker position's average entry. |
+| warn_only_layers | STRING | Comma-joined ids of opt-in warn-only guards that fired on this order (e.g. `L2`, `L3`, `L3,L2`). `NULL` = none fired / rows predating the column. Exact "would have been blocked" marker for #548 counterfactual measurement — the `WARN_ONLY` thoughts row carries no `thought_id`, so this column is the reliable per-trade link. |
 
 # Result vocabulary
 

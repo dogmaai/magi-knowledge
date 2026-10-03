@@ -1,6 +1,18 @@
 # Bundle Update Log
 
 ## 2026-10-03
+* **trades.warn_only_layers (magi-core#548)**: new column
+  `warn_only_layers` on [trades](system/echidna-tables/trades.md) records
+  the opt-in warn-only guard ids that fired on the order (`L2`, `L3`,
+  comma-joined in pipeline order; `NULL` = none). Written by
+  `src/llm.js place_order` at insert time. WARN_ONLY guard thoughts carry
+  no `thought_id`, so this column is the exact per-trade
+  "would have been blocked" link for the 30-day counterfactual study.
+  Implementation: magi-core#570, merged as
+  `a66291ec4b0c2eae3e6dbeb4a66cfa09e178056c`;
+  DDL `sql/alter_trades_add_warn_only_layers.sql` (Jun applies manually).
+  [trades](system/echidna-tables/trades.md) was already `draft`, so only
+  `generated.at` was re-stamped — Jun re-verification still pending.
 * **Optuna job retired (magi-core, Jun-directed)**: the re-optimization
   pipeline is removed — `magi-optuna-job` Cloud Run job, the
   `magi-optuna-optimizer` scheduler, `Dockerfile.optuna`,
