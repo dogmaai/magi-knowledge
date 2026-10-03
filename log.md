@@ -1,6 +1,11 @@
 # Bundle Update Log
 
 ## 2026-10-03
+* **Schema sync (magi-core#544)**: [thoughts](/system/echidna-tables/thoughts.md)
+  schema table gained `model_version` (served-model id at decision time —
+  cohort key per [model-cohorting](/system/constitution/model-cohorting.md))
+  and the previously undocumented `feedback_injected` row. The doc was
+  already `draft`; still pending Jun re-verification.
 * **Guard warn-only opt-in (magi-core#548 / Issue #99 Fable item D)**:
   [L2](system/guards/l2.md) and [L3](system/guards/l3.md) gained an explicit
   opt-in warn-only mode — `L2_WARN_ONLY=true` / `L3_WARN_ONLY=true` let
