@@ -163,7 +163,7 @@ revision; magi-core is adding UTC.
 | `magi-position-guard` | `magi-position-guard-scheduler` | `*/15 9-16 * * 1-5` (America/New_York) | Intra-day exit enforcement |
 | `magi-shadow-evaluator` | `magi-shadow-evaluator-daily` | `30 21 * * 1-5` (America/New_York) | Shadow trade evaluation (`TRADE_MODE=SHADOW` units; legacy LILITH rows) |
 | `magi-sync-embeddings` | `magi-sync-embeddings-daily` | `0 8 * * 1-5` (America/New_York) | Thought embedding sync |
-| `magi-optuna-job` | `magi-optuna-optimizer` | `0 6 * * 1` (UTC) | Optuna batch optimization (see deploy.yml) |
+| ~~`magi-optuna-job`~~ | ~~`magi-optuna-optimizer`~~ | retired 2026-10 | Optuna re-optimization pipeline retired (Jun decision 2026-10-03); frozen `optuna_params` rows remain active via `lib/optuna.js`. Custom optimizer sources (`optuna_*.py`) retained in-repo; GCP job/scheduler/image deletion pending Jun |
 | `magi-sm-token-rotate` | `magi-sm-token-rotate-30min` | `*/30 * * * *` (UTC) | Rotate MooMoo Synthetic Monitoring token |
 | `magi-fred-updater` | `magi-fred-updater-daily` | `0 2 * * *` (UTC) | Daily FRED macro data fetch |
 | `magi-watchdog` | `magi-watchdog-daily` | `0 23 * * 1-5` (UTC) | Trade activity monitor |

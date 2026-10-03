@@ -1,6 +1,17 @@
 # Bundle Update Log
 
 ## 2026-10-03
+* **Optuna job retired (magi-core, Jun-directed)**: the re-optimization
+  pipeline is removed — `magi-optuna-job` Cloud Run job, the
+  `magi-optuna-optimizer` scheduler, `Dockerfile.optuna`,
+  `run_optuna.sh`, `requirements_optuna.txt`, `check_optuna_trigger.js`
+  and `optuna_results.json`. The frozen `optuna_params` rows stay active
+  via `lib/optuna.js`, and the custom optimizer sources (`optuna_*.py`,
+  `report_optuna.py`, `test_optuna_utils.py`) are kept in-repo for
+  reference/ad-hoc runs. Follow-up: Jun deletes the GCP job/scheduler/AR
+  image; the AKA-1 `trigger_optuna` tool in magi-moni becomes dead and
+  needs a separate magi-moni change. Updated
+  [magi-core](system/services/magi-core.md) scheduler table.
 * **Pipeline-order fix (drift correction)**: [index](system/guards/index.md)
   and [jev](system/guards/jev.md) placed L1.6.RECON between L1.6 (sellable
   quantity) and L2.6/L2.7, but the implementation
