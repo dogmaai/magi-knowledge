@@ -1,5 +1,31 @@
 # Bundle Update Log
 
+## 2026-10-03
+* **Sync (verification)**: [cloudflare](/system/services/cloudflare.md) §3 —
+  Named Tunnel table now records the actual tunnel names and public
+  hostnames verified against deploy config and DNS: `magi-bridge` →
+  `bridge.khaos.company` (opend-proxy fallback leg), `magi-ollama` →
+  `ollama.khaos.company` (ADAM + BOREAS), `magi-openclaw` →
+  `openclaw.khaos.company`. The same naming was applied to the §Overview
+  table, [magi-moomoo](/system/services/magi-moomoo.md) and the
+  `cloudflare-tunnel-protocols` skill for consistency. Corrected two
+  drifts: the `ollama` tunnel
+  consumer list named only ADAM (BOREAS was added 2026-09-22), and the
+  blanket claim that tunnel URLs are registered in `service_endpoints` —
+  `magi-ollama` is not registered there; its URL reaches PLM jobs via the
+  `OLLAMA_BASE_URL` secret in GCP Secret Manager (deployed value
+  `https://ollama.khaos.company`, verified live: Ollama 0.35.0).
+  Deployed `magi-moomoo` re-confirmed `BRIDGE_ROUTE_MODE=auto` with
+  `BRIDGE_PRIVATE_URL=http://10.42.0.10:11436` (private WireGuard route
+  preferred, Cloudflare tunnel fallback). The dead `CLOUDFLARE_API_TOKEN`
+  found during this sync was rotated (see the 2026-10-02 entry); the
+  rotated token then API-verified the tunnel names — `cfd_tunnel` lists
+  `magi-bridge`/`magi-ollama`/`magi-openclaw` (all `healthy`) and the
+  hostnames CNAME to `<id>.cfargotunnel.com`. The
+  [secrets-inventory](/system/services/secrets-inventory.md) tunnel names
+  were corrected to match (`stable` → `draft` pending Jun
+  re-verification).
+
 ## 2026-10-02
 * **Rotation (Jun-approved, Devin-executed)**: `CLOUDFLARE_API_TOKEN` in
   [secrets-inventory](/system/services/secrets-inventory.md) — the previous
