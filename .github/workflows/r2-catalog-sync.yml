@@ -18,9 +18,22 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    environment: cicd-sensor
+    permissions:
+      contents: read
+      id-token: write
     steps:
-      - name: cicd-sensor (PoC, monitor-only)
+      - id: auth
+        uses: flatt-security/shisho-cloud-action@85917b87b9344f2d6de761ac2c8ef4433775bcf3 # v1.2.0
+        with:
+          bot-id: BT01M44N2DQ04VGG88N7S66FTGK6
+          export-token: true
+          expires-in-minutes: 60
+      - name: cicd-sensor
         uses: cicd-sensor/cicd-sensor-action@6511eb44c91d71b2b93d71193b1bf2cb18352f66 # v0.0.38
+        with:
+          manager-url: https://manager.cicdsensor.cloud.shisho.dev
+          manager-token: ${{ steps.auth.outputs.token }}
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
