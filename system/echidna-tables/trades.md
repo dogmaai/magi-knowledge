@@ -102,8 +102,10 @@ insert's `ignoreUnknownValues` drop the value silently; post-cutover this
 cannot occur (the column exists, so a kept field is written), and the only
 window where it could is already inside the excluded zone. Optional
 consistency check: flag `trades` rows whose session *and* symbol match a
-`WARN_ONLY` thought row but `warn_only_layers IS NULL` (matching both keys
-avoids false positives on other same-session trades) — detection only;
+`WARN_ONLY` thought row (`action = 'WARN_ONLY'`) whose `concerns` layer is
+a measured layer enabled for that unit, while that layer is absent from
+`warn_only_layers` — `WARN_ONLY` thoughts for other layers (e.g. `L2.6`,
+`L5`, `JEV`) never populate the column and must not flag. Detection only;
 flagged rows are candidates for manual inspection, never counts or
 learning labels (per the [thoughts](thoughts.md) attribution-integrity
 contract).
