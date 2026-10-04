@@ -1,5 +1,17 @@
 # Bundle Update Log
 
+## 2026-10-05
+* **Fix**: [secrets-inventory](system/services/secrets-inventory.md)
+  `MAGI_KNOWLEDGE_TOKEN` usage sites — added `.github/workflows/test.yml`
+  (line 23, `GH_TOKEN` env feeding `scripts/init_knowledge.sh`), which was
+  missing from the ledger even though the workflow consumes the secret.
+* **CI hardening**: pinned every `uses:` in this repo's workflows
+  (`ai-search-sync`, `auto-review`, `okf-conformance`, `okf-freshness`,
+  `r2-catalog-sync`) to commit SHAs of the latest release tags — the same
+  code the floating tags resolve to today, now immutable against tag
+  hijack. Part of the Jun-approved cicd-sensor PoC preparation; the OKF
+  has no CI supply-chain policy yet (OKF 未定義).
+
 ## 2026-10-04
 * **trades.warn_only_layers measurement rule (magi-core#548)**: added a
   counterfactual aggregation note to
