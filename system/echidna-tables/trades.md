@@ -5,7 +5,7 @@ description: Primary trade log — entry/exit, PnL, and unit attribution for eve
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=trades&page=table
 lilith_safe: false
 status: draft
-generated: { by: devin/local, at: 2026-10-04T05:40:00Z }
+generated: { by: devin/local, at: 2026-10-04T05:46:30Z }
 verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
 stale_after: 2026-12-16T01:02:48Z
 tags: [echidna, bigquery, trades, core]
@@ -64,17 +64,20 @@ them from both numerator and denominator instead of counting `NULL` as
 no-hit.
 
 Denominator (Jun, 2026-10-04): entry-path rows on units where the measured
-layer was warn-only-enabled **at trade time**.
+layer was warn-only-enabled **at trade time** — i.e. the row's `timestamp`
+falls inside that layer's enabled window for the row's `unit_name`.
 
 * Entry path is identified by `thought_id IS NOT NULL AND result IS
   DISTINCT FROM 'AUTO_CLOSE'` — the entry writer hard-blocks the insert
   when no `thought_id` is resolvable, and the positionMgmt `AUTO_CLOSE`
-  writer never sets one. Rows failing the predicate are *unidentifiable*:
-  excluded from the main rate but counted in the reference aggregate,
-  never silently dropped.
+  writer never sets one. Rows failing the predicate are *unidentifiable*
+  (writer path cannot be determined): excluded from the main rate but
+  counted in the reference aggregate, never silently dropped.
 * `result = 'CONTAMINATED'` rows are excluded from numerator and
-  denominator; the exclusion count and their hit count are reported in a
-  separate reference aggregate.
+  denominator via a NULL-safe predicate (`result IS DISTINCT FROM
+  'CONTAMINATED'` — a bare `!=` comparison would silently drop
+  still-open rows where `result IS NULL`); the exclusion count and their
+  hit count are reported in a separate reference aggregate.
 * Enablement is evaluated per layer at trade time. The current windows —
   L2 and L3 on `TYPHON`, `CASPER`, `PROMETHEUS`, `QWEN`, `ADAM`, `BOREAS`,
   enabled by magi-core#565 (deploy success 2026-10-03T03:45:17Z) — are
@@ -83,8 +86,10 @@ layer was warn-only-enabled **at trade time**.
   matching `*_WARN_ONLY` flag change in `deploy.yml`. Per-layer rates use
   each layer's own enabled window as the denominator.
 
-Canonical query: `sql/measure_warn_only_layers.sql` in magi-core (kept in
-sync with this note).
+Canonical query: `sql/measure_warn_only_layers.sql` in magi-core. This
+note is authoritative; the query file carries a header pointing back here,
+and both sides must be updated in the same change — any divergence is a
+drift to report, not to resolve silently.
 
 Between warn-only enablement (magi-core#565, deployed 2026-10-03T03:45:17Z)
 and the cutover, would-be blocks exist only as `WARN_ONLY` thoughts rows

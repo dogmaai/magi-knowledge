@@ -13,8 +13,8 @@
   correlation) aggregate at degraded confidence via `WARN_ONLY` thoughts
   rows. Still `draft` — Jun re-verification pending.
 * **trades.warn_only_layers denominator rule (magi-core#548)**: pinned the
-  denominator in [trades](system/echidna-tables/trades.md) per Jun's
-  direction — entry-path rows only (`thought_id IS NOT NULL AND result IS
+  denominator in [trades](system/echidna-tables/trades.md) as directed by
+  Jun — entry-path rows only (`thought_id IS NOT NULL AND result IS
   DISTINCT FROM 'AUTO_CLOSE'`; unidentifiable rows go to a reference
   aggregate), `CONTAMINATED` excluded from numerator and denominator
   (exclusion + hit counts kept as reference), and per-layer enablement
