@@ -1,5 +1,16 @@
 # Bundle Update Log
 
+## 2026-10-04
+* **trades.warn_only_layers measurement rule (magi-core#548)**: added a
+  counterfactual aggregation note to
+  [trades](system/echidna-tables/trades.md) — the exact measurement window
+  is `timestamp >= TIMESTAMP '2026-10-03 10:35:42 UTC'` (magi-core#570
+  deployed 10:01:02Z; Jun applied the DDL 10:35:13Z). Pre-cutover rows are
+  unmeasured and must be excluded from both numerator and denominator, not
+  counted as "no hit"; the warn-only-enable→cutover gap stays a separate
+  fuzzy/degraded-confidence aggregate via `WARN_ONLY` thoughts rows. Still
+  `draft` — Jun re-verification pending.
+
 ## 2026-10-03
 * **trades.warn_only_layers (magi-core#548)**: new column
   `warn_only_layers` on [trades](system/echidna-tables/trades.md) records

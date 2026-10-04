@@ -5,7 +5,7 @@ description: Primary trade log — entry/exit, PnL, and unit attribution for eve
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=trades&page=table
 lilith_safe: false
 status: draft
-generated: { by: devin/local, at: 2026-10-03T09:45:00Z }
+generated: { by: devin/local, at: 2026-10-04T01:46:34Z }
 verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
 stale_after: 2026-12-16T01:02:48Z
 tags: [echidna, bigquery, trades, core]
@@ -51,6 +51,22 @@ table_type: BASE TABLE
 | price_confirmed | BOOL | `TRUE` = broker-confirmed fill. `FALSE` = submitted but unconfirmed (pending evaluator reconciliation — `price`/`pnl_*` may be null). `NULL` = legacy row predating the flag. |
 | entry_price | FLOAT64 | Canonical entry price. On `AUTO_CLOSE` rows this is the broker position's average entry. |
 | warn_only_layers | STRING | Comma-joined ids of opt-in warn-only guards that fired on this order (e.g. `L2`, `L3`, `L3,L2`). `NULL` = none fired / rows predating the column. Exact "would have been blocked" marker for #548 counterfactual measurement — the `WARN_ONLY` thoughts row carries no `thought_id`, so this column is the reliable per-trade link. |
+
+Counterfactual aggregation note (`warn_only_layers`, magi-core#548): the exact
+measurement window starts at the column's DDL apply time —
+`timestamp >= TIMESTAMP '2026-10-03 10:35:42 UTC'` (writer code deployed
+10:01:02Z; DDL applied by Jun 10:35:13Z; column verified 10:35:42Z). Rows
+before the cutover are *unmeasured*, not "no hit" — exclude them from both
+numerator and denominator instead of counting `NULL` as no-hit. Between
+warn-only enablement (magi-core#565) and the cutover, would-be blocks exist
+only as `WARN_ONLY` thoughts rows carrying no `thought_id`; any gap-band
+analysis using that fuzzy correlation must stay a separate aggregate with
+degraded confidence, never merged into the exact counts. Residual gap: a
+schema-fetch failure makes `tableHasColumn()` return `true`
+(`lib/bigquery.js`), so a `warn_only_layers` value could be silently dropped
+by the insert's `ignoreUnknownValues` with no error — optional consistency
+check: flag `trades` rows whose session also has a `WARN_ONLY` thought row
+but `warn_only_layers IS NULL`.
 
 # Result vocabulary
 
