@@ -5,7 +5,7 @@ description: Primary trade log — entry/exit, PnL, and unit attribution for eve
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=trades&page=table
 lilith_safe: false
 status: draft
-generated: { by: devin/local, at: 2026-10-04T01:58:00Z }
+generated: { by: devin/local, at: 2026-10-04T05:46:30Z }
 verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
 stale_after: 2026-12-16T01:02:48Z
 tags: [echidna, bigquery, trades, core]
@@ -61,19 +61,52 @@ before the DDL would keep reporting the column as absent and drop the field
 until its TTL expired, so the verified instant alone is not a sufficient
 cutover. Rows before the cutover are *unmeasured*, not "no hit" — exclude
 them from both numerator and denominator instead of counting `NULL` as
-no-hit. Between warn-only enablement (magi-core#565) and the cutover,
-would-be blocks exist only as `WARN_ONLY` thoughts rows carrying no
-`thought_id`; correlating them to trades is a fuzzy `unit`/`symbol`/date
-match that mis-assigns on same-day same-symbol retries, so keep that
-gap-band estimate a separate, degraded-confidence aggregate — never merged
-into the exact counts. A pre-DDL schema-fetch failure could also make
-`tableHasColumn()` return `true` and let the insert's `ignoreUnknownValues`
-drop the value silently; post-cutover this cannot occur (the column exists,
-so a kept field is written), and the only window where it could is already
-inside the excluded zone. Optional consistency check: flag `trades` rows
-whose session *and* symbol match a `WARN_ONLY` thought row but
-`warn_only_layers IS NULL` (matching both keys avoids false positives on
-other same-session trades).
+no-hit.
+
+Denominator (Jun, 2026-10-04): entry-path rows on units where the measured
+layer was warn-only-enabled **at trade time** — i.e. the row's `timestamp`
+falls inside that layer's enabled window for the row's `unit_name`.
+
+* Entry path is identified by `thought_id IS NOT NULL AND result IS
+  DISTINCT FROM 'AUTO_CLOSE'` — the entry writer hard-blocks the insert
+  when no `thought_id` is resolvable, and the positionMgmt `AUTO_CLOSE`
+  writer never sets one. Rows failing the predicate are *unidentifiable*
+  (writer path cannot be determined): excluded from the main rate but
+  counted in the reference aggregate, never silently dropped.
+* `result = 'CONTAMINATED'` rows are excluded from numerator and
+  denominator via a NULL-safe predicate (`result IS DISTINCT FROM
+  'CONTAMINATED'` — a bare `!=` comparison would silently drop
+  still-open rows where `result IS NULL`); the exclusion count and their
+  hit count are reported in a separate reference aggregate.
+* Enablement is evaluated per layer at trade time. The current windows —
+  L2 and L3 on `TYPHON`, `CASPER`, `PROMETHEUS`, `QWEN`, `ADAM`, `BOREAS`,
+  enabled by magi-core#565 (deploy success 2026-10-03T03:45:17Z) — are
+  fixed in the canonical query and must be edited on any deploy-config
+  change; they must not be extended to other units or periods without a
+  matching `*_WARN_ONLY` flag change in `deploy.yml`. Per-layer rates use
+  each layer's own enabled window as the denominator.
+
+Canonical query: `sql/measure_warn_only_layers.sql` in magi-core. This
+note is authoritative; the query file carries a header pointing back here,
+and both sides must be updated in the same change — any divergence is a
+drift to report, not to resolve silently.
+
+Between warn-only enablement (magi-core#565, deployed 2026-10-03T03:45:17Z)
+and the cutover, would-be blocks exist only as `WARN_ONLY` thoughts rows
+carrying no `thought_id`; correlating them to trades is a fuzzy
+`unit`/`symbol`/date match that mis-assigns on same-day same-symbol
+retries, so keep that gap-band estimate a separate, degraded-confidence
+aggregate — never merged into the exact counts. A pre-DDL schema-fetch
+failure could also make `tableHasColumn()` return `true` and let the
+insert's `ignoreUnknownValues` drop the value silently; post-cutover this
+cannot occur (the column exists, so a kept field is written), and the only
+window where it could is already inside the excluded zone. Optional
+consistency check: flag `trades` rows whose session *and* symbol match a
+`WARN_ONLY` thought row but `warn_only_layers IS NULL` (matching both keys
+avoids false positives on other same-session trades) — detection only;
+flagged rows are candidates for manual inspection, never counts or
+learning labels (per the [thoughts](thoughts.md) attribution-integrity
+contract).
 
 # Result vocabulary
 
