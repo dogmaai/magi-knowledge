@@ -1,15 +1,41 @@
 # Bundle Update Log
 
 ## 2026-10-05
+* **Audit (tunnel ingress auth)**: [cloudflare](system/services/cloudflare.md)
+  §3 gained a measured ingress-authentication table for the three
+  `*.khaos.company` hostnames. No Cloudflare Access application exists on the
+  account (API, 2026-10-05), so origin auth is the only gate.
+  `openclaw.khaos.company` enforces `OPENCLAW_GATEWAY_TOKEN` in the gateway
+  itself (unauthenticated `/v1/chat/completions` → 401).
+  `bridge.khaos.company` is running with `BRIDGE_AUTH_TOKEN` unset
+  (`/health` `auth_required:false`, `/positions` answers unauthenticated;
+  GSM `MOOMOO_BRIDGE_AUTH_TOKEN` does not exist — REAL `/place_order` still
+  fails closed). `ollama.khaos.company` has no authentication at all —
+  measured unauthenticated: `GET /api/tags` and `GET /api/version` → 200,
+  and `POST /api/pull` / `DELETE /api/delete` reach the Ollama handler
+  (400 validation errors, so writes are gated only by request shape,
+  not auth); recorded as a measured fact with mitigation left as a
+  Jun decision. Doc remains `draft`.
+* **Remediation (tunnel ingress auth, same day, Jun-directed)**:
+  `MOOMOO_BRIDGE_AUTH_TOKEN` and `OLLAMA_AUTH_TOKEN` were registered in
+  GSM and added to the [secrets-inventory](system/services/secrets-inventory.md)
+  ledger. The bridge now enforces auth (`auth_required:true`, unauthenticated
+  `/positions` → 401) — GSM version 2 is live because v1 carried a trailing
+  newline. For Ollama, a bearer-checking proxy
+  (`magi-moomoo/scripts/ollama-auth-proxy.py`, `127.0.0.1:11437`) is installed
+  on TIALA; the public ingress repoint waits on the deploy of magi-core
+  PR #578 (`OLLAMA_AUTH_TOKEN` → `Authorization` header + job binding),
+  which was squash-merged 2026-10-05 (`9641da36`), since jobs previously
+  sent no credential.
 * **cicd-sensor CI hardening initiative — plan + state (paused per Jun)**:
   Analysis of MAGI GitHub Actions vs cicd-sensor (eBPF CI/CD runtime
   sensor; GitHub-hosted `ubuntu-latest` x64 compatible; pre-release
   v0.0.x) found: deploy jobs in magi-core / magi-moomoo / magi-moni hold
   production GCP power via `id-token: write` WIF (magi-core: 5 docker
-  builds + 29 `gcloud run` calls in one job), `magi-knowledge
-  r2-catalog-sync.yml` runs `pip install` in a job that later executes
-  installed code under `CLOUDFLARE_R2_CATALOG_TOKEN`, `magi-core
-  lint.yml` ran `npm ci` without `--ignore-scripts`, and all actions
+  builds + 29 `gcloud run` calls in one job), `magi-knowledge`'s
+  `r2-catalog-sync.yml` runs `pip install` in a job that later executes
+  installed code under `CLOUDFLARE_R2_CATALOG_TOKEN`, `magi-core`'s
+  `lint.yml` ran `npm ci` without `--ignore-scripts`, and all actions
   were tag-pinned (not SHA). OKF has no CI supply-chain policy (OKF
   未定義).
   * **Jun decisions (2026-10-04/05)**: log destination = Takumi
@@ -35,7 +61,7 @@
     role — pending Jun provisioning.
   * **Paused**: rollout suspended per Jun 2026-10-05; resume by
     (1) merging the pinning PRs, (2) merging PoC PRs after deciding
-    monitor-mode vs live-terminate, (3) creating the 設定管理者 bot
+    `monitor_mode` vs live `terminate`, (3) creating the 設定管理者 bot
     and adding the `.cicd-sensor/` ORAS push workflow, (4) separate
     approval for `deploy.yml` expansion and build attestation.
 
