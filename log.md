@@ -27,6 +27,16 @@
   PR #578 (`OLLAMA_AUTH_TOKEN` → `Authorization` header + job binding),
   which was squash-merged 2026-10-05 (`9641da36`), since jobs previously
   sent no credential.
+* **Fix**: [secrets-inventory](system/services/secrets-inventory.md)
+  `MAGI_KNOWLEDGE_TOKEN` usage sites — added `.github/workflows/test.yml`
+  (line 23, `GH_TOKEN` env feeding `scripts/init_knowledge.sh`), which was
+  missing from the ledger even though the workflow consumes the secret.
+* **CI hardening**: pinned every `uses:` in this repo's workflows
+  (`ai-search-sync`, `auto-review`, `okf-conformance`, `okf-freshness`,
+  `r2-catalog-sync`) to commit SHAs of the latest release tags — the same
+  code the floating tags resolve to today, now immutable against tag
+  hijack. Part of the Jun-approved cicd-sensor PoC preparation; the OKF
+  has no CI supply-chain policy yet (OKF 未定義).
 * **cicd-sensor CI hardening initiative — plan + state (paused per Jun)**:
   Analysis of MAGI GitHub Actions vs cicd-sensor (eBPF CI/CD runtime
   sensor; GitHub-hosted `ubuntu-latest` x64 compatible; pre-release
@@ -44,9 +54,10 @@
     `lint`/`test`; cheap fixes (SHA pinning + `--ignore-scripts`)
     approved as separate PRs first. `deploy.yml` sensor rollout is a
     boundary change requiring separate Jun approval — not started.
-  * **Open PRs**: SHA pinning — magi-core#575, magi-knowledge#118
-    (incl. secrets-inventory `MAGI_KNOWLEDGE_TOKEN`/`test.yml` drift
-    fix), magi-moomoo#84, magi-moni#54. PoC — magi-knowledge#119,
+  * **PRs**: SHA pinning — magi-knowledge#118 (merged `f7718b7`,
+    incl. secrets-inventory `MAGI_KNOWLEDGE_TOKEN`/`test.yml` drift
+    fix), magi-core#575, magi-moomoo#84, magi-moni#54 (open).
+    PoC — magi-knowledge#119,
     magi-core#577 (sensor as first step, SHA-pinned v0.0.38
     `6511eb44…`; OIDC via `flatt-security/shisho-cloud-action` v1.2.0
     `85917b87…`, trace-sender bot `BT01M44N2DQ04VGG88N7S66FTGK6`,
