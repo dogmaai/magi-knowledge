@@ -20,9 +20,10 @@
   `/positions` → 401) — GSM version 2 is live because v1 carried a trailing
   newline. For Ollama, a bearer-checking proxy
   (`magi-moomoo/scripts/ollama-auth-proxy.py`, `127.0.0.1:11437`) is installed
-  on TIALA; the public ingress repoint waits on magi-core PR #578
-  (`OLLAMA_AUTH_TOKEN` → `Authorization` header + job binding) being merged
-  and deployed, since jobs currently send no credential.
+  on TIALA; the public ingress repoint waits on the deploy of magi-core
+  PR #578 (`OLLAMA_AUTH_TOKEN` → `Authorization` header + job binding),
+  which was squash-merged 2026-10-05 (`9641da36`), since jobs previously
+  sent no credential.
 
 ## 2026-10-04
 * **trades.warn_only_layers measurement rule (magi-core#548)**: added a
