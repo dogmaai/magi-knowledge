@@ -64,6 +64,21 @@ Operational consequences:
   live only in the Devin org store and/or GitHub secrets today and should be
   registered in Secret Manager (tracked under *Follow-ups*).
 
+Rotation procedure for a GSM-managed secret (nothing in MAGI pins a numeric
+version — every consumer reads `:latest`):
+
+1. `gcloud secrets versions add <NAME> --data-file=-` — pipe the value in,
+   never paste it by hand (`MOOMOO_BRIDGE_AUTH_TOKEN` v1 shipped a trailing
+   newline that produced `ERR_INVALID_CHAR` in the Authorization header).
+2. Redeploy or restart each consumer in the *Usage* column so `:latest`
+   resolves to the new version, and refresh every injected copy the same
+   day — TIALA has no `gcloud`, so `~/.config/magi-moomoo/*.env` files
+   sourced by launchd plists go stale otherwise.
+3. `gcloud secrets versions disable <old-version> --secret=<NAME>` — keep
+   it disabled, not destroyed, until a soak confirms nothing pinned it.
+4. `gcloud secrets versions destroy <old-version> --secret=<NAME>` after
+   the soak.
+
 # Ledger
 
 Legend — *Truth*: `SM` = GCP Secret Manager `screen-share-459802` (secret of the same
