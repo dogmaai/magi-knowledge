@@ -37,6 +37,44 @@
   code the floating tags resolve to today, now immutable against tag
   hijack. Part of the Jun-approved cicd-sensor PoC preparation; the OKF
   has no CI supply-chain policy yet (OKF 未定義).
+* **cicd-sensor CI hardening initiative — plan + state (paused per Jun)**:
+  Analysis of MAGI GitHub Actions vs cicd-sensor (eBPF CI/CD runtime
+  sensor; GitHub-hosted `ubuntu-latest` x64 compatible; pre-release
+  v0.0.x) found: deploy jobs in magi-core / magi-moomoo / magi-moni hold
+  production GCP power via `id-token: write` WIF (magi-core: 5 docker
+  builds + 29 `gcloud run` calls in one job), `magi-knowledge`'s
+  `r2-catalog-sync.yml` runs `pip install` in a job that later executes
+  installed code under `CLOUDFLARE_R2_CATALOG_TOKEN`, `magi-core`'s
+  `lint.yml` ran `npm ci` without `--ignore-scripts`, and all actions
+  were tag-pinned (not SHA). OKF has no CI supply-chain policy (OKF
+  未定義).
+  * **Jun decisions (2026-10-04/05)**: log destination = Takumi
+    (Shisho Cloud hosted cicd-sensor Manager, OIDC keyless — option A);
+    PoC approved on magi-knowledge `r2-catalog-sync` + magi-core
+    `lint`/`test`; cheap fixes (SHA pinning + `--ignore-scripts`)
+    approved as separate PRs first. `deploy.yml` sensor rollout is a
+    boundary change requiring separate Jun approval — not started.
+  * **PRs**: SHA pinning — magi-knowledge#118 (merged `f7718b7`,
+    incl. secrets-inventory `MAGI_KNOWLEDGE_TOKEN`/`test.yml` drift
+    fix), magi-core#575, magi-moomoo#84, magi-moni#54 (open).
+    PoC — magi-knowledge#119,
+    magi-core#577 (sensor as first step, SHA-pinned v0.0.38
+    `6511eb44…`; OIDC via `flatt-security/shisho-cloud-action` v1.2.0
+    `85917b87…`, trace-sender bot `BT01M44N2DQ04VGG88N7S66FTGK6`,
+    `environment: cicd-sensor`, `id-token: write`;
+    `manager-url=https://manager.cicdsensor.cloud.shisho.dev`).
+  * **Known caveat**: under manager mode the project-local
+    `.cicd-sensor/config.yaml` is ignored, so `monitor_mode: true` is
+    inactive and baseline `terminate` rules can kill jobs on detection
+    until `monitor_mode` is pushed to
+    `configs.cicdsensor.cloud.shisho.dev/orgs/dogma.ai/config`. That
+    push needs a second bot with the **「Takumi Runner設定管理者」**
+    role — pending Jun provisioning.
+  * **Paused**: rollout suspended per Jun 2026-10-05; resume by
+    (1) merging the pinning PRs, (2) merging PoC PRs after deciding
+    `monitor_mode` vs live `terminate`, (3) creating the 設定管理者 bot
+    and adding the `.cicd-sensor/` ORAS push workflow, (4) separate
+    approval for `deploy.yml` expansion and build attestation.
 
 ## 2026-10-04
 * **trades.warn_only_layers measurement rule (magi-core#548)**: added a
