@@ -1,6 +1,17 @@
 # Bundle Update Log
 
 ## 2026-10-05
+* **Ollama tunnel ingress cutover (enforced)**: the `magi-ollama` tunnel
+  on TIALA is remotely managed (`source: cloudflare`) — editing the local
+  `config-magi-ollama.yml` alone did nothing until the ingress was updated
+  via the Cloudflare API (config `version` 2 → 3, service
+  `http://127.0.0.1:11437`). A stale second `cloudflared` process from
+  2026-09-11 (outside launchd) kept serving the raw-Ollama ingress and was
+  killed. Post-cutover probes: unauthenticated `GET /api/tags`,
+  `GET /api/version`, `POST /api/pull`, `DELETE /api/delete` → 401;
+  correct Bearer → 200; wrong token → 401. `OLLAMA_AUTH_TOKEN` consumed by
+  ADAM/BOREAS via magi-core `9641da36` + Cloud Run secret binding. See
+  [cloudflare](system/services/cloudflare.md) §3 ingress-auth table.
 * **Audit (tunnel ingress auth)**: [cloudflare](system/services/cloudflare.md)
   §3 gained a measured ingress-authentication table for the three
   `*.khaos.company` hostnames. No Cloudflare Access application exists on the
