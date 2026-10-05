@@ -4,7 +4,7 @@ title: Secrets inventory (Grafana Cloud, Cloudflare, GitHub, GCP tokens)
 description: Single ledger of the infrastructure tokens (Grafana Cloud, Cloudflare, GitHub, GCP) referenced across the MAGI repositories — canonical env var name, auth scheme, target endpoint, required scopes, source of truth, usage sites and rotation owner. GCP Secret Manager is the only source of truth; injected env-var copies can go stale.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-02T23:35:00Z }
+generated: { by: devin/cli, at: 2026-10-05T02:30:00Z }
 verified: [{ by: human:jun, at: 2026-09-17T17:23:06Z }, { by: devin/local, at: 2026-10-02T16:00:00Z }]
 stale_after: 2027-03-17T17:23:06Z
 tags: [service, secrets, grafana, cloudflare, github, gcp, security]
@@ -64,6 +64,21 @@ Operational consequences:
   live only in the Devin org store and/or GitHub secrets today and should be
   registered in Secret Manager (tracked under *Follow-ups*).
 
+Rotation procedure for a GSM-managed secret (nothing in MAGI pins a numeric
+version — every consumer reads `:latest`):
+
+1. `gcloud secrets versions add <NAME> --data-file=-` — pipe the value in,
+   never paste it by hand (`MOOMOO_BRIDGE_AUTH_TOKEN` v1 shipped a trailing
+   newline that produced `ERR_INVALID_CHAR` in the Authorization header).
+2. Redeploy or restart each consumer in the *Usage* column so `:latest`
+   resolves to the new version, and refresh every injected copy the same
+   day — TIALA has no `gcloud`, so `~/.config/magi-moomoo/*.env` files
+   sourced by launchd plists go stale otherwise.
+3. `gcloud secrets versions disable <old-version> --secret=<NAME>` — keep
+   it disabled, not destroyed, until a soak confirms nothing pinned it.
+4. `gcloud secrets versions destroy <old-version> --secret=<NAME>` after
+   the soak.
+
 # Ledger
 
 Legend — *Truth*: `SM` = GCP Secret Manager `screen-share-459802` (secret of the same
@@ -72,7 +87,7 @@ GitHub Actions secret on that repo. *Rotation owner* is the human who mints the
 replacement; Devin may propagate copies but never mints — except as a one-off,
 per-token exception explicitly approved by Jun for that rotation.
 
-| Canonical env var | Auth scheme | Service / endpoint | Required scopes | Truth (as of 2026-09-08) | Usage (repo: files) | Rotation owner / notes |
+| Canonical env var | Auth scheme | Service / endpoint | Required scopes | Truth (as of 2026-10-05) | Usage (repo: files) | Rotation owner / notes |
 |---|---|---|---|---|---|---|
 | `GRAFANA_SA_TOKEN` | `Authorization: Bearer glsa_…` | Grafana instance API `https://aka.grafana.net/api/*` (dashboards, datasources, alerting, ML job provisioning, datasource proxy to `grafanacloud-ml-metrics`) | Service Account role **Admin** | `SM` + `Devin org` | magi-core: `lib/secrets.js`, `lib/grafana-ml.js` (proxy fallback), `grafana/provision.mjs`, `grafana/provision-alerts.mjs`, `grafana/provision-ml-forecast-jobs.mjs`, `.github/workflows/deploy.yml` (LILITH job `--set-secrets`), `.agents/skills/testing-*` | jun. Over-privileged for the runtime proxy read; Tier 2 candidate to split into a read-only SA. |
 | `GRAFANA_ML_API_TOKEN` | `Authorization: Basic base64(1557976:<token>)` | Grafana ML prediction API `https://machine-learning-prod-ap-northeast-0.grafana.net/machine-learning/predict/api/v1/query_range` | Access Policy `mlops:read` (current token also has `mlops:write`, realm `aka`) | `SM` (registered 2026-09-08) + `Devin org`; not yet injected into any Cloud Run job (LILITH falls back to `GRAFANA_SA_TOKEN` proxy) | magi-core: `lib/secrets.js`, `lib/grafana-ml.js`, `.agents/skills/testing-lilith-shadow-pipeline` | jun. Legacy alias `GRAFANA_ML_TOKEN` still accepted by `lib/secrets.js` with a deprecation note; can now be removed and a `--set-secrets` binding added to deploy.yml. |
@@ -85,8 +100,11 @@ per-token exception explicitly approved by Jun for that rotation.
 | `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID` | `Authorization: Bearer <token>` (consumed by `cloudflared` / Cloudflare API) | Cloudflare Tunnel API for Named Tunnels on TIALA (`magi-bridge`, `magi-ollama`, `magi-openclaw` — names + `*.cfargotunnel.com` CNAMEs verified via API 2026-10-03); `CLOUDFLARE_ACCOUNT_ID=c3b51b9f35d16713caab757feca638d8` | Account API token: **Cloudflare Tunnel Edit** (+ DNS Edit on the zone for the hostname) | `SM` (`CLOUDFLARE_API_TOKEN`); account ID is not secret | magi-moomoo: `scripts/setup-openclaw-named-tunnel.sh` (fallback when `cloudflared tunnel login` cert is absent) | jun. Only needed at tunnel-creation time; runtime tunnels use per-tunnel credentials files / `*_TUNNEL_TOKEN` secrets. **Rotated 2026-10-02** (Devin-minted via Global API Key — a one-off exception to the *Devin never mints* legend, explicitly approved by Jun in-session): new account token `magi-tunnel-devin-20261002` stored as `SM` version 2; the previous user-scoped token was already deleted on Cloudflare's side (verify → Invalid API Token), and the account-token list carries no dead row. No injected copies exist outside `SM`. |
 | `CF_AI_GATEWAY_TOKEN` + `CF_AI_GATEWAY_ACCOUNT_ID` + `CF_AI_GATEWAY_ID` | `cf-aig-authorization: Bearer <token>` on gateway-routed provider calls | Cloudflare AI Gateway `https://gateway.ai.cloudflare.com/v1/c3b51b9f35d16713caab757feca638d8/magi-llm/<provider>` (`CF_AI_GATEWAY_ID=magi-llm`) | Account API token: **AI Gateway Run** (token `magi-llm-gateway-run`) | `SM` + `Devin org` (token); account ID and gateway ID are plain env vars in `deploy.yml` | magi-core: `lib/secrets.js`, `src/llm.js`, `.github/workflows/deploy.yml` (every PLM job) | jun. Required because the `magi-llm` gateway has Authenticated Gateway enabled; see [cloudflare](cloudflare.md) §4 for the separate `default` gateway used by AI Search (no token in our code). |
 | `GITHUB_TOKEN` | `Authorization: Bearer <token>` (GitHub REST) | GitHub API for the current repo only | GitHub Actions default `github.token` (`GITHUB_TOKEN`), permissions per workflow | Ephemeral — minted per workflow run by GitHub. (An unrelated long-lived `GITHUB_TOKEN` also exists in `SM`; it is **not** the Actions token.) | magi-core: `.github/workflows/antigravity_issue_responder.yml`, `scripts/antigravity_issue_responder.py`; fallback in `okf-drift.yml` / `okf-pin-bump.yml` | n/a (GitHub-managed). Cannot read the private `magi-knowledge` repo — that is what `MAGI_KNOWLEDGE_TOKEN` is for. |
-| `MAGI_KNOWLEDGE_TOKEN` | `Authorization: Bearer github_pat_…` (as `GH_TOKEN` for `gh`/git) | GitHub API + git fetch of `dogmaai/magi-knowledge` from `dogmaai/magi-core` CI | Fine-grained PAT, **Contents: read** on `dogmaai/magi-knowledge` only | `SM` (registered 2026-09-08) + `Devin org` + `GH:magi-core` | magi-core: `.github/workflows/okf-drift.yml`, `.github/workflows/okf-pin-bump.yml`, `.github/workflows/test.yml` (line 23, `GH_TOKEN` env for submodule init), `scripts/init_knowledge.sh` (submodule) | jun (PAT owner). Fine-grained PATs expire — record the expiry when rotating. `okf-pin-bump.yml` pushes the bump branch with the workflow's own `contents: write` permission, not this PAT. |
+| `MAGI_KNOWLEDGE_TOKEN` | `Authorization: Bearer github_pat_…` (as `GH_TOKEN` for `gh`/git) | GitHub API + git fetch of `dogmaai/magi-knowledge` from `dogmaai/magi-core` CI | Fine-grained PAT, **Contents: read** on `dogmaai/magi-knowledge` only | `SM` (registered 2026-09-08) + `Devin org` + `GH:magi-core` | magi-core: `.github/workflows/okf-drift.yml`, `.github/workflows/okf-pin-bump.yml`, `.github/workflows/test.yml` (line 23, `GH_TOKEN` env for submodule init — verified at magi-core `9641da36`), `scripts/init_knowledge.sh` (submodule) | jun (PAT owner). Fine-grained PATs expire — record the expiry when rotating. `okf-pin-bump.yml` pushes the bump branch with the workflow's own `contents: write` permission, not this PAT. |
 | `GCP_SERVICE_ACCOUNT_KEY` | Service-account JSON → `GOOGLE_APPLICATION_CREDENTIALS=/home/ubuntu/gcp-key.json` | GCP project `screen-share-459802`: BigQuery, Secret Manager (`secretmanager.versions.access`), Cloud Run / Logging read | SA `github-actions@screen-share-459802.iam.gserviceaccount.com`; observed capabilities: BigQuery read/DML, `secretmanager.versions.access`, Cloud Run / Logging read (exact IAM roles not audited here) | `Devin org` + `GH:*` (deploy workflows). This *is* the key that unlocks Secret Manager, so by definition it cannot live there. | magi-core: `.agents/skills/testing-*` (all), Devin blueprint; magi-moni: `scripts/operate-tiala.js`, `.agents/skills/operate-tiala`, `.agents/skills/testing-magi-moni`; magi-moomoo: `.agents/skills/testing-moomoo-*` | jun (IAM). Rotate via `gcloud iam service-accounts keys create` and refresh every copy the same day. |
+| `OPENCLAW_GATEWAY_TOKEN` | `Authorization: Bearer <token>` | `openclaw` Tailscale IP / `openclaw.khaos.company` → OpenClaw Gateway API (`/v1/*`, Control UI RPC) | n/a | `SM` | magi-moni: `config.py` (`OPENCLAW_GATEWAY_TOKEN`), `adapters/council_openclaw.py`; TIALA `~/.openclaw/openclaw.json` `gateway.auth.token` (enforcement side — gateway verifies against this value) | jun. Registered during the 2026-10-05 tunnel-auth audit; was previously only referenced in prose above. |
+| `MOOMOO_BRIDGE_AUTH_TOKEN` | `Authorization: Bearer <token>` | `bridge.khaos.company` → `moomoo_bridge.py` (every path except `GET /health`); injected into the bridge as `BRIDGE_AUTH_TOKEN` | n/a | `SM` (registered 2026-10-05 — **use version ≥2**: v1 carried a trailing newline that produced `ERR_INVALID_CHAR` in the proxy's Authorization header) | magi-moomoo: `bridge/moomoo_bridge.py`, `scripts/start-bridge.sh`, `server.js` (`BRIDGE_AUTH_TOKEN` env), `.github/workflows/deploy.yml` (Cloud Run `--set-secrets`); TIALA injected copy `~/.config/magi-moomoo/bridge.env` sourced by the `com.magi.bridge` plist (TIALA has no gcloud, so the bridge cannot read SM directly) | jun. Value minted in-session 2026-10-05 under Jun's implementation instruction (same class of one-off exception as `CLOUDFLARE_API_TOKEN`). |
+| `OLLAMA_AUTH_TOKEN` | `Authorization: Bearer <token>` | `ollama.khaos.company` → `ollama-auth-proxy` (`127.0.0.1:11437`) → Ollama `127.0.0.1:11434` | n/a | `SM` (registered 2026-10-05) | magi-core: `lib/secrets.js`, `src/llm.js`, `.github/workflows/deploy.yml` (`magi-core-adam` / `magi-core-boreas` `--set-secrets`); TIALA injected copy `~/.config/magi-moomoo/ollama.env` sourced by the `com.magi.ollama-auth-proxy` plist; magi-moomoo: `scripts/ollama-auth-proxy.py` (enforcement side) | jun. Proxy refuses to start without the env var (fail-closed). Minted in-session 2026-10-05 under Jun's implementation instruction. |
 
 # Follow-ups
 
@@ -98,6 +116,9 @@ Tier 1 (this ledger, no token re-issue):
   intentionally excluded until Tier 2 replaces it.
 * Add `GRAFANA_ML_API_TOKEN=GRAFANA_ML_API_TOKEN:latest` to the LILITH job
   `--set-secrets` in magi-core `deploy.yml` now that the secret exists.
+* Disable `MOOMOO_BRIDGE_AUTH_TOKEN` version 1 in GSM (it carried a
+  trailing newline; v2 is live) so a stale-version reference cannot revive
+  the broken value — Jun action, needs GSM access.
 * Remove the `SIGIL_AUTH_TOKEN` OTLP fallback from `magi-moomoo`
   `scripts/start-bridge.sh` / `bridge/moomoo_bridge.py` and from magi-core
   `src/sigil.js` `buildOtlpExporterConfig()` once every deployment has
