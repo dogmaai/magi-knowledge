@@ -75,6 +75,17 @@
     `monitor_mode` vs live `terminate`, (3) creating the 設定管理者 bot
     and adding the `.cicd-sensor/` ORAS push workflow, (4) separate
     approval for `deploy.yml` expansion and build attestation.
+  * **PoC merged then reverted (2026-10-05)**: magi-knowledge#119
+    (`637a61c`) and magi-core#577 (`f027b31`) were merged ahead of
+    provisioning; on `main` the shisho-cloud-action OIDC exchange failed
+    (`STS rejected the bot token exchange: Invalid input: invalid ID
+    token`), breaking magi-core `lint`/`test` and this repo's
+    `R2 Data Catalog Sync` on every push. Jun approved reverting (this
+    repo: revert of `637a61c`; magi-core#579) over waiting on the
+    Shisho-side trust-condition fix. SHA pinning (#118/#575) stays.
+    Re-apply conditions unchanged: bot trust conditions must cover
+    `dogmaai/magi-knowledge` + `dogmaai/magi-core`, and `monitor_mode`
+    must be live manager-side first.
 
 ## 2026-10-04
 * **trades.warn_only_layers measurement rule (magi-core#548)**: added a
