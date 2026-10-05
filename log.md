@@ -11,8 +11,11 @@
   (`/health` `auth_required:false`, `/positions` answers unauthenticated;
   GSM `MOOMOO_BRIDGE_AUTH_TOKEN` does not exist — REAL `/place_order` still
   fails closed). `ollama.khaos.company` has no authentication at all —
-  the full Ollama REST API is publicly reachable; recorded as a measured
-  fact with mitigation left as a Jun decision. Doc remains `draft`.
+  measured unauthenticated: `GET /api/tags` and `GET /api/version` → 200,
+  and `POST /api/pull` / `DELETE /api/delete` reach the Ollama handler
+  (400 validation errors, so writes are gated only by request shape,
+  not auth); recorded as a measured fact with mitigation left as a
+  Jun decision. Doc remains `draft`.
 * **Remediation (tunnel ingress auth, same day, Jun-directed)**:
   `MOOMOO_BRIDGE_AUTH_TOKEN` and `OLLAMA_AUTH_TOKEN` were registered in
   GSM and added to the [secrets-inventory](system/services/secrets-inventory.md)

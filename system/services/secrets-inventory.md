@@ -4,7 +4,7 @@ title: Secrets inventory (Grafana Cloud, Cloudflare, GitHub, GCP tokens)
 description: Single ledger of the infrastructure tokens (Grafana Cloud, Cloudflare, GitHub, GCP) referenced across the MAGI repositories — canonical env var name, auth scheme, target endpoint, required scopes, source of truth, usage sites and rotation owner. GCP Secret Manager is the only source of truth; injected env-var copies can go stale.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-02T23:35:00Z }
+generated: { by: devin/cli, at: 2026-10-05T02:00:00Z }
 verified: [{ by: human:jun, at: 2026-09-17T17:23:06Z }, { by: devin/local, at: 2026-10-02T16:00:00Z }]
 stale_after: 2027-03-17T17:23:06Z
 tags: [service, secrets, grafana, cloudflare, github, gcp, security]
@@ -72,7 +72,7 @@ GitHub Actions secret on that repo. *Rotation owner* is the human who mints the
 replacement; Devin may propagate copies but never mints — except as a one-off,
 per-token exception explicitly approved by Jun for that rotation.
 
-| Canonical env var | Auth scheme | Service / endpoint | Required scopes | Truth (as of 2026-09-08) | Usage (repo: files) | Rotation owner / notes |
+| Canonical env var | Auth scheme | Service / endpoint | Required scopes | Truth (as of 2026-10-05) | Usage (repo: files) | Rotation owner / notes |
 |---|---|---|---|---|---|---|
 | `GRAFANA_SA_TOKEN` | `Authorization: Bearer glsa_…` | Grafana instance API `https://aka.grafana.net/api/*` (dashboards, datasources, alerting, ML job provisioning, datasource proxy to `grafanacloud-ml-metrics`) | Service Account role **Admin** | `SM` + `Devin org` | magi-core: `lib/secrets.js`, `lib/grafana-ml.js` (proxy fallback), `grafana/provision.mjs`, `grafana/provision-alerts.mjs`, `grafana/provision-ml-forecast-jobs.mjs`, `.github/workflows/deploy.yml` (LILITH job `--set-secrets`), `.agents/skills/testing-*` | jun. Over-privileged for the runtime proxy read; Tier 2 candidate to split into a read-only SA. |
 | `GRAFANA_ML_API_TOKEN` | `Authorization: Basic base64(1557976:<token>)` | Grafana ML prediction API `https://machine-learning-prod-ap-northeast-0.grafana.net/machine-learning/predict/api/v1/query_range` | Access Policy `mlops:read` (current token also has `mlops:write`, realm `aka`) | `SM` (registered 2026-09-08) + `Devin org`; not yet injected into any Cloud Run job (LILITH falls back to `GRAFANA_SA_TOKEN` proxy) | magi-core: `lib/secrets.js`, `lib/grafana-ml.js`, `.agents/skills/testing-lilith-shadow-pipeline` | jun. Legacy alias `GRAFANA_ML_TOKEN` still accepted by `lib/secrets.js` with a deprecation note; can now be removed and a `--set-secrets` binding added to deploy.yml. |
@@ -101,6 +101,9 @@ Tier 1 (this ledger, no token re-issue):
   intentionally excluded until Tier 2 replaces it.
 * Add `GRAFANA_ML_API_TOKEN=GRAFANA_ML_API_TOKEN:latest` to the LILITH job
   `--set-secrets` in magi-core `deploy.yml` now that the secret exists.
+* Disable `MOOMOO_BRIDGE_AUTH_TOKEN` version 1 in GSM (it carried a
+  trailing newline; v2 is live) so a stale-version reference cannot revive
+  the broken value — Jun action, needs GSM access.
 * Remove the `SIGIL_AUTH_TOKEN` OTLP fallback from `magi-moomoo`
   `scripts/start-bridge.sh` / `bridge/moomoo_bridge.py` and from magi-core
   `src/sigil.js` `buildOtlpExporterConfig()` once every deployment has

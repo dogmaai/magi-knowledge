@@ -4,7 +4,7 @@ title: Cloudflare (AI Search, R2 Data Catalog, Named Tunnel, AI Gateway)
 description: How MAGI uses Cloudflare — the magi-document AI Search mirror and okf.system Iceberg mirror of this spec on the magi-system bucket, the Named Tunnels exposing TIALA services, and the default AI Gateway behind AI Search.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-05T00:15:00Z }
+generated: { by: devin/cli, at: 2026-10-05T02:00:00Z }
 verified: [{ by: human:jun, at: 2026-09-03T09:04:15Z }, { by: devin/cli, at: 2026-09-16T07:25:00Z }]
 stale_after: 2027-03-16T07:25:00Z
 tags: [service, cloudflare, r2, ai-search, tunnel, ai-gateway]
@@ -101,15 +101,21 @@ therefore relies on its origin service's own authentication:
 |---|---|---|---|
 | `bridge.khaos.company` | `BRIDGE_AUTH_TOKEN` Bearer on every path except `GET /health` | `magi-moomoo/bridge/moomoo_bridge.py` `require_bridge_auth` | **Enforced since 2026-10-05** — `/health` reports `auth_required:true` and unauthenticated `/positions` returns 401. `MOOMOO_BRIDGE_AUTH_TOKEN` was created in GSM the same day (the rollout merged in PRs #73–#82 had never created it); TIALA has no gcloud so the bridge reads `~/.config/magi-moomoo/bridge.env` via the `com.magi.bridge` plist, and the Cloud Run proxy binds `BRIDGE_AUTH_TOKEN=MOOMOO_BRIDGE_AUTH_TOKEN:latest`. |
 | `openclaw.khaos.company` | `OPENCLAW_GATEWAY_TOKEN` Bearer | OpenClaw Gateway itself — `~/.openclaw/openclaw.json` `gateway.auth.mode=token` on TIALA | **Enforced** — unauthenticated `POST /v1/chat/completions` returns 401; `GET /health` and the Control UI static assets are public by design. GSM `OPENCLAW_GATEWAY_TOKEN` exists; injected copies can go stale on rotation (see [secrets-inventory](secrets-inventory.md)). |
-| `ollama.khaos.company` | `OLLAMA_AUTH_TOKEN` Bearer | `magi-moomoo/scripts/ollama-auth-proxy.py` on `127.0.0.1:11437`, in front of `127.0.0.1:11434` raw Ollama | **Remediation in progress** — auth proxy + `com.magi.ollama-auth-proxy` LaunchAgent installed and verified on TIALA (unauthenticated → 401, token → 200 incl. streaming inference); public ingress still points at raw Ollama until the deploy of magi-core PR #578 (squash-merged 2026-10-05 as `9641da36`; adds the `Authorization` header + `OLLAMA_AUTH_TOKEN` secret binding to ADAM/BOREAS) rolls out, then `config-magi-ollama.yml` repoints to the proxy port. Until that flip, unauthenticated `GET /api/tags` still returns the model list. |
+| `ollama.khaos.company` | `OLLAMA_AUTH_TOKEN` Bearer | `magi-moomoo/scripts/ollama-auth-proxy.py` on `127.0.0.1:11437`, in front of `127.0.0.1:11434` raw Ollama | **Remediation in progress** — auth proxy + `com.magi.ollama-auth-proxy` LaunchAgent installed and verified on TIALA (unauthenticated → 401, token → 200 incl. streaming inference); public ingress still points at raw Ollama until the deploy of magi-core PR #578 (squash-merged 2026-10-05 as `9641da36`; adds the `Authorization` header + `OLLAMA_AUTH_TOKEN` secret binding to ADAM/BOREAS) rolls out, then `config-magi-ollama.yml` repoints to the proxy port. Until that flip the raw API answers unauthenticated: `GET /api/tags` and `GET /api/version` → 200, and `POST /api/pull` / `DELETE /api/delete` reach the Ollama handler (400 validation errors — gated only by request shape, not auth). |
 
-Before remediation the Ollama exposure meant any internet client could run
-inference against TIALA's models or mutate the model store (`/api/pull`,
-`/api/delete`). The `local.ollama-proxy` LaunchAgent on `127.0.0.1:11435`
-only rewrites Host headers for local clients and was never in the tunnel
-path. Longer-term options (Cloudflare Access service-token, or moving PLM
-jobs onto the private WireGuard route once they have VPC egress) remain
-open policy decisions for Jun.
+Before remediation the Ollama exposure let any internet client run
+inference against TIALA's models; unauthenticated probes on 2026-10-05
+also reached the write handlers (`POST /api/pull` and `DELETE /api/delete`
+returned Ollama validation errors, not an auth rejection), so model-store
+mutation requests were accepted for processing too. The `local.ollama-proxy`
+LaunchAgent on `127.0.0.1:11435` only rewrites Host headers for local
+clients and was never in the tunnel path. Implementation revisions behind
+the table above: magi-moomoo main `87d5410a` (bridge code), magi-moomoo
+`feat/ollama-auth-proxy` `6b0c1def` (PR #85, `ollama-auth-proxy.py`),
+magi-core `9641da36` (post-#578 caller side). Longer-term options
+(Cloudflare Access service-token, or moving PLM jobs onto the private
+WireGuard route once they have VPC egress) remain open policy decisions
+for Jun.
 
 # 4. AI Gateway — `default`
 
