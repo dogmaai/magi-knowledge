@@ -1,5 +1,19 @@
 # Bundle Update Log
 
+## 2026-10-05
+* **Audit (tunnel ingress auth)**: [cloudflare](system/services/cloudflare.md)
+  §3 gained a measured ingress-authentication table for the three
+  `*.khaos.company` hostnames. No Cloudflare Access application exists on the
+  account (API, 2026-10-05), so origin auth is the only gate.
+  `openclaw.khaos.company` enforces `OPENCLAW_GATEWAY_TOKEN` in the gateway
+  itself (unauthenticated `/v1/chat/completions` → 401).
+  `bridge.khaos.company` is running with `BRIDGE_AUTH_TOKEN` unset
+  (`/health` `auth_required:false`, `/positions` answers unauthenticated;
+  GSM `MOOMOO_BRIDGE_AUTH_TOKEN` does not exist — REAL `/place_order` still
+  fails closed). `ollama.khaos.company` has no authentication at all —
+  the full Ollama REST API is publicly reachable; recorded as a measured
+  fact with mitigation left as a Jun decision. Doc remains `draft`.
+
 ## 2026-10-04
 * **trades.warn_only_layers measurement rule (magi-core#548)**: added a
   counterfactual aggregation note to

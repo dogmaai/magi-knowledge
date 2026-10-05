@@ -4,7 +4,7 @@ title: Cloudflare (AI Search, R2 Data Catalog, Named Tunnel, AI Gateway)
 description: How MAGI uses Cloudflare — the magi-document AI Search mirror and okf.system Iceberg mirror of this spec on the magi-system bucket, the Named Tunnels exposing TIALA services, and the default AI Gateway behind AI Search.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-03T00:00:00Z }
+generated: { by: devin/cli, at: 2026-10-05T00:15:00Z }
 verified: [{ by: human:jun, at: 2026-09-03T09:04:15Z }, { by: devin/cli, at: 2026-09-16T07:25:00Z }]
 stale_after: 2027-03-16T07:25:00Z
 tags: [service, cloudflare, r2, ai-search, tunnel, ai-gateway]
@@ -87,6 +87,27 @@ the `magi-ollama` hostname is not in that table — PLM jobs receive it via the
 `dogmaai/magi-moomoo` (`scripts/README.md`,
 `scripts/setup-*-named-tunnel.sh`,
 `.agents/skills/cloudflare-tunnel-protocols/SKILL.md`).
+
+## Ingress authentication (measured 2026-10-05)
+
+No Cloudflare Access application covers any `*.khaos.company` hostname
+(account `access/apps` returned zero entries on 2026-10-05; zone-scoped
+Access/Workers checks could not be enumerated with the `magi-tunnel-devin-20261002`
+token's Tunnel:Edit + DNS:Edit scope, but unauthenticated probes reach the
+origins directly, which rules out an Access front door). Each hostname
+therefore relies on its origin service's own authentication:
+
+| Hostname | Auth mechanism | Enforcement point | Observed state (2026-10-05) |
+|---|---|---|---|
+| `bridge.khaos.company` | `BRIDGE_AUTH_TOKEN` Bearer on every path except `GET /health` | `magi-moomoo/bridge/moomoo_bridge.py` `require_bridge_auth` | **Token unset on the running bridge** — `/health` reports `auth_required:false` and read-only endpoints (e.g. `/positions`) answer unauthenticated. GSM secret `MOOMOO_BRIDGE_AUTH_TOKEN` does not exist, so `start-bridge.sh` resolves nothing and `deploy.yml` binds no `BRIDGE_AUTH_TOKEN` on the proxy either. REAL `/place_order` still fails closed (TRD_ENV=SIMULATE, `real_orders_enabled:false` at probe time). |
+| `openclaw.khaos.company` | `OPENCLAW_GATEWAY_TOKEN` Bearer | OpenClaw Gateway itself — `~/.openclaw/openclaw.json` `gateway.auth.mode=token` on TIALA | **Enforced** — unauthenticated `POST /v1/chat/completions` returns 401; `GET /health` and the Control UI static assets are public by design. GSM `OPENCLAW_GATEWAY_TOKEN` exists; injected copies can go stale on rotation (see [secrets-inventory](secrets-inventory.md)). |
+| `ollama.khaos.company` | **None** | None — tunnel ingress forwards to `127.0.0.1:11434` raw Ollama | **Unauthenticated** — unauthenticated `GET /api/tags` returns the full model list; the complete Ollama REST API (`/api/generate`, `/api/chat`, `/api/pull`, `/api/delete`, …) is publicly reachable. The `local.ollama-proxy` LaunchAgent on `127.0.0.1:11435` only rewrites Host headers and is not in the tunnel path. |
+
+The Ollama exposure means any internet client can run inference against
+TIALA's models or mutate the model store; mitigation options (Cloudflare
+Access service-token for the `OLLAMA_BASE_URL` callers, an authenticating
+proxy in the ingress path, or moving PLM jobs to the private WireGuard
+route) are an open policy decision for Jun.
 
 # 4. AI Gateway — `default`
 
