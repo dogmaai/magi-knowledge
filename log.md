@@ -13,6 +13,16 @@
   fails closed). `ollama.khaos.company` has no authentication at all —
   the full Ollama REST API is publicly reachable; recorded as a measured
   fact with mitigation left as a Jun decision. Doc remains `draft`.
+* **Remediation (tunnel ingress auth, same day, Jun-directed)**:
+  `MOOMOO_BRIDGE_AUTH_TOKEN` and `OLLAMA_AUTH_TOKEN` were registered in
+  GSM and added to the [secrets-inventory](system/services/secrets-inventory.md)
+  ledger. The bridge now enforces auth (`auth_required:true`, unauthenticated
+  `/positions` → 401) — GSM version 2 is live because v1 carried a trailing
+  newline. For Ollama, a bearer-checking proxy
+  (`magi-moomoo/scripts/ollama-auth-proxy.py`, `127.0.0.1:11437`) is installed
+  on TIALA; the public ingress repoint waits on magi-core PR #578
+  (`OLLAMA_AUTH_TOKEN` → `Authorization` header + job binding) being merged
+  and deployed, since jobs currently send no credential.
 
 ## 2026-10-04
 * **trades.warn_only_layers measurement rule (magi-core#548)**: added a

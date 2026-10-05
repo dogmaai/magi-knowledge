@@ -99,15 +99,17 @@ therefore relies on its origin service's own authentication:
 
 | Hostname | Auth mechanism | Enforcement point | Observed state (2026-10-05) |
 |---|---|---|---|
-| `bridge.khaos.company` | `BRIDGE_AUTH_TOKEN` Bearer on every path except `GET /health` | `magi-moomoo/bridge/moomoo_bridge.py` `require_bridge_auth` | **Token unset on the running bridge** — `/health` reports `auth_required:false` and read-only endpoints (e.g. `/positions`) answer unauthenticated. GSM secret `MOOMOO_BRIDGE_AUTH_TOKEN` does not exist, so `start-bridge.sh` resolves nothing and `deploy.yml` binds no `BRIDGE_AUTH_TOKEN` on the proxy either. REAL `/place_order` still fails closed (TRD_ENV=SIMULATE, `real_orders_enabled:false` at probe time). |
+| `bridge.khaos.company` | `BRIDGE_AUTH_TOKEN` Bearer on every path except `GET /health` | `magi-moomoo/bridge/moomoo_bridge.py` `require_bridge_auth` | **Enforced since 2026-10-05** — `/health` reports `auth_required:true` and unauthenticated `/positions` returns 401. `MOOMOO_BRIDGE_AUTH_TOKEN` was created in GSM the same day (the rollout merged in PRs #73–#82 had never created it); TIALA has no gcloud so the bridge reads `~/.config/magi-moomoo/bridge.env` via the `com.magi.bridge` plist, and the Cloud Run proxy binds `BRIDGE_AUTH_TOKEN=MOOMOO_BRIDGE_AUTH_TOKEN:latest`. |
 | `openclaw.khaos.company` | `OPENCLAW_GATEWAY_TOKEN` Bearer | OpenClaw Gateway itself — `~/.openclaw/openclaw.json` `gateway.auth.mode=token` on TIALA | **Enforced** — unauthenticated `POST /v1/chat/completions` returns 401; `GET /health` and the Control UI static assets are public by design. GSM `OPENCLAW_GATEWAY_TOKEN` exists; injected copies can go stale on rotation (see [secrets-inventory](secrets-inventory.md)). |
-| `ollama.khaos.company` | **None** | None — tunnel ingress forwards to `127.0.0.1:11434` raw Ollama | **Unauthenticated** — unauthenticated `GET /api/tags` returns the full model list; the complete Ollama REST API (`/api/generate`, `/api/chat`, `/api/pull`, `/api/delete`, …) is publicly reachable. The `local.ollama-proxy` LaunchAgent on `127.0.0.1:11435` only rewrites Host headers and is not in the tunnel path. |
+| `ollama.khaos.company` | `OLLAMA_AUTH_TOKEN` Bearer | `magi-moomoo/scripts/ollama-auth-proxy.py` on `127.0.0.1:11437`, in front of `127.0.0.1:11434` raw Ollama | **Remediation in progress** — auth proxy + `com.magi.ollama-auth-proxy` LaunchAgent installed and verified on TIALA (unauthenticated → 401, token → 200 incl. streaming inference); public ingress still points at raw Ollama until magi-core PR #578 (adds the `Authorization` header + `OLLAMA_AUTH_TOKEN` secret binding to ADAM/BOREAS) is merged and deployed, then `config-magi-ollama.yml` repoints to the proxy port. Until that flip, unauthenticated `GET /api/tags` still returns the model list. |
 
-The Ollama exposure means any internet client can run inference against
-TIALA's models or mutate the model store; mitigation options (Cloudflare
-Access service-token for the `OLLAMA_BASE_URL` callers, an authenticating
-proxy in the ingress path, or moving PLM jobs to the private WireGuard
-route) are an open policy decision for Jun.
+Before remediation the Ollama exposure meant any internet client could run
+inference against TIALA's models or mutate the model store (`/api/pull`,
+`/api/delete`). The `local.ollama-proxy` LaunchAgent on `127.0.0.1:11435`
+only rewrites Host headers for local clients and was never in the tunnel
+path. Longer-term options (Cloudflare Access service-token, or moving PLM
+jobs onto the private WireGuard route once they have VPC egress) remain
+open policy decisions for Jun.
 
 # 4. AI Gateway — `default`
 
