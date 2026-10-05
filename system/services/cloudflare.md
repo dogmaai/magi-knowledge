@@ -4,7 +4,7 @@ title: Cloudflare (AI Search, R2 Data Catalog, Named Tunnel, AI Gateway)
 description: How MAGI uses Cloudflare — the magi-document AI Search mirror and okf.system Iceberg mirror of this spec on the magi-system bucket, the Named Tunnels exposing TIALA services, and the default AI Gateway behind AI Search.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-05T02:00:00Z }
+generated: { by: devin/cli, at: 2026-10-05T02:30:00Z }
 verified: [{ by: human:jun, at: 2026-09-03T09:04:15Z }, { by: devin/cli, at: 2026-09-16T07:25:00Z }]
 stale_after: 2027-03-16T07:25:00Z
 tags: [service, cloudflare, r2, ai-search, tunnel, ai-gateway]
@@ -59,6 +59,14 @@ live in `.agents/skills/` and are referenced below rather than duplicated.
   only. Runtime PLM units do not read it.
 * Runbook: `.agents/skills/syncing-spec-to-r2-data-catalog/SKILL.md`
   (token requirements, manual refresh, verification).
+* The workflow is also the cicd-sensor PoC target (Jun-approved,
+  monitor-only intent): `r2-catalog-sync.yml` runs
+  `cicd-sensor/cicd-sensor-action` first and forwards runtime traces to
+  the Takumi Shisho Cloud Manager via OIDC
+  (`flatt-security/shisho-cloud-action`, `environment: cicd-sensor`,
+  `id-token: write`). Under manager mode the project-local
+  `.cicd-sensor/config.yaml` is ignored, so `monitor_mode` is enforced
+  manager-side — see `log.md` 2026-10-05 for rollout state.
 
 # 3. Named Tunnels — TIALA services
 
