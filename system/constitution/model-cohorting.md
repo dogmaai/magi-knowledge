@@ -4,7 +4,7 @@ title: "MODEL COHORTING"
 description: Cohort-reset rule — a model change makes a unit a statistically new entity. Evaluation aggregates are keyed by (unit_name, model_version) and do not carry across the boundary. Documentation-level policy; NOT part of the runtime prompt tree.
 lilith_safe: false
 status: draft
-generated: { by: devin/local, at: 2026-10-02T15:10:00Z }
+generated: { by: devin/cli, at: 2026-10-06T08:00:00Z }
 stale_after: 2027-04-02T15:10:00Z
 tags: [constitution, cohort, model-version, evaluation, isabel, probation, draft]
 version: "0.1"
@@ -77,8 +77,10 @@ Scoped to **learned / statistical state** only:
 | Optuna-fitted parameters ([optuna-params](/system/echidna-tables/optuna-params.md)) | `param_name` (~per provider) | cohort-scoped in principle — **frozen**, see open decisions |
 
 A new cohort starts with empty statistics. Probation does not transfer: the
-old cohort's `l4_probation` rows remain valid history, but the new cohort is
-not blocked by them.
+old cohort's probation rows would remain valid history but not block the new
+cohort — forward-looking: no `l4_probation` table exists today (deprecated
+2026-10-06); if a persisted probation store is introduced, it does not
+transfer across cohorts.
 
 ## What does NOT reset
 

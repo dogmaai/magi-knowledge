@@ -3,8 +3,8 @@ type: Service
 title: magi-isabel
 description: ISABEL pattern framework — win/lose centroids and embedding analysis.
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-06-19T01:06:40Z }
+status: draft
+generated: { by: devin/cli, at: 2026-10-06T08:00:00Z }
 verified: { by: human:jun, at: 2026-06-19T01:06:40Z }
 stale_after: 2026-12-16T01:06:40Z
 tags: [service, isabel, embeddings, patterns]
@@ -21,7 +21,11 @@ the guard layers consume.
 
 # Produces
 
-* [isabel-patterns](/system/echidna-tables/isabel-patterns.md) — centroids + win-rates.
+* [isabel-patterns](/system/echidna-tables/isabel-patterns.md) — per-provider
+  win/lose keywords and pattern summaries (`isabel_l4_patterns` table).
+  Win/lose centroids and per-symbol/direction stats ride inside
+  `isabel_daily_cache` (`patterns_json` / `embeddings_json` columns), not a
+  dedicated table.
 * ISABEL stats blocks (the cross-unit aggregate; LILITH uses only its **own** slice).
 
 # Consumed by
