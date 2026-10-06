@@ -1,5 +1,33 @@
 # Bundle Update Log
 
+## 2026-10-06
+* **Audit (spec mirrors, run by Devin CLI 2026-10-06)**: both live mirrors
+  verified in-sync with `main` @ `1d77b9e`. Method: R2 Data Catalog
+  `okf.system` scanned via PyIceberg (`CLOUDFLARE_R2_CATALOG_TOKEN` from
+  GSM); AI Search `magi-document` read via AutoRAG REST
+  (`/rags`, `/jobs`, `/files`) with `CLOUDFLARE_AI_SEARCH_TOKEN`, and the
+  indexed objects compared byte-for-byte against local `main` via the
+  derived R2 S3 credentials. R2 catalog: 92/92 rows, zero field diffs
+  (`status` / `trust_tier` / `stale_after`), `source_revision=1d77b9e`,
+  `synced_at` 2026-10-05 22:58 UTC. AI Search: 92/92 objects indexed (no
+  missing/extra/errored), index-metadata diffs 0, latest scheduled sync
+  2026-10-06 01:30 UTC — after the last content upload. The Gemini
+  Enterprise data store is excluded: subscription cancelled, sync
+  automation disabled (frozen snapshot; see
+  `.agents/skills/syncing-spec-to-gemini-enterprise/`).
+* **New token (secrets-inventory)**: `CLOUDFLARE_AI_SEARCH_TOKEN`
+  (AI Search Read scope) minted by Jun and registered in GSM — closes the
+  AutoRAG-read gap that the R2-scoped catalog token could not cover. Read
+  scope verified for `GET /rags`, `/jobs`, `/files`;
+  `POST .../search` returns `Authentication error` (query probes would need
+  an Edit-scoped token). Ledger row added; Tier-2 Global-Key replacement
+  noted as partially unblocked.
+* **Follow-up closed (secrets-inventory)**: `MOOMOO_BRIDGE_AUTH_TOKEN`
+  version 1 — destroyed by Jun in GSM on 2026-10-05 (the trailing-newline
+  value cannot be revived); terminal state verified by Devin via
+  `gcloud secrets versions list` on 2026-10-06 (v1 `destroyed`, only the
+  enabled v2 remains). Struck from Tier-1 follow-ups.
+
 ## 2026-10-05
 * **Ollama tunnel ingress cutover (enforced)**: the `magi-ollama` tunnel
   on TIALA is remotely managed (`source: cloudflare`) — editing the local
