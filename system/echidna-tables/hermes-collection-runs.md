@@ -4,10 +4,10 @@ title: hermes_collection_runs
 description: One row per HERMES collection job run — the up/down, success/failure and error-rate signal for the HERMES Grafana dashboard.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=hermes_collection_runs&page=table
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/local, at: 2026-09-17T00:29:00Z }
-verified: [{ by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-09-16T02:00:00Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }]
-stale_after: 2027-03-17T00:29:00Z
+verified: [{ by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-09-16T02:00:00Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
+stale_after: 2027-04-04T05:36:00Z
 tags: [echidna, bigquery, hermes, observability, operations]
 dataset: magi_core
 table_type: BASE TABLE

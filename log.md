@@ -19,14 +19,26 @@
   (AI Search Read scope) minted by Jun and registered in GSM — closes the
   AutoRAG-read gap that the R2-scoped catalog token could not cover. Read
   scope verified for `GET /rags`, `/jobs`, `/files`;
-  `POST .../search` returns `Authentication error` (query probes would need
-  an Edit-scoped token). Ledger row added; Tier-2 Global-Key replacement
-  noted as partially unblocked.
+  `POST .../search` returns `Authentication error` (query probes need
+  AI Search Edit + AI Search Run scopes). Ledger row added; Tier-2
+  Global-Key replacement noted as partially unblocked.
 * **Follow-up closed (secrets-inventory)**: `MOOMOO_BRIDGE_AUTH_TOKEN`
   version 1 — destroyed by Jun in GSM on 2026-10-05 (the trailing-newline
   value cannot be revived); terminal state verified by Devin via
   `gcloud secrets versions list` on 2026-10-06 (v1 `destroyed`, only the
   enabled v2 remains). Struck from Tier-1 follow-ups.
+* **Promoted 17 concepts draft → stable** on Jun's review/approval:
+  services/ (`magi-core`, `magi-moomoo`, `magi-moni`, `cloudflare`,
+  `lilith-training`, `secrets-inventory`), guards/ (`l6`), plm-units/
+  (`lilith`, `oracle`, `sophia-5`, `tiara`), echidna-tables/ (`trades`,
+  `order-approvals`, `trades-unverifiable`, `pre-trade-intelligence`,
+  `hermes-collection-runs`, `optuna-params`). Each gained a fresh
+  `verified: human:jun` entry at promotion. Left `draft` deliberately:
+  `guards/jev.md`, `constitution/model-consolidation.md`,
+  `constitution/model-cohorting.md` (awaiting Jun decisions), plus six
+  human-unverified concepts (`services/hermes-observability`,
+  `echidna-tables/{focus-symbols, moomoo-snapshots, order-intents,
+  position-guard-evals, system-control}`).
 
 ## 2026-10-05
 * **Ollama tunnel ingress cutover (enforced)**: the `magi-ollama` tunnel
