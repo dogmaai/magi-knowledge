@@ -39,6 +39,17 @@
   human-unverified concepts (`services/hermes-observability`,
   `echidna-tables/{focus-symbols, moomoo-snapshots, order-intents,
   position-guard-evals, system-control}`).
+* **Promoted 6 more concepts draft → stable** on Jun's review/approval:
+  echidna-tables/ (`system_control`, `position_guard_evals`,
+  `order_intents`, `focus_symbols`, `moomoo_snapshots`) and services/
+  (`hermes-observability`). All five table schemas were verified against
+  `bq show` (zero column/type diffs) before promotion;
+  `position_guard_evals`'s "Draft — unverified" body marker was removed
+  (the table exists; the degrade-path note is retained). Fresh
+  `verified: human:jun` + `stale_after` = +180d on each. Remaining
+  `system/` drafts: `guards/jev.md`, `constitution/model-consolidation.md`,
+  `constitution/model-cohorting.md` — all intentionally awaiting Jun
+  decisions.
 
 ## 2026-10-05
 * **Ollama tunnel ingress cutover (enforced)**: the `magi-ollama` tunnel

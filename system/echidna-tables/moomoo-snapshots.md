@@ -4,10 +4,10 @@ title: moomoo_snapshots
 description: HERMES:MOOMOO broker real-time market snapshots — one row per symbol per fetch.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=moomoo_snapshots&page=table
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/local, at: 2026-09-16T01:30:00Z }
-verified: { by: devin/local, at: 2026-09-16T01:30:00Z }
-stale_after: 2027-03-16T01:30:00Z
+verified: [{ by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-10-06T07:23:42Z }]
+stale_after: 2027-04-04T07:23:42Z
 tags: [echidna, bigquery, hermes, moomoo, market-data]
 dataset: magi_core
 table_type: BASE TABLE

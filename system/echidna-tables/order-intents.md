@@ -4,10 +4,10 @@ title: order_intents
 description: Append-only order-intent journal; magi-core orders are journaled before the broker POST (fail-closed for exposure-increasing orders; a risk-reducing order whose write fails still POSTs and is recovered via the remark key) and reconciled against broker order_history via the intent id embedded in the broker remark.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=order_intents&page=table
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/local, at: 2026-09-13T00:00:00Z }
-verified: { by: devin/local, at: 2026-09-13T00:00:00Z }
-stale_after: 2027-03-13T00:00:00Z
+verified: [{ by: devin/local, at: 2026-09-13T00:00:00Z }, { by: human:jun, at: 2026-10-06T07:23:42Z }]
+stale_after: 2027-04-04T07:23:42Z
 tags: [echidna, bigquery, orders, reliability, reconciliation]
 dataset: magi_core
 table_type: BASE TABLE

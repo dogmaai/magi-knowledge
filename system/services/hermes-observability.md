@@ -3,10 +3,10 @@ type: Dashboard
 title: HERMES observability (Grafana)
 description: The magi-hermes-intelligence Grafana Cloud dashboard — what it shows, where the data comes from, and how it is provisioned and verified.
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/local, at: 2026-09-26T23:11:00Z }
-verified: [{ by: devin/local, at: 2026-09-16T01:30:00Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }, { by: devin/local, at: 2026-09-26T23:11:00Z }]
-stale_after: 2027-03-17T00:29:00Z
+verified: [{ by: devin/local, at: 2026-09-16T01:30:00Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }, { by: devin/local, at: 2026-09-26T23:11:00Z }, { by: human:jun, at: 2026-10-06T07:23:42Z }]
+stale_after: 2027-04-04T07:23:42Z
 tags: [grafana, observability, hermes, dashboard, operations]
 repo: dogmaai/magi-core
 ---
