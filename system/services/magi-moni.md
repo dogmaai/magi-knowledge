@@ -6,7 +6,7 @@ lilith_safe: false
 status: stable
 generated: { by: devin/local, at: 2026-10-02T09:05:33Z }
 verified: [{ by: human:jun, at: 2026-08-24T11:03:39Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
-stale_after: 2027-03-17T00:29:00Z
+stale_after: 2027-04-04T05:36:00Z
 tags: [service, monitoring, reporting, alerts, aka-1]
 repo: dogmaai/magi-moni
 ---

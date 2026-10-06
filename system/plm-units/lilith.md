@@ -6,7 +6,7 @@ lilith_safe: false
 status: stable
 generated: { by: devin/local, at: 2026-09-23T01:27:00Z }
 verified: [{ by: human:jun, at: 2026-08-27T23:14:38Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
-stale_after: 2027-02-23T23:14:38Z
+stale_after: 2027-04-04T05:36:00Z
 tags: [plm, retired, lilith, fine-tuned, independent]
 provider: lilith
 model: lilith-v1.0-b2-prod

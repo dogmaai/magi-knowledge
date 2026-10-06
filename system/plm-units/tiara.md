@@ -6,7 +6,7 @@ lilith_safe: false
 status: stable
 generated: { by: devin/cloud, at: 2026-09-25T00:00:00Z }
 verified: [{ by: human:jun, at: 2026-08-27T23:15:42Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
-stale_after: 2027-02-23T23:15:42Z
+stale_after: 2027-04-04T05:36:00Z
 tags: [plm, legacy, ollama, self-hosted]
 provider: ollama
 model: qwen3.5:9b

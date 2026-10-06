@@ -7,7 +7,7 @@ lilith_safe: false
 status: stable
 generated: { by: devin/cli, at: 2026-09-17T05:30:00Z }
 verified: [{ by: human:jun, at: 2026-09-13T00:00:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
-stale_after: 2027-03-17T05:30:00Z
+stale_after: 2027-04-04T05:36:00Z
 tags: [echidna, bigquery, orders, approval, security]
 dataset: magi_core
 table_type: BASE TABLE
@@ -30,8 +30,8 @@ no `USED` row exists), then appends the `USED` audit event. Concurrent
 transactions modifying the same row conflict, so at most one claimant
 commits. The `USED` event stream remains append-only; the `ISSUED` row is
 mutated exactly once, at consumption — this is a deliberate deviation
-from the earlier strictly-append-only model (2026-09-17, pending Jun
-re-verification).
+from the earlier strictly-append-only model (2026-09-17; re-verified by
+Jun 2026-10-06).
 
 # Schema
 

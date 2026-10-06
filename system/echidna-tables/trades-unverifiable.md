@@ -7,7 +7,7 @@ lilith_safe: false
 status: stable
 generated: { by: devin/local, at: 2026-09-17T00:29:00Z }
 verified: [{ by: human:jun, at: 2026-09-13T00:00:00Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
-stale_after: 2027-03-17T00:29:00Z
+stale_after: 2027-04-04T05:36:00Z
 tags: [echidna, bigquery, trades, audit]
 dataset: magi_core
 table_type: BASE TABLE

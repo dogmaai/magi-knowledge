@@ -6,7 +6,7 @@ lilith_safe: false
 status: stable
 generated: { by: devin/cli, at: 2026-10-02T23:50:00Z }
 verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: devin/cli, at: 2026-09-16T07:25:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
-stale_after: 2027-03-17T04:43:35Z
+stale_after: 2027-04-04T05:36:00Z
 tags: [service, moomoo, broker]
 repo: dogmaai/magi-moomoo
 ---

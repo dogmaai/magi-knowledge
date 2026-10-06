@@ -6,7 +6,7 @@ lilith_safe: false
 status: stable
 generated: { by: devin/cli, at: 2026-10-06T04:30:00Z }
 verified: [{ by: human:jun, at: 2026-09-17T17:23:06Z }, { by: devin/local, at: 2026-10-02T16:00:00Z }, { by: devin/cli, at: 2026-10-06T04:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
-stale_after: 2027-03-17T17:23:06Z
+stale_after: 2027-04-04T05:36:00Z
 tags: [service, secrets, grafana, cloudflare, github, gcp, security]
 repo: infra (GCP project screen-share-459802, Cloudflare account c3b51b9f35d16713caab757feca638d8, Grafana stack aka / tenant 1557976)
 ---
