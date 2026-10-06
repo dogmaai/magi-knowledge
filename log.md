@@ -1,6 +1,11 @@
 # Bundle Update Log
 
 ## 2026-10-06
+* **Re-verified and restored stable** on Jun's merge of PR #128 (his
+  review of the rewritten bodies): `guards/{l4,l5,l7}.md`,
+  `echidna-tables/isabel-patterns.md`,
+  `services/{magi-core,magi-isabel,magi-moni}.md` — each gained
+  `verified: human:jun` + `stale_after` +180d and returned to `stable`.
 * **Spec↔impl drift audit + remediation** (spec `7dfe03a` vs impl
   `magi-core@baa5388` + live `bq ls/show`): every job the spec documented
   matched on name/schedule/TZ (retired jobs correctly absent); one

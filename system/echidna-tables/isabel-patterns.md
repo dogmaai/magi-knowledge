@@ -4,10 +4,10 @@ title: isabel_l4_patterns
 description: ISABEL per-provider win/lose keyword patterns and reasoning summaries — the pattern-language layer behind L4/L5 signals.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=isabel_l4_patterns&page=table
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/cli, at: 2026-10-06T08:00:00Z }
-verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
-stale_after: 2026-12-16T01:02:48Z
+verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: human:jun, at: 2026-10-06T08:31:20Z }]
+stale_after: 2027-04-04T08:31:20Z
 tags: [echidna, bigquery, isabel, patterns, embeddings]
 dataset: magi_core
 table_type: BASE TABLE
