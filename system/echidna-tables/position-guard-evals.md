@@ -4,9 +4,10 @@ title: position_guard_evals
 description: Per-position evaluation ledger — one row per broker-listed position per checkAndClosePositions run, so a position missing from the broker list provably leaves no trace.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=position_guard_evals&page=table
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/local, at: 2026-10-01T06:10:00Z }
-stale_after: 2026-12-30T06:10:00Z
+verified: { by: human:jun, at: 2026-10-06T07:23:42Z }
+stale_after: 2027-04-04T07:23:42Z
 tags: [echidna, bigquery, position-guard, observability, audit]
 dataset: magi_core
 table_type: BASE TABLE
@@ -19,10 +20,11 @@ and deferred closes (`outcome='DEFERRED'`). Written by
 inside the `magi-position-guard` Cloud Run job (15-minute cadence,
 `trade_mode='POSITION_GUARD'`) and inside PLM sessions (`trade_mode='NORMAL'`).
 
-> **Draft — unverified.** Introduced by dogmaai/magi-knowledge#99 (R1).
-> The table is created out-of-band via
-> `magi-core/sql/create_position_guard_evals.sql`; until it exists the writer
-> degrades to Cloud-Logging-only (no insert attempted).
+Introduced by dogmaai/magi-knowledge#99 (R1). The table is created
+out-of-band via `magi-core/sql/create_position_guard_evals.sql` and exists
+in `magi_core` (schema verified via `bq show` 2026-10-06); if the table is
+ever missing the writer degrades to Cloud-Logging-only (no insert
+attempted).
 
 # Purpose
 

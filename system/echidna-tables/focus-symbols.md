@@ -4,10 +4,10 @@ title: focus_symbols
 description: ISABEL daily focus symbols ranked by historical win rate — the dynamic HERMES collection universe.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=focus_symbols&page=table
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/local, at: 2026-09-16T01:30:00Z }
-verified: { by: devin/local, at: 2026-09-16T01:30:00Z }
-stale_after: 2027-03-16T01:30:00Z
+verified: [{ by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-10-06T07:23:42Z }]
+stale_after: 2027-04-04T07:23:42Z
 tags: [echidna, bigquery, isabel, hermes, symbols]
 dataset: magi_core
 table_type: BASE TABLE

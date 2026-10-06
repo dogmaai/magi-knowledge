@@ -4,10 +4,10 @@ title: system_control
 description: Global emergency kill-switch state — the latest trading_halted row blocks all orders at L0 and at the magi-moomoo order gate.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=system_control&page=table
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/cli, at: 2026-09-16T07:25:00Z }
-verified: { by: devin/cli, at: 2026-09-16T07:25:00Z }
-stale_after: 2027-03-16T07:25:00Z
+verified: [{ by: devin/cli, at: 2026-09-16T07:25:00Z }, { by: human:jun, at: 2026-10-06T07:23:42Z }]
+stale_after: 2027-04-04T07:23:42Z
 tags: [echidna, bigquery, kill-switch, guard, l0]
 dataset: magi_core
 table_type: BASE TABLE
