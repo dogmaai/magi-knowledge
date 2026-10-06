@@ -4,9 +4,9 @@ title: order_approvals
 description: Single-use approval tokens for non-reducing manual orders through the magi-moomoo order gate.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=order_approvals&page=table
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/cli, at: 2026-09-17T05:30:00Z }
-verified: { by: human:jun, at: 2026-09-13T00:00:00Z }
+verified: [{ by: human:jun, at: 2026-09-13T00:00:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-03-17T05:30:00Z
 tags: [echidna, bigquery, orders, approval, security]
 dataset: magi_core

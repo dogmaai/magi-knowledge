@@ -3,9 +3,9 @@ type: PLM Unit
 title: ORACLE
 description: DEPRECATED — Together.ai unit; removed in #139. The VIX-specialist name reuse was retired 2026-09-25.
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/cloud, at: 2026-09-25T00:00:00Z }
-verified: { by: human:jun, at: 2026-08-27T23:14:38Z }
+verified: [{ by: human:jun, at: 2026-08-27T23:14:38Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-02-23T23:14:38Z
 tags: [plm, deprecated, together, ollama, vix, retired]
 provider: together

@@ -3,9 +3,9 @@ type: Service
 title: Secrets inventory (Grafana Cloud, Cloudflare, GitHub, GCP tokens)
 description: Single ledger of the infrastructure tokens (Grafana Cloud, Cloudflare, GitHub, GCP) referenced across the MAGI repositories — canonical env var name, auth scheme, target endpoint, required scopes, source of truth, usage sites and rotation owner. GCP Secret Manager is the only source of truth; injected env-var copies can go stale.
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/cli, at: 2026-10-06T04:30:00Z }
-verified: [{ by: human:jun, at: 2026-09-17T17:23:06Z }, { by: devin/local, at: 2026-10-02T16:00:00Z }, { by: devin/cli, at: 2026-10-06T04:30:00Z }]
+verified: [{ by: human:jun, at: 2026-09-17T17:23:06Z }, { by: devin/local, at: 2026-10-02T16:00:00Z }, { by: devin/cli, at: 2026-10-06T04:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-03-17T17:23:06Z
 tags: [service, secrets, grafana, cloudflare, github, gcp, security]
 repo: infra (GCP project screen-share-459802, Cloudflare account c3b51b9f35d16713caab757feca638d8, Grafana stack aka / tenant 1557976)

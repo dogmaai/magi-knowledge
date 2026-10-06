@@ -4,9 +4,9 @@ title: trades_unverifiable
 description: Snapshot of trades rows that can never be proven real or fabricated (no broker ground truth survives).
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=trades_unverifiable&page=table
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/local, at: 2026-09-17T00:29:00Z }
-verified: [{ by: human:jun, at: 2026-09-13T00:00:00Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }]
+verified: [{ by: human:jun, at: 2026-09-13T00:00:00Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-03-17T00:29:00Z
 tags: [echidna, bigquery, trades, audit]
 dataset: magi_core

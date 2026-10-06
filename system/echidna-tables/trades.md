@@ -4,9 +4,9 @@ title: trades
 description: Primary trade log — entry/exit, PnL, and unit attribution for every order.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=trades&page=table
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/local, at: 2026-10-04T05:46:30Z }
-verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
+verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2026-12-16T01:02:48Z
 tags: [echidna, bigquery, trades, core]
 dataset: magi_core

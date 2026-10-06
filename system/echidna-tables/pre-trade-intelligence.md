@@ -4,9 +4,9 @@ title: pre_trade_intelligence
 description: HERMES per-symbol Brave/Gemini pre-trade intelligence — sentiment, key events, risk factors.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=pre_trade_intelligence&page=table
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/local, at: 2026-09-17T00:29:00Z }
-verified: [{ by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-09-16T02:00:00Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }]
+verified: [{ by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-09-16T02:00:00Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-03-17T00:29:00Z
 tags: [echidna, bigquery, hermes, sentiment, news]
 dataset: magi_core
