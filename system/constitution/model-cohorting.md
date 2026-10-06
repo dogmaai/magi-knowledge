@@ -72,7 +72,7 @@ Scoped to **learned / statistical state** only:
 | Aggregate | Current key (implementation) | Cohort-scoped key (this rule) |
 |---|---|---|
 | ISABEL patterns / win-rates ([isabel-patterns](/system/echidna-tables/isabel-patterns.md)) | `llm_provider` (+symbol/direction) | `(unit_name, model_version)` (+symbol/direction) |
-| L4 probation state (`l4_probation` table — deprecated, never materialized; [L4](/system/guards/l4.md)) | `llm_provider` + `side` | `(unit_name, model_version)` + `side` |
+| L4 direction stats (in-session ISABEL stats cache; the designed `l4_probation` store never materialized — deprecated; [L4](/system/guards/l4.md)) | `llm_provider` + `side` (runtime) | `(unit_name, model_version)` + `side` — applies to whatever persisted L4 store is introduced |
 | Unit evaluation / scorecards (P0 reporting, [model-consolidation](model-consolidation.md) comparisons) | `unit_name` | `(unit_name, model_version)` |
 | Optuna-fitted parameters ([optuna-params](/system/echidna-tables/optuna-params.md)) | `param_name` (~per provider) | cohort-scoped in principle — **frozen**, see open decisions |
 

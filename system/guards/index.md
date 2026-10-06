@@ -53,8 +53,8 @@ degrees of freedom": too many learned gates for too little live data).
   rule violations and are never learned from data. These are "guards" in the
   strict sense.
 * **statistical-gate** — layers whose thresholds, lists or weights come from
-  fitted statistics (Optuna `optuna_params`, L4 probation state, L5 similarity,
-  confidence calibration). Their **re-optimization is frozen** as of
+  fitted statistics (Optuna `optuna_params`, the L4 direction stats held in
+  the in-session ISABEL stats cache, L5 similarity, confidence calibration). Their **re-optimization is frozen** as of
   2026-10-02: `magi-optuna-job` runs with `OPTUNA_FREEZE=true` and the weekly
   `magi-optuna-optimizer` scheduler is paused; the last `optuna_params` rows
   remain in effect. Whether a blocking statistical-gate is demoted to

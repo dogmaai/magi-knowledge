@@ -20,9 +20,10 @@ table_type: BASE TABLE
 > Retained as the historical record of the designed (never materialized)
 > blocking-L4 state table.
 
-Backing state for Guard L4 (see `system/guards/l4.md`): a provider/side combo
-that has underperformed is placed on probation and blocked until it earns
-passes back.
+The abandoned design below is retained for history: backing state for Guard
+L4 would have been a provider/side combo placed on probation and blocked
+until it earns passes back. **None of this runs today** — the table was
+never created and L4 evaluates in-session without persistence.
 
 # Schema
 

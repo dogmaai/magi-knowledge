@@ -54,10 +54,12 @@ Two write-path conventions matter:
 * [lilith-hard-gate-events](lilith-hard-gate-events.md) - LILITH VIX hard-gate rewrites (deprecated 2026-09-23; table dropped — sibling ledgers `lilith_confidence_gate_events` / `lilith_forecast_gate_events` dropped in the same action).
 * [constitution](constitution.md) - Versioned MAGI Constitution store.
 
-# Live tables not yet catalogued
+# Live tables not yet catalogued (open drift backlog)
 
 Present in `magi_core` (`bq ls` @ 2026-10-06, magi-core `baa5388`) but without a
-per-table concept doc yet — catalog backlog, listed so the gap is visible:
+per-table concept doc. Per COLLABORATION.md every MAGI-referenced table needs a
+concept doc here, so each entry below is **tracked drift, not resolved** —
+per-table docs are pending work, not waived:
 `bq_write_failures`, `chat_log`, `daphne_hint_effectiveness`,
 `daphne_loss_analysis`, `isabel_briefings`, `isabel_daily_cache`,
 `isabel_requests`, `lilith_training_examples`, `llm_health_checks`,

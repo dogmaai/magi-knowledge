@@ -2,8 +2,10 @@
 
 ## 2026-10-06
 * **Spec↔impl drift audit + remediation** (spec `7dfe03a` vs impl
-  `magi-core@baa5388` + live `bq ls/show`): deploy.yml jobs/schedules/TZ
-  all matched spec (29 jobs; retired jobs correctly absent). Findings
+  `magi-core@baa5388` + live `bq ls/show`): every job the spec documented
+  matched on name/schedule/TZ (retired jobs correctly absent); one
+  impl-only pair (`magi-thought-scorer` service + `magi-stale-update`
+  scheduler) was undocumented. Findings
   fixed here: (a) `guards/{l4,l5,l7}.md` — `on_fail: block` → `warn`,
   bodies rewritten to the warn-only implementation already recorded in
   `guards/index.md` (demotion decision still pending independent review);

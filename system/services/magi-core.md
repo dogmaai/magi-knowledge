@@ -165,7 +165,7 @@ Source: `magi-core/.github/workflows/deploy.yml` @ baa5388. Scheduler and Job na
 | `magi-sm-token-rotate` | `magi-sm-token-rotate-30min` | `*/30 * * * *` (UTC) | Rotate MooMoo Synthetic Monitoring token |
 | `magi-fred-updater` | `magi-fred-updater-daily` | `0 2 * * *` (UTC) | Daily FRED macro data fetch |
 | `magi-watchdog` | `magi-watchdog-daily` | `0 23 * * 1-5` (UTC) | Trade activity monitor |
-| `magi-thought-scorer` (Cloud Run **service**, not a job) | `magi-stale-update` | `0 0 * * 1` (Etc/UTC) | Weekly stale thought-score refresh — scheduler POSTs `${service}/score/stale` |
+| `magi-thought-scorer` (Cloud Run **service**, not a job) | `magi-stale-update` | `0 0 * * 1` (UTC) | Weekly stale thought-score refresh — scheduler POSTs `${service}/score/stale` |
 
 # Writes
 
