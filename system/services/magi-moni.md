@@ -3,8 +3,8 @@ type: Service
 title: magi-moni
 description: Monitoring + admin layer with the AKA-1 natural-language operator bot.
 lilith_safe: false
-status: stable
-generated: { by: devin/local, at: 2026-10-02T09:05:33Z }
+status: draft
+generated: { by: devin/cli, at: 2026-10-06T08:00:00Z }
 verified: [{ by: human:jun, at: 2026-08-24T11:03:39Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-04-04T05:36:00Z
 tags: [service, monitoring, reporting, alerts, aka-1]
@@ -47,7 +47,9 @@ set and policy engine above, and TIALA control via OpenClaw.
 # Reads / surfaces
 
 * [trades](/system/echidna-tables/trades.md), [sessions](/system/echidna-tables/sessions.md), [llm-metrics](/system/echidna-tables/llm-metrics.md).
-* [L4 probation](/system/echidna-tables/l4-probation.md) state and the [guard layers](/system/guards/).
+* L4 warn-only signals — magi-core journals would-be blocks as
+  `WARN_ONLY` guard rows in `thoughts` (the designed `l4_probation` state
+  table never materialized). See [guard layers](/system/guards/).
 * Periodic [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md).
 
 # Notes

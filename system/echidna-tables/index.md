@@ -33,7 +33,7 @@ Two write-path conventions matter:
 * [moomoo-snapshots](moomoo-snapshots.md) - HERMES:MOOMOO broker real-time market snapshots.
 * [focus-symbols](focus-symbols.md) - ISABEL daily focus list; the dynamic HERMES collection universe.
 * [consensus-signals](consensus-signals.md) - Cross-unit consensus detector.
-* [isabel-patterns](isabel-patterns.md) - ISABEL historical win/lose centroids.
+* [isabel-patterns](isabel-patterns.md) - ISABEL per-provider win/lose keyword patterns (`isabel_l4_patterns`).
 * `thought_quality_scores` (deprecated 2026-09-17) - Per-thought quality scoring; documented table never existed — producer actually wrote `fugu_thought_quality_scores` / `thought_quality_rankings` (retired; both dropped 2026-09-23).
 * [gemini-pattern-analysis](gemini-pattern-analysis.md) - Periodic Gemini *generic* win/lose pattern report (not causal analysis).
 * `fugu_sequential_patterns` (deprecated 2026-09-17) - SEKHMET/`fugu-ultra` sequential **causal** outcome analysis; last row 2026-09-01, producer retired; table dropped 2026-09-23.
@@ -50,6 +50,22 @@ Two write-path conventions matter:
 * [order-approvals](order-approvals.md) - Single-use approval tokens for the magi-moomoo order gate.
 * [system-control](system-control.md) - Global emergency kill-switch state read by L0 and the magi-moomoo order gate.
 * [order-intents](order-intents.md) - Append-only order-intent journal; broker-response-loss recovery via remark-embedded intent ids (R10).
-* [l4-probation](l4-probation.md) - Guard L4 blocked provider/side combos.
+* `l4_probation` (deprecated 2026-10-06) - designed Guard L4 blocked-combo state; never materialized in `magi_core` — L4 runs warn-only from the ISABEL stats cache.
 * [lilith-hard-gate-events](lilith-hard-gate-events.md) - LILITH VIX hard-gate rewrites (deprecated 2026-09-23; table dropped — sibling ledgers `lilith_confidence_gate_events` / `lilith_forecast_gate_events` dropped in the same action).
 * [constitution](constitution.md) - Versioned MAGI Constitution store.
+
+# Live tables not yet catalogued (open drift backlog)
+
+Present in `magi_core` (`bq ls` @ 2026-10-06, magi-core `baa5388`) but without a
+per-table concept doc. Per COLLABORATION.md every MAGI-referenced table needs a
+concept doc here, so each entry below is **tracked drift, not resolved** —
+per-table docs are pending work, not waived:
+`bq_write_failures`, `chat_log`, `daphne_hint_effectiveness`,
+`daphne_loss_analysis`, `isabel_briefings`, `isabel_daily_cache`,
+`isabel_requests`, `lilith_training_examples`, `llm_health_checks`,
+`manual_focus_symbols`, `model_training_log`, `pattern_discovery_kpi`,
+`portfolio_snapshots`, `stale_phrases`, `thought_analysis_findings`,
+`thought_embeddings`, `thought_outcome_feedback`, `thoughts_for_ds`,
+`thoughts_shadow`, `thoughts_simulation`, `trades_for_ds`, plus views
+`isabel_trade_analysis`, `market_research_view`, `symbol_change_rates`,
+`trade_results`.

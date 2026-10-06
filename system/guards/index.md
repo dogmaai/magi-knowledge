@@ -28,10 +28,10 @@ historical blocks already live in `thoughts`, so nothing is lost.
 | [L1.5](l1-5.md) | Position Sizing (Hard Limit) | Max concurrent positions; max position % | block | risk-control |
 | [L1.7](l1-7.md) | Daily-loss Kill Switch | Per-unit realized P&L against daily loss limit | block risk increases | risk-control |
 | [L2](l2.md) | Confidence (コンフィデンス層) | `confidence >= L2_THRESHOLD` (Optuna, frozen) | block (opt-in warn via `L2_WARN_ONLY=true`) | statistical-gate |
-| [L4](l4.md) | Direction Suitability (方向適性層) | Provider/side probation | block | statistical-gate |
-| [L5](l5.md) | Thought Similarity (思考類似度層) | Reasoning too similar to past losers | block | statistical-gate |
+| [L4](l4.md) | Direction Suitability (方向適性層) | Provider/side underperformance eval | warn (impl; demotion pending review) | statistical-gate |
+| [L5](l5.md) | Thought Similarity (思考類似度層) | Reasoning too similar to past losers | warn (impl; demotion pending review) | statistical-gate |
 | [L6](l6.md) | Market Regime (市場環境層) | VIX regime vs side | warn | statistical-gate |
-| [L7](l7.md) | Composite Score (複合スコア層) | Optuna 1000-trial composite gate | block | statistical-gate |
+| [L7](l7.md) | Composite Score (複合スコア層) | Optuna 1000-trial composite gate | warn (impl; demotion pending review) | statistical-gate |
 
 The numeric labels are historical and the table is in actual code execution
 order. The L0 emergency kill switch runs first, then L1.6.RECON (fail-closed
@@ -53,8 +53,8 @@ degrees of freedom": too many learned gates for too little live data).
   rule violations and are never learned from data. These are "guards" in the
   strict sense.
 * **statistical-gate** — layers whose thresholds, lists or weights come from
-  fitted statistics (Optuna `optuna_params`, L4 probation state, L5 similarity,
-  confidence calibration). Their **re-optimization is frozen** as of
+  fitted statistics (Optuna `optuna_params`, the L4 direction stats held in
+  the in-session ISABEL stats cache, L5 similarity, confidence calibration). Their **re-optimization is frozen** as of
   2026-10-02: `magi-optuna-job` runs with `OPTUNA_FREEZE=true` and the weekly
   `magi-optuna-optimizer` scheduler is paused; the last `optuna_params` rows
   remain in effect. Whether a blocking statistical-gate is demoted to
@@ -79,7 +79,8 @@ back to the specific constitutional section it enforces.
 
 # Backing data
 
-* [l4-probation](/system/echidna-tables/l4-probation.md) — L4 state.
+* L4 state: none persisted — computed in-session from the ISABEL stats
+  cache (`l4_probation` table never materialized; doc deprecated 2026-10-06).
 * [optuna-params](/system/echidna-tables/optuna-params.md) — L2 threshold, L3
   exclusions, L7 weights.
 * `magi_core.system_control` — L0 emergency kill-switch state.

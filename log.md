@@ -1,6 +1,28 @@
 # Bundle Update Log
 
 ## 2026-10-06
+* **Spec↔impl drift audit + remediation** (spec `7dfe03a` vs impl
+  `magi-core@baa5388` + live `bq ls/show`): every job the spec documented
+  matched on name/schedule/TZ (retired jobs correctly absent); one
+  impl-only pair (`magi-thought-scorer` service + `magi-stale-update`
+  scheduler) was undocumented. Findings
+  fixed here: (a) `guards/{l4,l5,l7}.md` — `on_fail: block` → `warn`,
+  bodies rewritten to the warn-only implementation already recorded in
+  `guards/index.md` (demotion decision still pending independent review);
+  (b) `l4-probation.md` — deprecated: the table does not exist in
+  `magi_core` and no code references it (links removed from `l4.md`,
+  `guards/index.md`, `magi-moni.md`, `model-cohorting.md`,
+  `echidna-tables/index.md`); (c) `isabel-patterns.md` — rewritten to the
+  live `isabel_l4_patterns` table (schema verified via `bq show`; the
+  originally documented centroid schema never materialized);
+  (d) `magi-core.md` — added undocumented `magi-thought-scorer` service +
+  `magi-stale-update` weekly scheduler, removed the resolved
+  openai-scheduler TZ note, source pin bumped `07c1767` → `baa5388`;
+  (e) `echidna-tables/index.md` — added a "not yet catalogued" list of
+  ~25 live tables/views. **Not fixed**: whether L4/L5/L7 stay warn-only
+  permanently is the pending independent-review decision, not an agent
+  call. Docs edited by devin/cli now carry `generated` ahead of `human`
+  verification — re-verification via this PR's review.
 * **Audit (spec mirrors, run by Devin CLI 2026-10-06)**: both live mirrors
   verified in-sync with `main` @ `1d77b9e`. Method: R2 Data Catalog
   `okf.system` scanned via PyIceberg (`CLOUDFLARE_R2_CATALOG_TOKEN` from
