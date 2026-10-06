@@ -5,8 +5,8 @@ description: Per-position evaluation ledger — one row per broker-listed positi
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=position_guard_evals&page=table
 lilith_safe: false
 status: stable
-generated: { by: devin/local, at: 2026-10-01T06:10:00Z }
-verified: { by: human:jun, at: 2026-10-06T07:23:42Z }
+generated: { by: devin/cli, at: 2026-10-06T07:23:42Z }
+verified: [{ by: human:jun, at: 2026-10-06T07:23:42Z }]
 stale_after: 2027-04-04T07:23:42Z
 tags: [echidna, bigquery, position-guard, observability, audit]
 dataset: magi_core
