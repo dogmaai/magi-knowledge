@@ -47,7 +47,8 @@ set and policy engine above, and TIALA control via OpenClaw.
 # Reads / surfaces
 
 * [trades](/system/echidna-tables/trades.md), [sessions](/system/echidna-tables/sessions.md), [llm-metrics](/system/echidna-tables/llm-metrics.md).
-* [L4 probation](/system/echidna-tables/l4-probation.md) state and the [guard layers](/system/guards/).
+* L4 probation state (the designed `l4_probation` table never materialized;
+  L4 runs warn-only — see [guard layers](/system/guards/)).
 * Periodic [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md).
 
 # Notes

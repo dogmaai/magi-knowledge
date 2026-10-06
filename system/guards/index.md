@@ -79,7 +79,8 @@ back to the specific constitutional section it enforces.
 
 # Backing data
 
-* [l4-probation](/system/echidna-tables/l4-probation.md) — L4 state.
+* L4 state: none persisted — computed in-session from the ISABEL stats
+  cache (`l4_probation` table never materialized; doc deprecated 2026-10-06).
 * [optuna-params](/system/echidna-tables/optuna-params.md) — L2 threshold, L3
   exclusions, L7 weights.
 * `magi_core.system_control` — L0 emergency kill-switch state.

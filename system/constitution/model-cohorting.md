@@ -72,7 +72,7 @@ Scoped to **learned / statistical state** only:
 | Aggregate | Current key (implementation) | Cohort-scoped key (this rule) |
 |---|---|---|
 | ISABEL patterns / win-rates ([isabel-patterns](/system/echidna-tables/isabel-patterns.md)) | `llm_provider` (+symbol/direction) | `(unit_name, model_version)` (+symbol/direction) |
-| L4 probation state ([l4-probation](/system/echidna-tables/l4-probation.md), [L4](/system/guards/l4.md)) | `llm_provider` + `side` | `(unit_name, model_version)` + `side` |
+| L4 probation state (`l4_probation` table — deprecated, never materialized; [L4](/system/guards/l4.md)) | `llm_provider` + `side` | `(unit_name, model_version)` + `side` |
 | Unit evaluation / scorecards (P0 reporting, [model-consolidation](model-consolidation.md) comparisons) | `unit_name` | `(unit_name, model_version)` |
 | Optuna-fitted parameters ([optuna-params](/system/echidna-tables/optuna-params.md)) | `param_name` (~per provider) | cohort-scoped in principle — **frozen**, see open decisions |
 
@@ -146,7 +146,7 @@ behavior.
   [sessions](/system/echidna-tables/sessions.md) — attribution columns;
   `model_version` pending magi-core Issue #544.
 * [isabel-patterns](/system/echidna-tables/isabel-patterns.md) /
-  [l4-probation](/system/echidna-tables/l4-probation.md) /
+  `l4_probation` (deprecated) /
   [optuna-params](/system/echidna-tables/optuna-params.md) — the learned
   aggregates this rule re-keys.
 * [guards/index](/system/guards/index.md) — statistical-gate vs risk-control

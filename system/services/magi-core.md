@@ -3,8 +3,8 @@ type: Service
 title: magi-core
 description: The MAGI trading engine — trade loop, LLM orchestration, and guard layers.
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-09-25T00:00:00Z }
+status: draft
+generated: { by: devin/cli, at: 2026-10-06T08:00:00Z }
 verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-04-04T05:36:00Z
 tags: [service, magi-core, core, trading]
@@ -144,9 +144,7 @@ Role boundaries: see
 
 # Operational jobs
 
-Source: `magi-core/.github/workflows/deploy.yml` @ 07c1767. Scheduler and Job names are separate resources.
-Note: `magi-scheduler-openai` has no explicit time zone in deploy.yml at this
-revision; magi-core is adding UTC.
+Source: `magi-core/.github/workflows/deploy.yml` @ baa5388. Scheduler and Job names are separate resources.
 
 | Cloud Run Job | Scheduler | Schedule (TZ) | Role |
 |---|---|---|---|
@@ -167,6 +165,7 @@ revision; magi-core is adding UTC.
 | `magi-sm-token-rotate` | `magi-sm-token-rotate-30min` | `*/30 * * * *` (UTC) | Rotate MooMoo Synthetic Monitoring token |
 | `magi-fred-updater` | `magi-fred-updater-daily` | `0 2 * * *` (UTC) | Daily FRED macro data fetch |
 | `magi-watchdog` | `magi-watchdog-daily` | `0 23 * * 1-5` (UTC) | Trade activity monitor |
+| `magi-thought-scorer` (Cloud Run **service**, not a job) | `magi-stale-update` | `0 0 * * 1` (Etc/UTC) | Weekly stale thought-score refresh — scheduler POSTs `${service}/score/stale` |
 
 # Writes
 
