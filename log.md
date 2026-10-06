@@ -1,5 +1,22 @@
 # Bundle Update Log
 
+## 2026-10-07
+* **Repository deletions (Jun-approved)**: `dogmaai/magi-ui` and
+  `dogmaai/magi-deep-research` deleted. The deep-research repo was the
+  Gemini Enterprise `streamAssist` Cloud Run Job reference
+  implementation; the production brief flow has been the Devin
+  Automation `MAGI 日次市場ブリーフ投入` +
+  `magi-core/scripts/upload-deep-research.mjs` since 2026-09. Verified
+  before deletion: no Cloud Run Job/Service or Scheduler named
+  `magi-deep-research` exists in project `screen-share-459802` — the job
+  was never deployed. Docs updated: the service doc repo pointer moved
+  to `magi-core`, the service-map row records the deletion, and the
+  auto-review inventory and `MISTRAL_API_KEY` injected-copy list were
+  pruned. `system/services/magi-deep-research.md` and
+  `system/services/secrets-inventory.md` are demoted to `draft` per the
+  lifecycle rule (generated.at now postdates the human `verified`
+  entries); `stable` returns on Jun's re-verification.
+
 ## 2026-10-06
 * **Re-verified and restored stable** on Jun's merge of PR #128 (his
   review of the rewritten bodies): `guards/{l4,l5,l7}.md`,

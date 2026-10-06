@@ -264,9 +264,10 @@ Mistral (`mistral-large-latest`) review on `pull_request` events. Both are
 already exists for that head.
 
 - Enabled with the Mistral step: `magi-knowledge`, `magi-moni`, `magi-moomoo`,
-  `magi-price-tracker`, `magi-deep-research`, `magi-core`.
-- `magi-ui` intentionally runs the template review only (no Mistral step).
+  `magi-price-tracker`, `magi-core`.
 - `lilith-training` intentionally has no auto-review workflow.
+- `magi-ui` and `magi-deep-research` were deleted on 2026-10-07 (Jun's
+  decision); their workflow entries are gone with the repositories.
 
 These comments — like `gemini-code-assist` and `chatgpt-codex-connector`
 reviews — are reference information only. They never approve, never satisfy
