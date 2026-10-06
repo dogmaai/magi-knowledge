@@ -3,12 +3,12 @@ type: Service
 title: magi-deep-research
 description: Devin Automation that produces and uploads the weekday daily Deep Research market brief.
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-08-31T07:57:23Z }
+status: draft
+generated: { by: devin/cli, at: 2026-10-06T22:50:00Z }
 verified: { by: human:jun, at: 2026-08-31T07:57:23Z }
 stale_after: 2027-02-27T07:57:23Z
 tags: [service, deep-research, devin-automation, market-research, magi-core]
-repo: dogmaai/magi-deep-research
+repo: dogmaai/magi-core
 automation: https://app.devin.ai/automations/36ae4174a1f84057a113bcd53fc1d570
 ---
 
@@ -18,9 +18,12 @@ The weekday daily Deep Research brief is produced by the Devin Automation
 `MAGI 日次市場ブリーフ投入` and inserted into `magi_core.market_research`
 via `magi-core/scripts/upload-deep-research.mjs`.
 
-The historical Cloud Run Job implementation remains in the
-[dogmaai/magi-deep-research](https://github.com/dogmaai/magi-deep-research)
-repo, but the production flow is now the Devin Automation.
+The historical Cloud Run Job implementation lived in the
+`dogmaai/magi-deep-research` repo, deleted on 2026-10-07 (Jun's decision).
+Verification before deletion: no Cloud Run Job, Service or Scheduler named
+`magi-deep-research` exists in project `screen-share-459802` — the Gemini
+Enterprise `streamAssist` job was never deployed. The production flow is
+the Devin Automation.
 
 # Automation schedule
 
