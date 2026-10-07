@@ -3,8 +3,8 @@ type: PLM Unit
 title: LILITH
 description: Retired independent reasoner; the fine-tuned LILITH line was decommissioned.
 lilith_safe: false
-status: stable
-generated: { by: devin/local, at: 2026-09-23T01:27:00Z }
+status: draft
+generated: { by: devin/cli, at: 2026-10-07T02:15:00Z }
 verified: [{ by: human:jun, at: 2026-08-27T23:14:38Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-04-04T05:36:00Z
 tags: [plm, retired, lilith, fine-tuned, independent]
@@ -64,8 +64,9 @@ The VIX hard-gate can rewrite a LILITH action (e.g. BUY → HOLD under
 
 # Training
 
-LILITH's training pipeline is `dogmaai/lilith-training` (Qwen2.5-3B QLoRA →
-anti-hallucination DPO). See [services/lilith-training](/system/services/lilith-training.md)
+LILITH's training pipeline was `dogmaai/lilith-training` (Qwen2.5-3B QLoRA →
+anti-hallucination DPO); the repo and its Cloud Run Jobs were deleted
+2026-10-07. See [services/lilith-training](/system/services/lilith-training.md)
 and the [LILITH-safe ground truth](/_lilith_safe/).
 
 # Citations

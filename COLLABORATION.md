@@ -248,7 +248,6 @@ repository before translating it into CI path filters or CODEOWNERS.
 | magi-core | `lib/confidence-band-guard.js`, `lib/short-entry-guard.js`, `lib/concerns-guard.js`, `lib/symbols.js`, `lib/excluded_symbols.js`, `.github/workflows/deploy.yml` |
 | magi-moomoo | Order and broker-bridge handlers; resolve exact paths from that repository before setting up automated review routing. |
 | magi-moni | `server.js` command handlers affecting trading or kill switches; verify current routing. |
-| lilith-training | Training input selection, output rules and contamination checks; verify current paths before setting up automated review routing. |
 
 This is a review policy, not installed branch protection. CODEOWNERS requires
 actual eligible GitHub users/teams; model names are not GitHub reviewers.
@@ -265,9 +264,11 @@ already exists for that head.
 
 - Enabled with the Mistral step: `magi-knowledge`, `magi-moni`, `magi-moomoo`,
   `magi-price-tracker`, `magi-core`.
-- `lilith-training` intentionally has no auto-review workflow.
 - `magi-ui` and `magi-deep-research` were deleted on 2026-10-07 (Jun's
   decision); their workflow entries are gone with the repositories.
+- `lilith-training`, `magi-shared`, `magi-core-public` and `magi-stg` were
+  deleted on 2026-10-07 (Jun's decision); `lilith-training` never had an
+  auto-review workflow and the other three carried none either.
 
 These comments — like `gemini-code-assist` and `chatgpt-codex-connector`
 reviews — are reference information only. They never approve, never satisfy

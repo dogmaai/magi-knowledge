@@ -4,8 +4,8 @@ title: trades
 description: Primary trade log — entry/exit, PnL, and unit attribution for every order.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=trades&page=table
 lilith_safe: false
-status: stable
-generated: { by: devin/local, at: 2026-10-04T05:46:30Z }
+status: draft
+generated: { by: devin/cli, at: 2026-10-07T02:15:00Z }
 verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-04-04T05:36:00Z
 tags: [echidna, bigquery, trades, core]
@@ -154,4 +154,4 @@ ORDER BY win_rate_pct DESC;
 # Citations
 
 * Writer: `validateTradeRow()` / `safeInsert('trades', ...)` in `magi-core/lib/bigquery.js`.
-* Consumer (LILITH training): `trades_active` is read by `lilith-training/scripts/extract_hallucination_negatives.py`.
+* Consumer (LILITH training, retired): `trades_active` was read by `lilith-training/scripts/extract_hallucination_negatives.py` (pipeline retired 2026-09; repo and jobs deleted 2026-10-07).

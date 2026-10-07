@@ -4,8 +4,8 @@ title: thoughts
 description: LLM reasoning log — one row per decision, with action, reasoning, and confidence.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=thoughts&page=table
 lilith_safe: false
-status: stable
-generated: { by: devin/local, at: 2026-10-02T09:05:00Z }
+status: draft
+generated: { by: devin/cli, at: 2026-10-07T02:15:00Z }
 verified: { by: human:jun, at: 2026-10-03T03:25:59Z }
 stale_after: 2027-04-03T03:25:59Z
 tags: [echidna, bigquery, thoughts, reasoning, core]
@@ -86,4 +86,4 @@ WHERE action IN ('BUY','SELL') AND confidence > 0.7
 # Citations
 
 * Writer: `validateThoughtRow()` / `safeInsert('thoughts', ...)` in `magi-core/lib/bigquery.js`.
-* Consumer: `lilith-training/scripts/extract_hallucination_negatives.py` (reads `thoughts_active`).
+* Consumer (retired): `lilith-training/scripts/extract_hallucination_negatives.py` read `thoughts_active` (pipeline retired 2026-09; repo and jobs deleted 2026-10-07).

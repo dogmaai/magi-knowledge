@@ -3,21 +3,23 @@ type: Service
 title: lilith-training
 description: Retired LILITH fine-tuning + anti-hallucination DPO pipeline (Qwen2.5-3B QLoRA).
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-09-17T17:34:00Z }
+status: draft
+generated: { by: devin/cli, at: 2026-10-07T02:15:00Z }
 verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-04-04T05:36:00Z
-tags: [service, lilith, training, dpo, qlora, retired]
-repo: dogmaai/lilith-training
+tags: [service, lilith, training, dpo, qlora, retired, deleted]
+repo: dogmaai/lilith-training (deleted 2026-10-07)
 ---
 
 # Overview
 
-> **Retired (2026-09).** The LILITH unit was retired from the live roster and
-> `lilith-inference-svc` was decommissioned, so this pipeline no longer feeds a
-> deployed model. Its Cloud Run jobs in `asia-southeast1` (including the
-> `*-poc` / `*-diag` / `*-smoke` experiments and the dormant `*-prod` jobs) are
-> decommission candidates; `dogmaai/lilith-training` itself can be archived.
+> **Retired (2026-09); deleted (2026-10-07, Jun-approved).** The LILITH unit
+> was retired from the live roster and `lilith-inference-svc` was
+> decommissioned, so this pipeline no longer feeds a deployed model. All 18
+> of its Cloud Run Jobs in `asia-southeast1` (the `*-poc` / `*-diag` /
+> `*-smoke` experiments and the dormant `*-prod` jobs) were deleted on
+> 2026-10-07, and `dogmaai/lilith-training` was deleted the same day. A
+> git-mirror backup is retained on Jun's machine (`~/magi-deletion-work/`).
 
 The pipeline that produces the [LILITH](/system/plm-units/lilith.md) model:
 Qwen2.5-3B QLoRA on Cloud Run Jobs + NVIDIA L4 GPU, followed by
