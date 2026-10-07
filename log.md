@@ -1,6 +1,20 @@
 # Bundle Update Log
 
 ## 2026-10-07
+* **Drift fix (repo pointer)**: [magi-isabel](/system/services/magi-isabel.md)
+  `repo` corrected `dogmaai/magi-isabel` → `dogmaai/magi-core`. The standalone
+  repo does not exist on GitHub (verified 404); the ISABEL implementation has
+  lived in the magi-core monorepo (`isabel/`, `isabel-cache.mjs`,
+  `src/isabel.js`) and deploys via `magi-core/.github/workflows/deploy.yml`.
+  All three `magi-isabel-*` Cloud Run Jobs and their schedulers are live and
+  unchanged. Demoted to `draft` pending Jun's re-verification.
+* **Cloud Build connection cleanup**: dead repository links removed from
+  connection `magi` (asia-northeast1): `dogmaai-magi-stg`,
+  `dogmaai-magi-shared` (repos deleted today) plus `dogmaai-magi-isabel`,
+  `dogmaai-magi-ac`, `dogmaai-magi-gateway`, `dogmaai-alpaca-mcp-server`
+  (repos already absent). Remaining links: `magi-core`, `magi-moni`,
+  `magi-moomoo`, `magi-model-health-check`. The connection itself and its
+  GitHub App installation are unchanged.
 * **Repository deletions (Jun-approved)**: `dogmaai/lilith-training`,
   `dogmaai/magi-shared`, `dogmaai/magi-core-public` and `dogmaai/magi-stg`
   deleted. lilith-training was the retired LILITH fine-tuning/DPO pipeline;

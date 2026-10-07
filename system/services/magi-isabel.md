@@ -3,12 +3,12 @@ type: Service
 title: magi-isabel
 description: ISABEL pattern framework — win/lose centroids and embedding analysis.
 lilith_safe: false
-status: stable
-generated: { by: devin/cli, at: 2026-10-06T08:00:00Z }
+status: draft
+generated: { by: devin/cli, at: 2026-10-07T02:45:00Z }
 verified: [{ by: human:jun, at: 2026-06-19T01:06:40Z }, { by: human:jun, at: 2026-10-06T08:31:20Z }]
 stale_after: 2027-04-04T08:31:20Z
 tags: [service, isabel, embeddings, patterns]
-repo: dogmaai/magi-isabel
+repo: dogmaai/magi-core
 ---
 
 # Overview
@@ -18,6 +18,14 @@ ISABEL (**I**ntelligent **S**trategy **A**nalysis and **B**ehavioral **E**valuat
 reasoning with BigQuery execution records, builds win vs lose reasoning centroids
 (Cohere embeddings), and produces pattern stats per symbol/direction/unit, which
 the guard layers consume.
+
+The implementation lives in the `dogmaai/magi-core` monorepo
+(`isabel/`, `isabel-cache.mjs`, `src/isabel.js`, `lib/isabel*.js`) and is deployed
+by `magi-core/.github/workflows/deploy.yml` (jobs `magi-isabel-cache`,
+`magi-isabel-l4`, `magi-isabel-briefing`). A standalone `dogmaai/magi-isabel`
+repository no longer exists — the former `repo` pointer here was stale drift
+(corrected 2026-10-07; the Cloud Build connection's dead repository links for
+deleted repos were removed the same day).
 
 # Produces
 
