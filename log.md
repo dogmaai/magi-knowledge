@@ -17,8 +17,9 @@
   the post-delete `keys list` shows only the 2 Google-managed keys
   (`748216a7`, `b137f00b`, expiring 2027-04-27, not deletable). The SA
   itself and its project roles (`owner`, `editor`, `bigquery.admin`,
-  `discoveryengine.*`) are unchanged. Revoking the temporary KeyAdmin
-  binding is left to Jun; recorded in
+  `discoveryengine.*`) are unchanged. The temporary KeyAdmin binding was
+  revoked by jun the same day — verified when `keys list` returned to
+  PERMISSION_DENIED; recorded in
   [secrets-inventory](system/services/secrets-inventory.md).
 * **IAM cleanup**: service account `magi-optuna-scheduler@screen-share-459802.iam.gserviceaccount.com`
   deleted. It carried only `roles/aiplatform.user`, had no user-managed keys
