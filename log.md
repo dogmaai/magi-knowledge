@@ -10,11 +10,14 @@
   unchanged. Demoted to `draft` pending Jun's re-verification.
 * **Cloud Build connection cleanup**: dead repository links removed from
   connection `magi` (asia-northeast1): `dogmaai-magi-stg`,
-  `dogmaai-magi-shared` (repos deleted today) plus `dogmaai-magi-isabel`,
+  `dogmaai-magi-shared` (repos deleted 2026-10-07) plus `dogmaai-magi-isabel`,
   `dogmaai-magi-ac`, `dogmaai-magi-gateway`, `dogmaai-alpaca-mcp-server`
-  (repos already absent). Remaining links: `magi-core`, `magi-moni`,
-  `magi-moomoo`, `magi-model-health-check`. The connection itself and its
-  GitHub App installation are unchanged.
+  (repos already absent, so the links could not resolve anyway). Remaining
+  links all resolve to live repos: `magi-core`, `magi-moni`,
+  `magi-moomoo`, `magi-model-health-check`. The connection itself, its
+  GitHub App installation, and the live repos' builds are unchanged — no
+  deploy pipeline references the removed links (org-wide `gh search code`
+  verified zero references to the deleted repos).
 * **Repository deletions (Jun-approved)**: `dogmaai/lilith-training`,
   `dogmaai/magi-shared`, `dogmaai/magi-core-public` and `dogmaai/magi-stg`
   deleted. lilith-training was the retired LILITH fine-tuning/DPO pipeline;
