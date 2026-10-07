@@ -1,22 +1,24 @@
 # Bundle Update Log
 
 ## 2026-10-07
-* **SA key inventory (devin-bq-admin)**: audited the 5 live user-managed keys
-  on `devin-bq-admin@screen-share-459802.iam.gserviceaccount.com`
-  (`27830b59`, `3c584ee5`, `5928b1d3`, `73029fb8`, `ed2cd589`) at Jun's
-  request. No key JSON for this SA exists in any Devin-reachable store —
-  the Devin org secrets hold only `GCP_SERVICE_ACCOUNT_KEY` (SA
+* **SA key cleanup (devin-bq-admin)**: all 5 user-managed keys on
+  `devin-bq-admin@screen-share-459802.iam.gserviceaccount.com`
+  (`27830b59`, `3c584ee5`, `5928b1d3`, `73029fb8`, `ed2cd589`) **deleted**
+  after the audit found no key JSON for this SA in any Devin-reachable
+  store — the Devin org secrets hold only `GCP_SERVICE_ACCOUNT_KEY` (SA
   `github-actions@`, key `1f618b92…`), a full GSM scan found SA JSONs only
   for the now-deleted `grafana-bigquery` SA, and repo / CI-secret / MCP
   checks found none. Key lineage was reconstructed from Admin Activity
-  audit logs (key IDs cannot be listed: `github-actions@` lacks
-  `iam.serviceAccountKeys.list`): 9 `CreateServiceAccountKey` events
-  between 2026-04-27 and 2026-07-14 minus 4 deleted keys = the same 5.
-  Four of the five live keys post-date the last observed real API use
-  (2026-04-27) and were most likely never used; `27830b59` was minted the
-  same day. Key deletion is blocked on IAM — `github-actions@` also lacks
-  `iam.serviceAccountKeys.delete` — so the keep-or-delete decision and any
-  `roles/iam.serviceAccountKeyAdmin` grant are Jun's; recorded in
+  audit logs: 9 `CreateServiceAccountKey` events between 2026-04-27 and
+  2026-07-14 minus 4 previously deleted keys = the 5. Four of the five
+  post-dated the last observed real API use (2026-04-27) and were most
+  likely never used. Jun granted `github-actions@`
+  `roles/iam.serviceAccountKeyAdmin` **on this SA only** for the deletion;
+  the post-delete `keys list` shows only the 2 Google-managed keys
+  (`748216a7`, `b137f00b`, expiring 2027-04-27, not deletable). The SA
+  itself and its project roles (`owner`, `editor`, `bigquery.admin`,
+  `discoveryengine.*`) are unchanged. Revoking the temporary KeyAdmin
+  binding is left to Jun; recorded in
   [secrets-inventory](system/services/secrets-inventory.md).
 * **IAM cleanup**: service account `magi-optuna-scheduler@screen-share-459802.iam.gserviceaccount.com`
   deleted. It carried only `roles/aiplatform.user`, had no user-managed keys
