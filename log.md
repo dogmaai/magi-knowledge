@@ -1,6 +1,23 @@
 # Bundle Update Log
 
 ## 2026-10-07
+* **SA key inventory (devin-bq-admin)**: audited the 5 live user-managed keys
+  on `devin-bq-admin@screen-share-459802.iam.gserviceaccount.com`
+  (`27830b59`, `3c584ee5`, `5928b1d3`, `73029fb8`, `ed2cd589`) at Jun's
+  request. No key JSON for this SA exists in any Devin-reachable store —
+  the Devin org secrets hold only `GCP_SERVICE_ACCOUNT_KEY` (SA
+  `github-actions@`, key `1f618b92…`), a full GSM scan found SA JSONs only
+  for the now-deleted `grafana-bigquery` SA, and repo / CI-secret / MCP
+  checks found none. Key lineage was reconstructed from Admin Activity
+  audit logs (key IDs cannot be listed: `github-actions@` lacks
+  `iam.serviceAccountKeys.list`): 9 `CreateServiceAccountKey` events
+  between 2026-04-27 and 2026-07-14 minus 4 deleted keys = the same 5.
+  Four of the five live keys post-date the last observed real API use
+  (2026-04-27) and were most likely never used; `27830b59` was minted the
+  same day. Key deletion is blocked on IAM — `github-actions@` also lacks
+  `iam.serviceAccountKeys.delete` — so the keep-or-delete decision and any
+  `roles/iam.serviceAccountKeyAdmin` grant are Jun's; recorded in
+  [secrets-inventory](system/services/secrets-inventory.md).
 * **IAM cleanup**: service account `magi-optuna-scheduler@screen-share-459802.iam.gserviceaccount.com`
   deleted. It carried only `roles/aiplatform.user`, had no user-managed keys
   and no auth events in the last 90 days; it belonged to the retired Optuna
