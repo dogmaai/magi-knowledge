@@ -1,6 +1,37 @@
 # Bundle Update Log
 
 ## 2026-10-07
+* **SA key cleanup (devin-bq-admin)**: all 5 user-managed keys on
+  `devin-bq-admin@screen-share-459802.iam.gserviceaccount.com`
+  (`27830b59`, `3c584ee5`, `5928b1d3`, `73029fb8`, `ed2cd589`) **deleted**
+  after the audit found no key JSON for this SA in any store Devin can
+  reach. Audited scope: Devin org secrets (all ~35, only
+  `GCP_SERVICE_ACCOUNT_KEY` → SA `github-actions@`, key `1f618b92…`),
+  session env / `~/gcp-key.json` / `~/.config/gcloud` on this VM, every
+  GSM secret in `screen-share-459802` (~60; the only SA JSON was for the
+  now-deleted `grafana-bigquery` SA), the four live MAGI repos, magi-core
+  GitHub Actions secrets, and the cognition-bigquery MCP install
+  (unconfigured). Locations outside Devin's reach — jun's local machine,
+  third-party password stores, other GCP projects — are inherently out
+  of audit scope; deleting the keys removes the risk regardless of any
+  copy surviving there. Key lineage was reconstructed from Admin
+  Activity audit logs (key IDs cannot be listed: `github-actions@` lacks
+  `iam.serviceAccountKeys.list`): 9 `CreateServiceAccountKey` events
+  between 2026-04-27 and 2026-07-14 minus 4 previously deleted keys =
+  the 5. Four of the five were created after the last recorded API use
+  by this SA (2026-04-27, per jun's audit) and have no recorded usage in
+  the retained logs. Jun granted `github-actions@`
+  `roles/iam.serviceAccountKeyAdmin` **on this SA only** for the
+  deletion; the post-delete `keys list` shows only the 2 Google-managed
+  keys (`748216a7`, `b137f00b`, expiring 2027-04-27, not deletable), and
+  all 5 deletions are recorded as `DeleteServiceAccountKey` events in
+  Admin Activity (2026-10-07T06:19Z). The temporary KeyAdmin binding was
+  revoked by jun the same day — verified when `keys list` returned to
+  PERMISSION_DENIED. The SA itself and its project roles (`owner`,
+  `editor`, `bigquery.admin`, `discoveryengine.agentspaceAdmin`,
+  `discoveryengine.agentspaceUser`) are unchanged — its `owner`/`editor`
+  grants are over-privileged for an unused SA and are recorded as a
+  follow-up in [secrets-inventory](system/services/secrets-inventory.md).
 * **IAM cleanup**: service account `magi-optuna-scheduler@screen-share-459802.iam.gserviceaccount.com`
   deleted. It carried only `roles/aiplatform.user`, had no user-managed keys
   and no auth events in the last 90 days; it belonged to the retired Optuna
