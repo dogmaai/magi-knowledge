@@ -32,6 +32,18 @@
   `discoveryengine.agentspaceUser`) are unchanged — its `owner`/`editor`
   grants are over-privileged for an unused SA and are recorded as a
   follow-up in [secrets-inventory](system/services/secrets-inventory.md).
+* **IAM cleanup (disabled SAs)**: 12 disabled service accounts deleted from
+  `screen-share-459802` — `devin-bq` (superseded by `devin-bq-admin`),
+  `cloud-scheduler-invoker`, `hermes-writer`, `magi-ui-sa`, `colab-optuna`,
+  `pubsub-invoker`, `pubsub-push-invoker`, `grafana-bigquery`,
+  `grafana-bq-new`, `magi-caller-sa`, `tableplus-readonly`,
+  `github-actions-deploy`. All were already disabled, had no inbound IAM
+  bindings, no live-workload attachments and no code/doc references
+  (verified via org-wide `gh search code` and repo greps). Recoverable via
+  `gcloud iam service-accounts undelete` within 30 days. Side finding: GSM
+  secret `BQ_SERVICE_ACCOUNT_KEY` holds a key for the deleted
+  `grafana-bigquery` SA — dead by construction; removal is a pending
+  secret-hygiene item for Jun, not done here.
 * **IAM cleanup**: service account `magi-optuna-scheduler@screen-share-459802.iam.gserviceaccount.com`
   deleted. It carried only `roles/aiplatform.user`, had no user-managed keys
   and no auth events in the last 90 days; it belonged to the retired Optuna
