@@ -4,8 +4,8 @@ title: trades_active / thoughts_active
 description: Active-filtered VIEWs over the base trades and thoughts tables.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=trades_active&page=table
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-06-19T01:02:48Z }
+status: draft
+generated: { by: devin/cli, at: 2026-10-07T02:15:00Z }
 verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
 stale_after: 2026-12-16T01:02:48Z
 tags: [echidna, bigquery, view]
@@ -27,8 +27,9 @@ the underlying base tables.
 # Consumers
 
 * ISABEL stats blocks (`<ISABEL_STATS_BLOCK>`) are computed from `trades_active`.
-* `lilith-training` reads `trades_active` and `thoughts_active` for the
-  anti-hallucination `rejected`-example extraction.
+* `lilith-training` (retired; repo and jobs deleted 2026-10-07) read
+  `trades_active` and `thoughts_active` for the anti-hallucination
+  `rejected`-example extraction.
 
 # Note
 

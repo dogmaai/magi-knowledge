@@ -4,7 +4,7 @@ title: Secrets inventory (Grafana Cloud, Cloudflare, GitHub, GCP tokens)
 description: Single ledger of the infrastructure tokens (Grafana Cloud, Cloudflare, GitHub, GCP) referenced across the MAGI repositories — canonical env var name, auth scheme, target endpoint, required scopes, source of truth, usage sites and rotation owner. GCP Secret Manager is the only source of truth; injected env-var copies can go stale.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-06T22:50:00Z }
+generated: { by: devin/cli, at: 2026-10-07T02:15:00Z }
 verified: [{ by: human:jun, at: 2026-09-17T17:23:06Z }, { by: devin/local, at: 2026-10-02T16:00:00Z }, { by: devin/cli, at: 2026-10-06T04:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-04-04T05:36:00Z
 tags: [service, secrets, grafana, cloudflare, github, gcp, security]
@@ -35,7 +35,7 @@ API (`mistral-large-latest`) for automated review comments — see
 [COLLABORATION.md](../../COLLABORATION.md#automated-pr-review-bots). The GSM
 secret remains the source of truth; the repo secrets are injected copies that
 can go stale on rotation. Rotation owner: jun. `lilith-training`
-deliberately has no such secret. `magi-ui` never held one and
+never held one either (repo deleted 2026-10-07). `magi-ui` never held one and
 `magi-deep-research`'s injected copy was deleted with the repository on
 2026-10-07.
 

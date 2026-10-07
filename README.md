@@ -103,7 +103,8 @@ tree と不一致の文書がある場合は export を中断するため、dige
 混在させることはできません。既定出力は stdout なので生成物をコミットせずに済みます。
 digest を直接編集せず、再生成してください。
 
-LILITH 学習パイプライン（`dogmaai/lilith-training`）は、このバンドルを
+LILITH 学習パイプライン（`dogmaai/lilith-training`、2026-09 retired・
+repo は 2026-10-07 削除済み — 以下は歴史的仕様）は、このバンドルを
 vendor（`vendor/magi-knowledge` の git submodule、または build-time fetch）し、
 **必ず** `LilithSafeKnowledge` 経由でのみ読み込みます。
 

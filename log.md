@@ -1,6 +1,29 @@
 # Bundle Update Log
 
 ## 2026-10-07
+* **Repository deletions (Jun-approved)**: `dogmaai/lilith-training`,
+  `dogmaai/magi-shared`, `dogmaai/magi-core-public` and `dogmaai/magi-stg`
+  deleted. lilith-training was the retired LILITH fine-tuning/DPO pipeline;
+  all 18 of its Cloud Run Jobs in `asia-southeast1` (the 15 `*-poc`/`*-diag`/
+  `*-smoke` experiments plus the 3 `*-prod` jobs) were deleted the same day —
+  no Scheduler, Eventarc or Cloud Build trigger referenced them, and no
+  `magi-stg`-named Cloud Run service exists anywhere in
+  `screen-share-459802` (the old `magi-stg` deploy.yml target was already
+  absent). `magi-shared` and `magi-core-public` had no corresponding
+  production service and no inbound references from live repos (verified by
+  org-wide `gh search code`). Mirror backups of all four repos plus
+  per-job `describe` YAML exports are retained on Jun's machine
+  (`~/magi-deletion-work/`). Docs updated: the service map row records the
+  deletion, [lilith-training](/system/services/lilith-training.md),
+  [lilith](/system/plm-units/lilith.md) and the ECHIDNA consumer notes
+  (`trades`, `thoughts`, `views`) mark the retired pipeline/repo as deleted,
+  the auto-review inventory drops the `lilith-training` row, and
+  `index.md`/`AGENTS.md`/`README.md`/`secrets-inventory.md` now say
+  `magi-stg` is deleted rather than archived. Edited `stable` concepts are
+  demoted to `draft` per the lifecycle rule; `stable` returns on Jun's
+  re-verification. BigQuery datasets/tables, GCS data, Artifact Registry
+  images and shared IAM/service accounts were untouched per the deletion
+  scope.
 * **Repository deletions (Jun-approved)**: `dogmaai/magi-ui` and
   `dogmaai/magi-deep-research` deleted. The deep-research repo was the
   Gemini Enterprise `streamAssist` Cloud Run Job reference
