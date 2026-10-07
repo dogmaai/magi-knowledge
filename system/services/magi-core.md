@@ -3,8 +3,8 @@ type: Service
 title: magi-core
 description: The MAGI trading engine — trade loop, LLM orchestration, and guard layers.
 lilith_safe: false
-status: stable
-generated: { by: devin/cli, at: 2026-10-06T08:00:00Z }
+status: draft
+generated: { by: devin/cli, at: 2026-10-07T05:10:00Z }
 verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-06T08:31:20Z }]
 stale_after: 2027-04-04T08:31:20Z
 tags: [service, magi-core, core, trading]
@@ -161,7 +161,7 @@ Source: `magi-core/.github/workflows/deploy.yml` @ baa5388. Scheduler and Job na
 | `magi-position-guard` | `magi-position-guard-scheduler` | `*/15 9-16 * * 1-5` (America/New_York) | Intra-day exit enforcement |
 | `magi-shadow-evaluator` | `magi-shadow-evaluator-daily` | `30 21 * * 1-5` (America/New_York) | Shadow trade evaluation (`TRADE_MODE=SHADOW` units; legacy LILITH rows) |
 | `magi-sync-embeddings` | `magi-sync-embeddings-daily` | `0 8 * * 1-5` (America/New_York) | Thought embedding sync |
-| ~~`magi-optuna-job`~~ | ~~`magi-optuna-optimizer`~~ | retired 2026-10 | Optuna re-optimization pipeline retired (Jun decision 2026-10-03); frozen `optuna_params` rows remain active via `lib/optuna.js`. Custom optimizer sources (`optuna_*.py`) retained in-repo; GCP job/scheduler/image deletion pending Jun |
+| ~~`magi-optuna-job`~~ | ~~`magi-optuna-optimizer`~~ | retired 2026-10 | Optuna re-optimization pipeline retired (Jun decision 2026-10-03); frozen `optuna_params` rows remain active via `lib/optuna.js`. Custom optimizer sources (`optuna_*.py`) retained in-repo. Cloud Run job and scheduler verified absent 2026-10-07; SA `magi-optuna-scheduler@` deleted 2026-10-07; container images retained |
 | `magi-sm-token-rotate` | `magi-sm-token-rotate-30min` | `*/30 * * * *` (UTC) | Rotate MooMoo Synthetic Monitoring token |
 | `magi-fred-updater` | `magi-fred-updater-daily` | `0 2 * * *` (UTC) | Daily FRED macro data fetch |
 | `magi-watchdog` | `magi-watchdog-daily` | `0 23 * * 1-5` (UTC) | Trade activity monitor |

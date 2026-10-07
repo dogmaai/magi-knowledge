@@ -1,6 +1,13 @@
 # Bundle Update Log
 
 ## 2026-10-07
+* **IAM cleanup**: service account `magi-optuna-scheduler@screen-share-459802.iam.gserviceaccount.com`
+  deleted. It carried only `roles/aiplatform.user`, had no user-managed keys
+  and no auth events in the last 90 days; it belonged to the retired Optuna
+  pipeline (`magi-optuna-job` / `magi-optuna-optimizer`, already absent) and
+  Feb-2026 `magi-optuna-test*` Vertex AI test jobs. Recoverable via
+  `gcloud iam service-accounts undelete` within 30 days. Noted in
+  [magi-core](/system/services/magi-core.md) (draft pending re-verification).
 * **Drift fix (repo pointer)**: [magi-isabel](/system/services/magi-isabel.md)
   `repo` corrected `dogmaai/magi-isabel` → `dogmaai/magi-core`. The standalone
   repo does not exist on GitHub (verified 404); the ISABEL implementation has
