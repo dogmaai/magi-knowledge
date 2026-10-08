@@ -2,6 +2,16 @@
 
 ## 2026-10-08
 * **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
+  (draft, v0.4) — recorded the offline implementation candidates for
+  magi-core#581: deterministic Experience-Distillation (option B) and the
+  ARC×SIG verdict-only order arbiter in `magi-core#584`, plus the
+  UNKNOWN→SELL reconciliation-contract fix in `magi-core#583`. Both
+  candidates are unmerged, fixture-tested, and unconnected to production.
+  Added to Open decisions: arbitration policy (consensus vs independent
+  allocation), production atomic-reservation backend, production
+  numerical thresholds/allocations, and the L1.7 per-unit vs
+  account-wide spec↔code drift.
+* **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
   (draft, v0.3) — recorded Jun's final-form concept: the converged decision
   core's two slots carry codenames **ARC** (production-A) and **SIG**
   (production-B) in an **Active×Active** redundancy arrangement, not a

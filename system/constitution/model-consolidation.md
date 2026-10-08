@@ -4,10 +4,10 @@ title: "MODEL CONSOLIDATION"
 description: Evidence-based consolidation of the ensemble's trade-decision core toward 1-2 units. Documentation-level objective; NOT part of the runtime prompt tree.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-08T04:57:54Z }
+generated: { by: devin/cli, at: 2026-10-08T07:19:37Z }
 stale_after: 2027-03-25T11:15:00Z
 tags: [constitution, consolidation, ensemble, learning, draft]
-version: "0.3"
+version: "0.4"
 source: none — documentation-level objective, not emitted by buildSwingConstitution()
 ---
 
@@ -163,8 +163,48 @@ First-order candidates to evaluate with existing data, one at a time:
 Each study records: what happened, the surprise vs market expectation, the
 impact on profit, the expected horizon, and the falsification condition.
 
+## Implementation status (recorded 2026-10-08)
+
+Offline **candidate** contracts for this shape now exist in `magi-core`
+(unmerged at time of writing):
+
+* `lib/experience-distillation.js` + `lib/method-card.js`
+  (`magi-core#584`) — option **B** of the C→B→A plan: deterministic
+  extraction/validation/aggregation over injected fixtures only. Outcome
+  kinds `realized` / `shadow_virtual` / `immature` / `unevaluable` are kept
+  separate; an unevaluated decision is never relabelled a loss. Method
+  cards carry a `draft → approved → revoked/expired` lifecycle where
+  approval binds content hash, selector version, combination and scope —
+  no `human:*` verification is fabricated by the code.
+* `lib/order-arbiter.js` (`magi-core#584`) — verdict-only shared execution
+  authority: deterministic competition rule, atomic-reservation contract,
+  exit precedence, `decision_id` idempotency, fail-closed on L0
+  `halted`/authority outage. No dispatch path exists.
+* `fc26b7e` (`magi-core#583`) — UNKNOWN→SELL blind-resubmission fix
+  implementing the order-intents contract
+  ("reconciliation, never blind resubmission").
+
+These are candidate modules tested against fixtures/stubs only. They are
+**not** connected to production sessions, brokers, BigQuery or prompts, and
+they do not resolve the open decisions below.
+
 ## Open decisions for Jun
 
+* Order-arbitration policy for the Active×Active pair: consensus-required
+  vs independent allocation with a shared risk ceiling; abstention on
+  disagreement; solo-operation conditions when one side stops. The
+  `order-arbiter` candidate implements a configurable version of
+  "independent allocation" as a test fixture — that is a contract shape,
+  not a policy choice.
+* Production atomic-reservation backend (single-writer / transactional)
+  and its atomicity proof — `InMemoryReservationStore` only models the
+  contract.
+* All numerical thresholds and per-unit capital allocations (candidate
+  code injects them from config; no production values were chosen).
+* L1.7 per-unit vs account-wide scope: `system/guards/l1-7.md` (stable)
+  describes per-unit blocking while `lib/daily-loss.js` additionally trips
+  on an account-wide limit (commit `5879a8e7`). Implementation drift —
+  reported in magi-core#583, unresolved here.
 * Consolidation pass thresholds and minimum sample size per configuration.
 * Observation window for the final comparison and its freeze policy.
 * Cost assumptions where fills/fees cannot be confirmed.
