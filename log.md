@@ -2,6 +2,19 @@
 
 ## 2026-10-08
 * **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
+  (draft, v0.5) — recorded Jun's 2026-10-08 determinations (paper-only
+  scope, 1000 USD loss budget with the loss-adjusted invariant, USD caps,
+  independent-allocation arbitration + shared authority, both-stop on unit
+  failure, long-only SELL, dual L1.7, B-only learning, experiment start
+  conditions) and the updated candidates (arbiter contract v0.2,
+  experiment gates, account guard, Firestore reservation adapter).
+* **Correction**: [L1.7 daily-loss kill switch](/system/guards/l1-7.md) —
+  the doc previously claimed "per-unit, not portfolio-wide" while
+  `lib/daily-loss.js` (since `5879a8e7`) already implemented an additional
+  account-wide trip. Jun approved the dual scope 2026-10-08; the doc now
+  describes both layers and notes the gross-of-fees `pnl_amount`
+  understatement. Needs Jun re-verification (`verified` predates this edit).
+* **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
   (draft, v0.4) — recorded the offline implementation candidates for
   magi-core#581: deterministic Experience-Distillation (option B) and the
   ARC×SIG verdict-only order arbiter in `magi-core#584`, plus the

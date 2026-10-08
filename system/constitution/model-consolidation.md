@@ -4,10 +4,10 @@ title: "MODEL CONSOLIDATION"
 description: Evidence-based consolidation of the ensemble's trade-decision core toward 1-2 units. Documentation-level objective; NOT part of the runtime prompt tree.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-08T07:19:37Z }
+generated: { by: devin/cli, at: 2026-10-08T08:25:00Z }
 stale_after: 2027-03-25T11:15:00Z
 tags: [constitution, consolidation, ensemble, learning, draft]
-version: "0.4"
+version: "0.5"
 source: none — documentation-level objective, not emitted by buildSwingConstitution()
 ---
 
@@ -176,35 +176,78 @@ Offline **candidate** contracts for this shape now exist in `magi-core`
   cards carry a `draft → approved → revoked/expired` lifecycle where
   approval binds content hash, selector version, combination and scope —
   no `human:*` verification is fabricated by the code.
-* `lib/order-arbiter.js` (`magi-core#584`) — verdict-only shared execution
-  authority: deterministic competition rule, atomic-reservation contract,
-  exit precedence, `decision_id` idempotency, fail-closed on L0
-  `halted`/authority outage. No dispatch path exists.
+* `lib/order-arbiter.js` (`magi-core#584`, contract v0.2) — verdict-only
+  shared execution authority implementing Jun's 2026-10-08 determinations:
+  independent allocation, pre-fixed versioned competition rule, exits never
+  wait, long-only sell scope, no averaging-down adds, peer-stop halts all
+  new risk, account must be verified paper, fail-closed on L0
+  `halted`/authority outage.
+* `lib/experiment-gates.js` — the Jun-approved USD limits and the
+  loss-adjusted budget invariant (below), pure functions over an injected
+  ledger snapshot.
+* `lib/account-guard.js` — paper/REAL proven from broker-confirmed account
+  info + an allowlist; never from an LLM claim or a lone env var.
+* `lib/reservation-store-firestore.js` — persistent reservation backend
+  (Firestore-transaction shape over an injected `db` facade): serialized
+  capacity via a budget doc, per-decision reservation docs, epoch fencing
+  against stale dispatchers, `hydrate()` restart restore, terminal-only
+  release. Broker POST is never inside a transaction.
 * `fc26b7e` (`magi-core#583`) — UNKNOWN→SELL blind-resubmission fix
   implementing the order-intents contract
   ("reconciliation, never blind resubmission").
 
 These are candidate modules tested against fixtures/stubs only. They are
-**not** connected to production sessions, brokers, BigQuery or prompts, and
-they do not resolve the open decisions below.
+**not** connected to production sessions, brokers, BigQuery or prompts.
+
+## Jun determinations (approved 2026-10-08 — paper account only)
+
+Scope: **paper trading only**. NAV at approval 1,062,192.79 USD; total
+experiment loss budget **1,000 USD** — not daily, not per-trade, never
+reset by date change/restart/model/snapshot updates, never increased by
+profit. Earlier provisional %-based limits are replaced by these USD caps.
+REAL trading, margin, short, options and leveraged products are outside
+this approval. Learning is input-level **B only** — no weight updates, no
+autonomous A generation/promotion, no new paid services.
+
+* **L1.7**: dual protection — per-unit limit stops that unit's new risk;
+  account-wide limit stops the whole account's new risk. Realized daily
+  loss and flow-adjusted valuation loss are separate metrics (never
+  double-counted). See `system/guards/l1-7.md`.
+* **Arbitration**: independent allocation + deterministic shared execution
+  authority; consensus not required; no third LLM arbitrates. Same-symbol
+  same-direction entries resolved by a pre-fixed versioned competition
+  rule (never summed); opposite-direction new exposure deferred; exits
+  never wait; SELL limited to reducing existing longs (no shorts);
+  no-averaging-down enforced programmatically; adopted `thought_id`↔order
+  lineage preserved; non-adopted intents go to virtual evaluation only.
+* **Unit failure**: any stopped/unhealthy unit stops ALL new risk; exits
+  continue; no quota transfer; solo continuation NOT approved this round.
+* **Approved USD limits** (experiment only — ceilings, not targets):
+  loss budget 1000; total principal 800; per-unit principal 400; per-order
+  principal 200; fee reserve 200; per-trade stress ≤20; total stress ≤80;
+  unit daily realized loss −50; account daily realized OR valuation −100;
+  early stop at 500 consumed/drawdown (exits only after that; restarting
+  needs fresh Jun approval); ≥1000 = violation → end + cause report.
+* **Budget invariant** (checked on every new BUY):
+  `consumedRealizedLoss + heldPrincipal + pendingBuyCommitment
+   + newOrderMaxPayable + feeReserve ≤ 1000`.
+  BUYs must bound max payment (limit price required). Partial fills split
+  between held principal and remaining reservation; UNKNOWN / cancel
+  request / timeout never release a reservation; stress estimate ≥10%
+  adverse move + fees (higher for gap/liquidity risk; never a maximum-loss
+  guarantee).
+* **Account isolation**: baseline record (account id, confirmed paper
+  mode, positions, open orders, baseline NAV, experiment id) at start;
+  dedicated paper account preferred — a shared account requires a
+  dedicated ledger; external-path orders must be reflected in shared state
+  or no new experiment orders; existing holdings are not disposed of nor
+  covered by the budget.
 
 ## Open decisions for Jun
 
-* Order-arbitration policy for the Active×Active pair: consensus-required
-  vs independent allocation with a shared risk ceiling; abstention on
-  disagreement; solo-operation conditions when one side stops. The
-  `order-arbiter` candidate implements a configurable version of
-  "independent allocation" as a test fixture — that is a contract shape,
-  not a policy choice.
-* Production atomic-reservation backend (single-writer / transactional)
-  and its atomicity proof — `InMemoryReservationStore` only models the
-  contract.
-* All numerical thresholds and per-unit capital allocations (candidate
-  code injects them from config; no production values were chosen).
-* L1.7 per-unit vs account-wide scope: `system/guards/l1-7.md` (stable)
-  describes per-unit blocking while `lib/daily-loss.js` additionally trips
-  on an account-wide limit (commit `5879a8e7`). Implementation drift —
-  reported in magi-core#583, unresolved here.
+* Production atomic-reservation backend on GCP (Firestore provisioning,
+  IAM, deploy) — Jun executes; adapter contract exists, real-backend
+  atomicity not yet proven.
 * Consolidation pass thresholds and minimum sample size per configuration.
 * Observation window for the final comparison and its freeze policy.
 * Cost assumptions where fills/fees cannot be confirmed.
@@ -213,6 +256,12 @@ they do not resolve the open decisions below.
 * Learning method and learning-data boundary for any additional training
   evaluated under procedure step 4 — each requires separate Jun approval;
   nothing in this document pre-approves a boundary.
+* Experiment start conditions (Jun §8): isolated real-path verification of
+  the UNKNOWN fix, real-backend concurrency/restart/stale-dispatcher
+  tests, unit-stop/authority-outage/L0-HALTED checks, budget-exhaustion
+  and daily-rollover behaviour, paper/REAL mixup rejection, no double
+  attribution, no guard-bypassing order path. InMemory+fixture passes do
+  NOT satisfy these.
 
 ## Cross-references
 
