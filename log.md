@@ -2,6 +2,16 @@
 
 ## 2026-10-08
 * **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
+  (draft, v0.5) — added a *Measurement plan (proposal — pending Jun)*:
+  ≥60 matured decision-outcome pairs per configuration, 10-trading-day
+  outcome maturity, 60-trading-day frozen comparison window,
+  watermark/purge/embargo walk-forward for method cards, after-cost
+  expectancy with 95% CI lower bound > 0 as the pass threshold, and
+  `shadow_virtual` scoring for the non-adopted arbitration side. Also
+  recorded the Firestore provisioning package, the real-wire UNKNOWN
+  regression test and the partial-fill ledger split
+  (`splitReservationOnFill`).
+* **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
   (draft, v0.5) — recorded Jun's 2026-10-08 determinations (paper-only
   scope, 1000 USD loss budget with the loss-adjusted invariant, USD caps,
   independent-allocation arbitration + shared authority, both-stop on unit

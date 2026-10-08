@@ -194,7 +194,15 @@ Offline **candidate** contracts for this shape now exist in `magi-core`
   release. Broker POST is never inside a transaction.
 * `fc26b7e` (`magi-core#583`) — UNKNOWN→SELL blind-resubmission fix
   implementing the order-intents contract
-  ("reconciliation, never blind resubmission").
+  ("reconciliation, never blind resubmission"). Verified against a real
+  HTTP wire path (local bridge stub, real TCP, only service discovery and
+  auth mocked) in `lib/__tests__/sell-retry-real-path.test.js`.
+* `splitReservationOnFill` (`lib/experiment-gates.js`) — partial-fill
+  ledger split: held principal + remaining reservation + released
+  slippage must conserve the original reservation exactly; fill above
+  limit or overfill fails closed.
+* `docs/arc-sig-firestore-setup.md` (`magi-core`) — provisioning package
+  for Jun: schema, transaction boundaries, IAM, commands, cost, rollback.
 
 These are candidate modules tested against fixtures/stubs only. They are
 **not** connected to production sessions, brokers, BigQuery or prompts.
@@ -243,13 +251,44 @@ autonomous A generation/promotion, no new paid services.
   or no new experiment orders; existing holdings are not disposed of nor
   covered by the budget.
 
+## Measurement plan (proposal — pending Jun; not approved yet)
+
+Draft proposal answering Jun directive §9 ("sample size and comparison
+period fixed in advance; an experiment stopped early stays 'insufficient',
+never a winner"). Numbers below are proposals, not approved values.
+
+* **Unit of comparison**: a decision-outcome pair (intent → fill → exit or
+  horizon expiry), namespaced per (unit, model, boundary). Both C (fixed
+  baseline) and B (distillation-fed) are scored on identical
+  same-time / same-information / same-symbol samples.
+* **Minimum evaluable sample**: ≥60 outcome-matured decision pairs per
+  configuration AND per unit before any comparative verdict. Fewer →
+  report "insufficient sample" with the observed distribution and its
+  uncertainty interval; never rounded into a winner.
+* **Outcome maturity**: position closed, or 10 trading days after fill,
+  whichever comes first. Immature outcomes are excluded from comparison
+  and reported separately (they are neither profit nor loss).
+* **Comparison window**: up to 60 trading days from first live dispatch,
+  ending earlier at early stop or budget violation. The window is frozen
+  at experiment start; it is not extended to reach a sample count.
+* **Time-ordered validation for method cards**: a card is distilled only
+  from fills reconciled before its watermark; it is evaluated only on
+  decisions after that watermark (purge overlapping windows + 1 trading
+  day embargo around the boundary; walk-forward, never reshuffled).
+* **Pass threshold (proposed)**: after-cost expectancy improvement whose
+  bootstrap 95% CI lower bound is > 0, with drawdown not worse than the
+  baseline at the same confidence. Win rate alone is never sufficient
+  (selection criteria above).
+* **Non-adopted side**: the unit whose intent lost arbitration is scored
+  separately as `shadow_virtual` — real capital is never attributed twice.
+
 ## Open decisions for Jun
 
 * Production atomic-reservation backend on GCP (Firestore provisioning,
   IAM, deploy) — Jun executes; adapter contract exists, real-backend
   atomicity not yet proven.
-* Consolidation pass thresholds and minimum sample size per configuration.
-* Observation window for the final comparison and its freeze policy.
+* Approval of the measurement-plan proposal above (sample size, window,
+  thresholds).
 * Cost assumptions where fills/fees cannot be confirmed.
 * Scope of "1–2": decision core only (this document) vs. wider processing —
   undecided.
