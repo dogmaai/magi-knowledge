@@ -1,5 +1,19 @@
 # Bundle Update Log
 
+## 2026-10-08
+* **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
+  (draft, v0.3) — recorded Jun's final-form concept: the converged decision
+  core's two slots carry codenames **ARC** (production-A) and **SIG**
+  (production-B) in an **Active×Active** redundancy arrangement, not a
+  judge+challenger split. Codenames are slot identifiers decoupled from
+  existing units — ARC is not the retired LILITH, SIG is not the deployed
+  ADAM; occupying models/providers remain evidence-selected. Added the
+  correlated-losses bound as a hard constraint for Active×Active
+  (same-corpus training yields shared failure modes) and clarified that
+  judge+challenger stays a comparison candidate. Sensitive-path change
+  (`system/constitution/**`): independent review required before Jun's
+  re-verification promotes it beyond draft.
+
 ## 2026-10-07
 * **SA key cleanup (devin-bq-admin)**: all 5 user-managed keys on
   `devin-bq-admin@screen-share-459802.iam.gserviceaccount.com`

@@ -4,10 +4,10 @@ title: "MODEL CONSOLIDATION"
 description: Evidence-based consolidation of the ensemble's trade-decision core toward 1-2 units. Documentation-level objective; NOT part of the runtime prompt tree.
 lilith_safe: false
 status: draft
-generated: { by: devin/local, at: 2026-09-25T11:15:00Z }
+generated: { by: devin/cli, at: 2026-10-08T04:57:54Z }
 stale_after: 2027-03-25T11:15:00Z
 tags: [constitution, consolidation, ensemble, learning, draft]
-version: "0.2"
+version: "0.3"
 source: none — documentation-level objective, not emitted by buildSwingConstitution()
 ---
 
@@ -29,6 +29,37 @@ where Jun has separately approved it — a unit updated by additional
 training. The current phase is a preparation period: collect decision data
 that makes such a comparison possible before reducing candidates.
 
+## Final-form codenames (Jun-stated concept, recorded 2026-10-08)
+
+The two slots of the converged decision core carry the codenames **ARC**
+(production-A) and **SIG** (production-B), run as an **Active×Active**
+redundant pair: both units are full production voters, and the pair exists
+to absorb single-unit degradation or failure — it is not a judge+challenger
+split.
+
+Concept origin (Jun): multiple LLMs trade; the thoughts that actually
+reached fills are collected centrally and distilled into the training data
+from which the final units are built.
+
+The codenames are slot identifiers only, deliberately decoupled from
+existing unit names:
+
+* ARC is **not** the retired [LILITH](/system/plm-units/lilith.md)
+  (`lilith-v1.0-b2-prod`). No pipeline, weights, or data of the retired
+  LILITH line are implied; the "not a LILITH revival" boundary below stands.
+* SIG is **not** the currently deployed [ADAM](/system/plm-units/adam.md)
+  (Ollama `qwen2.5:7b` collaborative analyst). Deployed ADAM is a provisional
+  swarm contributor bearing its own name; whether a slot ends up occupied by
+  an improved/renamed existing unit or a new one is part of the
+  evidence-based selection below.
+
+Active×Active imposes a hard decorrelation constraint: two slots trained on
+the same corpus with the same method share failure modes and provide no
+real redundancy. The cross-unit correlated-losses criterion under
+*Selection criteria* is therefore binding for this configuration, and
+differentiated base models, information sets, or accumulated decision
+methods are the expected decorrelators.
+
 This objective answers "what are the stored learning assets (`thoughts`,
 `thoughts_shadow`, `trades` outcomes) for?" — the question left open when the
 former fourth north-star objective (distillation into a fine-tuned LILITH
@@ -48,7 +79,8 @@ specialist) was removed on 2026-09-17.
   different claims. Whether HERMES collection, ISABEL memory, DAPHNE review
   and other supporting roles also consolidate is **undecided** and out of
   scope here.
-* **Not a preselected model.** No unit or provider is named in advance.
+* **Not a preselected model.** The slot codenames are fixed (ARC / SIG,
+  above); no model, provider, or occupying unit is named in advance.
   Selection happens only after same-condition evidence exists.
 * **Not a goal of more models, more trades, or higher win rate.**
   Profitability improvements are hypotheses to be proven, not assumptions.
@@ -103,7 +135,10 @@ Compare, on identical same-time / same-information / same-symbol samples:
 * a single unit;
 * pairs — not only the top two by aggregate score, but also pairs with
   complementary strong conditions, and a "judge + challenger" arrangement
-  where the second unit's role is disproof rather than agreement.
+  where the second unit's role is disproof rather than agreement. The
+  reference final configuration is the Active×Active ARC×SIG pair defined
+  above; judge+challenger remains a comparison candidate, not the stated
+  end-state.
 
 ## Procedure (proposed phases)
 
