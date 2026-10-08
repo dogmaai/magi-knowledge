@@ -245,8 +245,10 @@ autonomous A generation/promotion, no new paid services.
   adverse move + fees (higher for gap/liquidity risk; never a maximum-loss
   guarantee).
 * **Account isolation** (Jun decision 2026-10-08, updated): the paper
-  account `182729395` (MooMoo SIMULATE, broker-confirmed `trd_env`) is
-  the **dedicated PLM paper account**. All PLM order flow — including the
+  account **`acc_id` 1302593** (MooMoo SIMULATE, broker-confirmed
+  `trd_env` + broker-reported `acc_id`; the MooMooID 182729395 is the
+  user-level id, not the trading acc_id — the allowlist binds the
+  broker-reported acc_id) is the **dedicated PLM paper account**. All PLM order flow — including the
   ARC×SIG experiment and existing units (TYPHON, QWEN observed live) —
   belongs to this account and routes through the shared execution
   authority once wired; until every PLM order path goes through the
@@ -254,7 +256,7 @@ autonomous A generation/promotion, no new paid services.
   Non-PLM flows are not present in this account. Existing holdings
   (XOM/AMAT/WMT/CVX/PLTR ≈ $117.6k at 2026-10-08) are pre-existing PLM
   positions, not experiment positions; they are recorded in the baseline
-  and never disposed or reattributed. `MOOMOO_ACC_ID=182729395` should be
+  and never disposed or reattributed. `MOOMOO_ACC_ID=1302593` should be
   pinned explicitly on the bridge (auto-discovery only as fallback);
   `/account_info` must return `acc_id` (dogmaai/magi-moomoo#87) for the
   allowlist check to pass. Baseline record (account id, confirmed paper
