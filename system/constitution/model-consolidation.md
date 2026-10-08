@@ -244,12 +244,25 @@ autonomous A generation/promotion, no new paid services.
   request / timeout never release a reservation; stress estimate ≥10%
   adverse move + fees (higher for gap/liquidity risk; never a maximum-loss
   guarantee).
-* **Account isolation**: baseline record (account id, confirmed paper
-  mode, positions, open orders, baseline NAV, experiment id) at start;
-  dedicated paper account preferred — a shared account requires a
-  dedicated ledger; external-path orders must be reflected in shared state
-  or no new experiment orders; existing holdings are not disposed of nor
-  covered by the budget.
+* **Account isolation** (Jun decision 2026-10-08, updated): the paper
+  account `182729395` (MooMoo SIMULATE, broker-confirmed `trd_env`) is
+  the **dedicated PLM paper account**. All PLM order flow — including the
+  ARC×SIG experiment and existing units (TYPHON, QWEN observed live) —
+  belongs to this account and routes through the shared execution
+  authority once wired; until every PLM order path goes through the
+  arbiter, the experiment `externalReconciled` gate stays fail-closed.
+  Non-PLM flows are not present in this account. Existing holdings
+  (XOM/AMAT/WMT/CVX/PLTR ≈ $117.6k at 2026-10-08) are pre-existing PLM
+  positions, not experiment positions; they are recorded in the baseline
+  and never disposed or reattributed. `MOOMOO_ACC_ID=182729395` should be
+  pinned explicitly on the bridge (auto-discovery only as fallback);
+  `/account_info` must return `acc_id` (dogmaai/magi-moomoo#87) for the
+  allowlist check to pass. Baseline record (account id, confirmed paper
+  mode, positions, open orders, baseline NAV, experiment id) at start —
+  measured NAV 1,062,382.85 USD on 2026-10-08 (approval-time figure
+  1,062,192.79 USD also recorded); any order path not reflected in the
+  shared state → no new experiment orders; existing holdings are not
+  disposed of nor covered by the budget.
 
 ## Measurement plan (proposal — pending Jun; not approved yet)
 

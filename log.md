@@ -2,6 +2,15 @@
 
 ## 2026-10-08
 * **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
+  (draft, v0.5) — updated *Account isolation* per Jun's decision: paper
+  account `182729395` (SIMULATE, broker-confirmed) is the dedicated PLM
+  paper account; all PLM order flow routes through the shared authority
+  once wired (`externalReconciled` stays fail-closed until then);
+  `MOOMOO_ACC_ID` pinning and the `acc_id` response field
+  (magi-moomoo#87) recorded as prerequisites; measured baseline NAV
+  1,062,382.85 USD; pre-existing PLM holdings recorded, not covered by
+  the experiment budget.
+* **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
   (draft, v0.5) — added a *Measurement plan (proposal — pending Jun)*:
   ≥60 matured decision-outcome pairs per configuration, 10-trading-day
   outcome maturity, 60-trading-day frozen comparison window,
