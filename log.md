@@ -1,6 +1,64 @@
 # Bundle Update Log
 
 ## 2026-10-08
+* **Correction**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
+  / [L1.7](/system/guards/l1-7.md) — per review on PR #139: pinned the
+  merged magi-core revisions (`#583` → `4e05af4`, `#584` → `b4fc555`;
+  inspected revisions `fc26b7e` / `2e737e4`) replacing the "unmerged"
+  status, linked the L1.7 reference, clarified baseline NAV
+  (1,062,382.85 measured) vs approval NAV (1,062,192.79) as NAV drift,
+  and added the same-change update obligation for future production
+  wiring. L1.7 notes that the `verified` stamp predates the dual-layer
+  update (Jun re-verification pending) and flags the BQ-lookup fail-open
+  behaviour as an open question for Jun.
+* **Correction**: log entry below — `182729395` was labelled "paper
+  account"; corrected to name broker `acc_id` `1302593` as the dedicated
+  PLM paper account (182729395 is the user-level MooMooID).
+* **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
+  (draft, v0.5) — updated *Account isolation* per Jun's decision: the
+  dedicated PLM paper account is the broker trading **`acc_id` `1302593`**
+  (SIMULATE, broker-confirmed; `182729395` is the user-level MooMooID, not
+  the trading acc_id the allowlist binds). All PLM order flow routes
+  through the shared authority
+  once wired (`externalReconciled` stays fail-closed until then);
+  `MOOMOO_ACC_ID` pinning and the `acc_id` response field
+  (magi-moomoo#87) recorded as prerequisites; measured baseline NAV
+  1,062,382.85 USD; pre-existing PLM holdings recorded, not covered by
+  the experiment budget.
+* **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
+  (draft, v0.5) — added a *Measurement plan* **proposal** (pending Jun;
+  none of the values below are approved yet — listed under Open
+  decisions): ≥60 matured decision-outcome pairs per configuration, 10-trading-day
+  outcome maturity, 60-trading-day frozen comparison window,
+  watermark/purge/embargo walk-forward for method cards, after-cost
+  expectancy with 95% CI lower bound > 0 as the pass threshold, and
+  `shadow_virtual` scoring for the non-adopted arbitration side. Also
+  recorded the Firestore provisioning package, the real-wire UNKNOWN
+  regression test and the partial-fill ledger split
+  (`splitReservationOnFill`).
+* **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
+  (draft, v0.5) — recorded Jun's 2026-10-08 determinations (paper-only
+  scope, 1000 USD loss budget with the loss-adjusted invariant, USD caps,
+  independent-allocation arbitration + shared authority, both-stop on unit
+  failure, long-only SELL, dual L1.7, B-only learning, experiment start
+  conditions) and the updated candidates (arbiter contract v0.2,
+  experiment gates, account guard, Firestore reservation adapter).
+* **Correction**: [L1.7 daily-loss kill switch](/system/guards/l1-7.md) —
+  the doc previously claimed "per-unit, not portfolio-wide" while
+  `lib/daily-loss.js` (since `5879a8e7`) already implemented an additional
+  account-wide trip. Jun approved the dual scope 2026-10-08; the doc now
+  describes both layers and notes the gross-of-fees `pnl_amount`
+  understatement. Needs Jun re-verification (`verified` predates this edit).
+* **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
+  (draft, v0.4) — recorded the offline implementation candidates for
+  magi-core#581: deterministic Experience-Distillation (option B) and the
+  ARC×SIG verdict-only order arbiter in `magi-core#584`, plus the
+  UNKNOWN→SELL reconciliation-contract fix in `magi-core#583`. Both
+  candidates are unmerged, fixture-tested, and unconnected to production.
+  Added to Open decisions: arbitration policy (consensus vs independent
+  allocation), production atomic-reservation backend, production
+  numerical thresholds/allocations, and the L1.7 per-unit vs
+  account-wide spec↔code drift.
 * **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
   (draft, v0.3) — recorded Jun's final-form concept: the converged decision
   core's two slots carry codenames **ARC** (production-A) and **SIG**

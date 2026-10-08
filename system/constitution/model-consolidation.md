@@ -4,10 +4,10 @@ title: "MODEL CONSOLIDATION"
 description: Evidence-based consolidation of the ensemble's trade-decision core toward 1-2 units. Documentation-level objective; NOT part of the runtime prompt tree.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-08T04:57:54Z }
+generated: { by: devin/cli, at: 2026-10-08T08:25:00Z }
 stale_after: 2027-03-25T11:15:00Z
 tags: [constitution, consolidation, ensemble, learning, draft]
-version: "0.3"
+version: "0.5"
 source: none — documentation-level objective, not emitted by buildSwingConstitution()
 ---
 
@@ -163,16 +163,168 @@ First-order candidates to evaluate with existing data, one at a time:
 Each study records: what happened, the surprise vs market expectation, the
 impact on profit, the expected horizon, and the falsification condition.
 
+## Implementation status (recorded 2026-10-08, updated on merge)
+
+Offline **candidate** contracts for this shape exist in `magi-core`
+(`main`; `#583` merged as `4e05af4`, `#584` merged as `b4fc555` —
+review-inspected revisions `fc26b7e` and `2e737e4` respectively):
+
+* `lib/experience-distillation.js` + `lib/method-card.js`
+  (`magi-core#584`) — option **B** of the C→B→A plan: deterministic
+  extraction/validation/aggregation over injected fixtures only. Outcome
+  kinds `realized` / `shadow_virtual` / `immature` / `unevaluable` are kept
+  separate; an unevaluated decision is never relabelled a loss. Method
+  cards carry a `draft → approved → revoked/expired` lifecycle where
+  approval binds content hash, selector version, combination and scope —
+  no `human:*` verification is fabricated by the code.
+* `lib/order-arbiter.js` (`magi-core#584`, contract v0.2) — verdict-only
+  shared execution authority implementing Jun's 2026-10-08 determinations:
+  independent allocation, pre-fixed versioned competition rule, exits never
+  wait, long-only sell scope, no averaging-down adds, peer-stop halts all
+  new risk, account must be verified paper, fail-closed on L0
+  `halted`/authority outage.
+* `lib/experiment-gates.js` — the Jun-approved USD limits and the
+  loss-adjusted budget invariant (below), pure functions over an injected
+  ledger snapshot.
+* `lib/account-guard.js` — paper/REAL proven from broker-confirmed account
+  info + an allowlist; never from an LLM claim or a lone env var.
+* `lib/reservation-store-firestore.js` — persistent reservation backend
+  (Firestore-transaction shape over an injected `db` facade): serialized
+  capacity via a budget doc, per-decision reservation docs, epoch fencing
+  against stale dispatchers, `hydrate()` restart restore, terminal-only
+  release. Broker POST is never inside a transaction.
+* `magi-core#583` (merged `4e05af4`; reviewed `fc26b7e`) — UNKNOWN→SELL
+  blind-resubmission fix implementing the order-intents contract
+  ("reconciliation, never blind resubmission"). Verified against a real
+  HTTP wire path (local bridge stub, real TCP, only service discovery and
+  auth mocked) in `lib/__tests__/sell-retry-real-path.test.js`.
+* `splitReservationOnFill` (`lib/experiment-gates.js`) — partial-fill
+  ledger split: held principal + remaining reservation + released
+  slippage must conserve the original reservation exactly; fill above
+  limit or overfill fails closed.
+* `docs/arc-sig-firestore-setup.md` (`magi-core`) — provisioning package
+  for Jun: schema, transaction boundaries, IAM, commands, cost, rollback.
+
+These are candidate modules tested against fixtures/stubs only. They are
+**not** connected to production sessions, brokers, BigQuery or prompts.
+Wiring any of them into a live path requires a new, independently
+reviewed change, and this section must be updated in the same change so
+the recorded status never trails the implementation.
+
+## Jun determinations (approved 2026-10-08 — paper account only)
+
+Scope: **paper trading only**. NAV at approval 1,062,192.79 USD; total
+experiment loss budget **1,000 USD** — not daily, not per-trade, never
+reset by date change/restart/model/snapshot updates, never increased by
+profit. Earlier provisional %-based limits are replaced by these USD caps.
+REAL trading, margin, short, options and leveraged products are outside
+this approval. Learning is input-level **B only** — no weight updates, no
+autonomous A generation/promotion, no new paid services.
+
+* **L1.7**: dual protection — per-unit limit stops that unit's new risk;
+  account-wide limit stops the whole account's new risk. Realized daily
+  loss and flow-adjusted valuation loss are separate metrics (never
+  double-counted). See [L1.7 Daily-loss Kill Switch](/system/guards/l1-7.md).
+* **Arbitration**: independent allocation + deterministic shared execution
+  authority; consensus not required; no third LLM arbitrates. Same-symbol
+  same-direction entries resolved by a pre-fixed versioned competition
+  rule (never summed); opposite-direction new exposure deferred; exits
+  never wait; SELL limited to reducing existing longs (no shorts);
+  no-averaging-down enforced programmatically; adopted `thought_id`↔order
+  lineage preserved; non-adopted intents go to virtual evaluation only.
+* **Unit failure**: any stopped/unhealthy unit stops ALL new risk; exits
+  continue; no quota transfer; solo continuation NOT approved this round.
+* **Approved USD limits** (experiment only — ceilings, not targets):
+  loss budget 1000; total principal 800; per-unit principal 400; per-order
+  principal 200; fee reserve 200; per-trade stress ≤20; total stress ≤80;
+  unit daily realized loss −50; account daily realized OR valuation −100;
+  early stop at 500 consumed/drawdown (exits only after that; restarting
+  needs fresh Jun approval); ≥1000 = violation → end + cause report.
+* **Budget invariant** (checked on every new BUY):
+  `consumedRealizedLoss + heldPrincipal + pendingBuyCommitment
+   + newOrderMaxPayable + feeReserve ≤ 1000`.
+  BUYs must bound max payment (limit price required). Partial fills split
+  between held principal and remaining reservation; UNKNOWN / cancel
+  request / timeout never release a reservation; stress estimate ≥10%
+  adverse move + fees (higher for gap/liquidity risk; never a maximum-loss
+  guarantee).
+* **Account isolation** (Jun decision 2026-10-08, updated): the paper
+  account **`acc_id` 1302593** (MooMoo SIMULATE, broker-confirmed
+  `trd_env` + broker-reported `acc_id`; the MooMooID 182729395 is the
+  user-level id, not the trading acc_id — the allowlist binds the
+  broker-reported acc_id) is the **dedicated PLM paper account**. All PLM order flow — including the
+  ARC×SIG experiment and existing units (TYPHON, QWEN observed live) —
+  belongs to this account and routes through the shared execution
+  authority once wired; until every PLM order path goes through the
+  arbiter, the experiment `externalReconciled` gate stays fail-closed.
+  Non-PLM flows are not present in this account. Existing holdings
+  (XOM/AMAT/WMT/CVX/PLTR ≈ $117.6k at 2026-10-08) are pre-existing PLM
+  positions, not experiment positions; they are recorded in the baseline
+  and never disposed or reattributed. `MOOMOO_ACC_ID=1302593` should be
+  pinned explicitly on the bridge (auto-discovery only as fallback);
+  `/account_info` must return `acc_id` (dogmaai/magi-moomoo#87) for the
+  allowlist check to pass. Baseline record (account id, confirmed paper
+  mode, positions, open orders, baseline NAV, experiment id) at start —
+  measured NAV 1,062,382.85 USD on 2026-10-08 is the baseline figure —
+  the approval-time NAV was 1,062,192.79 USD; the difference is ordinary
+  NAV drift between approval and measurement, not a discrepancy; any
+  order path not reflected in the
+  shared state → no new experiment orders; existing holdings are not
+  disposed of nor covered by the budget.
+
+## Measurement plan (proposal — pending Jun; not approved yet)
+
+Draft proposal answering Jun directive §9 ("sample size and comparison
+period fixed in advance; an experiment stopped early stays 'insufficient',
+never a winner"). Numbers below are proposals, not approved values.
+
+* **Unit of comparison**: a decision-outcome pair (intent → fill → exit or
+  horizon expiry), namespaced per (unit, model, boundary). Both C (fixed
+  baseline) and B (distillation-fed) are scored on identical
+  same-time / same-information / same-symbol samples.
+* **Minimum evaluable sample**: ≥60 outcome-matured decision pairs per
+  configuration AND per unit before any comparative verdict. Fewer →
+  report "insufficient sample" with the observed distribution and its
+  uncertainty interval; never rounded into a winner.
+* **Outcome maturity**: position closed, or 10 trading days after fill,
+  whichever comes first. Immature outcomes are excluded from comparison
+  and reported separately (they are neither profit nor loss).
+* **Comparison window**: up to 60 trading days from first live dispatch,
+  ending earlier at early stop or budget violation. The window is frozen
+  at experiment start; it is not extended to reach a sample count.
+* **Time-ordered validation for method cards**: a card is distilled only
+  from fills reconciled before its watermark; it is evaluated only on
+  decisions after that watermark (purge overlapping windows + 1 trading
+  day embargo around the boundary; walk-forward, never reshuffled).
+* **Pass threshold (proposed)**: after-cost expectancy improvement whose
+  bootstrap 95% CI lower bound is > 0, with drawdown not worse than the
+  baseline at the same confidence. Win rate alone is never sufficient
+  (selection criteria above). The bootstrap CI is proposed because it
+  makes no distributional assumption on pair P&L and stays computable on
+  the minimum sample; approving this plan extends only the experiment's
+  duration — no additional cost or infrastructure.
+* **Non-adopted side**: the unit whose intent lost arbitration is scored
+  separately as `shadow_virtual` — real capital is never attributed twice.
+
 ## Open decisions for Jun
 
-* Consolidation pass thresholds and minimum sample size per configuration.
-* Observation window for the final comparison and its freeze policy.
+* Production atomic-reservation backend on GCP (Firestore provisioning,
+  IAM, deploy) — Jun executes; adapter contract exists, real-backend
+  atomicity not yet proven.
+* Approval of the measurement-plan proposal above (sample size, window,
+  thresholds).
 * Cost assumptions where fills/fees cannot be confirmed.
 * Scope of "1–2": decision core only (this document) vs. wider processing —
   undecided.
 * Learning method and learning-data boundary for any additional training
   evaluated under procedure step 4 — each requires separate Jun approval;
   nothing in this document pre-approves a boundary.
+* Experiment start conditions (Jun §8): isolated real-path verification of
+  the UNKNOWN fix, real-backend concurrency/restart/stale-dispatcher
+  tests, unit-stop/authority-outage/L0-HALTED checks, budget-exhaustion
+  and daily-rollover behaviour, paper/REAL mixup rejection, no double
+  attribution, no guard-bypassing order path. InMemory+fixture passes do
+  NOT satisfy these.
 
 ## Cross-references
 
