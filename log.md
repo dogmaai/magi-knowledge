@@ -1,18 +1,34 @@
 # Bundle Update Log
 
 ## 2026-10-08
+* **Correction**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
+  / [L1.7](/system/guards/l1-7.md) — per review on PR #139: pinned the
+  merged magi-core revisions (`#583` → `4e05af4`, `#584` → `b4fc555`;
+  inspected revisions `fc26b7e` / `2e737e4`) replacing the "unmerged"
+  status, linked the L1.7 reference, clarified baseline NAV
+  (1,062,382.85 measured) vs approval NAV (1,062,192.79) as NAV drift,
+  and added the same-change update obligation for future production
+  wiring. L1.7 notes that the `verified` stamp predates the dual-layer
+  update (Jun re-verification pending) and flags the BQ-lookup fail-open
+  behaviour as an open question for Jun.
+* **Correction**: log entry below — `182729395` was labelled "paper
+  account"; corrected to name broker `acc_id` `1302593` as the dedicated
+  PLM paper account (182729395 is the user-level MooMooID).
 * **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
-  (draft, v0.5) — updated *Account isolation* per Jun's decision: paper
-  account `182729395` (SIMULATE, broker-confirmed) is the dedicated PLM
-  paper account; all PLM order flow routes through the shared authority
+  (draft, v0.5) — updated *Account isolation* per Jun's decision: the
+  dedicated PLM paper account is the broker trading **`acc_id` `1302593`**
+  (SIMULATE, broker-confirmed; `182729395` is the user-level MooMooID, not
+  the trading acc_id the allowlist binds). All PLM order flow routes
+  through the shared authority
   once wired (`externalReconciled` stays fail-closed until then);
   `MOOMOO_ACC_ID` pinning and the `acc_id` response field
   (magi-moomoo#87) recorded as prerequisites; measured baseline NAV
   1,062,382.85 USD; pre-existing PLM holdings recorded, not covered by
   the experiment budget.
 * **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
-  (draft, v0.5) — added a *Measurement plan (proposal — pending Jun)*:
-  ≥60 matured decision-outcome pairs per configuration, 10-trading-day
+  (draft, v0.5) — added a *Measurement plan* **proposal** (pending Jun;
+  none of the values below are approved yet — listed under Open
+  decisions): ≥60 matured decision-outcome pairs per configuration, 10-trading-day
   outcome maturity, 60-trading-day frozen comparison window,
   watermark/purge/embargo walk-forward for method cards, after-cost
   expectancy with 95% CI lower bound > 0 as the pass threshold, and

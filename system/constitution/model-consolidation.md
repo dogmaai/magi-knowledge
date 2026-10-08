@@ -163,10 +163,11 @@ First-order candidates to evaluate with existing data, one at a time:
 Each study records: what happened, the surprise vs market expectation, the
 impact on profit, the expected horizon, and the falsification condition.
 
-## Implementation status (recorded 2026-10-08)
+## Implementation status (recorded 2026-10-08, updated on merge)
 
-Offline **candidate** contracts for this shape now exist in `magi-core`
-(unmerged at time of writing):
+Offline **candidate** contracts for this shape exist in `magi-core`
+(`main`; `#583` merged as `4e05af4`, `#584` merged as `b4fc555` —
+review-inspected revisions `fc26b7e` and `2e737e4` respectively):
 
 * `lib/experience-distillation.js` + `lib/method-card.js`
   (`magi-core#584`) — option **B** of the C→B→A plan: deterministic
@@ -192,8 +193,8 @@ Offline **candidate** contracts for this shape now exist in `magi-core`
   capacity via a budget doc, per-decision reservation docs, epoch fencing
   against stale dispatchers, `hydrate()` restart restore, terminal-only
   release. Broker POST is never inside a transaction.
-* `fc26b7e` (`magi-core#583`) — UNKNOWN→SELL blind-resubmission fix
-  implementing the order-intents contract
+* `magi-core#583` (merged `4e05af4`; reviewed `fc26b7e`) — UNKNOWN→SELL
+  blind-resubmission fix implementing the order-intents contract
   ("reconciliation, never blind resubmission"). Verified against a real
   HTTP wire path (local bridge stub, real TCP, only service discovery and
   auth mocked) in `lib/__tests__/sell-retry-real-path.test.js`.
@@ -206,6 +207,9 @@ Offline **candidate** contracts for this shape now exist in `magi-core`
 
 These are candidate modules tested against fixtures/stubs only. They are
 **not** connected to production sessions, brokers, BigQuery or prompts.
+Wiring any of them into a live path requires a new, independently
+reviewed change, and this section must be updated in the same change so
+the recorded status never trails the implementation.
 
 ## Jun determinations (approved 2026-10-08 — paper account only)
 
@@ -220,7 +224,7 @@ autonomous A generation/promotion, no new paid services.
 * **L1.7**: dual protection — per-unit limit stops that unit's new risk;
   account-wide limit stops the whole account's new risk. Realized daily
   loss and flow-adjusted valuation loss are separate metrics (never
-  double-counted). See `system/guards/l1-7.md`.
+  double-counted). See [L1.7 Daily-loss Kill Switch](/system/guards/l1-7.md).
 * **Arbitration**: independent allocation + deterministic shared execution
   authority; consensus not required; no third LLM arbitrates. Same-symbol
   same-direction entries resolved by a pre-fixed versioned competition
@@ -261,8 +265,10 @@ autonomous A generation/promotion, no new paid services.
   `/account_info` must return `acc_id` (dogmaai/magi-moomoo#87) for the
   allowlist check to pass. Baseline record (account id, confirmed paper
   mode, positions, open orders, baseline NAV, experiment id) at start —
-  measured NAV 1,062,382.85 USD on 2026-10-08 (approval-time figure
-  1,062,192.79 USD also recorded); any order path not reflected in the
+  measured NAV 1,062,382.85 USD on 2026-10-08 is the baseline figure —
+  the approval-time NAV was 1,062,192.79 USD; the difference is ordinary
+  NAV drift between approval and measurement, not a discrepancy; any
+  order path not reflected in the
   shared state → no new experiment orders; existing holdings are not
   disposed of nor covered by the budget.
 
@@ -293,7 +299,10 @@ never a winner"). Numbers below are proposals, not approved values.
 * **Pass threshold (proposed)**: after-cost expectancy improvement whose
   bootstrap 95% CI lower bound is > 0, with drawdown not worse than the
   baseline at the same confidence. Win rate alone is never sufficient
-  (selection criteria above).
+  (selection criteria above). The bootstrap CI is proposed because it
+  makes no distributional assumption on pair P&L and stays computable on
+  the minimum sample; approving this plan extends only the experiment's
+  duration — no additional cost or infrastructure.
 * **Non-adopted side**: the unit whose intent lost arbitration is scored
   separately as `shadow_virtual` — real capital is never attributed twice.
 
