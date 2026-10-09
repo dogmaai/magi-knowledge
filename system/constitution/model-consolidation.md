@@ -296,13 +296,19 @@ owner: Devin.
   these names. Slot occupancy and final model selection follow the
   evidence-based selection above; Jun will select the local models
   separately, so no slot↔name binding is recorded yet.
-* **Runtime plan** (Jun planning note 2026-10-09 — intent, not yet a
-  determination): both slots are planned to run as local-LLM units on
-  TIALA (self-hosted Ollama, reached via the existing Cloudflare
-  tunnel). This records direction only: it binds neither model nor
-  unit name, and sharing one host/tunnel is an infrastructure-level
-  correlated-failure domain for the Active×Active pair — evaluated at
-  selection, not waived here.
+* **Runtime plan** (Jun stated direction 2026-10-09 — a planning note,
+  NOT an approved determination): both slots are planned to run as
+  local-LLM units on TIALA — the self-hosted Ollama host already used
+  by [ADAM](/system/plm-units/adam.md) and [BOREAS](/system/plm-units/boreas.md) —
+  reached via the existing `magi-ollama` Cloudflare tunnel (HTTP(S)
+  only; the tunnel gRPC setting stays disabled). This records
+  direction only: it binds neither model nor unit name. Sharing one
+  host and one tunnel is an infrastructure-level correlated-failure
+  domain for the Active×Active pair: a TIALA or tunnel outage stales
+  both units' heartbeats, so the shared execution authority fails
+  closed and halts ALL new risk (exits continue) — safe, but it means
+  the pair cannot absorb host-level failure; whether this redundancy
+  gap is acceptable is evaluated at selection, not waived here.
 
 ## Measurement plan (approved by Jun 2026-10-09)
 
