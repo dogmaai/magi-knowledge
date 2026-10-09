@@ -2,6 +2,22 @@
 
 ## 2026-10-09
 * **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
+  (draft, v0.8) + 8 new draft table concepts under
+  [echidna-tables](/system/echidna-tables/index.md) — recorded the
+  GPT-reviewed three-layer learning-dataset design for the ARC×SIG path
+  (magi-core#581). L0 raw evidence: `decision_sources` (decision-time
+  context lineage; bodies in GCS — **Jun approved GCS object storage
+  2026-10-09**), `arbiter_verdicts`, `order_fills`. L1 normalized records:
+  `distill_decisions`, `distill_outcomes`, `distill_bundles` (frozen,
+  input-pinned). L2: `method_cards` + `method_card_approvals`
+  (append-only audit ledger, closes an option-A gap). Invariants:
+  `decision_id` as corpus key (issued even for CALL_FAILED), 5-element
+  model-independent cohort, `opportunity_id` for same-condition
+  comparison, realized vs 10d mark-to-market vs virtual kept distinct,
+  corrections-as-versions with conflict quarantine. All drafts — tables
+  do not exist; DDL prepared in `magi-core` `sql/` for Jun; L0 live-path
+  writers each need separate review.
+* **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
   — recorded Jun's stated direction (planning note, not an approved
   determination): ARC/SIG slots are intended to run as local-LLM units
   on TIALA (Ollama, HTTP-only Cloudflare tunnel). No slot↔name/model

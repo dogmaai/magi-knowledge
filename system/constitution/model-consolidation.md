@@ -4,10 +4,10 @@ title: "MODEL CONSOLIDATION"
 description: Evidence-based consolidation of the ensemble's trade-decision core toward 1-2 units. Documentation-level objective; NOT part of the runtime prompt tree.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-09T00:33:00Z }
+generated: { by: devin/cli, at: 2026-10-09T23:03:00Z }
 stale_after: 2027-03-25T11:15:00Z
 tags: [constitution, consolidation, ensemble, learning, draft]
-version: "0.7"
+version: "0.8"
 source: none — documentation-level objective, not emitted by buildSwingConstitution()
 ---
 
@@ -348,6 +348,62 @@ evaluation criteria on 2026-10-09.
   duration — no additional cost or infrastructure.
 * **Non-adopted side**: the unit whose intent lost arbitration is scored
   separately as `shadow_virtual` — real capital is never attributed twice.
+
+## Learning dataset — three-layer ECHIDNA corpus (draft design, GPT-reviewed 2026-10-09)
+
+Proposed data architecture implementing the measurement plan and
+preparation requirements 4–6. Per-table drafts live under
+[echidna-tables](/system/echidna-tables/index.md) ("Experience-distillation
+corpus"); DDL is prepared in `magi-core` `sql/` for Jun to apply. **No
+table exists yet and no producer is wired** — the L0 live-path writers
+each require a separate reviewed change.
+
+* **L0 raw evidence (append-only)** —
+  [decision-sources](/system/echidna-tables/decision-sources.md) records
+  every source that entered a decision's context with the body preserved
+  immutably in **GCS** (Jun-approved 2026-10-09; bucket per `sql/` runbook,
+  text bodies only — metadata + hashes in BigQuery);
+  [arbiter-verdicts](/system/echidna-tables/arbiter-verdicts.md) mirrors
+  Firestore verdicts so NOT_ADOPTED proposals enter the corpus;
+  [order-fills](/system/echidna-tables/order-fills.md) keeps fill-granularity
+  increments (partial fills, multi-leg exits) under the lineage
+  `decision_id → intent_id → broker_order_id → fill_id`.
+* **L1 normalized records (offline extractor only)** —
+  [distill-decisions](/system/echidna-tables/distill-decisions.md) /
+  [distill-outcomes](/system/echidna-tables/distill-outcomes.md) /
+  [distill-bundles](/system/echidna-tables/distill-bundles.md). Rows are a
+  deterministic function of L0 + extractor version; frozen bundles pin the
+  exact input ids/versions/hashes, watermark, cutoffs and embargo, so a
+  post-freeze correction yields a *new* bundle rather than mutating a
+  concluded evaluation.
+* **L2 distilled product** —
+  [method-cards](/system/echidna-tables/method-cards.md) +
+  [method-card-approvals](/system/echidna-tables/method-card-approvals.md)
+  (append-only ledger closing the option-A audit gap).
+
+Key invariants (GPT review adopted):
+
+* **`decision_id` is the corpus key**, issued for every attempt including
+  `CALL_FAILED`; `thought_id` remains a join key to `thoughts`, not the
+  identity. Comparison across units uses a shared `opportunity_id`
+  (same-time / same-information set).
+* **Model identity is data, not schema.** Cohort =
+  `(unit_name, llm_provider, model_version, prompt_version, boundary)`
+  with `requested_model` / `served_model` / `model_revision` /
+  `model_identity_quality` recorded separately — a mutable alias never
+  proves identical weights. This is what lets the corpus outlive the
+  pending ARC/SIG model selection: models enter as column values only.
+* **Time discipline**: external sources satisfy
+  `published_at ≤ fetched_at ≤ presented_at ≤ decided_at`; internal
+  snapshots carry `observed_at` instead. Unknown times stay NULL —
+  extraction time is never back-filled into decision-time evidence.
+* **Outcome kinds stay distinct**: realized fills vs the 10-trading-day
+  mark-to-market maturity vs `shadow_virtual` vs immature/unevaluable —
+  an open position at maturity is evaluable but is *not* realized P&L.
+* **Corrections are new versions, never edits**; same key + same version +
+  divergent hash is quarantined, and a malformed newest version can never
+  silently resurrect an older row (magi-core#591 hardens the contract in
+  code).
 
 ## Open decisions for Jun
 
