@@ -2,11 +2,11 @@
 
 ## 2026-10-09
 * **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
-  — recorded Jun's planning note (stated direction, not a determination):
-  ARC/SIG slots are intended to run as local-LLM units on TIALA
-  (Ollama, HTTP-only Cloudflare tunnel). No slot↔name/model binding;
-  the shared host/tunnel correlated-failure domain is noted for
-  evaluation at selection.
+  — recorded Jun's stated direction (planning note, not an approved
+  determination): ARC/SIG slots are intended to run as local-LLM units
+  on TIALA (Ollama, HTTP-only Cloudflare tunnel). No slot↔name/model
+  binding; the shared host/tunnel correlated-failure domain and its
+  open prerequisites are noted for evaluation at unit/model selection.
 * **Governance**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
   (draft, v0.7) — Jun approved the measurement-plan values as the
   experiment's evaluation criteria (≥60 outcome-matured pairs per
