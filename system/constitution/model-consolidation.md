@@ -296,6 +296,13 @@ owner: Devin.
   these names. Slot occupancy and final model selection follow the
   evidence-based selection above; Jun will select the local models
   separately, so no slot↔name binding is recorded yet.
+* **Runtime plan** (Jun planning note 2026-10-09 — intent, not yet a
+  determination): both slots are planned to run as local-LLM units on
+  TIALA (self-hosted Ollama, reached via the existing Cloudflare
+  tunnel). This records direction only: it binds neither model nor
+  unit name, and sharing one host/tunnel is an infrastructure-level
+  correlated-failure domain for the Active×Active pair — evaluated at
+  selection, not waived here.
 
 ## Measurement plan (approved by Jun 2026-10-09)
 
