@@ -53,5 +53,12 @@ evaluable as a virtual decision.
 * **Append-only.** Firestore remains the authority of record; this table
   is a mirror. Divergence between the two is drift to report, never
   silently repaired.
+* **Mirror drift is checked, not assumed.** The mirror writer's contract
+  includes a scheduled verification pass: diff the set of
+  `verdict_doc_path`s and per-document `record_hash`es between Firestore
+  and this table. Any missing/extra/mismatched row is reported as drift;
+  repair is a new `record_version` ingest after review, never an in-place
+  rewrite. (The verification pass ships with the mirror writer — a
+  separate reviewed change, not yet wired.)
 * **Verdicts are per decision, not per order.** A `NOT_ADOPTED` row has no
   `reservation_id`; that absence is expected data, not a missing join.

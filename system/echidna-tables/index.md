@@ -77,6 +77,18 @@ consolidation path (see the *Learning dataset* section of
   [method-card-approvals](method-card-approvals.md) (append-only human
   approval binding content hash / selector / scope / combination).
 
+Cross-layer integrity is hash-pinned end to end: L1 rows are a
+deterministic function of L0 inputs + `extractor_version`; a frozen
+bundle pins each input's `{id, record_version, record_hash}` in
+`input_manifest`; a card binds the source bundle's `manifest_hash`. All
+hashes are SHA-256 over canonical JSON (codepoint-sorted keys —
+`lib/method-card.js` `canonicalJson`/`contentHash`). Verification
+re-resolves a bundle's manifest against the current input rows — any
+hash/version mismatch means a correction landed post-freeze and produces
+a *new* bundle, never an in-place edit. Same key + same max
+`record_version` + different `record_hash` is a conflict: every row for
+that key is quarantined and reported, never resolved by arrival order.
+
 # Live tables not yet catalogued (open drift backlog)
 
 Present in `magi_core` (`bq ls` @ 2026-10-06, magi-core `baa5388`) but without a
