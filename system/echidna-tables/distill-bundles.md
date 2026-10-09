@@ -1,0 +1,60 @@
+---
+type: BigQuery Table
+title: distill_bundles (proposed)
+description: L1 frozen evaluation bundles — an immutable, input-pinned snapshot of the decision/outcome rows a comparison or method-card distillation was run against, with full manifest, cutoffs and embargo.
+lilith_safe: false
+status: draft
+generated: { by: devin/cli, at: 2026-10-09T23:03:00Z }
+stale_after: 2027-04-09T23:03:00Z
+tags: [echidna, bigquery, distillation, reproducibility, proposed]
+dataset: magi_core
+table_type: BASE TABLE (proposed — does not exist yet)
+---
+
+> **Draft — proposed table, not yet created.** Written only by the offline
+> bundle builder (`buildBundle` lineage) — **never by the live path**.
+> The DDL lives in `magi-core` (`sql/`) for Jun to apply.
+
+A view over `distill_decisions`/`distill_outcomes` is **not** a stable
+evaluation basis: later corrections and extractor upgrades change what the
+same query returns. `distill_bundles` freezes the exact input set — ids,
+`record_version`s and content hashes — so a published comparison is
+reproducible and a post-freeze correction produces a **new** bundle
+instead of silently mutating a concluded evaluation.
+
+# Schema (proposed)
+
+| Column | Type | Description |
+|---|---|---|
+| bundle_id | STRING | Bundle identifier. |
+| kind | STRING | `training` / `validation` / `frozen_eval` — split the bundle belongs to. |
+| content_hash | STRING | Hash of semantic bundle content + input pins. |
+| manifest_hash | STRING | Hash of the full manifest (superset of content_hash inputs). |
+| eval_period_from | TIMESTAMP | Evaluation window start. |
+| eval_period_to | TIMESTAMP | Evaluation window end (≤60 trading days, frozen at experiment start per the measurement plan). |
+| outcome_watermark | TIMESTAMP | Outcomes must be finalized by this instant to count as mature. |
+| ingest_cutoff | TIMESTAMP | Only input rows ingested at/before this instant are members — later corrections land in the next bundle. |
+| embargo_days | INT64 | Embargo between train/eval splits. |
+| input_manifest | STRING | JSON array of `{id, kind, record_version, record_hash}` — the exact input rows. |
+| extractor_version | STRING | Extractor version that produced the rows. |
+| selector_version | STRING | Card-selection rule version evaluated against this bundle. |
+| eval_contract_version | STRING | Version of the evaluation contract (kinds, maturity, allocation). |
+| trading_calendar_version | STRING | Trading-day calendar version. |
+| code_commit | STRING | magi-core commit of the extractor/selector code. |
+| counts_json | STRING | `{adopted, excluded, immature, unevaluable, conflicts}` with reasons. |
+| state | STRING | `frozen` / `superseded` / `invalidated`. |
+| superseded_by | STRING | Replacement `bundle_id` when superseded/invalidated. |
+| created_by | STRING | Actor that froze the bundle. |
+| created_at | TIMESTAMP | Freeze instant. |
+
+# Contracts
+
+* **Frozen means frozen.** A `frozen` row is never edited; corrections or
+  re-runs create a new `bundle_id` and the old row flips to
+  `superseded`/`invalidated` via a new event — history stays auditable.
+* **Input-pinned, not statistic-pinned.** `content_hash` covers the input
+  manifest (ids + versions + hashes) and evaluation configuration, so two
+  bundles with identical aggregates over different inputs still differ.
+* **Cutoff ordering.** Row selection is `recorded_at ≤ ingest_cutoff →
+  max record_version → validate`; an invalid newest version is
+  quarantined, never silently replaced by an older version.

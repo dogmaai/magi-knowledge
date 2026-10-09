@@ -54,6 +54,29 @@ Two write-path conventions matter:
 * [lilith-hard-gate-events](lilith-hard-gate-events.md) - LILITH VIX hard-gate rewrites (deprecated 2026-09-23; table dropped — sibling ledgers `lilith_confidence_gate_events` / `lilith_forecast_gate_events` dropped in the same action).
 * [constitution](constitution.md) - Versioned MAGI Constitution store.
 
+# Experience-distillation corpus (proposed — drafts, tables not yet created)
+
+Three-layer model-independent learning dataset for the ARC×SIG
+consolidation path (see the *Learning dataset* section of
+[model-consolidation](/system/constitution/model-consolidation.md); DDL in
+`magi-core` `sql/`, applied by Jun; no producers wired yet):
+
+* **L0 raw evidence** (append-only; written by live paths under separate review):
+  [decision-sources](decision-sources.md) (decision-time context lineage,
+  bodies in GCS), [arbiter-verdicts](arbiter-verdicts.md) (Firestore verdict
+  mirror incl. NOT_ADOPTED), [order-fills](order-fills.md) (fill-granularity
+  increments — partial fills / multi-leg exits).
+* **L1 normalized records** (offline extractor only):
+  [distill-decisions](distill-decisions.md) (5-element cohort identity,
+  `decision_id` issued even for CALL_FAILED),
+  [distill-outcomes](distill-outcomes.md) (realized / 10d mark-to-market /
+  virtual kept distinct), [distill-bundles](distill-bundles.md) (frozen,
+  input-pinned evaluation snapshots).
+* **L2 distilled product** (option-A ledger):
+  [method-cards](method-cards.md) (model-agnostic cards),
+  [method-card-approvals](method-card-approvals.md) (append-only human
+  approval binding content hash / selector / scope / combination).
+
 # Live tables not yet catalogued (open drift backlog)
 
 Present in `magi_core` (`bq ls` @ 2026-10-06, magi-core `baa5388`) but without a
