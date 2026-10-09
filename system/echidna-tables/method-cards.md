@@ -48,7 +48,9 @@ not the card body. This matches the distillation contract fix in
 | falsified_when | STRING | Condition under which the method is considered falsified. |
 | stats_json | STRING | `{sample_count, eval_period{from,to}, uncertainty, supporting/refuting counts, cost-adjusted results}`. |
 | provenance_corpus_manifest_hash | STRING | Manifest hash of the frozen `distill_bundles` input the card was distilled from. |
+| provenance_bundle_id | STRING | `bundle_id` of the source bundle (`provenance.bundleId` in the card contract). |
 | provenance_source_cohort | STRING | Cohort that produced the evidence rows. |
+| evaluation_refs | ARRAY&lt;STRING&gt; | References to evaluations run against this card (`evaluationRefs` in the card contract — part of content identity). |
 | generation_by | STRING | Actor that drafted the card (`devin/cli`, …). |
 | generation_pipeline_version | STRING | Distillation pipeline version. |
 | state | STRING | `draft` / `approved` / `revoked` / `expired` (derived from latest approval event + validity). |

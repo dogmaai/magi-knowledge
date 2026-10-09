@@ -33,6 +33,7 @@ without hardcoding any model into the schema:
 |---|---|---|
 | requested_model | STRING | Model name passed at call time. |
 | served_model | STRING | Model name the provider reports served. |
+| model_version | STRING | The cohort-tuple model value the extractor groups on — mirrors `thoughts.model_version` semantics. |
 | model_revision | STRING | Immutable revision (snapshot id / weights digest) when the provider exposes one — NULL when unavailable; never guessed. |
 | model_identity_quality | STRING | `revision_pinned` / `mutable_alias` / `unknown`. A mutable alias (e.g. an Ollama tag) does **not** guarantee identical weights across calls. |
 
@@ -53,7 +54,7 @@ body), so context drift doesn't need cohort splits. Execution settings
 | cohort_id | STRING | Hash of the 5-element cohort tuple. |
 | unit_name | STRING | Unit name. |
 | llm_provider | STRING | Provider (`gemini` / `ollama` / …). |
-| requested_model / served_model / model_revision / model_identity_quality | STRING | Model-identity split — see table above. |
+| requested_model / served_model / model_version / model_revision / model_identity_quality | STRING | Model-identity split — see table above. |
 | prompt_version | STRING | Prompt-template version. |
 | execution_config_hash | STRING | Hash of temperature/reasoning/tools/guard/arbiter config. |
 | context_uri | STRING | GCS reference to the exact assembled input (messages, system prompt, tool schemas, adopted cards). |

@@ -28,8 +28,13 @@ instead of silently mutating a concluded evaluation.
 |---|---|---|
 | bundle_id | STRING | Bundle identifier. |
 | kind | STRING | `training` / `validation` / `frozen_eval` — split the bundle belongs to. |
+| unit_name | STRING | Cohort unit the bundle covers (a bundle is per-cohort). |
+| model_version | STRING | Cohort model version. |
+| boundary | STRING | Cohort boundary label. |
 | content_hash | STRING | Hash of semantic bundle content + input pins. |
 | manifest_hash | STRING | Hash of the full manifest (superset of content_hash inputs). |
+| sample_count | INT64 | Number of input decision ids in the manifest. |
+| uncertainty | STRING | Stated uncertainty note carried by the bundle. |
 | eval_period_from | TIMESTAMP | Evaluation window start. |
 | eval_period_to | TIMESTAMP | Evaluation window end (≤60 trading days, frozen at experiment start per the measurement plan). |
 | outcome_watermark | TIMESTAMP | Outcomes must be finalized by this instant to count as mature. |
