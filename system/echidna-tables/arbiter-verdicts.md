@@ -4,7 +4,7 @@ title: arbiter_verdicts (proposed)
 description: L0 append-only BigQuery mirror of the Firestore arbitration verdicts — every unit proposal and its adoption outcome, so NOT_ADOPTED decisions are part of the comparable corpus instead of existing only in Firestore.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-09T23:03:00Z }
+generated: { by: devin/cli, at: 2026-10-09T23:56:00Z }
 stale_after: 2027-04-09T23:03:00Z
 tags: [echidna, bigquery, distillation, arbitration, proposed]
 dataset: magi_core
@@ -53,5 +53,16 @@ evaluable as a virtual decision.
 * **Append-only.** Firestore remains the authority of record; this table
   is a mirror. Divergence between the two is drift to report, never
   silently repaired.
+* **Mirror drift is checked, not assumed.** The mirror writer's contract
+  includes a scheduled verification pass: per `verdict_doc_path`, compare
+  the **max `record_version`** row (and its `record_hash`) against the
+  current Firestore verdict document — older versions are legitimate
+  history, not drift. A missing path, a divergent max version, or several
+  different hashes at the same max version are reported as drift /
+  conflicts; repair is a new `record_version` ingest after review, never
+  an in-place rewrite. History completeness (a contiguous version chain
+  per path) is a separate check from current-value agreement. (The
+  verification pass ships with the mirror writer — a separate reviewed
+  change, not yet wired.)
 * **Verdicts are per decision, not per order.** A `NOT_ADOPTED` row has no
   `reservation_id`; that absence is expected data, not a missing join.

@@ -1,5 +1,26 @@
 # Bundle Update Log
 
+## 2026-10-10
+* **Enhancement**: Experience-distillation corpus drafts under
+  [echidna-tables](/system/echidna-tables/index.md) — review-fix pass on
+  PR #143 (Codex/Gemini/Mistral findings). Clarified `model_version` as
+  the decision-time served-model identifier (mutable aliases never prove
+  weight identity); defined all content/manifest/record hashes as
+  SHA-256 over canonical JSON (`lib/method-card.js` `canonicalJson`);
+  fixed the bundle cutoff predicate to the persisted `extracted_at`;
+  documented `distill_bundles` mutability (only `state`/`superseded_by`
+  change; bundles are written frozen); made `method_cards.state` a
+  derived projection — never an authorization source; defined
+  `shadow_virtual` maturity on the same clock as real outcomes; required
+  finite `published_at`/`fetched_at` for `external` sources
+  (`checkLineage` parity — NULL is a lineage failure); documented
+  `retention_state` values, the private-bucket/access posture, the
+  Firestore↔BigQuery mirror drift check, and conflict-quarantine
+  semantics. Rejected findings recorded on the PR: BigQuery `JSON` type
+  (implementation DDL uses `STRING`), `verdict_doc_uri` rename (column is
+  a Firestore document path), and the "missing `order-fills`" note (file
+  is in the PR).
+
 ## 2026-10-09
 * **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
   (draft, v0.8) + 8 new draft table concepts under

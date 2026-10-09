@@ -4,7 +4,7 @@ title: decision_sources (proposed)
 description: L0 evidence-lineage ledger for the experience-distillation corpus — one row per information source that entered a decision's context, with the source body held immutably in GCS and only metadata + hashes in BigQuery.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-09T23:03:00Z }
+generated: { by: devin/cli, at: 2026-10-09T23:56:00Z }
 stale_after: 2027-04-09T23:03:00Z
 tags: [echidna, bigquery, distillation, lineage, proposed]
 dataset: magi_core
@@ -38,15 +38,25 @@ has no publication time, so `source_kind` defines which timestamps apply:
 
 | source_kind | required timestamps | meaning |
 |---|---|---|
-| `external` | `published_at`, `fetched_at`, `presented_at` | publicly published data (news, research, market files) |
+| `external` | `published_at`, `fetched_at`, `presented_at` | publicly published data (news, research and market files) |
 | `internal_snapshot` | `observed_at`, `presented_at` | MAGI-internal state (positions, L0 flag, reservations) — `observed_at` is the state-read instant, not a publication time |
 | `tool_response` | `fetched_at`, `presented_at` | live tool/API output produced for this call |
 | `method_card` | `presented_at` | approved card injected into the prompt; `content_version` binds the card hash |
 
+Timestamp sources: `published_at` is the source-reported external
+publication time; `observed_at` / `fetched_at` / `presented_at` /
+`decided_at` / `ingested_at` are MAGI writer clocks (UTC `TIMESTAMP`).
+The contract is ordering, not sub-millisecond clock agreement.
+
 A source fetched or presented **after** `decided_at` is lookahead and must
 be excluded by the extractor — never back-filled to look compliant. Rows
 whose true times are unknown stay `NULL`; extraction time is never
-substituted for decision-time evidence.
+substituted for decision-time evidence. **A `NULL` `published_at` (or
+`fetched_at`) on an `external` row is a lineage failure, not a pass** —
+mirroring `checkLineage` in `lib/experience-distillation.js`, which
+requires both to be finite and flags `fetched_at > decided_at` as
+`future_source`. The row is stored, but the decision is marked
+lineage-incomplete and excluded from lookahead-sensitive evaluations.
 
 # Schema (proposed)
 
@@ -66,9 +76,9 @@ substituted for decision-time evidence.
 | presented_at | TIMESTAMP | When the content entered the model context. |
 | content_version | STRING | Source-reported version/etag when one exists. |
 | body_uri | STRING | Immutable GCS object reference `gs://<bucket>/<path>`; the object generation pins the exact bytes. |
-| body_sha256 | STRING | Hex SHA-256 of the stored body. |
+| body_sha256 | STRING | Hex SHA-256 of the stored body's raw bytes (payload hash — never a canonical-JSON digest). |
 | media_type | STRING | e.g. `text/plain`, `application/json`. |
-| retention_state | STRING | `stored` / `hash_only` / `expired` — `hash_only` documents bodies never persisted. |
+| retention_state | STRING | `stored` = body in GCS under the bucket lifecycle; `hash_only` = body deliberately never persisted (hash-only lineage — content unrecoverable by design); `expired` = body deleted by lifecycle/retention policy — hash remains, the row is lineage-complete but evidence-incomplete. |
 | parser_version | STRING | Version of the parser that turned raw content into context. |
 | transform_version | STRING | Version of any truncation/redaction transform applied. |
 | excerpt_offset | INT64 | Byte offset when only a slice was presented. |
@@ -83,8 +93,21 @@ substituted for decision-time evidence.
 * **Append-only.** Corrections arrive as a higher `record_version` row;
   nothing is UPDATEd/DELETEd. Same id + same version + different
   `record_hash` is a conflict and is quarantined by the extractor —
-  never resolved by arrival order.
+  **every** row for that key is excluded and reported; resolution takes a
+  new higher `record_version` or a human decision, never arrival order.
 * **Bodies are immutable.** `body_uri` generation is pinned at write;
   re-fetching a changed upstream document creates a new object.
 * **No backdating.** Missing timestamps stay `NULL`; the extractor never
   writes `ingested_at` into `published_at`/`observed_at` to pass lineage.
+
+# Storage and access
+
+Bodies may contain prompts, fetched documents and tool payloads — they
+are `system/`-side evidence, **never** `_lilith_safe/` input. The bucket
+(per the `magi-core` DDL runbook) is private by construction: uniform
+bucket-level access, `public-access-prevention=enforced`, and object
+versioning so an overwrite cannot silently replace pinned evidence. A
+retention policy may be attached but must never be `--lock`ed
+(irreversible). BigQuery rows inherit `magi_core` dataset IAM; GCS object
+reads are limited to the extractor/analysis service accounts — no
+live-trading path needs object read access.

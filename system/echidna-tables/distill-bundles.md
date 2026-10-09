@@ -4,7 +4,7 @@ title: distill_bundles (proposed)
 description: L1 frozen evaluation bundles — an immutable, input-pinned snapshot of the decision/outcome rows a comparison or method-card distillation was run against, with full manifest, cutoffs and embargo.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-09T23:03:00Z }
+generated: { by: devin/cli, at: 2026-10-09T23:56:00Z }
 stale_after: 2027-04-09T23:03:00Z
 tags: [echidna, bigquery, distillation, reproducibility, proposed]
 dataset: magi_core
@@ -31,8 +31,8 @@ instead of silently mutating a concluded evaluation.
 | unit_name | STRING | Cohort unit the bundle covers (a bundle is per-cohort). |
 | model_version | STRING | Cohort model version. |
 | boundary | STRING | Cohort boundary label. |
-| content_hash | STRING | Hash of semantic bundle content + input pins. |
-| manifest_hash | STRING | Hash of the full manifest (superset of content_hash inputs). |
+| content_hash | STRING | SHA-256 over canonical JSON (codepoint-sorted keys — `canonicalJson`/`contentHash` in `lib/method-card.js`) of the semantic bundle content: schema version, cohort dims, input ids/versions/hashes, eval period and stats (mirrors `buildBundle`). |
+| manifest_hash | STRING | Same hash function over the **full manifest** — a superset that also covers cutoffs, version fields, `counts_json` and audit metadata. |
 | sample_count | INT64 | Number of input decision ids in the manifest. |
 | uncertainty | STRING | Stated uncertainty note carried by the bundle. |
 | eval_period_from | TIMESTAMP | Evaluation window start. |
@@ -47,19 +47,40 @@ instead of silently mutating a concluded evaluation.
 | trading_calendar_version | STRING | Trading-day calendar version. |
 | code_commit | STRING | magi-core commit of the extractor/selector code. |
 | counts_json | STRING | `{adopted, excluded, immature, unevaluable, conflicts}` with reasons. |
-| state | STRING | `frozen` / `superseded` / `invalidated`. |
+| state | STRING | `frozen` / `superseded` / `invalidated` — see mutability contract below. |
 | superseded_by | STRING | Replacement `bundle_id` when superseded/invalidated. |
 | created_by | STRING | Actor that froze the bundle. |
 | created_at | TIMESTAMP | Freeze instant. |
 
 # Contracts
 
-* **Frozen means frozen.** A `frozen` row is never edited; corrections or
-  re-runs create a new `bundle_id` and the old row flips to
-  `superseded`/`invalidated` via a new event — history stays auditable.
+* **Bundles are written frozen.** The builder inserts a row only when an
+  evaluation/comparison is frozen for use — `state` starts at `frozen`
+  and `created_at` is that instant; there is no mutable "draft bundle"
+  state.
+* **Only `state`/`superseded_by` may change.** All semantic content —
+  manifest, hashes, cutoffs, counts, input pins — is immutable. When a
+  post-freeze correction or extractor upgrade changes membership, the
+  builder inserts a **new** `bundle_id` and updates exactly these two
+  columns on the old row. The transition record is therefore explicit:
+  old row's `superseded_by` → new row's manifest + `created_by` /
+  `created_at`. Current state stays a single-row read (`bundle_id`
+  lookup); history stays auditable via the supersession chain.
 * **Input-pinned, not statistic-pinned.** `content_hash` covers the input
   manifest (ids + versions + hashes) and evaluation configuration, so two
   bundles with identical aggregates over different inputs still differ.
-* **Cutoff ordering.** Row selection is `recorded_at ≤ ingest_cutoff →
-  max record_version → validate`; an invalid newest version is
-  quarantined, never silently replaced by an older version.
+* **Membership is verifiable by re-selection, not spot-checking.**
+  Re-checking a bundle re-runs the frozen selection — same cohort dims +
+  eval period + `extracted_at ≤ ingest_cutoff` → max `record_version` →
+  validate — against the **current** input tables and compares the whole
+  resulting `{id, record_version, record_hash}` set to `input_manifest`.
+  An identical set means the bundle still stands; any difference —
+  changed hash, a newer `record_version` inside the cutoff, or a
+  late-arriving row that now satisfies the predicate — produces a new
+  bundle, never an in-place edit. Rows with `extracted_at` after the
+  cutoff are never members; they belong to the next bundle by
+  definition.
+* **Cutoff ordering.** Row selection is `extracted_at ≤ ingest_cutoff →
+  max record_version → validate` (both `distill_decisions` and
+  `distill_outcomes` persist `extracted_at`); an invalid newest version
+  is quarantined, never silently replaced by an older version.

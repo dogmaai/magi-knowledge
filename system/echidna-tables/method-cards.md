@@ -4,7 +4,7 @@ title: method_cards (proposed)
 description: L2 method-card registry — distilled, evidence-backed decision methods as model-independent cards; usability is bound by approvals in method_card_approvals, never by fields on the card itself.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-09T23:03:00Z }
+generated: { by: devin/cli, at: 2026-10-09T23:56:00Z }
 stale_after: 2027-04-09T23:03:00Z
 tags: [echidna, bigquery, distillation, method-cards, proposed]
 dataset: magi_core
@@ -50,10 +50,10 @@ not the card body. This matches the distillation contract fix in
 | provenance_corpus_manifest_hash | STRING | Manifest hash of the frozen `distill_bundles` input the card was distilled from. |
 | provenance_bundle_id | STRING | `bundle_id` of the source bundle (`provenance.bundleId` in the card contract). |
 | provenance_source_cohort | STRING | Cohort that produced the evidence rows. |
-| evaluation_refs | ARRAY&lt;STRING&gt; | References to evaluations run against this card (`evaluationRefs` in the card contract — part of content identity). |
+| evaluation_refs | `ARRAY<STRING>` | References to evaluations run against this card (`evaluationRefs` in the card contract — part of content identity). |
 | generation_by | STRING | Actor that drafted the card (`devin/cli`, …). |
 | generation_pipeline_version | STRING | Distillation pipeline version. |
-| state | STRING | `draft` / `approved` / `revoked` / `expired` (derived from latest approval event + validity). |
+| state | STRING | `draft` / `approved` / `revoked` / `expired` — a **derived projection** of the latest `method_card_approvals` event + `expires_at`, denormalized for read convenience only. It is never an authorization source: usability is always re-derived from the approval ledger at read time (`cardUsability()` semantics). |
 | expires_at | TIMESTAMP | Card validity end — extension requires re-approval. |
 | created_at | TIMESTAMP | Card creation instant. |
 | ingested_at | TIMESTAMP | BigQuery insert time. |
@@ -69,3 +69,8 @@ not the card body. This matches the distillation contract fix in
 * **A card is never self-authorizing.** `state = approved` exists only in
   the presence of a matching `method_card_approvals` row from a `human:*`
   actor.
+* **`state` is a cache, not a gate.** Injection/selection decisions must
+  not filter on the stored `state` column — it can lag a revocation or
+  expiry. Consumers re-resolve usability from `method_card_approvals`
+  (`card_content_hash` + `selector_version` + `scope_hash` +
+  `combination_json` match, latest event wins).
