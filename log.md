@@ -1,5 +1,18 @@
 # Bundle Update Log
 
+## 2026-10-09
+* **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
+  (draft, v0.6) — recorded Jun's 2026-10-08 determinations on magi-core#581:
+  option **A** (agent-curated method-card loop) adopted conditionally,
+  superseding the draft's B-only stance, provided cost does not materially
+  increase; A cards keep the `draft → human:jun verify` promotion gate and
+  stay offline until the candidate-path gaps close (approver
+  authentication, append-only audit ledger, fee/close attribution, the
+  `thought_id` join incl. `llm_provider`/`trade_mode`). Correlated-losses
+  mitigation is structural — differentiated base models ("two pros"), no
+  numeric threshold; the pair collapses to one lane if redundancy value
+  is absent. Implementation owner: Devin.
+
 ## 2026-10-08
 * **Correction**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
   / [L1.7](/system/guards/l1-7.md) — per review on PR #139: pinned the

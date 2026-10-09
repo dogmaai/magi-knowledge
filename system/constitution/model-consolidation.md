@@ -4,10 +4,10 @@ title: "MODEL CONSOLIDATION"
 description: Evidence-based consolidation of the ensemble's trade-decision core toward 1-2 units. Documentation-level objective; NOT part of the runtime prompt tree.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-08T08:25:00Z }
+generated: { by: devin/cli, at: 2026-10-09T00:00:00Z }
 stale_after: 2027-03-25T11:15:00Z
 tags: [constitution, consolidation, ensemble, learning, draft]
-version: "0.5"
+version: "0.6"
 source: none — documentation-level objective, not emitted by buildSwingConstitution()
 ---
 
@@ -55,10 +55,16 @@ existing unit names:
 
 Active×Active imposes a hard decorrelation constraint: two slots trained on
 the same corpus with the same method share failure modes and provide no
-real redundancy. The cross-unit correlated-losses criterion under
-*Selection criteria* is therefore binding for this configuration, and
-differentiated base models, information sets, or accumulated decision
-methods are the expected decorrelators.
+real redundancy. Jun's resolution (2026-10-08, magi-core#581) is structural
+rather than numeric: the two lanes run **differentiated base models** — the
+"two pros" model, where each lane keeps its own win-oriented learning loop
+— and no quantitative correlated-loss threshold is fixed. If parallel
+operation shows no redundancy value, the pair collapses to a single lane.
+The correlated-losses term under *Selection criteria* remains a comparison
+metric, not a hard veto. (In the 2026-10-08 discussion Jun referred to the
+two lanes colloquially as "ADAM/LILITH"; these are lane-image names — slot
+occupancy is still evidence-selected and the retired-LILITH boundary below
+is unchanged unless Jun states otherwise.)
 
 This objective answers "what are the stored learning assets (`thoughts`,
 `thoughts_shadow`, `trades` outcomes) for?" — the question left open when the
@@ -205,6 +211,10 @@ review-inspected revisions `fc26b7e` and `2e737e4` respectively):
 * `docs/arc-sig-firestore-setup.md` (`magi-core`) — provisioning package
   for Jun: schema, transaction boundaries, IAM, commands, cost, rollback.
 
+Direction note (2026-10-08): Jun approved proceeding toward the **A**
+variant (agent-curated loop) conditionally — see *Jun determinations*.
+The gap list there is the precondition for any production wiring.
+
 These are candidate modules tested against fixtures/stubs only. They are
 **not** connected to production sessions, brokers, BigQuery or prompts.
 Wiring any of them into a live path requires a new, independently
@@ -218,8 +228,17 @@ experiment loss budget **1,000 USD** — not daily, not per-trade, never
 reset by date change/restart/model/snapshot updates, never increased by
 profit. Earlier provisional %-based limits are replaced by these USD caps.
 REAL trading, margin, short, options and leveraged products are outside
-this approval. Learning is input-level **B only** — no weight updates, no
-autonomous A generation/promotion, no new paid services.
+this approval. Learning is input-level: **B is the baseline, and A
+(agent-curated method-card loop) is approved conditionally** — only if it
+does not materially increase cost (Jun decision 2026-10-08,
+magi-core#581; if projected cost grows materially, re-consult). A method
+cards still require `human:*` promotion (`draft → human:jun verify`), and
+stay offline until the candidate-path gaps are closed: approver
+authentication, an append-only audit ledger, fee/close-attribution
+evidence, and the `thought_id` join including `llm_provider`/`trade_mode`
+consistency. Production prompt wiring still requires a new, independently
+reviewed change. No weight updates; no new paid services. Implementation
+owner: Devin.
 
 * **L1.7**: dual protection — per-unit limit stops that unit's new risk;
   account-wide limit stops the whole account's new risk. Realized daily
