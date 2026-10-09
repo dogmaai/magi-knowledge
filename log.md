@@ -1,6 +1,24 @@
 # Bundle Update Log
 
 ## 2026-10-09
+* **Governance**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
+  (draft, v0.7) — Jun approved the measurement-plan values as the
+  experiment's evaluation criteria (≥60 outcome-matured pairs per
+  configuration AND per unit; 10-trading-day maturity; ≤60-trading-day
+  frozen window; time-ordered/walk-forward validation with watermark +
+  1-day embargo; after-cost expectancy bootstrap 95% CI lower bound > 0;
+  insufficient samples never become a winner; `shadow_virtual` kept
+  separate). Unit naming recorded: TYPHON/QWEN keep their existing names
+  as ledger `unitId`s; ARC/SIG remain unbound slot identifiers pending
+  Jun's local-model selection. Open decision updated: Firestore backend
+  provisioned and its atomicity/restart/fencing verified by the real-DB
+  integration suite (6/6); remaining step is dispatcher wiring at
+  experiment start.
+* **Verification**: [L1.7 Daily-loss Kill Switch](/system/guards/l1-7.md)
+  re-verified by human:jun (2026-10-09) covering the dual-scope
+  (unit −50 / account −100) change; status restored `draft → stable`.
+
+## 2026-10-09
 * **Enhancement**: [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md)
   (draft, v0.6) — recorded Jun's 2026-10-08 determinations on magi-core#581:
   option **A** (agent-curated method-card loop) adopted conditionally,

@@ -4,10 +4,10 @@ title: "MODEL CONSOLIDATION"
 description: Evidence-based consolidation of the ensemble's trade-decision core toward 1-2 units. Documentation-level objective; NOT part of the runtime prompt tree.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-09T00:00:00Z }
+generated: { by: devin/cli, at: 2026-10-09T00:33:00Z }
 stale_after: 2027-03-25T11:15:00Z
 tags: [constitution, consolidation, ensemble, learning, draft]
-version: "0.6"
+version: "0.7"
 source: none — documentation-level objective, not emitted by buildSwingConstitution()
 ---
 
@@ -290,12 +290,19 @@ owner: Devin.
   order path not reflected in the
   shared state → no new experiment orders; existing holdings are not
   disposed of nor covered by the budget.
+* **Unit naming** (Jun decision 2026-10-09): experiment participants are
+  recorded under their existing unit names (TYPHON, QWEN) as ledger
+  `unitId`s — ARC/SIG remain slot identifiers only and are NOT bound to
+  these names. Slot occupancy and final model selection follow the
+  evidence-based selection above; Jun will select the local models
+  separately, so no slot↔name binding is recorded yet.
 
-## Measurement plan (proposal — pending Jun; not approved yet)
+## Measurement plan (approved by Jun 2026-10-09)
 
-Draft proposal answering Jun directive §9 ("sample size and comparison
+Answering Jun directive §9 ("sample size and comparison
 period fixed in advance; an experiment stopped early stays 'insufficient',
-never a winner"). Numbers below are proposals, not approved values.
+never a winner"). Jun approved the values below as the experiment's
+evaluation criteria on 2026-10-09.
 
 * **Unit of comparison**: a decision-outcome pair (intent → fill → exit or
   horizon expiry), namespaced per (unit, model, boundary). Both C (fixed
@@ -315,7 +322,7 @@ never a winner"). Numbers below are proposals, not approved values.
   from fills reconciled before its watermark; it is evaluated only on
   decisions after that watermark (purge overlapping windows + 1 trading
   day embargo around the boundary; walk-forward, never reshuffled).
-* **Pass threshold (proposed)**: after-cost expectancy improvement whose
+* **Pass threshold**: after-cost expectancy improvement whose
   bootstrap 95% CI lower bound is > 0, with drawdown not worse than the
   baseline at the same confidence. Win rate alone is never sufficient
   (selection criteria above). The bootstrap CI is proposed because it
@@ -327,11 +334,13 @@ never a winner"). Numbers below are proposals, not approved values.
 
 ## Open decisions for Jun
 
-* Production atomic-reservation backend on GCP (Firestore provisioning,
-  IAM, deploy) — Jun executes; adapter contract exists, real-backend
-  atomicity not yet proven.
-* Approval of the measurement-plan proposal above (sample size, window,
-  thresholds).
+* Production atomic-reservation backend on GCP — Firestore
+  `arc-sig-experiment` (asia-northeast1) and the service account are
+  provisioned; real-backend atomicity, restart hydration and stale-epoch
+  fencing are verified by the opt-in integration suite
+  (`ARCSIG_FIRESTORE_IT=1`, 6/6 pass on the real database). Remaining:
+  dispatcher wiring under workload identity at experiment start — Jun
+  executes.
 * Cost assumptions where fills/fees cannot be confirmed.
 * Scope of "1–2": decision core only (this document) vs. wider processing —
   undecided.
