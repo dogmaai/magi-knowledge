@@ -4,7 +4,7 @@ title: distill_bundles (proposed)
 description: L1 frozen evaluation bundles — an immutable, input-pinned snapshot of the decision/outcome rows a comparison or method-card distillation was run against, with full manifest, cutoffs and embargo.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-09T23:03:00Z }
+generated: { by: devin/cli, at: 2026-10-09T23:56:00Z }
 stale_after: 2027-04-09T23:03:00Z
 tags: [echidna, bigquery, distillation, reproducibility, proposed]
 dataset: magi_core
@@ -69,10 +69,17 @@ instead of silently mutating a concluded evaluation.
 * **Input-pinned, not statistic-pinned.** `content_hash` covers the input
   manifest (ids + versions + hashes) and evaluation configuration, so two
   bundles with identical aggregates over different inputs still differ.
-* **Membership is verifiable.** Re-checking a bundle re-resolves each
-  `input_manifest` `{id, record_version, record_hash}` against the current
-  input rows; any hash/version mismatch means a correction landed
-  post-freeze → build a new bundle, never update membership in place.
+* **Membership is verifiable by re-selection, not spot-checking.**
+  Re-checking a bundle re-runs the frozen selection — same cohort dims +
+  eval period + `extracted_at ≤ ingest_cutoff` → max `record_version` →
+  validate — against the **current** input tables and compares the whole
+  resulting `{id, record_version, record_hash}` set to `input_manifest`.
+  An identical set means the bundle still stands; any difference —
+  changed hash, a newer `record_version` inside the cutoff, or a
+  late-arriving row that now satisfies the predicate — produces a new
+  bundle, never an in-place edit. Rows with `extracted_at` after the
+  cutoff are never members; they belong to the next bundle by
+  definition.
 * **Cutoff ordering.** Row selection is `extracted_at ≤ ingest_cutoff →
   max record_version → validate` (both `distill_decisions` and
   `distill_outcomes` persist `extracted_at`); an invalid newest version

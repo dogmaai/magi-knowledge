@@ -4,7 +4,7 @@ title: method_cards (proposed)
 description: L2 method-card registry — distilled, evidence-backed decision methods as model-independent cards; usability is bound by approvals in method_card_approvals, never by fields on the card itself.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-09T23:03:00Z }
+generated: { by: devin/cli, at: 2026-10-09T23:56:00Z }
 stale_after: 2027-04-09T23:03:00Z
 tags: [echidna, bigquery, distillation, method-cards, proposed]
 dataset: magi_core

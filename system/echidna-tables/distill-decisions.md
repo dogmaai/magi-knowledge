@@ -4,7 +4,7 @@ title: distill_decisions (proposed)
 description: L1 normalized decision records produced by the deterministic offline extractor — one row per decision attempt (BUY/SELL/HOLD/BLOCKED/WARN_ONLY/CALL_FAILED/NOT_ADOPTED) carrying the full cohort identity so evaluation stays model-independent.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-09T23:03:00Z }
+generated: { by: devin/cli, at: 2026-10-09T23:56:00Z }
 stale_after: 2027-04-09T23:03:00Z
 tags: [echidna, bigquery, distillation, proposed]
 dataset: magi_core
@@ -69,7 +69,7 @@ body), so context drift doesn't need cohort splits. Execution settings
 | prompt_version | STRING | Prompt-template version. |
 | execution_config_hash | STRING | Hash of temperature/reasoning/tools/guard/arbiter config. |
 | context_uri | STRING | GCS reference to the exact assembled input (messages, system prompt, tool schemas, adopted cards). |
-| context_sha256 | STRING | Hash of that assembled context. |
+| context_sha256 | STRING | SHA-256 of the serialized context **bytes** (payload hash, not canonical JSON) — matches `body_sha256` semantics on `decision_sources`. |
 | opportunity_id | STRING | Same-time/same-information comparison key shared across units. NULL means the decision was never assigned to a cross-unit opportunity set — expected for solo or non-competing decisions, not missing data. |
 | session_id | STRING | Session. |
 | symbol | STRING | Ticker. |

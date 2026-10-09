@@ -80,14 +80,21 @@ consolidation path (see the *Learning dataset* section of
 Cross-layer integrity is hash-pinned end to end: L1 rows are a
 deterministic function of L0 inputs + `extractor_version`; a frozen
 bundle pins each input's `{id, record_version, record_hash}` in
-`input_manifest`; a card binds the source bundle's `manifest_hash`. All
-hashes are SHA-256 over canonical JSON (codepoint-sorted keys —
-`lib/method-card.js` `canonicalJson`/`contentHash`). Verification
-re-resolves a bundle's manifest against the current input rows — any
-hash/version mismatch means a correction landed post-freeze and produces
-a *new* bundle, never an in-place edit. Same key + same max
-`record_version` + different `record_hash` is a conflict: every row for
-that key is quarantined and reported, never resolved by arrival order.
+`input_manifest`; a card binds the source bundle's `manifest_hash`. Two
+hash domains exist and must not be conflated: structured identity hashes
+(`record_hash`, `content_hash`, `manifest_hash`, `scope_hash`,
+`cohort_id`, `execution_config_hash`) are SHA-256 over **canonical JSON**
+(codepoint-sorted keys — `lib/method-card.js` `canonicalJson`/
+`contentHash`), while payload hashes (`body_sha256`, `context_sha256`)
+are SHA-256 over the **raw stored bytes** — re-serializing a body as
+canonical JSON will never match. Verification re-runs a bundle's frozen
+selection (cohort + eval period + `extracted_at ≤ ingest_cutoff` → max
+`record_version` → validate) against the current input rows and compares
+the whole set to `input_manifest` — any difference means inputs changed
+post-freeze and produces a *new* bundle, never an in-place edit. Same
+key + same max `record_version` + different `record_hash` is a conflict:
+every row for that key is quarantined and reported, never resolved by
+arrival order.
 
 # Live tables not yet catalogued (open drift backlog)
 

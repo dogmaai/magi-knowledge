@@ -4,7 +4,7 @@ title: distill_outcomes (proposed)
 description: L1 normalized outcome records — realized P&L, 10-trading-day mark-to-market, shadow virtual results and unevaluable decisions kept as distinct kinds, never merged into one "result" column.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-09T23:03:00Z }
+generated: { by: devin/cli, at: 2026-10-09T23:56:00Z }
 stale_after: 2027-04-09T23:03:00Z
 tags: [echidna, bigquery, distillation, proposed]
 dataset: magi_core
@@ -49,7 +49,7 @@ the original 4-kind contract could not express **maturity vs valuation**:
 | fee_total_usd | NUMERIC | Fees allocated to this outcome. |
 | entry_fill_ids | `ARRAY<STRING>` | `order_fills.fill_id`s of the entry legs. |
 | exit_fill_ids | `ARRAY<STRING>` | `order_fills.fill_id`s of the exit legs (may be several). |
-| price_source | STRING | Recorded identifier of the valuation source — e.g. `moomoo_snapshot`, the last [moomoo-snapshots](moomoo-snapshots.md) quote at/before the valuation instant. `shadow_virtual` uses the same recorded source, so virtual and realized numbers share a pricing basis. |
+| price_source | STRING | Recorded identifier of the valuation source for `mark_to_market` and `shadow_virtual` — e.g. `moomoo_snapshot`, the last [moomoo-snapshots](moomoo-snapshots.md) quote at/before the valuation instant. `realized` does not use it: realized P&L is fill-priced. Reports must not hide the basis gap — virtual numbers are snapshot-priced estimates, realized numbers are confirmed fills. |
 | eval_rule_version | STRING | Version of the allocation/maturity rule used. |
 | trading_calendar_version | STRING | Trading-day calendar version anchoring the 10-day count. |
 | evidence_fill_confirmed | BOOL | `realized` requires broker-confirmed fill evidence. |
