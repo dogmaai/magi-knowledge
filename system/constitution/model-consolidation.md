@@ -296,6 +296,23 @@ owner: Devin.
   these names. Slot occupancy and final model selection follow the
   evidence-based selection above; Jun will select the local models
   separately, so no slot↔name binding is recorded yet.
+* **Runtime plan** (Jun stated direction 2026-10-09 — a planning note,
+  not an approved determination): both slots are planned to run as
+  local-LLM units on TIALA — the self-hosted Ollama host already used
+  by [ADAM](/system/plm-units/adam.md) and [BOREAS](/system/plm-units/boreas.md) —
+  reached via the existing `magi-ollama` Cloudflare tunnel. The tunnel
+  serves HTTP(S) only; its gRPC setting stays disabled because no
+  tunnel origin speaks gRPC, and enabling it would widen the origin
+  surface with no benefit. This records direction only: it binds
+  neither model nor unit name. Sharing one host and one tunnel is an
+  infrastructure-level correlated-failure domain for the Active×Active
+  pair: a TIALA host or tunnel outage stales both units' heartbeats,
+  so any governed order dispatch fails closed — new-risk orders halt
+  while risk-reducing exits remain permitted by the arbiter. Host
+  capacity for two concurrent models, tunnel bandwidth, failover and
+  recovery procedure, and whether this redundancy gap is acceptable
+  are open prerequisites deferred to the evidence-based unit/model
+  selection described above — none are waived by this note.
 
 ## Measurement plan (approved by Jun 2026-10-09)
 
