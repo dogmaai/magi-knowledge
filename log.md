@@ -10,8 +10,9 @@
   confirmed via `describe`: `retentionPeriod: 63115200`) and the 8
   BigQuery tables (`decision_sources`, `arbiter_verdicts`,
   `order_fills`, `distill_decisions`, `distill_outcomes`,
-  `distill_bundles`, `method_cards`, `method_card_approvals`) plus
-  `magi_core.trades.model_version`, all verified with `bq ls`/`bq show`.
+  `distill_bundles`, `method_cards`, `method_card_approvals`) and added
+  the `model_version` column to `magi_core.trades`, all verified with
+  `bq ls`/`bq show`.
   Applied at knowledge pin `8fffc33e6d6e559bf2ee76e080c740bf0d420d2a`,
   core `e6348e8ee6511b3d0e5c57ccc6c130cee4b7a37a` (runbook hardened in
   magi-core#596–#598 during apply). The concepts remain drafts — this

@@ -8,12 +8,12 @@ generated: { by: devin/cli, at: 2026-10-09T23:56:00Z }
 stale_after: 2027-04-09T23:03:00Z
 tags: [echidna, bigquery, distillation, arbitration, proposed]
 dataset: magi_core
-table_type: BASE TABLE (proposed — does not exist yet)
+table_type: BASE TABLE (proposed — created 2026-10-10; draft schema)
 ---
 
-> **Draft — proposed table, not yet created.** The mirror writer (verdict
+> **Draft — proposed schema; table created 2026-10-10 in `magi_core`.** The mirror writer (verdict
 > → BigQuery) is a new write path requiring a separate reviewed change;
-> the DDL lives in `magi-core` (`sql/`) for Jun to apply.
+> the DDL lives in `magi-core` (`sql/`) and was applied by Jun on 2026-10-10.
 
 The shared execution authority records its verdict per decision in
 Firestore. `arbiter_verdicts` mirrors those verdicts into ECHIDNA so the

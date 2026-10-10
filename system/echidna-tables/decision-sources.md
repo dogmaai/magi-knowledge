@@ -8,12 +8,12 @@ generated: { by: devin/cli, at: 2026-10-10T00:54:46Z }
 stale_after: 2027-04-09T23:03:00Z
 tags: [echidna, bigquery, distillation, lineage, proposed]
 dataset: magi_core
-table_type: BASE TABLE (proposed — does not exist yet)
+table_type: BASE TABLE (proposed — created 2026-10-10; draft schema)
 ---
 
-> **Draft — proposed table, not yet created.** No producer is wired. The
+> **Draft — proposed schema; table created 2026-10-10 in `magi_core`.** No producer is wired. The
 > live-path writer (session side) requires a separate, independently
-> reviewed change; the DDL lives in `magi-core` (`sql/`) for Jun to apply.
+> reviewed change; the DDL lives in `magi-core` (`sql/`) and was applied by Jun on 2026-10-10.
 > This document records the GPT-reviewed dataset design behind
 > [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md).
 
@@ -116,10 +116,12 @@ naming to Devin, suggesting PandoraBoX. The selected bucket name is
 `screen-share-459802`, location `US`). It replaces the earlier runbook
 proposal `magi-distill-context` and holds both `decision_sources.body_uri`
 and `distill_decisions.context_uri` payloads. The project suffix reduces
-name collisions; global name availability and resource existence have
-not been verified. If creation reports a collision, stop and update this
-concept and the runbook before using a replacement; do not silently write
-to another bucket.
+name collisions. **Created 2026-10-10** by Jun — verified via
+`describe`: UBLA enabled, public access prevention `enforced`, object
+versioning on, unlocked retention `P2Y` (`retentionPeriod: 63115200`).
+If this bucket is ever reported missing or collides on a future apply,
+stop and update this concept and the runbook before using a replacement;
+do not silently write to another bucket.
 
 The required configuration before storing evidence is uniform
 bucket-level access, public access prevention **enforced**, object
