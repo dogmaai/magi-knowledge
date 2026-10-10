@@ -1,6 +1,16 @@
 # Bundle Update Log
 
 ## 2026-10-10
+* **Correction**: magi-core#592 persistence review — added independent
+  `symbol` / `unit_name` / `session_id` / `mode` attribution to
+  [distill-outcomes](/system/echidna-tables/distill-outcomes.md) and the
+  ordered `provenance_sample_decision_ids` array to
+  [method-cards](/system/echidna-tables/method-cards.md). DDL at magi-core
+  `6765900f27deeacbe51fbf8c379250230ccd00ed` omitted these fields; the
+  offline contracts at `9e4067356acfd3c69075bf43c526fbf8e61f43ba`
+  require them for pair consistency and card content-hash round-trips.
+  Both concepts remain unverified drafts. No production DDL, writer,
+  approval policy or LILITH boundary change is implied.
 * **Enhancement**: Experience-distillation corpus drafts under
   [echidna-tables](/system/echidna-tables/index.md) — review-fix pass on
   PR #143 (Codex/Gemini/Mistral findings). Clarified `model_version` as

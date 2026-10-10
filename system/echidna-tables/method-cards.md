@@ -4,7 +4,7 @@ title: method_cards (proposed)
 description: L2 method-card registry — distilled, evidence-backed decision methods as model-independent cards; usability is bound by approvals in method_card_approvals, never by fields on the card itself.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-09T23:56:00Z }
+generated: { by: devin/cli, at: 2026-10-10T00:20:22Z }
 stale_after: 2027-04-09T23:03:00Z
 tags: [echidna, bigquery, distillation, method-cards, proposed]
 dataset: magi_core
@@ -49,7 +49,8 @@ not the card body. This matches the distillation contract fix in
 | stats_json | STRING | `{sample_count, eval_period{from,to}, uncertainty, supporting/refuting counts, cost-adjusted results}`. |
 | provenance_corpus_manifest_hash | STRING | Manifest hash of the frozen `distill_bundles` input the card was distilled from. |
 | provenance_bundle_id | STRING | `bundle_id` of the source bundle (`provenance.bundleId` in the card contract). |
-| provenance_source_cohort | STRING | Cohort that produced the evidence rows. |
+| provenance_sample_decision_ids | `ARRAY<STRING>` | Exact `provenance.sampleDecisionIds` array from the generated card, preserving order and duplicates; part of content identity. Empty array remains empty, not NULL or omitted. |
+| provenance_source_cohort | STRING | JSON encoding of `provenance.sourceCohort`, the cohort that produced the evidence rows; restore the original object or null before hashing, not the encoded string. |
 | evaluation_refs | `ARRAY<STRING>` | References to evaluations run against this card (`evaluationRefs` in the card contract — part of content identity). |
 | generation_by | STRING | Actor that drafted the card (`devin/cli`, …). |
 | generation_pipeline_version | STRING | Distillation pipeline version. |
@@ -62,7 +63,14 @@ not the card body. This matches the distillation contract fix in
 
 * **Content hash is the identity.** Editing card content after approval
   changes `content_hash`, which invalidates every approval bound to the
-  old hash — silent edits cannot ride an existing approval.
+  old hash — silent edits cannot ride an existing approval. A stored card
+  must reconstruct the same semantic content before `computeCardHash()`:
+  `provenance_sample_decision_ids` preserves the original array's order
+  and duplicates (including an empty array), never a sorted/deduplicated
+  set or an array re-derived from the current bundle. Decode JSON fields
+  back to their original values. Missing provenance is not repaired by
+  overwriting the stored hash. A DDL-backed offline round-trip test must
+  assert equality with the original `content_hash`.
 * **Evidence stays attached.** `provenance_corpus_manifest_hash` links the
   card to the exact frozen bundle that supports it; a card whose evidence
   bundle is invalidated is flagged for re-review.
