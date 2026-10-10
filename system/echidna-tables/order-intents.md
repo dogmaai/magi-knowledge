@@ -4,8 +4,8 @@ title: order_intents
 description: Append-only order-intent journal; magi-core orders are journaled before the broker POST (fail-closed for exposure-increasing orders; a risk-reducing order whose write fails still POSTs and is recovered via the remark key) and reconciled against broker order_history via the intent id embedded in the broker remark.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=order_intents&page=table
 lilith_safe: false
-status: stable
-generated: { by: devin/local, at: 2026-09-13T00:00:00Z }
+status: draft
+generated: { by: devin/cli, at: 2026-10-10T22:31:00Z }
 verified: [{ by: devin/local, at: 2026-09-13T00:00:00Z }, { by: human:jun, at: 2026-10-06T07:23:42Z }]
 stale_after: 2027-04-04T07:23:42Z
 tags: [echidna, bigquery, orders, reliability, reconciliation]
@@ -49,6 +49,7 @@ UPDATE/DELETE — so inserts never hit the streaming-buffer restriction.
 | Column | Type | Description |
 |---|---|---|
 | intent_id | STRING | Journal key (`i_` + 12 hex); embedded in the broker remark. |
+| decision_id | STRING | Corpus identifier (`d_` + 12 hex) minted at decision time — for **every** attempt including `CALL_FAILED`, HOLD and guard-blocked decisions that never become intents; independent of `thought_id`. Anchors the lineage `decision_id → intent_id → broker_order_id → fill_id`. |
 | event | STRING | Lifecycle event (see table above). |
 | session_id | STRING | Trading session that issued the intent. |
 | unit_name | STRING | PLM unit (e.g. `MELCHIOR-1`); also the remark prefix. |
@@ -61,6 +62,15 @@ UPDATE/DELETE — so inserts never hit the streaming-buffer restriction.
 | filled_qty | FLOAT64 | Broker dealt quantity when known. |
 | detail | STRING | Error text / match detail / status notes. |
 | created_at | TIMESTAMP | Event write time. |
+
+# decision_id rollout
+
+The `decision_id` column is added by migration
+`sql/alter_order_intents_add_decision_id.sql` (magi-core PR #602). Producers
+probe the table schema and **omit the field until the column exists**, so the
+code path is safe on both sides of the DDL apply; every lifecycle event
+copies the same `decision_id` once it is present. Rows written before the
+migration lands carry NULL — expected, not a lineage break.
 
 # Reconciliation contract
 
