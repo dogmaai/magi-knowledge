@@ -5,7 +5,7 @@ description: LLM reasoning log — one row per decision, with action, reasoning,
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=thoughts&page=table
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-07T02:15:00Z }
+generated: { by: devin/cli, at: 2026-10-10T23:40:00Z }
 verified: { by: human:jun, at: 2026-10-03T03:25:59Z }
 stale_after: 2027-04-03T03:25:59Z
 tags: [echidna, bigquery, thoughts, reasoning, core]
@@ -42,6 +42,7 @@ reasoning.
 | concerns | STRING | Stated risks/concerns; guard layer id (e.g. `L7`, `JEV`) on guard-block rows. |
 | prompt_version | STRING | Constitution / prompt version. |
 | thought_id | STRING | PK; FK target for [trades](trades.md).thought_id. |
+| decision_id | STRING | Corpus identifier (`d_` + 12 hex) minted at decision time — also present on `HOLD`, `CALL_FAILED` and guard-block rows, not only executed orders; independent of `thought_id`. Anchors the lineage `decision_id → intent_id → broker_order_id → fill_id`. NULL for rows predating the column (added 2026-10-10, magi-core#602). |
 | vix_estimate | FLOAT64 | VIX level estimate at decision. |
 | vix_regime | STRING | VIX regime label. |
 | reasoning_content | STRING | Extended chain-of-thought (when provided). |
