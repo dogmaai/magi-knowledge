@@ -65,12 +65,13 @@ UPDATE/DELETE — so inserts never hit the streaming-buffer restriction.
 
 # decision_id rollout
 
-The `decision_id` column is added by migration
-`sql/alter_order_intents_add_decision_id.sql` (magi-core PR #602). Producers
-probe the table schema and **omit the field until the column exists**, so the
-code path is safe on both sides of the DDL apply; every lifecycle event
-copies the same `decision_id` once it is present. Rows written before the
-migration lands carry NULL — expected, not a lineage break.
+The `decision_id` column was added by migration
+`sql/alter_order_intents_add_decision_id.sql` (magi-core PR #602) and applied
+to production `screen-share-459802.magi_core` by Jun on 2026-10-10. Producers
+probe the table schema and would omit the field had the column been absent,
+so the code path was safe on both sides of the apply; every lifecycle event
+now writes `decision_id`. Rows written before the migration landed carry
+NULL — expected, not a lineage break.
 
 # Reconciliation contract
 

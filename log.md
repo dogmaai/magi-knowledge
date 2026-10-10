@@ -1,6 +1,19 @@
 # Bundle Update Log
 
 ## 2026-10-10
+* **Application**: Jun applied the `decision_id` column migrations to
+  production `screen-share-459802.magi_core` — `thoughts.decision_id`
+  and `order_intents.decision_id` (magi-core PR #602,
+  `sql/alter_thoughts_add_decision_id.sql` +
+  `sql/alter_order_intents_add_decision_id.sql`, `bq` DONE at
+  ~23:35 UTC). [thoughts](/system/echidna-tables/thoughts.md) schema
+  table gains the same `decision_id` row — the doc had omitted it
+  (same drift class as order-intents). Pre-apply rows carry NULL
+  `decision_id` by design;
+  producers had been omitting the field via schema probe and now write
+  it on every new row. Also on this date: magi-core#604/#605 shipped
+  the `arbiter_verdicts` mirror writer (flag-gated behind
+  `ARCSIG_EXPERIMENT`).
 * **Correction**: added the `decision_id` column to
   [order-intents](/system/echidna-tables/order-intents.md) — the doc
   omitted a column the implementation already writes (magi-core PR
