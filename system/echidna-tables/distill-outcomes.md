@@ -4,7 +4,7 @@ title: distill_outcomes (proposed)
 description: L1 normalized outcome records — realized P&L, 10-trading-day mark-to-market, shadow virtual results and unevaluable decisions kept as distinct kinds, never merged into one "result" column.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-09T23:56:00Z }
+generated: { by: devin/cli, at: 2026-10-10T00:20:22Z }
 stale_after: 2027-04-09T23:03:00Z
 tags: [echidna, bigquery, distillation, proposed]
 dataset: magi_core
@@ -41,6 +41,10 @@ the original 4-kind contract could not express **maturity vs valuation**:
 | decision_id | STRING | Decision this outcome evaluates (joins `distill_decisions`). |
 | record_version | INT64 | Correction chain; latest valid version wins (≥1). |
 | record_hash | STRING | Content hash for dedupe/conflict detection. |
+| symbol | STRING | Outcome-side symbol, independently attributed from outcome evidence; compared with the decision. |
+| unit_name | STRING | Outcome-side unit (`unitName` in the offline contract); never copied from the decision at read time. |
+| session_id | STRING | Outcome-side session (`sessionId` in the offline contract). |
+| mode | STRING | Outcome-side trading mode; compared NULL-safely with the decision's mode. |
 | kind | STRING | See kinds table. |
 | maturity_status | STRING | `closed` / `mature_10d` / `immature` / `unevaluable`. |
 | valuation_basis | STRING | `realized_fills` / `mark_to_market` / `virtual` / `none`. |
@@ -61,6 +65,14 @@ the original 4-kind contract could not express **maturity vs valuation**:
 
 # Contracts
 
+* **Outcome attribution survives storage independently.** Persist `symbol`,
+  `unit_name`, `session_id` and `mode` from the outcome evidence, not from
+  a decision-side join during reconstruction. `pairOutcomes()` compares
+  all four fields on both sides: a mismatch (including NULL on only one
+  side) excludes the pair with an `inconsistent_pair` reason; it is not
+  a loss. Unknown outcome attribution remains NULL, never filled from
+  the decision merely to pass the comparison. DDL-backed offline
+  round-trip tests must retain valid pairs and reject each field mismatch.
 * **Realized ≠ mature ≠ virtual** are never conflated. Reports comparing
   units state the basis used; mixing `realized_fills` and `virtual`
   numbers in one average is a contract violation.
