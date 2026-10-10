@@ -51,6 +51,7 @@ table_type: BASE TABLE
 | price_confirmed | BOOL | `TRUE` = broker-confirmed fill. `FALSE` = submitted but unconfirmed (pending evaluator reconciliation — `price`/`pnl_*` may be null). `NULL` = legacy row predating the flag. |
 | entry_price | FLOAT64 | Canonical entry price. On `AUTO_CLOSE` rows this is the broker position's average entry. |
 | warn_only_layers | STRING | Comma-joined ids of opt-in warn-only guards that fired on this order (e.g. `L2`, `L3`, `L3,L2`). `NULL` = none fired / rows predating the column. Exact "would have been blocked" marker for #548 counterfactual measurement — the `WARN_ONLY` thoughts row carries no `thought_id`, so this column is the reliable per-trade link. |
+| model_version | STRING | Decision-time served-model identifier for distill-corpus attribution (added 2026-10-10, magi-core#592). `NULL` = unattributable / rows predating the column. |
 
 Counterfactual aggregation note (`warn_only_layers`, magi-core#548): the
 exact measurement window is `timestamp >= TIMESTAMP '2026-10-03 10:40:42

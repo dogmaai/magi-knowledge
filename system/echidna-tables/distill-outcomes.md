@@ -8,12 +8,12 @@ generated: { by: devin/cli, at: 2026-10-10T00:20:22Z }
 stale_after: 2027-04-09T23:03:00Z
 tags: [echidna, bigquery, distillation, proposed]
 dataset: magi_core
-table_type: BASE TABLE (proposed — does not exist yet)
+table_type: BASE TABLE (proposed — created 2026-10-10; draft schema)
 ---
 
-> **Draft — proposed table, not yet created.** Written only by the offline
+> **Draft — proposed schema; table created 2026-10-10 in `magi_core`.** Written only by the offline
 > extractor — **never by the live path**. The DDL lives in `magi-core`
-> (`sql/`) for Jun to apply.
+> (`sql/`) and was applied by Jun on 2026-10-10.
 
 L1 outcome records matching the `validateOutcome` contract in
 `lib/experience-distillation.js`, extended by the GPT-review finding that

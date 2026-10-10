@@ -8,12 +8,12 @@ generated: { by: devin/cli, at: 2026-10-09T23:56:00Z }
 stale_after: 2027-04-09T23:03:00Z
 tags: [echidna, bigquery, distillation, reproducibility, proposed]
 dataset: magi_core
-table_type: BASE TABLE (proposed — does not exist yet)
+table_type: BASE TABLE (proposed — created 2026-10-10; draft schema)
 ---
 
-> **Draft — proposed table, not yet created.** Written only by the offline
+> **Draft — proposed schema; table created 2026-10-10 in `magi_core`.** Written only by the offline
 > bundle builder (`buildBundle` lineage) — **never by the live path**.
-> The DDL lives in `magi-core` (`sql/`) for Jun to apply.
+> The DDL lives in `magi-core` (`sql/`) and was applied by Jun on 2026-10-10.
 
 A view over `distill_decisions`/`distill_outcomes` is **not** a stable
 evaluation basis: later corrections and extractor upgrades change what the

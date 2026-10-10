@@ -8,12 +8,12 @@ generated: { by: devin/cli, at: 2026-10-09T23:03:00Z }
 stale_after: 2027-04-09T23:03:00Z
 tags: [echidna, bigquery, distillation, fills, proposed]
 dataset: magi_core
-table_type: BASE TABLE (proposed — does not exist yet)
+table_type: BASE TABLE (proposed — created 2026-10-10; draft schema)
 ---
 
-> **Draft — proposed table, not yet created.** The producer (fill
+> **Draft — proposed schema; table created 2026-10-10 in `magi_core`.** The producer (fill
 > recording inside the dispatch/reconciliation path) is a separate
-> reviewed change; the DDL lives in `magi-core` (`sql/`) for Jun to apply.
+> reviewed change; the DDL lives in `magi-core` (`sql/`) and was applied by Jun on 2026-10-10.
 
 `order_intents` and `trades` record **order-level** outcomes. That loses
 fill granularity: a partial fill's incremental qty/price/fee, and a

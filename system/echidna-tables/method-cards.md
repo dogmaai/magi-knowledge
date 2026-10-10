@@ -8,13 +8,13 @@ generated: { by: devin/cli, at: 2026-10-10T00:20:22Z }
 stale_after: 2027-04-09T23:03:00Z
 tags: [echidna, bigquery, distillation, method-cards, proposed]
 dataset: magi_core
-table_type: BASE TABLE (proposed — does not exist yet)
+table_type: BASE TABLE (proposed — created 2026-10-10; draft schema)
 ---
 
-> **Draft — proposed table, not yet created.** The card registry mirrors
+> **Draft — proposed schema; table created 2026-10-10 in `magi_core`.** The card registry mirrors
 > `lib/method-card.js` (schema `0.2.0-draft`); any live-path reader or
 > prompt injection is a separate, independently reviewed change. The DDL
-> lives in `magi-core` (`sql/`) for Jun to apply.
+> lives in `magi-core` (`sql/`) and was applied by Jun on 2026-10-10.
 
 L2 of the corpus: method cards are the distilled product — a decision
 method whose effect reproduced on frozen evidence. Per the option-A
