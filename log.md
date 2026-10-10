@@ -1,6 +1,22 @@
 # Bundle Update Log
 
 ## 2026-10-10
+* **Correction**: added the `decision_id` column to
+  [order-intents](/system/echidna-tables/order-intents.md) — the doc
+  omitted a column the implementation already writes (magi-core PR
+  #602, migration `sql/alter_order_intents_add_decision_id.sql`).
+  `decision_id` (`d_` + 12 hex) is minted at decision time for every
+  attempt including `CALL_FAILED`, matching the corpus identifier
+  contract in [decision-sources](/system/echidna-tables/decision-sources.md)
+  and the `order_fills` lineage spine
+  `decision_id → intent_id → broker_order_id → fill_id`. Producers
+  schema-probe and omit the field until the migration lands, so
+  pre-apply rows carry NULL. The migration itself is pending Jun's
+  `bq query` apply; this closes the spec↔code drift flagged by
+  automated review, not the production schema gap. The doc is demoted
+  to `draft` per the lifecycle rule (generated revision post-dates the
+  2026-10-06 `human:jun` verification) and returns to `stable` on
+  Jun's re-verification.
 * **Application**: Jun applied the experience-distillation drafts to
   production `screen-share-459802` (all 9 referenced concepts are
   `status: draft` with no `verified.by`; applied under Jun's explicit
