@@ -1,6 +1,16 @@
 # Bundle Update Log
 
 ## 2026-10-10
+* **Decision**: Jun set context-body minimum retention to **2 years** and
+  delegated bucket naming (PandoraBoX suggested). Recorded
+  `magi-pandorabox-screen-share-459802` in
+  [decision-sources](/system/echidna-tables/decision-sources.md), replacing
+  the earlier `magi-distill-context` runbook proposal. The policy uses
+  `P2Y`, remains unlocked, and adds no automatic deletion schedule.
+  Reference baseline: knowledge `0bb2aeed53c16519b166c61356b88b59203aae72`,
+  core `b2b2d72613ccf54a41a530f4bde5e56898bdfcd2`. Bucket availability and
+  provisioning are unverified; no GCS/IAM operation was performed. The
+  concept remains draft and the core runbook must follow the merged pin.
 * **Correction**: magi-core#592 persistence review — added independent
   `symbol` / `unit_name` / `session_id` / `mode` attribution to
   [distill-outcomes](/system/echidna-tables/distill-outcomes.md) and the
