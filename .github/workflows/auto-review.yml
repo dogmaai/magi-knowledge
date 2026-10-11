@@ -189,12 +189,20 @@ jobs:
             const skippedFiles = [];
             for (const f of filesResp.data) {
               if (!f.filename.endsWith('.md') || f.status === 'removed') continue;
+              // API filenames are repo-relative; refuse anything that could
+              // resolve outside the checkout anyway.
+              if (f.filename.includes('..')) continue;
               if (fileBudget <= 0) { skippedFiles.push(f.filename); continue; }
               try {
+                const header = `\n\n## 変更後ファイル: ${f.filename}\n`;
+                // Clamp to the remaining budget (header included) so the
+                // total stays under FILE_CTX_TOTAL.
+                const cap = Math.min(FILE_CTX_EACH, fileBudget - header.length);
+                if (cap <= 0) { skippedFiles.push(f.filename); continue; }
                 let text = fs.readFileSync(f.filename, 'utf8');
-                if (text.length > FILE_CTX_EACH) text = text.slice(0, FILE_CTX_EACH) + '\n... (truncated)';
-                fileContext += `\n\n[変更後ファイル: ${f.filename}]\n${text}`;
-                fileBudget -= text.length;
+                if (text.length > cap) text = text.slice(0, cap) + '\n... (truncated)';
+                fileContext += header + text;
+                fileBudget -= header.length + text.length;
               } catch (e) {
                 console.log(`file context read failed for ${f.filename}: ${e.message}`);
               }
