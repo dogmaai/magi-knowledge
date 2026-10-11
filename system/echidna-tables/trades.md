@@ -70,10 +70,14 @@ falls inside that layer's enabled window for the row's `unit_name`.
 
 * Entry path is identified by `thought_id IS NOT NULL AND result IS
   DISTINCT FROM 'AUTO_CLOSE'` — the entry writer hard-blocks the insert
-  when no `thought_id` is resolvable, and the positionMgmt `AUTO_CLOSE`
-  writer never sets one. Rows failing the predicate are *unidentifiable*
-  (writer path cannot be determined): excluded from the main rate but
-  counted in the reference aggregate, never silently dropped.
+  when no `thought_id` is resolvable. `AUTO_CLOSE` rows are excluded by
+  the `result` predicate alone: since magi-core#609 the positionMgmt
+  writer *does* set `thought_id` (the system close journals its own
+  `llm_provider='system'` thoughts row), so `thought_id IS NOT NULL`
+  no longer distinguishes entry from close. Rows failing the predicate
+  are *unidentifiable* (writer path cannot be determined): excluded
+  from the main rate but counted in the reference aggregate, never
+  silently dropped.
 * `result = 'CONTAMINATED'` rows are excluded from numerator and
   denominator via a NULL-safe predicate (`result IS DISTINCT FROM
   'CONTAMINATED'` — a bare `!=` comparison would silently drop

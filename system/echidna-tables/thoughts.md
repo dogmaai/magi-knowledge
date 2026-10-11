@@ -22,17 +22,32 @@ Guard layers also append audit rows via `logGuardBlock()` — `id` prefixed
 warn-only layers), `concerns` carrying the layer id (e.g. `L7`, `JEV`), and
 `reasoning` the block reason. These document blocked decisions, not LLM
 reasoning. Since magi-core#609 each guard row mints its own corpus
-`decision_id` — one thoughts row = one corpus decision.
+`decision_id` — one thoughts row = one corpus decision. The fresh id is
+deliberate: the guard verdict is a distinct decision event, and reusing
+the analysis decision_id would collide in the extractor's single-key
+dedupe.
 
 Two further producers journal non-LLM decision rows (magi-core#609):
 
 - `AUTO_CLOSE` system closes (`src/positionMgmt.js`) write a row with
   `llm_provider='system'`, `action` = close side (`SELL`/`BUY`),
-  `confidence=0`, `concerns='AUTO_CLOSE'`, and the same `decision_id`
-  passed to the order dispatch — journaled before the broker call.
-- Failed or unusable LLM calls write `action='CALL_FAILED'`
-  (`lib/call-failed-journal.js`, best-effort) so call failures are
-  corpus-visible rather than silently absent.
+  `confidence=0` (a system decision carries no model confidence — 0 is
+  honest, not fabricated), `concerns='AUTO_CLOSE'`, and the same
+  `decision_id` passed to the order dispatch — journaled before the
+  broker call.
+- LLM calls that fail after the retry loop (provider errors, exhausted
+  429 retries) or return an unusable response (no
+  `choices[0].message`) write `action='CALL_FAILED'` via
+  `lib/call-failed-journal.js`, journaled by `src/session.js` at the
+  call site. "Best-effort" means a journaling failure returns
+  `ok:false` and never masks the original call failure — the row is
+  written whenever BigQuery accepts it, not guaranteed.
+
+Downstream: all three row kinds flow through the L0→L1 extractor like
+any `decision_id`-bearing thoughts row — `llm_provider='system'` forms
+its own cohort, `CALL_FAILED`/`BLOCKED`/`WARN_ONLY` rows evaluate to
+`unevaluable`/`no_trade_row` outcomes (no trade evidence exists),
+which is the intended corpus signal.
 
 # Schema
 
