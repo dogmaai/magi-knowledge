@@ -281,6 +281,15 @@ such as `magi-core` — to the external Mistral API for this review workflow.
 That approval covers this workflow only; new external data egress still needs
 Jun's explicit decision.
 
+Jun extended that approval on 2026-10-11 (PR #153 review): the magi-knowledge
+auto-review may additionally send the post-change content of `.md` files
+changed in the PR (capped at 24,000 characters total, 8,000 per file) as
+review context, to reduce "not documented" hallucinations. The magi-core
+workflow may likewise send excerpts of the pinned `vendor/magi-knowledge`
+spec documents selected by diff keywords (capped at 30,000 characters total,
+6,000 per doc) — implemented in magi-core#612 and follow-up magi-core#614.
+Any further egress expansion still needs Jun's explicit decision.
+
 ## Drift checks: extend before adding
 
 Devin reports an existing `okf-drift` check in magi-core. Inspect its workflow,

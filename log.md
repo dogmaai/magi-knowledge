@@ -1,6 +1,19 @@
 # Bundle Update Log
 
 ## 2026-10-11
+* **Policy**: Jun approved extending the Mistral auto-review egress scope —
+  the magi-knowledge workflow may send post-change content of PR-touched
+  `.md` files (≤24k chars total / ≤8k each) and the magi-core workflow may
+  send pinned `vendor/magi-knowledge` spec excerpts selected by diff
+  keywords (≤30k total / ≤6k each) as review context. Recorded in
+  [COLLABORATION.md](COLLABORATION.md) under *Automated PR review bots*.
+  Motivation: repeated Mistral hallucinations (non-existent spec quotes,
+  "not documented" claims, "future date" claims) traced to missing context.
+* **Enhancement**: `auto-review.yml` (this repo, PR #153) — inject the
+  review date, changed-`.md` post-change content (budget-capped, renamed
+  files included, `..` paths refused, per-file clamp to remaining budget),
+  repo-specific review premises, read-failure logging and a
+  budget-exhaustion marker into the Mistral prompt.
 * **Application** (partial): magi-core#609 closed the three remaining
   corpus coverage gaps — decision attempts that produced no
   `decision_id`-bearing thoughts row and so never reached
