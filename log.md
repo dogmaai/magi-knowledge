@@ -1,5 +1,18 @@
 # Bundle Update Log
 
+## 2026-10-11
+* **Application** (partial): magi-core#606 shipped the `decision_sources`
+  live-path writer (`lib/decision-sources.js` + `src/session.js` evidence
+  journal) — flag-gated behind `DECISION_SOURCES_ENABLED` (default OFF),
+  pending Jun's IAM grant (`storage.objects.create` on
+  `magi-pandorabox-screen-share-459802`) and deploy-env enablement. Bodies
+  land content-addressed with `#generation` URIs; same-batch tool results
+  are excluded from a decision's evidence (lookahead boundary).
+  [decision-sources](/system/echidna-tables/decision-sources.md) banner
+  updated. This completes Phase A (A1–A4) of the corpus lineage work —
+  A1 `decision_id` + A2 `order_fills` (magi-core#602, DDL applied
+  2026-10-10), A3 `arbiter_verdicts` mirror (#604/#605, flag-gated).
+
 ## 2026-10-10
 * **Application**: Jun applied the `decision_id` column migrations to
   production `screen-share-459802.magi_core` — `thoughts.decision_id`
