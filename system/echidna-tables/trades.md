@@ -42,7 +42,7 @@ table_type: BASE TABLE
 | prompt_version | STRING | Constitution / prompt version tag. |
 | atr_at_execution | FLOAT64 | ATR-14 at entry. |
 | market_snapshot | JSON | Market context blob at entry. |
-| thought_id | STRING | FK → [thoughts](thoughts.md).thought_id. |
+| thought_id | STRING | FK → [thoughts](thoughts.md).thought_id. Also set on `AUTO_CLOSE` rows — the system close journals a `llm_provider='system'` thoughts row and links it here (added 2026-10-11, magi-core#609). |
 | signal_price | FLOAT64 | Price when signal fired (pre-slippage). |
 | slippage_bps | FLOAT64 | Slippage (basis points). |
 | time_to_fill_ms | INT64 | Latency signal→fill. |

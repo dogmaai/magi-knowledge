@@ -21,7 +21,18 @@ Guard layers also append audit rows via `logGuardBlock()` — `id` prefixed
 `block_`, `action` and `trade_mode` set to `BLOCKED` (`WARN_ONLY` for
 warn-only layers), `concerns` carrying the layer id (e.g. `L7`, `JEV`), and
 `reasoning` the block reason. These document blocked decisions, not LLM
-reasoning.
+reasoning. Since magi-core#609 each guard row mints its own corpus
+`decision_id` — one thoughts row = one corpus decision.
+
+Two further producers journal non-LLM decision rows (magi-core#609):
+
+- `AUTO_CLOSE` system closes (`src/positionMgmt.js`) write a row with
+  `llm_provider='system'`, `action` = close side (`SELL`/`BUY`),
+  `confidence=0`, `concerns='AUTO_CLOSE'`, and the same `decision_id`
+  passed to the order dispatch — journaled before the broker call.
+- Failed or unusable LLM calls write `action='CALL_FAILED'`
+  (`lib/call-failed-journal.js`, best-effort) so call failures are
+  corpus-visible rather than silently absent.
 
 # Schema
 
@@ -31,10 +42,10 @@ reasoning.
 | timestamp | TIMESTAMP | Decision time (UTC). |
 | content | STRING | Raw model completion. |
 | trade_mode | STRING | `live` / `paper` / `simulation`; `BLOCKED` / `WARN_ONLY` on guard-block rows. |
-| llm_provider | STRING | Provider key. |
+| llm_provider | STRING | Provider key; `'system'` on `AUTO_CLOSE` close-decision rows (added 2026-10-11, magi-core#609). |
 | unit_name | STRING | MAGI unit name. |
 | symbol | STRING | Ticker under consideration. |
-| action | STRING | `BUY` / `SELL` / `HOLD`; `BLOCKED` / `WARN_ONLY` on guard-block rows. |
+| action | STRING | `BUY` / `SELL` / `HOLD`; `BLOCKED` / `WARN_ONLY` on guard-block rows; `CALL_FAILED` on failed/unusable LLM-call rows (added 2026-10-11, magi-core#609). |
 | side | STRING | Trade direction (`buy`/`sell`) written by `logGuardBlock` on guard-block rows; NULL elsewhere and for rows predating the column (added 2026-10-02, magi-core#535). |
 | reasoning | STRING | Parsed reasoning / thesis. |
 | hypothesis | STRING | Stated hypothesis. |
