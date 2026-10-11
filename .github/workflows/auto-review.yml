@@ -172,6 +172,32 @@ jobs:
             const MAX = 30000;
             if (diff.length > MAX) diff = diff.slice(0, MAX) + '\n... (truncated)';
 
+            // 差分 hunk だけだと周辺文脈が見えず「記載がない」型の誤指摘
+            // （幻覚）を生むので、変更 .md ファイルの PR 後内容を上限付きで
+            // 同梱する。checkout は pull_request イベントの merge 参照。
+            const fs = require('fs');
+            const filesResp = await github.rest.pulls.listFiles({
+              owner: repo.owner,
+              repo: repo.repo,
+              pull_number: pr.number,
+              per_page: 100
+            });
+            let fileContext = '';
+            let fileBudget = 24000;
+            for (const f of filesResp.data) {
+              if (!f.filename.endsWith('.md') || f.status === 'removed' || fileBudget <= 0) continue;
+              try {
+                let text = fs.readFileSync(f.filename, 'utf8');
+                if (text.length > 8000) text = text.slice(0, 8000) + '\n... (truncated)';
+                fileContext += `\n\n[変更後ファイル: ${f.filename}]\n${text}`;
+                fileBudget -= text.length;
+              } catch (e) { /* 未 checkout / 削除済みファイルは skip */ }
+            }
+
+            // 現在日付を明示 — これがないと文書内の日付をモデル自身の知識の
+            // 「現在」と比較し「未来日」として誤指摘する（恒例の幻覚）。
+            const reviewDate = new Date().toISOString().slice(0, 10);
+
             const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
               method: 'POST',
               headers: {
@@ -183,8 +209,8 @@ jobs:
                 temperature: 0.2,
                 max_tokens: 4000,
                 messages: [
-                  { role: 'system', content: 'あなたは厳格で中立的なコードレビュアーです。以下のPull Requestのdiffをレビューし、日本語のMarkdownで回答してください。姿勢: 変更を正当化せず、リスクと問題点の特定を最優先とする。各指摘には対象ファイル・該当箇所・根拠を必ず示し、推測に基づく指摘は「要確認」と明記する。nit（命名・スタイル等の主観的事項）も省略せず報告するが重要度は「低」とし、根拠のある問題は「中」以上に分類する。構成: ## 概要 / ## 指摘事項（各項目に重要度: 高/中/低を付記）/ ## 推奨アクション。問題がなければ指摘事項に「なし」と明記してください。' },
-                  { role: 'user', content: `PRタイトル: ${pr.title}\n\n${diff}` }
+                  { role: 'system', content: 'あなたは厳格で中立的なコードレビュアーです。以下のPull Requestのdiffをレビューし、日本語のMarkdownで回答してください。姿勢: 変更を正当化せず、リスクと問題点の特定を最優先とする。各指摘には対象ファイル・該当箇所・根拠を必ず示し、推測に基づく指摘は「要確認」と明記する。nit（命名・スタイル等の主観的事項）も省略せず報告するが重要度は「低」とし、根拠のある問題は「中」以上に分類する。リポジトリ固有の前提: (1) このリポジトリは OKF 仕様バンドルの正本であり、文書は仕様そのもの。(2) 文書は他リポジトリの実装 PR（magi-core#NNN 等）のマージ済み挙動を記録する — PR 番号付きの実装記述は出荷記録であり、レビュアはコードを参照できないため実装の真偽を疑わない。(3) レビュー実施日は user メッセージ先頭の日付。文書内の日付を自分の知識上の現在日付と比較して「未来」と断定しない — このバンドルの暦運用を優先する。(4) 差分にない文脈（同一ファイル内の他節・他文書）の内容を推測して指摘しない — [変更後ファイル] ブロックが添付されていればそれを根拠にできる。(5) nit は差分の実内容に関係するもののみとし、書式好みの列挙はしない。構成: ## 概要 / ## 指摘事項（各項目に重要度: 高/中/低を付記）/ ## 推奨アクション。問題がなければ指摘事項に「なし」と明記してください。' },
+                  { role: 'user', content: `PRタイトル: ${pr.title}\nレビュー実施日(UTC): ${reviewDate}\n\n${diff}${fileContext}` }
                 ]
               })
             });
