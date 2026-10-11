@@ -191,12 +191,15 @@ jobs:
             for (const f of filesResp.data) {
               if (!f.filename.endsWith('.md') || f.status === 'removed') continue;
               // API filenames are repo-relative; refuse anything that could
-              // resolve outside the checkout anyway (traversal/absolute).
+              // resolve outside the checkout anyway (traversal/absolute),
+              // and re-check the real path to catch symlink escapes.
               const resolved = path.resolve(f.filename);
               if (f.filename.includes('..') || path.isAbsolute(f.filename) ||
                   !resolved.startsWith(process.cwd() + path.sep)) continue;
               if (fileBudget <= 0) { skippedFiles.push(f.filename); continue; }
               try {
+                if (!fs.realpathSync(resolved)
+                     .startsWith(fs.realpathSync(process.cwd()) + path.sep)) continue;
                 const header = `\n\n## 変更後ファイル: ${f.filename}\n`;
                 // Clamp to the remaining budget (header included) so the
                 // total stays under FILE_CTX_TOTAL.
@@ -207,7 +210,7 @@ jobs:
                 fileContext += header + text;
                 fileBudget -= header.length + text.length;
               } catch (e) {
-                console.log(`file context read failed for ${f.filename}: ${e.message}`);
+                core.warning(`file context read failed for ${f.filename}: ${e.message}`);
                 // Record the gap in context so the model knows the file's
                 // post-change content is missing rather than absent.
                 fileContext += `\n\n## 変更後ファイル: ${f.filename}\n[読み込み失敗: 添付不可]`;
