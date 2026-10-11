@@ -287,8 +287,8 @@ changed in the PR (capped at 24,000 characters total, 8,000 per file) as
 review context, to reduce "not documented" hallucinations. The magi-core
 workflow may likewise send excerpts of the pinned `vendor/magi-knowledge`
 spec documents selected by diff keywords (capped at 30,000 characters total,
-6,000 per doc). Any further egress expansion still needs Jun's explicit
-decision.
+6,000 per doc) — implemented in magi-core#612 and follow-up magi-core#614.
+Any further egress expansion still needs Jun's explicit decision.
 
 ## Drift checks: extend before adding
 

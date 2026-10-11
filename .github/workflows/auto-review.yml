@@ -177,7 +177,8 @@ jobs:
             // 同梱する。checkout は pull_request イベントの merge 参照。
             // renamed ファイルは filename に新名が入るためそのまま含まれる。
             const fs = require('fs');
-            const FILE_CTX_TOTAL = 24000, FILE_CTX_EACH = 8000; // chars, ~6k/2k tokens
+            const path = require('path');
+            const FILE_CTX_TOTAL = 24000, FILE_CTX_EACH = 8000; // chars (~4 chars/token EN, fewer for JA)
             const filesResp = await github.rest.pulls.listFiles({
               owner: repo.owner,
               repo: repo.repo,
@@ -190,8 +191,10 @@ jobs:
             for (const f of filesResp.data) {
               if (!f.filename.endsWith('.md') || f.status === 'removed') continue;
               // API filenames are repo-relative; refuse anything that could
-              // resolve outside the checkout anyway.
-              if (f.filename.includes('..')) continue;
+              // resolve outside the checkout anyway (traversal/absolute).
+              const resolved = path.resolve(f.filename);
+              if (f.filename.includes('..') || path.isAbsolute(f.filename) ||
+                  !resolved.startsWith(process.cwd() + path.sep)) continue;
               if (fileBudget <= 0) { skippedFiles.push(f.filename); continue; }
               try {
                 const header = `\n\n## 変更後ファイル: ${f.filename}\n`;
@@ -205,6 +208,9 @@ jobs:
                 fileBudget -= header.length + text.length;
               } catch (e) {
                 console.log(`file context read failed for ${f.filename}: ${e.message}`);
+                // Record the gap in context so the model knows the file's
+                // post-change content is missing rather than absent.
+                fileContext += `\n\n## 変更後ファイル: ${f.filename}\n[読み込み失敗: 添付不可]`;
               }
             }
             if (skippedFiles.length) {
