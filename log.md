@@ -1,6 +1,19 @@
 # Bundle Update Log
 
 ## 2026-10-11
+* **Application** (partial): magi-core#609 closed the three remaining
+  corpus coverage gaps — decision attempts that produced no
+  `decision_id`-bearing thoughts row and so never reached
+  `distill_decisions`. `AUTO_CLOSE` system closes now journal a
+  `llm_provider='system'` thoughts row before dispatch (with the close
+  `trades` row linked by `thought_id`); `logGuardBlock` rows mint a
+  fresh `decision_id` per guard verdict (reusing the analysis id would
+  collide in the extractor's single-key dedupe — one thoughts row = one
+  corpus decision); `lib/call-failed-journal.js` writes `CALL_FAILED`
+  rows for thrown/unusable LLM calls, best-effort so journaling never
+  masks the original failure. `thoughts`/`trades` docs updated. Every
+  decision attempt is now L1-visible: analysis, system close, guard
+  block and call failure.
 * **Application** (partial): magi-core#608 added the B2 outcome kinds —
   `mark_to_market` (open position at the 10-trading-day mark, valued at
   the last [moomoo-snapshots](system/echidna-tables/moomoo-snapshots.md)
