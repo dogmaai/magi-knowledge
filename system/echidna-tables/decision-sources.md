@@ -4,16 +4,20 @@ title: decision_sources (proposed)
 description: L0 evidence-lineage ledger for the experience-distillation corpus — one row per information source that entered a decision's context, with the source body held immutably in GCS and only metadata + hashes in BigQuery.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-10T00:54:46Z }
+generated: { by: devin/cli, at: 2026-10-11T00:05:00Z }
 stale_after: 2027-04-09T23:03:00Z
 tags: [echidna, bigquery, distillation, lineage, proposed]
 dataset: magi_core
 table_type: BASE TABLE (proposed — created 2026-10-10; draft schema)
 ---
 
-> **Draft — proposed schema; table created 2026-10-10 in `magi_core`.** No producer is wired. The
-> live-path writer (session side) requires a separate, independently
-> reviewed change; the DDL lives in `magi-core` (`sql/`) and was applied by Jun on 2026-10-10.
+> **Draft — proposed schema; table created 2026-10-10 in `magi_core`.** The
+> live-path producer shipped in magi-core#606 (`lib/decision-sources.js`,
+> journaled per `log_analysis` decision from `src/session.js`) but is
+> **flag-gated OFF** — rows only flow once Jun grants the session service
+> account `storage.objects.create` on the PandoraBoX bucket and sets
+> `DECISION_SOURCES_ENABLED=1` in deploy env. The DDL lives in `magi-core`
+> (`sql/`) and was applied by Jun on 2026-10-10.
 > This document records the GPT-reviewed dataset design behind
 > [MODEL CONSOLIDATION](/system/constitution/model-consolidation.md).
 
