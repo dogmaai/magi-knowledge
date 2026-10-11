@@ -12,8 +12,10 @@ table_type: BASE TABLE (proposed — created 2026-10-10; draft schema)
 ---
 
 > **Draft — proposed schema; table created 2026-10-10 in `magi_core`.** Written only by the offline
-> extractor — **never by the live path**. The DDL lives in `magi-core`
-> (`sql/`) and was applied by Jun on 2026-10-10.
+> extractor — implemented 2026-10-11 as magi-core `scripts/distill-extractor.mjs`
+> (magi-core#607 B1 + #608 B2; all five kinds emitted, maturity anchored by
+> `lib/trading-calendar.js` `us-nyse-holidays-v1`) — **never by the live path**.
+> The DDL lives in `magi-core` (`sql/`) and was applied by Jun on 2026-10-10.
 
 L1 outcome records matching the `validateOutcome` contract in
 `lib/experience-distillation.js`, extended by the GPT-review finding that

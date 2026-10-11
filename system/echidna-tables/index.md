@@ -54,12 +54,17 @@ Two write-path conventions matter:
 * [lilith-hard-gate-events](lilith-hard-gate-events.md) - LILITH VIX hard-gate rewrites (deprecated 2026-09-23; table dropped — sibling ledgers `lilith_confidence_gate_events` / `lilith_forecast_gate_events` dropped in the same action).
 * [constitution](constitution.md) - Versioned MAGI Constitution store.
 
-# Experience-distillation corpus (proposed — drafts, tables not yet created)
+# Experience-distillation corpus (drafts; tables created, producers wired)
 
 Three-layer model-independent learning dataset for the ARC×SIG
 consolidation path (see the *Learning dataset* section of
 [model-consolidation](/system/constitution/model-consolidation.md); DDL in
-`magi-core` `sql/`, applied by Jun; no producers wired yet):
+`magi-core` `sql/`, applied by Jun. Producers: L0 `decision_sources`
+writer (magi-core#606, flag-gated `DECISION_SOURCES_ENABLED`) and
+`arbiter_verdicts` Firestore mirror (#604/#605, flag-gated
+`ARCSIG_EXPERIMENT`); L1 offline extractor `scripts/distill-extractor.mjs`
+(#607 B1 + #608 B2 — manual invocation, all five outcome kinds; no rows
+until the first run, scheduling is Jun's decision):
 
 * **L0 raw evidence** (append-only; written by live paths under separate review):
   [decision-sources](decision-sources.md) (decision-time context lineage,

@@ -12,7 +12,9 @@ table_type: BASE TABLE (proposed — created 2026-10-10; draft schema)
 ---
 
 > **Draft — proposed schema; table created 2026-10-10 in `magi_core`.** Written only by the offline
-> extractor (`lib/experience-distillation.js` lineage) — **never by the
+> extractor — implemented 2026-10-11 as magi-core `scripts/distill-extractor.mjs`
+> (L0→L1 transform `lib/distill-extract.js`, contract
+> `lib/experience-distillation.js`; magi-core#607) — **never by the
 > live path**. The DDL lives in `magi-core` (`sql/`) and was applied by Jun on 2026-10-10.
 
 L1 of the three-layer corpus (see the *Learning dataset* section of

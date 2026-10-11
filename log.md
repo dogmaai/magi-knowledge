@@ -1,6 +1,28 @@
 # Bundle Update Log
 
 ## 2026-10-11
+* **Application** (partial): magi-core#608 added the B2 outcome kinds —
+  `mark_to_market` (open position at the 10-trading-day mark, valued at
+  the last [moomoo-snapshots](system/echidna-tables/moomoo-snapshots.md)
+  quote at/before the maturity instant) and `shadow_virtual` (SHADOW
+  trade results are virtual by definition — never `realized`;
+  NOT_ADOPTED BUY proposals get counterfactual virtual entries at the
+  last snapshot ≤ decided_at on the same 10-trading-day clock). Maturity
+  uses `lib/trading-calendar.js` (`us-nyse-holidays-v1`, algorithmic
+  NYSE calendar; 16:00 ET of the 10th trading day after the entry's ET
+  date). No pre-maturity counterfactual exit rule exists in the OKF —
+  v1 exits at maturity only (`eval_rule_version = maturity-10td-v1`);
+  adding one is a spec decision, not an implementation choice.
+* **Application** (partial): magi-core#607 shipped the B1 offline
+  extractor — `scripts/distill-extractor.mjs` + `lib/distill-extract.js`
+  writes `distill_decisions`/`distill_outcomes` (v1 kinds: realized /
+  immature / unevaluable; mark_to_market + shadow_virtual are B2).
+  Manual invocation only — `node scripts/distill-extractor.mjs
+  --from=YYYY-MM-DD --to=YYYY-MM-DD [--write]`; scheduling is Jun's
+  separate decision and no rows
+  exist until the first run. Determinism contract: identical L0 input
+  produces identical record_hash; run instants are bookkeeping, never
+  hashed.
 * **Application** (partial): magi-core#606 shipped the `decision_sources`
   live-path writer (`lib/decision-sources.js` + `src/session.js` evidence
   journal) — flag-gated behind `DECISION_SOURCES_ENABLED` (default OFF),
