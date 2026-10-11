@@ -17,8 +17,9 @@
   extractor — `scripts/distill-extractor.mjs` + `lib/distill-extract.js`
   writes `distill_decisions`/`distill_outcomes` (v1 kinds: realized /
   immature / unevaluable; mark_to_market + shadow_virtual are B2).
-  Manual invocation only — `node scripts/distill-extractor.mjs --from=
-  --to= [--write]`; scheduling is Jun's separate decision and no rows
+  Manual invocation only — `node scripts/distill-extractor.mjs
+  --from=YYYY-MM-DD --to=YYYY-MM-DD [--write]`; scheduling is Jun's
+  separate decision and no rows
   exist until the first run. Determinism contract: identical L0 input
   produces identical record_hash; run instants are bookkeeping, never
   hashed.
