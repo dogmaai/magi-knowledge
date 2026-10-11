@@ -175,7 +175,9 @@ jobs:
             // 差分 hunk だけだと周辺文脈が見えず「記載がない」型の誤指摘
             // （幻覚）を生むので、変更 .md ファイルの PR 後内容を上限付きで
             // 同梱する。checkout は pull_request イベントの merge 参照。
+            // renamed ファイルは filename に新名が入るためそのまま含まれる。
             const fs = require('fs');
+            const FILE_CTX_TOTAL = 24000, FILE_CTX_EACH = 8000; // chars, ~6k/2k tokens
             const filesResp = await github.rest.pulls.listFiles({
               owner: repo.owner,
               repo: repo.repo,
@@ -183,15 +185,22 @@ jobs:
               per_page: 100
             });
             let fileContext = '';
-            let fileBudget = 24000;
+            let fileBudget = FILE_CTX_TOTAL;
+            const skippedFiles = [];
             for (const f of filesResp.data) {
-              if (!f.filename.endsWith('.md') || f.status === 'removed' || fileBudget <= 0) continue;
+              if (!f.filename.endsWith('.md') || f.status === 'removed') continue;
+              if (fileBudget <= 0) { skippedFiles.push(f.filename); continue; }
               try {
                 let text = fs.readFileSync(f.filename, 'utf8');
-                if (text.length > 8000) text = text.slice(0, 8000) + '\n... (truncated)';
+                if (text.length > FILE_CTX_EACH) text = text.slice(0, FILE_CTX_EACH) + '\n... (truncated)';
                 fileContext += `\n\n[変更後ファイル: ${f.filename}]\n${text}`;
                 fileBudget -= text.length;
-              } catch (e) { /* 未 checkout / 削除済みファイルは skip */ }
+              } catch (e) {
+                console.log(`file context read failed for ${f.filename}: ${e.message}`);
+              }
+            }
+            if (skippedFiles.length) {
+              fileContext += `\n\n[添付省略（予算超過）: ${skippedFiles.join(', ')}]`;
             }
 
             // 現在日付を明示 — これがないと文書内の日付をモデル自身の知識の
