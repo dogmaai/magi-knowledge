@@ -21,6 +21,12 @@
   linked PR (`lib/l6-policy.js`, `src/llm.js` L1.5/L6, `lib/vix.js` lock,
   `lib/constitution.js` mode-dependent rendering, `deploy.yml`
   `L6_POLICY=observe` on the six live units).
+* **Verification**: Jun reviewed the L6 policy documents in-session on
+  2026-10-12 and instructed Devin to record `verified: human:jun @
+  2026-10-12T03:56:00Z` on [l6](system/guards/l6.md),
+  [vix-regime](system/constitution/vix-regime.md) and
+  [l1-5](system/guards/l1-5.md); all three restored `draft` → `stable`,
+  `stale_after` extended to 2027-04-12.
 
 ## 2026-10-12
 * **Correction**: [MARKET REGIME AWARENESS - VIX](system/constitution/vix-regime.md)

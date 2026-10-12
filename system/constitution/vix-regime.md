@@ -3,10 +3,10 @@ type: Constitution Section
 title: "MARKET REGIME AWARENESS - VIX"
 description: VIX-based size and selectivity adjustment -- direction comes from edge, not VIX; bands match the L6 regime enum, and L6 hard-blocks risk-increasing BUYs at VIX >= 25.
 lilith_safe: false
-status: draft
-generated: { by: devin/local, at: 2026-10-12T05:00:00Z }
-verified: [{ by: human:jun, at: 2026-06-23T01:27:14Z }, { by: human:jun, at: 2026-10-12T02:46:00Z }]
-stale_after: 2027-04-12T02:46:00Z
+status: stable
+generated: { by: devin/local, at: 2026-10-12T03:11:00Z }
+verified: [{ by: human:jun, at: 2026-06-23T01:27:14Z }, { by: human:jun, at: 2026-10-12T02:46:00Z }, { by: human:jun, at: 2026-10-12T03:56:00Z }]
+stale_after: 2027-04-12T03:56:00Z
 tags: [constitution, v3, plm, vix, regime, risk]
 section_order: 6
 version: "3.0"
