@@ -26,7 +26,7 @@ changes in `lib/constitution.js`, update the corresponding section doc here.
 | 3 | [YOUR EDGE](edge.md) | Six competitive advantages (timeframe, ensemble, ISABEL, HERMES, anti-crowding, adaptivity) | yes |
 | 4 | [EXPECTANCY DISCIPLINE](expectancy.md) | Profit = WR x avg_win - LR x avg_loss; R:R >= 2:1 | yes |
 | 5 | [ISABEL - Information Gateway](isabel-gateway.md) | Advisory only; unit decides | yes |
-| 6 | [MARKET REGIME AWARENESS - VIX](vix-regime.md) | VIX governs size, not direction | yes |
+| 6 | [MARKET REGIME AWARENESS - VIX](vix-regime.md) | VIX governs size, not direction; L6 blocks risk-increasing BUYs at VIX >= 25 | yes |
 | 7 | [TRADING UNIVERSE](trading-universe.md) | Dynamic symbol list + L3 exclusions | **dynamic** |
 | 8 | [TIMEFRAME: SWING](timeframe-swing.md) | Days to 2-3 months; entry needs catalyst + 2:1 R:R | yes |
 | 9 | [SWING TRADING DISCIPLINE](swing-discipline.md) | Check positions first; HOLD is valid | yes |
@@ -61,7 +61,7 @@ is retained as the historical boundary specification.
 | Aspect | PLM (this tree) | LILITH-safe |
 |---|---|---|
 | SL/TP | -5% / +10% half, +20% final | -5% / +5% half, +10% remainder |
-| VIX | Sizing lever (direction from edge) | Hard side-bias gating |
+| VIX | Sizing lever (direction from edge) in `CALM`-`HIGH_FEAR`; L6 hard-blocks risk-increasing BUYs in `EXTREME_FEAR`/`PANIC` | Hard side-bias gating (legacy enum incl. `NORMAL`) |
 | ISABEL | Advisory tool-call | Own stats block only |
 | Other units | Part of ensemble | Forbidden (clean-source) |
 | Scope | Full competitive doctrine | Immutable rules only |
