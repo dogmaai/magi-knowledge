@@ -1,5 +1,27 @@
 # Bundle Update Log
 
+## 2026-10-12 (L6 policy change)
+* **Policy change (Jun decision, 2026-10-12)**: [L6](system/guards/l6.md)
+  rewritten for the new policy — `EXTREME_FEAR` drops the VIX-only
+  directional veto (BUY/SHORT both allowed under a locked 0.3x → 4.5%
+  account-wide per-symbol cap; oversize clamped, zero headroom skipped, no
+  forced liquidation); `PANIC` now blocks risk-increasing orders on **both**
+  sides including adds and flips. Rollout is staged via `L6_POLICY`
+  (`legacy` default → `observe` on live units → `live` after the ~1-month
+  observation review); observe mode keeps legacy enforcement while journaling
+  new-policy verdicts (`L6_OBSERVE` WARN_ONLY rows + `trades_shadow`
+  candidates for legacy-blocked EXTREME_FEAR BUYs). Same-change updates:
+  [vix-regime](system/constitution/vix-regime.md) table/Intent/Modes,
+  [l1-5](system/guards/l1-5.md) (EXTREME_FEAR multiplier lock vs Optuna
+  overrides + no double application + live-mode clamp),
+  [guards index](system/guards/index.md) L6 row, and the
+  [constitution index](system/constitution/index.md) section 6 summary and
+  PLM/LILITH comparison row. `l6.md`, `vix-regime.md`, `l1-5.md` demoted
+  `stable` → `draft` pending Jun's verification. `magi-core` code in the
+  linked PR (`lib/l6-policy.js`, `src/llm.js` L1.5/L6, `lib/vix.js` lock,
+  `lib/constitution.js` mode-dependent rendering, `deploy.yml`
+  `L6_POLICY=observe` on the six live units).
+
 ## 2026-10-12
 * **Correction**: [MARKET REGIME AWARENESS - VIX](system/constitution/vix-regime.md)
   — the VIX table used four bands (`<15` / `15-25` / `25-35` / `>35`) that did

@@ -30,7 +30,7 @@ historical blocks already live in `thoughts`, so nothing is lost.
 | [L2](l2.md) | Confidence (コンフィデンス層) | `confidence >= L2_THRESHOLD` (Optuna, frozen) | block (opt-in warn via `L2_WARN_ONLY=true`) | statistical-gate |
 | [L4](l4.md) | Direction Suitability (方向適性層) | Provider/side underperformance eval | warn (impl; demotion pending review) | statistical-gate |
 | [L5](l5.md) | Thought Similarity (思考類似度層) | Reasoning too similar to past losers | warn (impl; demotion pending review) | statistical-gate |
-| [L6](l6.md) | Market Regime (市場環境層) | VIX regime vs side | block risk-increasing BUY (`EXTREME_FEAR`/`PANIC`) / warn (`HIGH_FEAR` BUY) | statistical-gate |
+| [L6](l6.md) | Market Regime (市場環境層) | VIX regime vs side | `L6_POLICY`-dependent — legacy: block BUY (`EXTREME_FEAR`/`PANIC`); new: `EXTREME_FEAR` cap+clamp both directions, `PANIC` blocks risk-increasing orders both sides; warn (`HIGH_FEAR` BUY) | statistical-gate |
 | [L7](l7.md) | Composite Score (複合スコア層) | Optuna 1000-trial composite gate | warn (impl; demotion pending review) | statistical-gate |
 
 The numeric labels are historical and the table is in actual code execution

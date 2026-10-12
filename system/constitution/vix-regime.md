@@ -3,8 +3,8 @@ type: Constitution Section
 title: "MARKET REGIME AWARENESS - VIX"
 description: VIX-based size and selectivity adjustment -- direction comes from edge, not VIX; bands match the L6 regime enum, and L6 hard-blocks risk-increasing BUYs at VIX >= 25.
 lilith_safe: false
-status: stable
-generated: { by: devin/local, at: 2026-10-12T00:30:00Z }
+status: draft
+generated: { by: devin/local, at: 2026-10-12T05:00:00Z }
 verified: [{ by: human:jun, at: 2026-06-23T01:27:14Z }, { by: human:jun, at: 2026-10-12T02:46:00Z }]
 stale_after: 2027-04-12T02:46:00Z
 tags: [constitution, v3, plm, vix, regime, risk]
@@ -30,11 +30,20 @@ guard will refuse:
 | < 15 | `CALM` | Trends tend to persist; standard size; trade on merit. | pass |
 | 15 to < 20 | `LOW_FEAR` | Standard size; trade either direction on its own merit. | pass |
 | 20 to < 25 | `HIGH_FEAR` | Reduce size (0.7x cap); demand stronger confirmation; both directions allowed. | warn on BUY |
-| 25 to < 30 | `EXTREME_FEAR` | Minimum size (0.3x cap). Risk-increasing BUYs are system-blocked; SELL/SHORT or short-cover BUYs only. | block risk-increasing BUY |
-| >= 30 | `PANIC` | Minimum size (0.3x cap) or stay in cash; capital preservation first. Same BUY block as `EXTREME_FEAR`. | block risk-increasing BUY |
+| 25 to < 30 | `EXTREME_FEAR` | Minimum size (0.3x cap = 4.5% of equity per symbol, Optuna-locked). Both directions allowed; oversize orders clamp to the allowed qty or are skipped when no headroom remains. | cap + clamp (new policy; see Modes) |
+| >= 30 | `PANIC` | Stay in cash unless exiting: all risk-increasing orders are system-blocked in BOTH directions (new BUY/SHORT, adds, flips). Only exposure-reducing orders pass. | block risk-increasing orders, both sides |
 
 Boundaries are lower-inclusive (`classifyVixRegime` uses `<` against each
-`*_MAX`), so VIX exactly 25.0 is `EXTREME_FEAR` and the BUY block applies.
+`*_MAX`), so VIX exactly 25.0 is `EXTREME_FEAR` and exactly 30.0 is `PANIC`.
+
+**Modes.** `L6_POLICY` selects enforcement (`magi-core/src/llm.js`,
+`lib/l6-policy.js`): `legacy` = the pre-2026-10-12 rule (EXTREME_FEAR/PANIC
+hard-block BUYs) and is the code default; `observe` keeps legacy enforcement
+while journaling each order's new-policy verdict and allowed qty
+(`WARN_ONLY` thoughts rows marked `L6_OBSERVE`) and shadow-tracking the
+EXTREME_FEAR BUY candidates legacy blocks (`trades_shadow` rows with
+`trade_mode='L6_OBSERVE'`); `live` applies the new policy above. See
+[L6](/system/guards/l6.md) for the rollout and evaluation plan.
 
 Use `get_price` with symbol "UVXY" or "VIX" proxy to gauge market fear.
 
@@ -58,12 +67,14 @@ multiplier).
 
 At `EXTREME_FEAR` / `PANIC` the LILITH-safe
 [risk-rules](/_lilith_safe/constitution/risk-rules.md) side restriction
-(`EXTREME_FEAR` is SELL/SHORT only, BUY system-blocked) applies to the
-standard PLM lane as well — Jun decided to tighten L6 from warn-only to a
-hard block on 2026-09-21 (option A, recorded in [l6.md](/system/guards/l6.md)).
-The prompt therefore tells units up front that risk-increasing BUYs will be
-refused in those regimes instead of inviting a trade the guard rejects.
-Short-cover BUYs stay allowed so positions remain unwindable.
+(`EXTREME_FEAR` is SELL/SHORT only, BUY system-blocked) originally applied to
+the standard PLM lane as well — Jun tightened L6 to a hard block on
+2026-09-21 (option A). On **2026-10-12 Jun changed the policy**: EXTREME_FEAR
+keeps the small-cap sizing but drops the directional veto (BUY/SHORT both
+allowed, oversize clamped to the cap); PANIC now blocks risk-increasing
+orders on **both** sides. The LILITH-safe risk-rules document is unchanged —
+it governs the LILITH lane, not the PLM lane. Rollout is staged via
+`L6_POLICY` (`legacy` → `observe` → `live`); see [l6.md](/system/guards/l6.md).
 
 Earlier revisions of this section used four bands (`< 15` / `15-25` / `25-35`
 / `> 35`) that did not line up with the five-level enum and described
@@ -71,18 +82,19 @@ Earlier revisions of this section used four bands (`< 15` / `15-25` / `25-35`
 drift was aligned on 2026-10-12 (magi-core `lib/constitution.js` updated in
 the linked PR). The option-A decision date (2026-09-21) precedes `l6.md`'s
 `generated` (2026-09-23) and both of its `human:jun` verifications
-(2026-09-22, 2026-10-06), so the verified `l6.md` text already reflects it. Whether the block threshold itself should move is a separate
-risk-policy decision for Jun; this doc records the current rule.
+(2026-09-22, 2026-10-06), so the verified `l6.md` text already reflects it. The threshold itself was subsequently reviewed: Jun's 2026-10-12 policy change keeps the regime boundaries and moves EXTREME_FEAR from a directional veto to cap-only enforcement while hardening PANIC to both directions — staged via `L6_POLICY` observation first.
 
 # Cross-references
 
-* Guard layer: [L6 (Market Regime)](/system/guards/l6.md) -- hard-blocks
-  risk-increasing BUYs in `EXTREME_FEAR` / `PANIC`; warn-only in `HIGH_FEAR`.
+* Guard layer: [L6 (Market Regime)](/system/guards/l6.md) -- `L6_POLICY`
+  modes; `PANIC` blocks risk-increasing orders both directions under the new
+  policy; warn-only in `HIGH_FEAR`.
 * Sizing: [L1.5](/system/guards/l1-5.md) -- per-regime position multiplier
   (defaults `CALM`/`LOW_FEAR` 1.0, `HIGH_FEAR` 0.7, `EXTREME_FEAR`/`PANIC`
   0.3; a `POSITION_MULTIPLIER` row in
   [optuna-params](/system/echidna-tables/optuna-params.md) overrides a level
-  and the prompt renders the resolved value).
+  — except `EXTREME_FEAR`, which is locked at 0.3 during the L6 policy
+  validation period — and the prompt renders the resolved value).
 * LILITH-safe version: [risk-rules](/_lilith_safe/constitution/risk-rules.md)
   -- side-bias mapping that L6 enforces at `EXTREME_FEAR`.
 * VIX detection and regime enum: `magi-core/lib/vix.js`
