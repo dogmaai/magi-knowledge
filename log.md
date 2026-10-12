@@ -27,12 +27,14 @@
   index no longer attributes hard gating to LILITH-safe alone; and
   [L1.5](system/guards/l1-5.md) now documents the VIX regime multiplier on
   the exposure cap (1.0/0.7/0.3), the boost-clamp path and the shared
-  account-wide position count it actually enforces (also demoted to
-  `draft` pending Jun). `generated` updated and the doc demoted `stable` → `draft`
-  per lifecycle until Jun appends a `verified` entry and restores `stable`
-  (magi-core's `okf-constitution-drift.test.js` requires a stable doc for
-  every rendered prompt section, so the magi-core pin bump must follow that
-  re-verification).
+  account-wide position count it actually enforces. Both docs were first
+  demoted `stable` → `draft` per lifecycle; Jun reviewed the PR #154 diff
+  and review triage in-session on 2026-10-12 and instructed Devin to record
+  the `verified: human:jun @ 2026-10-12T02:46Z` entries and restore `stable`
+  (the entries record Jun's review act, written at Jun's explicit
+  instruction). The magi-core `vendor/magi-knowledge` pin follows in
+  magi-core#616 (its `okf-constitution-drift.test.js` requires a stable doc
+  for every rendered prompt section).
 
 ## 2026-10-11
 * **Policy**: Jun approved extending the Mistral auto-review egress scope —

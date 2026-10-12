@@ -3,10 +3,10 @@ type: Constitution Section
 title: "MARKET REGIME AWARENESS - VIX"
 description: VIX-based size and selectivity adjustment -- direction comes from edge, not VIX; bands match the L6 regime enum, and L6 hard-blocks risk-increasing BUYs at VIX >= 25.
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/local, at: 2026-10-12T00:30:00Z }
-verified: { by: human:jun, at: 2026-06-23T01:27:14Z }
-stale_after: 2026-12-20T01:27:14Z
+verified: [{ by: human:jun, at: 2026-06-23T01:27:14Z }, { by: human:jun, at: 2026-10-12T02:46:00Z }]
+stale_after: 2027-04-12T02:46:00Z
 tags: [constitution, v3, plm, vix, regime, risk]
 section_order: 6
 version: "3.0"
@@ -79,7 +79,10 @@ risk-policy decision for Jun; this doc records the current rule.
 * Guard layer: [L6 (Market Regime)](/system/guards/l6.md) -- hard-blocks
   risk-increasing BUYs in `EXTREME_FEAR` / `PANIC`; warn-only in `HIGH_FEAR`.
 * Sizing: [L1.5](/system/guards/l1-5.md) -- per-regime position multiplier
-  (`CALM`/`LOW_FEAR` 1.0, `HIGH_FEAR` 0.7, `EXTREME_FEAR`/`PANIC` 0.3).
+  (defaults `CALM`/`LOW_FEAR` 1.0, `HIGH_FEAR` 0.7, `EXTREME_FEAR`/`PANIC`
+  0.3; a `POSITION_MULTIPLIER` row in
+  [optuna-params](/system/echidna-tables/optuna-params.md) overrides a level
+  and the prompt renders the resolved value).
 * LILITH-safe version: [risk-rules](/_lilith_safe/constitution/risk-rules.md)
   -- side-bias mapping that L6 enforces at `EXTREME_FEAR`.
 * VIX detection and regime enum: `magi-core/lib/vix.js`
