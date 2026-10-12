@@ -1,5 +1,29 @@
 # Bundle Update Log
 
+## 2026-10-12
+* **Correction**: [MARKET REGIME AWARENESS - VIX](system/constitution/vix-regime.md)
+  — the VIX table used four bands (`<15` / `15-25` / `25-35` / `>35`) that did
+  not match the five-level regime enum in `magi-core/lib/vix.js`
+  (`CALM` / `LOW_FEAR` / `HIGH_FEAR` / `EXTREME_FEAR` / `PANIC`, boundaries
+  15/20/25/30) and told units "25-35: both directions allowed" while
+  [L6](system/guards/l6.md) (stable, Jun 2026-10-06) hard-blocks
+  risk-increasing BUYs from VIX 25. Table rewritten to the enum bands with
+  the L6 outcome and L1.5 size multiplier per regime; Intent now records the
+  2026-09-21 option-A tightening instead of calling L6 warn-only. Stale L6
+  "warn" wording also fixed in the [guards index](system/guards/index.md)
+  pipeline table and the [constitution index](system/constitution/index.md)
+  section row. Surfaced by an external review (GPT) of guard strictness;
+  this entry aligns documents to the existing decision and does **not**
+  change the block threshold — relaxing L6 remains a Jun risk-policy call.
+  The matching prompt text in `magi-core/lib/constitution.js` (and the
+  stray "8-symbol limit" in SWING TRADING DISCIPLINE, which contradicts
+  the 5-symbol `MAX_CONCURRENT_POSITIONS` default) is fixed in the linked
+  magi-core PR. `generated` updated and the doc demoted `stable` → `draft`
+  per lifecycle until Jun appends a `verified` entry and restores `stable`
+  (magi-core's `okf-constitution-drift.test.js` requires a stable doc for
+  every rendered prompt section, so the magi-core pin bump must follow that
+  re-verification).
+
 ## 2026-10-11
 * **Policy**: Jun approved extending the Mistral auto-review egress scope —
   the magi-knowledge workflow may send post-change content of PR-touched

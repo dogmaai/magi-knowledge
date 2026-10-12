@@ -26,7 +26,7 @@ changes in `lib/constitution.js`, update the corresponding section doc here.
 | 3 | [YOUR EDGE](edge.md) | Six competitive advantages (timeframe, ensemble, ISABEL, HERMES, anti-crowding, adaptivity) | yes |
 | 4 | [EXPECTANCY DISCIPLINE](expectancy.md) | Profit = WR x avg_win - LR x avg_loss; R:R >= 2:1 | yes |
 | 5 | [ISABEL - Information Gateway](isabel-gateway.md) | Advisory only; unit decides | yes |
-| 6 | [MARKET REGIME AWARENESS - VIX](vix-regime.md) | VIX governs size, not direction | yes |
+| 6 | [MARKET REGIME AWARENESS - VIX](vix-regime.md) | VIX governs size, not direction; L6 blocks risk-increasing BUYs at VIX >= 25 | yes |
 | 7 | [TRADING UNIVERSE](trading-universe.md) | Dynamic symbol list + L3 exclusions | **dynamic** |
 | 8 | [TIMEFRAME: SWING](timeframe-swing.md) | Days to 2-3 months; entry needs catalyst + 2:1 R:R | yes |
 | 9 | [SWING TRADING DISCIPLINE](swing-discipline.md) | Check positions first; HOLD is valid | yes |
