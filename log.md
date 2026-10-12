@@ -18,7 +18,17 @@
   The matching prompt text in `magi-core/lib/constitution.js` (and the
   stray "8-symbol limit" in SWING TRADING DISCIPLINE, which contradicts
   the 5-symbol `MAX_CONCURRENT_POSITIONS` default) is fixed in the linked
-  magi-core PR. `generated` updated and the doc demoted `stable` → `draft`
+  magi-core PR. Review follow-ups (PR #154): band boundaries written
+  lower-inclusive (`15 to < 20`) so VIX 25.0 is unambiguously
+  `EXTREME_FEAR`; a *Legacy enum mapping* note records that the pre-v2
+  `NORMAL` band (still listed in the historical LILITH-safe
+  [MACRO_BLOCK schema](_lilith_safe/schemas/macro-block.md)) maps to
+  today's `LOW_FEAR`; the PLM/LILITH comparison row in the constitution
+  index no longer attributes hard gating to LILITH-safe alone; and
+  [L1.5](system/guards/l1-5.md) now documents the VIX regime multiplier on
+  the exposure cap (1.0/0.7/0.3), the boost-clamp path and the shared
+  account-wide position count it actually enforces (also demoted to
+  `draft` pending Jun). `generated` updated and the doc demoted `stable` → `draft`
   per lifecycle until Jun appends a `verified` entry and restores `stable`
   (magi-core's `okf-constitution-drift.test.js` requires a stable doc for
   every rendered prompt section, so the magi-core pin bump must follow that

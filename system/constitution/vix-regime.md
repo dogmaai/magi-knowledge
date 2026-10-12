@@ -28,12 +28,25 @@ guard will refuse:
 | VIX level | Regime | Guidance | L6 |
 |---|---|---|---|
 | < 15 | `CALM` | Trends tend to persist; standard size; trade on merit. | pass |
-| 15-20 | `LOW_FEAR` | Standard size; trade either direction on its own merit. | pass |
-| 20-25 | `HIGH_FEAR` | Reduce size (0.7x cap); demand stronger confirmation; both directions allowed. | warn on BUY |
-| 25-30 | `EXTREME_FEAR` | Minimum size (0.3x cap). Risk-increasing BUYs are system-blocked; SELL/SHORT or short-cover BUYs only. | block risk-increasing BUY |
+| 15 to < 20 | `LOW_FEAR` | Standard size; trade either direction on its own merit. | pass |
+| 20 to < 25 | `HIGH_FEAR` | Reduce size (0.7x cap); demand stronger confirmation; both directions allowed. | warn on BUY |
+| 25 to < 30 | `EXTREME_FEAR` | Minimum size (0.3x cap). Risk-increasing BUYs are system-blocked; SELL/SHORT or short-cover BUYs only. | block risk-increasing BUY |
 | >= 30 | `PANIC` | Minimum size (0.3x cap) or stay in cash; capital preservation first. Same BUY block as `EXTREME_FEAR`. | block risk-increasing BUY |
 
+Boundaries are lower-inclusive (`classifyVixRegime` uses `<` against each
+`*_MAX`), so VIX exactly 25.0 is `EXTREME_FEAR` and the BUY block applies.
+
 Use `get_price` with symbol "UVXY" or "VIX" proxy to gauge market fear.
+
+## Legacy enum mapping
+
+The pre-v2 enum had a `NORMAL` band at 15-20 and placed the block point at
+VIX ~30 (thresholds 30/40). The v2 migration (MAGI-GE-DESIGN-001-v2 §5.2)
+renamed that band `LOW_FEAR` and moved the block to 25. The LILITH-safe
+[MACRO_BLOCK schema](/_lilith_safe/schemas/macro-block.md) is retained as the
+historical boundary specification and still lists `NORMAL`; when reconciling
+the two, read legacy `NORMAL` as today's `LOW_FEAR`. The runtime
+(`magi-core/lib/vix.js`) emits only the five labels above.
 
 # Intent
 
@@ -56,7 +69,9 @@ Earlier revisions of this section used four bands (`< 15` / `15-25` / `25-35`
 / `> 35`) that did not line up with the five-level enum and described
 `25-35` as "both directions allowed" while L6 blocked BUYs from 25 — that
 drift was aligned on 2026-10-12 (magi-core `lib/constitution.js` updated in
-the linked PR). Whether the block threshold itself should move is a separate
+the linked PR). The option-A decision date (2026-09-21) precedes `l6.md`'s
+`generated` (2026-09-23) and both of its `human:jun` verifications
+(2026-09-22, 2026-10-06), so the verified `l6.md` text already reflects it. Whether the block threshold itself should move is a separate
 risk-policy decision for Jun; this doc records the current rule.
 
 # Cross-references

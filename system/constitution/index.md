@@ -61,7 +61,7 @@ is retained as the historical boundary specification.
 | Aspect | PLM (this tree) | LILITH-safe |
 |---|---|---|
 | SL/TP | -5% / +10% half, +20% final | -5% / +5% half, +10% remainder |
-| VIX | Sizing lever (direction from edge) | Hard side-bias gating |
+| VIX | Sizing lever (direction from edge) in `CALM`-`HIGH_FEAR`; L6 hard-blocks risk-increasing BUYs in `EXTREME_FEAR`/`PANIC` | Hard side-bias gating (legacy enum incl. `NORMAL`) |
 | ISABEL | Advisory tool-call | Own stats block only |
 | Other units | Part of ensemble | Forbidden (clean-source) |
 | Scope | Full competitive doctrine | Immutable rules only |
