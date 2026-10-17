@@ -11,6 +11,12 @@
   OR `broker_order_id`; a `CONFIRMED` intent absent from the history window
   stays open (`UNKNOWN`) instead of aging to `LOST`. Implemented in magi-core
   branch `fix/reconcile-confirmed-unfilled` (`lib/order-intents.js`).
+  Review follow-up (same heading): the per-symbol order_history lookback now
+  scales to the oldest open intent's age (+2d, floor 7, cap 90 — the bridge
+  limit); the absence-from-window UNKNOWN is a one-shot transition event;
+  and intents carrying `broker_order_id` that age past the 90d history cap
+  become `LOST` + alert (UNVERIFIABLE), while the 24h LOST rule now applies
+  only to intents without `broker_order_id`.
 
 ## 2026-10-12 (L6 policy change)
 * **Policy change (Jun decision, 2026-10-12)**: [L6](system/guards/l6.md)
