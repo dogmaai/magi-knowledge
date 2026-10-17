@@ -1,5 +1,26 @@
 # Bundle Update Log
 
+## 2026-10-17 (order_intents reconciliation of CONFIRMED-unfilled intents)
+* **Spec follow-up to the 2026-10-13 PLTR incident** (broker order 335505,
+  intent `i_8c8b97e4e2a3`): the bridge answered `success:true` with status
+  `UNKNOWN` and no fill, leaving the intent `CONFIRMED` with `filled_qty` 0 —
+  a state the old open set (`PENDING`/`UNKNOWN` only) never reconciled.
+  [order-intents](system/echidna-tables/order-intents.md) Reconciliation
+  contract extended: the open set now includes `CONFIRMED` with no recorded
+  fill (`filled_qty` 0/NULL, `broker_order_id` set); matching is by remark
+  OR `broker_order_id`; a `CONFIRMED` intent absent from the history window
+  stays open (`UNKNOWN`) instead of aging to `LOST`. Implemented in magi-core
+  branch `fix/reconcile-confirmed-unfilled` (`lib/order-intents.js`).
+  Review follow-up (same heading): the per-symbol order_history lookback now
+  scales to the oldest open intent's age (+2d, floor 7, cap 90 — the bridge
+  limit); the absence-from-window UNKNOWN is a one-shot transition event;
+  and intents carrying `broker_order_id` that are absent from the window get
+  one UNKNOWN transition event and are thereafter only counted/logged — they
+  are never marked `LOST` (Jun decision 2026-10-17), while the 24h LOST rule
+  now applies only to intents without `broker_order_id`. Intent age for the
+  lookback sizing and the 24h rule is measured from the intent's first
+  journaled event (`MIN(created_at)` per `intent_id`).
+
 ## 2026-10-12 (L6 policy change)
 * **Policy change (Jun decision, 2026-10-12)**: [L6](system/guards/l6.md)
   rewritten for the new policy — `EXTREME_FEAR` drops the VIX-only
