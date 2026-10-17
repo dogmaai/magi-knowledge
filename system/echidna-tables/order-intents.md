@@ -5,7 +5,7 @@ description: Append-only order-intent journal; magi-core orders are journaled be
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=order_intents&page=table
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-10T22:31:00Z }
+generated: { by: devin/cli, at: 2026-10-17T22:58:31Z }
 verified: [{ by: devin/local, at: 2026-09-13T00:00:00Z }, { by: human:jun, at: 2026-10-06T07:23:42Z }]
 stale_after: 2027-04-04T07:23:42Z
 tags: [echidna, bigquery, orders, reliability, reconciliation]
@@ -38,7 +38,7 @@ UPDATE/DELETE — so inserts never hit the streaming-buffer restriction.
 | event | Meaning |
 |---|---|
 | `PENDING` | Intent journaled before the broker POST (or retried after it, for risk-reducing orders whose first write failed). If a `CONFIRMED`/`REJECTED`/`UNKNOWN` event never follows, the process died mid-flight. |
-| `CONFIRMED` | Broker accepted the order; `broker_order_id` (+ fill fields when present) recorded. |
+| `CONFIRMED` | Broker accepted the order; `broker_order_id` (+ fill fields when present) recorded. A CONFIRMED event with no fill fields is still subject to reconciliation (2026-10-17 follow-up to broker order 335505). |
 | `REJECTED` | Broker refused the order before dispatch (HTTP 4xx or `success=false`). |
 | `UNKNOWN` | Response lost — fetch threw or HTTP 5xx/proxy crash. The broker may or may not hold the order; resolved by reconciliation, **never** by blind resubmission. |
 | `RECONCILED` | Matched against broker `order_history` by remark; `broker_order_id` and fill fields populated. |
@@ -76,9 +76,15 @@ NULL — expected, not a lineage break.
 # Reconciliation contract
 
 * The daily evaluator (`magi-evaluator`) calls `reconcileOpenIntents()` before
-  trade evaluation: intents whose latest event is `PENDING`/`UNKNOWN` and are
-  ≥10 min old are matched against `/trade/order_history` (broker, ≤90d window)
-  by remark containment of `intent_id`.
+  trade evaluation: intents whose latest event is `PENDING`/`UNKNOWN`, or
+  `CONFIRMED` with no recorded fill (`filled_qty` 0/NULL, `broker_order_id`
+  set — broker accepted but the fill was never observed), and are ≥10 min old
+  are matched against `/trade/order_history` (broker, ≤90d window) by remark
+  containment of `intent_id` or by `broker_order_id`.
+* An open intent that carries `broker_order_id` (CONFIRMED, or an UNKNOWN
+  appended by an earlier sweep) and is absent from the order_history window
+  stays open — an `UNKNOWN` event is appended rather than `LOST`, since
+  broker acceptance is already proven.
 * A matched broker order that is **filled but has no `trades` row** is an
   ORPHAN FILL — paged via Telegram ALERT for manual journaling. A synthetic
   `trades` row is never written automatically: it would lack real `thought_id`
