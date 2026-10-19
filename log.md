@@ -1,5 +1,31 @@
 # Bundle Update Log
 
+## 2026-10-19 (long-only enforcement + L1.7 classification-lag notes)
+* **Lifecycle**: [position-management](system/constitution/position-management.md)
+  and [l1-7](system/guards/l1-7.md) demoted `stable` → `draft` (with
+  `generated.at` refreshed) because they now carry unverified amendments —
+  per the OKF lifecycle, AI-authored additions are `draft` until human
+  verification. On Jun's confirmation, restore `stable` and re-stamp
+  `verified` (PR #160 review finding).
+* **Amendment**: [trades](system/echidna-tables/trades.md) Close events
+  rule 3 — "long-only" is now described as *enforced* (`ACCOUNT_TYPE=cash`
+  activating [L0.5](system/guards/l0-5.md), decision magi-core#629), not
+  merely observed in the SIMULATE account. Implementation: magi-core#631
+  (merged `ab6dac1`; `ACCOUNT_TYPE=cash` deploy-verified on all seven
+  unit session jobs).
+* **Amendment**: [position-management](system/constitution/position-management.md)
+  — the short-entry rules (0.7x sizing, -3.5% short SL) are annotated as
+  dormant while `ACCOUNT_TYPE=cash` keeps L0.5 active; they remain the
+  margin-account rules and stay in the doc. Reinstating shorts requires
+  symmetric FIFO accounting first (magi-core#629).
+* **Amendment**: [L1.7](system/guards/l1-7.md) — the AUTO_CLOSE-only drift
+  resolved in magi-core#627; new open note: discretionary sells only reach
+  `CLOSE` via the daily evaluator (rows ≥24h old), so same-day
+  discretionary losses are not visible to the switch until magi-core#630
+  writes the result at order time. Unit-attribution owner predicate also
+  updated (entries settled WIN/LOSE at/after the close were still open
+  at close time).
+
 ## 2026-10-19 (trades result semantics: discretionary sells are close events)
 * **Amendment**: [trades](system/echidna-tables/trades.md) Result vocabulary —
   added `CLOSE` (confirmed unit-initiated `side='sell'` row acting as a FIFO
