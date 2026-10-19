@@ -1,5 +1,18 @@
 # Bundle Update Log
 
+## 2026-10-19 (bridge_health_checks liveness log + magi-bridge-monitor)
+* **Creation**: [bridge-health-checks](system/echidna-tables/bridge-health-checks.md)
+  (draft) — append-only broker-path liveness log written/read by the new
+  `bridge-monitor.js` job (magi-core `feat/bridge-health-monitor`; probes
+  tunnel `/health`, proxy `/route_status` and `/trade/positions`; classifies
+  ok/degraded/down; Telegram ALERT on down transitions + recovery, 6h
+  re-alert, dedupe via the same table). Closes the alerting gap from the
+  2026-10-14→17 bridge outage (magi-moomoo#88/#89): ~3.5 days DEGRADED with
+  no human notified. Also catalogued the `magi-bridge-monitor` /
+  `magi-bridge-monitor-scheduler` pair in
+  [magi-core](system/services/magi-core.md) operational jobs (pending the
+  magi-core PR merge — deploy.yml carries the definitions).
+
 ## 2026-10-17 (order_intents reconciliation of CONFIRMED-unfilled intents)
 * **Spec follow-up to the 2026-10-13 PLTR incident** (broker order 335505,
   intent `i_8c8b97e4e2a3`): the bridge answered `success:true` with status
