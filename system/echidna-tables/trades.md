@@ -157,8 +157,11 @@ Rules (added 2026-10-19, magi-core#625):
    attributed to a different unit. Owner attribution for reporting is
    resolved by the consumer (same convention as `AUTO_CLOSE` / L1.7).
 3. The sell row itself becomes terminal (`CLOSE`) once allocated — it is
-   not an open position and must not be mark-to-market. The current
-   SIMULATE account is long-only; a sell is never a short entry.
+   not an open position and must not be mark-to-market. The account is
+   long-only *by enforcement*: `ACCOUNT_TYPE=cash` activates
+   [L0.5](/system/guards/l0-5.md) so a sell is never a short entry
+   (decision magi-core#629; a verified sell with no coverage is
+   `ORPHAN_CLOSE` — a ledger anomaly — never a short).
 4. Overhang: sell qty exceeding the symbol's total open buy qty settles
    what it can; the unallocated remainder is an anomaly. A sell with zero
    coverage becomes `ORPHAN_CLOSE`; a partially covered sell is `CLOSE`

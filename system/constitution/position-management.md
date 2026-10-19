@@ -43,6 +43,14 @@ at `0.7x` (`SHORT_SIZE_MULT`) and the short stop-loss is tightened to `-3.5%`
 (`STOP_LOSS_PCT * SHORT_SL_TIGHTEN 0.7`) because measured short-side outcomes are
 weaker.
 
+> **Account mode note (2026-10-19, magi-core#629, pending Jun
+> re-verification):** the deployed sessions run `ACCOUNT_TYPE=cash`, which
+> activates the [L0.5](/system/guards/l0-5.md) cash-account guard — new
+> exposure-increasing SELLs are blocked, so the short rules above are
+> dormant under the current account mode. They remain the rules for a
+> margin account and stay in this section; reinstating shorts requires
+> symmetric FIFO accounting in the evaluator first.
+
 # Relationship to LILITH-safe risk-rules
 
 The LILITH-safe [risk-rules](/_lilith_safe/constitution/risk-rules.md) mirrors
