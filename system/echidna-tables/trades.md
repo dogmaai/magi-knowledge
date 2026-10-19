@@ -5,7 +5,7 @@ description: Primary trade log — entry/exit, PnL, and unit attribution for eve
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=trades&page=table
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-07T02:15:00Z }
+generated: { by: devin/cli, at: 2026-10-19T11:00:00Z }
 verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-04-04T05:36:00Z
 tags: [echidna, bigquery, trades, core]
@@ -35,7 +35,7 @@ table_type: BASE TABLE
 | unit_name | STRING | MAGI unit name (e.g. `MELCHIOR-1`). On `AUTO_CLOSE` rows this is the *executing* unit; FIFO-owner attribution is applied by the consumer (see [L1.7 daily-loss](/system/guards/l1-7.md)). |
 | result | STRING | See [Result vocabulary](#result-vocabulary) below. |
 | exit_price | FLOAT64 | Exit fill price. |
-| exit_timestamp | TIMESTAMP | For `WIN`/`LOSE` the actual last close-event time; for `AUTO_CLOSE`/`CLOSE` the row's own timestamp; for `CANCELLED` the evaluation time. NULL while open/`HOLD`. |
+| exit_timestamp | TIMESTAMP | For `WIN`/`LOSE` the actual last close-event time; for `AUTO_CLOSE`/`CLOSE`/`ORPHAN_CLOSE` the row's own timestamp; for `CANCELLED` the evaluation time. NULL while open/`HOLD`. |
 | pnl_amount | FLOAT64 | Realized PnL ($) for `WIN`/`LOSE`/`AUTO_CLOSE`/`CLOSE`; mark-to-market estimate while `HOLD`. |
 | pnl_percent | FLOAT64 | Realized PnL (%) for `WIN`/`LOSE`/`AUTO_CLOSE`/`CLOSE`; mark-to-market while `HOLD`. |
 | evaluation_date | DATE | Date result was evaluated. |
@@ -69,9 +69,10 @@ layer was warn-only-enabled **at trade time** — i.e. the row's `timestamp`
 falls inside that layer's enabled window for the row's `unit_name`.
 
 * Entry path is identified by `thought_id IS NOT NULL AND result IS
-  DISTINCT FROM 'AUTO_CLOSE' AND result IS DISTINCT FROM 'CLOSE'` —
-  the entry writer hard-blocks the insert when no `thought_id` is
-  resolvable. Close-event rows are excluded by the `result` predicate
+  DISTINCT FROM 'AUTO_CLOSE' AND result IS DISTINCT FROM 'CLOSE'
+  AND result IS DISTINCT FROM 'ORPHAN_CLOSE'` — the entry writer
+  hard-blocks the insert when no `thought_id` is resolvable.
+  Close-event rows are excluded by the `result` predicate
   alone: since magi-core#609 the positionMgmt
   writer *does* set `thought_id` (the system close journals its own
   `llm_provider='system'` thoughts row), so `thought_id IS NOT NULL`
@@ -129,6 +130,10 @@ contract).
 
 ## Close events
 
+> *Amendment pending Jun re-verification — the `verified` frontmatter stamp
+> (human:jun 2026-10-06) predates this section; treat it as a draft
+> proposal until Jun approves magi-knowledge#159.*
+
 A **close event** is any row whose fill reduces an open long position. Two
 kinds exist and both drive FIFO settlement:
 
@@ -140,9 +145,14 @@ kinds exist and both drive FIFO settlement:
 
 Rules (added 2026-10-19, magi-core#625):
 
-1. Only `price_confirmed = TRUE` sell rows act as close events. An
-   unconfirmed sell stays pending until the evaluator reconciles its fill;
-   it must never settle entries on an assumed price/qty.
+1. Only broker-verified sells act as close events. `price_confirmed =
+   TRUE` is the normal proof; for **legacy rows where the column is NULL**
+   (predates the flag), a sell still qualifies when its fill is
+   broker-verifiable — `price`/`qty` present and matched against broker
+   order history, the same proof bar as `order_fills` reconciliation.
+   Legacy sells that cannot be broker-verified stay pending for manual
+   review rather than being silently settled or kept forever. An
+   unconfirmed sell must never settle entries on an assumed price/qty.
 2. FIFO allocation is account-level per symbol — a sell may settle entries
    attributed to a different unit. Owner attribution for reporting is
    resolved by the consumer (same convention as `AUTO_CLOSE` / L1.7).
@@ -159,6 +169,14 @@ Rules (added 2026-10-19, magi-core#625):
    bug, not a design choice (realized +$2,674.80 PLTR exit on 2026-10-13
    stayed `HOLD` under the old reading — that is the incident this rule
    fixes).
+6. Downstream consumers that read realized P&L must source **close-event
+   rows** (`AUTO_CLOSE` + `CLOSE`), not `AUTO_CLOSE` alone — otherwise
+   discretionary exits escape daily-loss accounting ([L1.7](
+   /system/guards/l1-7.md)). `ORPHAN_CLOSE` rows carry no attributable
+   basis and are review items, not P&L. The same applies to the warn-only
+   counterfactual query (`sql/measure_warn_only_layers.sql` in magi-core —
+   the entry-path exclusion above must be applied there in the same
+   implementation change; divergence is a drift to report).
 
 # Related tables
 
