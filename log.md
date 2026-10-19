@@ -1,6 +1,12 @@
 # Bundle Update Log
 
 ## 2026-10-19 (long-only enforcement + L1.7 classification-lag notes)
+* **Lifecycle**: [position-management](system/constitution/position-management.md)
+  and [l1-7](system/guards/l1-7.md) demoted `stable` → `draft` (with
+  `generated.at` refreshed) because they now carry unverified amendments —
+  per the OKF lifecycle, AI-authored additions are `draft` until human
+  verification. On Jun's confirmation, restore `stable` and re-stamp
+  `verified` (PR #160 review finding).
 * **Amendment**: [trades](system/echidna-tables/trades.md) Close events
   rule 3 — "long-only" is now described as *enforced* (`ACCOUNT_TYPE=cash`
   activating [L0.5](system/guards/l0-5.md), decision magi-core#629), not
