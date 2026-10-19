@@ -1,5 +1,21 @@
 # Bundle Update Log
 
+## 2026-10-19 (trades result semantics: discretionary sells are close events)
+* **Amendment**: [trades](system/echidna-tables/trades.md) Result vocabulary —
+  added `CLOSE` (confirmed unit-initiated `side='sell'` row acting as a FIFO
+  close event, distinct from guard-triggered `AUTO_CLOSE`) and
+  `ORPHAN_CLOSE` (confirmed sell with zero open-buy coverage; terminal
+  anomaly flag, not mark-to-market). New "Close events" section pins the
+  rules: only `price_confirmed=TRUE` sells settle entries; account-level
+  FIFO per symbol; the sell row is terminal (never MTM); overhang is an
+  anomaly, never a short; every filled sell must reach a terminal result.
+  Resolves magi-core#625 — the 2026-10-13 PLTR sell (335505, realized
+  +$2,674.80) stayed `HOLD` and its two buy rows kept being marked down
+  because only `AUTO_CLOSE` rows counted as close events. Warn-only
+  counterfactual entry-path predicate extended to exclude `CLOSE` too.
+  Implementation (trade-evaluator.mjs) and PLTR backfill tracked under
+  magi-core#625 — evaluator change needs independent review.
+
 ## 2026-10-19 (bridge_health_checks liveness log + magi-bridge-monitor)
 * **Creation**: [bridge-health-checks](system/echidna-tables/bridge-health-checks.md)
   (draft) — append-only broker-path liveness log written/read by the new
