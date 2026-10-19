@@ -44,12 +44,13 @@ at `0.7x` (`SHORT_SIZE_MULT`) and the short stop-loss is tightened to `-3.5%`
 weaker.
 
 > **Account mode note (2026-10-19, magi-core#629, pending Jun
-> re-verification):** the deployed sessions run `ACCOUNT_TYPE=cash`, which
-> activates the [L0.5](/system/guards/l0-5.md) cash-account guard — new
-> exposure-increasing SELLs are blocked, so the short rules above are
-> dormant under the current account mode. They remain the rules for a
-> margin account and stay in this section; reinstating shorts requires
-> symmetric FIFO accounting in the evaluator first.
+> re-verification):** the deployed unit sessions run `ACCOUNT_TYPE=cash`
+> (magi-core#631, merged `ab6dac1`, env deploy-verified on the session
+> jobs), which activates the [L0.5](/system/guards/l0-5.md) cash-account
+> guard — new exposure-increasing SELLs are blocked, so the short rules
+> above are dormant under the current account mode. They remain the rules
+> for a margin account and stay in this section; reinstating shorts
+> requires symmetric FIFO accounting in the evaluator first.
 
 # Relationship to LILITH-safe risk-rules
 

@@ -4,7 +4,9 @@
 * **Amendment**: [trades](system/echidna-tables/trades.md) Close events
   rule 3 — "long-only" is now described as *enforced* (`ACCOUNT_TYPE=cash`
   activating [L0.5](system/guards/l0-5.md), decision magi-core#629), not
-  merely observed in the SIMULATE account. Implementation: magi-core#631.
+  merely observed in the SIMULATE account. Implementation: magi-core#631
+  (merged `ab6dac1`; `ACCOUNT_TYPE=cash` deploy-verified on all seven
+  unit session jobs).
 * **Amendment**: [position-management](system/constitution/position-management.md)
   — the short-entry rules (0.7x sizing, -3.5% short SL) are annotated as
   dormant while `ACCOUNT_TYPE=cash` keeps L0.5 active; they remain the
