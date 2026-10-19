@@ -152,6 +152,7 @@ Source: `magi-core/.github/workflows/deploy.yml` @ baa5388. Scheduler and Job na
 | `magi-hermes-refresh` | `magi-hermes-refresh-1h` | `0 13-21 * * 1-5` (UTC) | HERMES intra-day refresh |
 | `magi-isabel-l4` | `magi-isabel-l4-scheduler` | `0 8 * * 1-5` (America/New_York) | ISABEL L4 pattern analysis |
 | `magi-llm-health-monitor` | `magi-llm-health-monitor-scheduler` | `*/5 13-22 * * 1-5` (UTC) | Provider health checks |
+| `magi-bridge-monitor` | `magi-bridge-monitor-scheduler` | `*/15 * * * *` (UTC) | Broker-path liveness probes + Telegram down/recovery alerts ([bridge_health_checks](/system/echidna-tables/bridge-health-checks.md)) — **pending merge**; definition source: magi-core [PR #624](https://github.com/dogmaai/magi-core/pull/624) `feat/bridge-health-monitor` (deploy.yml in that branch, not in `baa5388`) |
 | `magi-off-hours-chat` | `magi-off-hours-chat-scheduler` | `0 19 * * 1-5` (America/New_York) | Off-hours unit round-table |
 | `magi-off-hours-chat` | `magi-off-hours-chat-weekend-scheduler` | `0 12 * * 6,0` (America/New_York) | Off-hours weekend unit round-table |
 | `magi-surge-detector` | `magi-surge-detector-scheduler` | `*/5 9-15 * * 1-5` (America/New_York) | Intraday surge/crash watcher |

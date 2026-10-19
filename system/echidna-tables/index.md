@@ -50,6 +50,7 @@ Two write-path conventions matter:
 * [order-approvals](order-approvals.md) - Single-use approval tokens for the magi-moomoo order gate.
 * [system-control](system-control.md) - Global emergency kill-switch state read by L0 and the magi-moomoo order gate.
 * [order-intents](order-intents.md) - Append-only order-intent journal; broker-response-loss recovery via remark-embedded intent ids (R10).
+* [bridge-health-checks](bridge-health-checks.md) - Broker-path liveness log + alert dedupe state for the magi-bridge-monitor job (draft).
 * `l4_probation` (deprecated 2026-10-06) - designed Guard L4 blocked-combo state; never materialized in `magi_core` — L4 runs warn-only from the ISABEL stats cache.
 * [lilith-hard-gate-events](lilith-hard-gate-events.md) - LILITH VIX hard-gate rewrites (deprecated 2026-09-23; table dropped — sibling ledgers `lilith_confidence_gate_events` / `lilith_forecast_gate_events` dropped in the same action).
 * [constitution](constitution.md) - Versioned MAGI Constitution store.
