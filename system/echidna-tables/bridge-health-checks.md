@@ -7,7 +7,7 @@ lilith_safe: false
 status: stable
 generated: { by: devin/cli, at: 2026-10-19T10:30:00Z }
 verified: [{ by: devin/cli, at: 2026-10-19T10:30:00Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }]
-stale_after: 2027-04-20T08:44:00Z
+stale_after: 2027-04-18T08:44:00Z
 tags: [echidna, bigquery, monitoring, alerting, bridge]
 dataset: magi_core
 table_type: BASE TABLE

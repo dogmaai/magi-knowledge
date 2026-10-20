@@ -7,7 +7,7 @@ lilith_safe: false
 status: stable
 generated: { by: devin/cli, at: 2026-10-20T08:39:00Z }
 verified: [{ by: devin/local, at: 2026-09-13T00:00:00Z }, { by: human:jun, at: 2026-10-06T07:23:42Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }]
-stale_after: 2027-04-20T08:44:00Z
+stale_after: 2027-04-18T08:44:00Z
 tags: [echidna, bigquery, orders, reliability, reconciliation]
 dataset: magi_core
 table_type: BASE TABLE

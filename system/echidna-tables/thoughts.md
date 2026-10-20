@@ -7,7 +7,7 @@ lilith_safe: false
 status: stable
 generated: { by: devin/cli, at: 2026-10-10T23:40:00Z }
 verified: [{ by: human:jun, at: 2026-10-03T03:25:59Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }]
-stale_after: 2027-04-20T08:44:00Z
+stale_after: 2027-04-18T08:44:00Z
 tags: [echidna, bigquery, thoughts, reasoning, core]
 dataset: magi_core
 table_type: BASE TABLE
