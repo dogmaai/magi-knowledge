@@ -5,7 +5,7 @@ description: Append-only order-intent journal; magi-core orders are journaled be
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=order_intents&page=table
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-17T23:24:31Z }
+generated: { by: devin/cli, at: 2026-10-20T08:39:00Z }
 verified: [{ by: devin/local, at: 2026-09-13T00:00:00Z }, { by: human:jun, at: 2026-10-06T07:23:42Z }]
 stale_after: 2027-04-04T07:23:42Z
 tags: [echidna, bigquery, orders, reliability, reconciliation]
@@ -38,10 +38,10 @@ UPDATE/DELETE — so inserts never hit the streaming-buffer restriction.
 | event | Meaning |
 |---|---|
 | `PENDING` | Intent journaled before the broker POST (or retried after it, for risk-reducing orders whose first write failed). If a `CONFIRMED`/`REJECTED`/`UNKNOWN` event never follows, the process died mid-flight. |
-| `CONFIRMED` | Broker accepted the order; `broker_order_id` (+ fill fields when present) recorded. A CONFIRMED event with no fill fields is still subject to reconciliation (2026-10-17 follow-up to broker order 335505). |
+| `CONFIRMED` | Broker accepted the order; `broker_order_id` (+ fill fields when present) recorded. A CONFIRMED event with no fill fields is still subject to reconciliation (2026-10-17 follow-up to broker order 335505), and since magi-core#634 a partially-filled CONFIRMED intent stays in the open set until the recorded fill covers `qty`. |
 | `REJECTED` | Broker refused the order before dispatch (HTTP 4xx or `success=false`). |
 | `UNKNOWN` | Fill state currently unverifiable: the broker response was lost (fetch threw / HTTP 5xx / proxy crash), or a reconcile sweep matched a still-working order, or an accepted order (`broker_order_id` set) was absent from the history window — appended once per transition, not per sweep. The broker may hold the order; resolved by reconciliation, **never** by blind resubmission. |
-| `RECONCILED` | Matched against broker `order_history` by remark containment of `intent_id` **or** by `broker_order_id`; fill fields populated. |
+| `RECONCILED` | Matched against broker `order_history` by remark containment of `intent_id` **or** by `broker_order_id`; fill fields populated. Written only once the broker **order** reaches a terminal status — a still-working partial fill does not close the intent (magi-core#634). |
 | `LOST` | No broker order found within 24h for an intent **without** `broker_order_id` — the order never reached the broker. Alerts via Telegram. |
 
 # Schema
@@ -77,12 +77,21 @@ NULL — expected, not a lineage break.
 
 * The daily evaluator (`magi-evaluator`) calls `reconcileOpenIntents()` before
   trade evaluation: intents whose latest event is `PENDING`/`UNKNOWN`, or
-  `CONFIRMED` with no recorded fill (`filled_qty` 0/NULL, `broker_order_id`
-  set — broker accepted but the fill was never observed), and are ≥10 min old
-  are matched against `/trade/order_history` by remark containment of
-  `intent_id` or by `broker_order_id`. The lookback per symbol group is
-  sized to the oldest open intent's age (+2 days, floor 7, cap 90 — the
-  bridge limit).
+  `CONFIRMED` whose recorded fill does not yet cover the requested quantity
+  (`filled_qty` 0/NULL **or** `filled_qty < qty`, `broker_order_id` set —
+  broker accepted but the order is unfilled or only partially filled), and
+  are ≥10 min old are matched against `/trade/order_history` by remark
+  containment of `intent_id` or by `broker_order_id`. The lookback per
+  symbol group is sized to the oldest open intent's age (+2 days, floor 7,
+  cap 90 — the bridge limit).
+* An intent closes `RECONCILED` only when the broker **order** is terminal —
+  `FILLED_ALL`/`FILLED` (normalized) or a no-fill terminal status
+  (`CANCELLED_ALL`, `CANCELLED_PART`, `REJECTED`, `EXPIRED`, `FAILED`,
+  `DISABLED`, `DELETED`, `INACTIVE`). A still-working order (`SUBMITTED`,
+  `PART_FILLED_*`) keeps the intent open; each sweep journals the
+  incremental fill delta into
+  [order_fills](order-fills.md) so the residual fill continues to be
+  tracked (magi-core#634, fixes magi-core#626).
 * An open intent that carries `broker_order_id` (CONFIRMED, or an UNKNOWN
   appended by an earlier sweep) and is absent from the order_history window
   gets **one** `UNKNOWN` transition event and is then only counted/logged on
@@ -94,9 +103,13 @@ NULL — expected, not a lineage break.
   `intent_id`), not the latest event: every sweep write bumps the latest
   `created_at` and would otherwise push the clock forward.
 * A matched broker order that is **filled but has no `trades` row** is an
-  ORPHAN FILL — paged via Telegram ALERT for manual journaling. A synthetic
-  `trades` row is never written automatically: it would lack real `thought_id`
-  lineage and would poison evaluation inputs.
+  ORPHAN FILL — paged via Telegram ALERT for manual journaling. The check
+  runs before the terminal/non-terminal branch, so a still-working partial
+  fill with no `trades` row alerts immediately; the alert fires **once** —
+  the sweep tags `detail` with `[orphan-notified]` so later sweeps and the
+  final terminal transition do not re-alert (magi-core#634). A synthetic
+  `trades` row is never written automatically: it would lack real
+  `thought_id` lineage and would poison evaluation inputs.
 * Unmatched intents older than 24h become `LOST` + alert (intents without
   `broker_order_id`).
 * A failed `order_history` fetch leaves intents open for the next run — no
