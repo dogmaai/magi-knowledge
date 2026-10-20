@@ -3,10 +3,10 @@ type: Distribution Priors
 title: ECHIDNA Fitted Input Priors (LILITH-safe)
 description: Real aggregate input distributions fitted from ECHIDNA for LILITH distill grounding.
 lilith_safe: true
-status: draft
+status: stable
 generated: { by: devin/local, at: 2026-09-17T00:29:00Z }
-verified: [{ by: human:jun, at: 2026-07-07T00:28:28Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }]
-stale_after: 2027-03-17T00:29:00Z
+verified: [{ by: human:jun, at: 2026-07-07T00:28:28Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }, { by: human:jun, at: 2026-10-20T10:11:00Z }]
+stale_after: 2027-04-20T10:11:00Z
 distribution_priors: true
 tags: [lilith, training, distill, distributions, clean-source]
 source_tables: [trades, trades_active, portfolio_snapshots]

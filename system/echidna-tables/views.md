@@ -4,10 +4,10 @@ title: trades_active / thoughts_active
 description: Active-filtered VIEWs over the base trades and thoughts tables.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=trades_active&page=table
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/cli, at: 2026-10-07T02:15:00Z }
-verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
-stale_after: 2026-12-16T01:02:48Z
+verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: human:jun, at: 2026-10-20T10:11:00Z }]
+stale_after: 2027-04-20T10:11:00Z
 tags: [echidna, bigquery, view]
 dataset: magi_core
 table_type: VIEW

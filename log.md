@@ -1,5 +1,24 @@
 # Bundle Update Log
 
+## 2026-10-20 (Jun re-verification — second batch, 9 more docs to stable)
+* **Lifecycle**: Jun verified the remaining re-verification queue
+  in-session — [jev](system/guards/jev.md),
+  [magi-deep-research](system/services/magi-deep-research.md),
+  [lilith](system/plm-units/lilith.md),
+  [lilith-training](system/services/lilith-training.md),
+  [magi-isabel](system/services/magi-isabel.md),
+  [secrets-inventory](system/services/secrets-inventory.md),
+  [views](system/echidna-tables/views.md),
+  [echidna-priors](_lilith_safe/distributions/echidna-priors.md) and
+  [cross-unit](_lilith_safe/hallucination-patterns/cross-unit.md) all
+  restored `draft` → `stable`, `verified` stamped human:jun
+  2026-10-20T10:11Z, `stale_after` 2027-04-20. The changes under review
+  were the 2026-10-07 repo/job deletion records, repo-pointer
+  corrections, the JEV implemented-state update, the LILITH-safe
+  cross-unit-name removal (boundary strengthening) and the detector
+  roster expansion. This clears the okf_lint re-verification warning
+  set to zero.
+
 ## 2026-10-20 (Jun re-verification — draft docs restored to stable)
 * **Lifecycle**: Jun verified the recent amendments in-session —
   [position-management](system/constitution/position-management.md),

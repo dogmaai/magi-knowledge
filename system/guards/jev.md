@@ -3,10 +3,10 @@ type: Guard Layer
 title: JEV Decision Validator
 description: Deterministic typed validator on the place_order path — cross-checks the order against the session's linked log_analysis before the shadow/broker path. Not an LLM.
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/local, at: 2026-10-03T00:00:00Z }
-verified: { by: human:jun, at: 2026-09-22T01:09:00Z }
-stale_after: 2027-03-22T01:09:00Z
+verified: [{ by: human:jun, at: 2026-09-22T01:09:00Z }, { by: human:jun, at: 2026-10-20T10:11:00Z }]
+stale_after: 2027-04-20T10:11:00Z
 tags: [guard, jev, validation, decision-integrity]
 layer: JEV
 on_fail: warn (JEV_MODE=shadow) / block (JEV_MODE=enforce)
