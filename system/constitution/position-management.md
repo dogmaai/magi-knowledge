@@ -3,10 +3,10 @@ type: Constitution Section
 title: "POSITION MANAGEMENT"
 description: Asymmetric risk/reward rules -- sizing, SL/TP, scale-out, and max holding.
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/cli, at: 2026-10-19T13:00:00Z }
-verified: { by: human:jun, at: 2026-08-27T08:27:48Z }
-stale_after: 2027-02-23T08:27:48Z
+verified: [{ by: human:jun, at: 2026-08-27T08:27:48Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }]
+stale_after: 2027-04-20T08:44:00Z
 tags: [constitution, v3, plm, position, risk, sl, tp, immutable]
 section_order: 13
 version: "3.8"
@@ -43,8 +43,8 @@ at `0.7x` (`SHORT_SIZE_MULT`) and the short stop-loss is tightened to `-3.5%`
 (`STOP_LOSS_PCT * SHORT_SL_TIGHTEN 0.7`) because measured short-side outcomes are
 weaker.
 
-> **Account mode note (2026-10-19, magi-core#629; this document is `draft`
-> pending Jun re-verification — restore `stable` on Jun's confirmation):**
+> **Account mode note (2026-10-19, magi-core#629; verified human:jun
+> 2026-10-20):**
 > the deployed unit sessions run `ACCOUNT_TYPE=cash`
 > (magi-core#631, merged `ab6dac1`, env deploy-verified on the session
 > jobs), which activates the [L0.5](/system/guards/l0-5.md) cash-account

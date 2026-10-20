@@ -1,5 +1,21 @@
 # Bundle Update Log
 
+## 2026-10-20 (Jun re-verification — draft docs restored to stable)
+* **Lifecycle**: Jun verified the recent amendments in-session —
+  [position-management](system/constitution/position-management.md),
+  [l1-7](system/guards/l1-7.md), [trades](system/echidna-tables/trades.md),
+  [order-intents](system/echidna-tables/order-intents.md),
+  [magi-core](system/services/magi-core.md),
+  [thoughts](system/echidna-tables/thoughts.md) and the new
+  [bridge-health-checks](system/echidna-tables/bridge-health-checks.md)
+  all restored `draft` → `stable`, `verified` stamped human:jun
+  2026-10-20T08:44Z, `stale_after` 2027-04-20. Inline
+  pending-verification notes in position-management, l1-7 and trades
+  rewritten to record the verification. Factual corrections folded in:
+  `magi-bridge-monitor` and the order-time `CLOSE` journaling marked
+  merged (magi-core#624, #632 — deploy.yml on main carries job +
+  scheduler).
+
 ## 2026-10-20 (order_intents partial-fill reconciliation)
 * **Amendment**: [order-intents](system/echidna-tables/order-intents.md)
   Reconciliation contract aligned with magi-core#634 (fixes magi-core#626):

@@ -4,9 +4,10 @@ title: bridge_health_checks
 description: Append-only liveness log for the broker path (magi-moomoo proxy → private VPC / Cloudflare tunnel → TIALA bridge → OpenD); written by the scheduled magi-bridge-monitor job and read back by it for alert transition/dedupe decisions.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=bridge_health_checks&page=table
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/cli, at: 2026-10-19T10:30:00Z }
-verified: [{ by: devin/cli, at: 2026-10-19T10:30:00Z }]
+verified: [{ by: devin/cli, at: 2026-10-19T10:30:00Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }]
+stale_after: 2027-04-20T08:44:00Z
 tags: [echidna, bigquery, monitoring, alerting, bridge]
 dataset: magi_core
 table_type: BASE TABLE
