@@ -6,7 +6,7 @@ lilith_safe: false
 status: stable
 generated: { by: devin/cli, at: 2026-10-06T22:50:00Z }
 verified: [{ by: human:jun, at: 2026-08-31T07:57:23Z }, { by: human:jun, at: 2026-10-20T10:11:00Z }]
-stale_after: 2027-04-20T10:11:00Z
+stale_after: 2027-04-18T10:11:00Z
 tags: [service, deep-research, devin-automation, market-research, magi-core]
 repo: dogmaai/magi-core
 automation: https://app.devin.ai/automations/36ae4174a1f84057a113bcd53fc1d570

@@ -6,7 +6,7 @@ lilith_safe: false
 status: stable
 generated: { by: devin/local, at: 2026-10-03T00:00:00Z }
 verified: [{ by: human:jun, at: 2026-09-22T01:09:00Z }, { by: human:jun, at: 2026-10-20T10:11:00Z }]
-stale_after: 2027-04-20T10:11:00Z
+stale_after: 2027-04-18T10:11:00Z
 tags: [guard, jev, validation, decision-integrity]
 layer: JEV
 on_fail: warn (JEV_MODE=shadow) / block (JEV_MODE=enforce)

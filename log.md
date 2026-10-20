@@ -12,7 +12,7 @@
   [echidna-priors](_lilith_safe/distributions/echidna-priors.md) and
   [cross-unit](_lilith_safe/hallucination-patterns/cross-unit.md) all
   restored `draft` → `stable`, `verified` stamped human:jun
-  2026-10-20T10:11Z, `stale_after` 2027-04-20. The changes under review
+  2026-10-20T10:11Z, `stale_after` 2027-04-18. The changes under review
   were the 2026-10-07 repo/job deletion records, repo-pointer
   corrections, the JEV implemented-state update, the LILITH-safe
   cross-unit-name removal (boundary strengthening) and the detector
@@ -28,7 +28,7 @@
   [thoughts](system/echidna-tables/thoughts.md) and the new
   [bridge-health-checks](system/echidna-tables/bridge-health-checks.md)
   all restored `draft` → `stable`, `verified` stamped human:jun
-  2026-10-20T08:44Z, `stale_after` 2027-04-20. Inline
+  2026-10-20T08:44Z, `stale_after` 2027-04-18. Inline
   pending-verification notes in position-management, l1-7 and trades
   rewritten to record the verification. Factual corrections folded in:
   `magi-bridge-monitor` and the order-time `CLOSE` journaling marked

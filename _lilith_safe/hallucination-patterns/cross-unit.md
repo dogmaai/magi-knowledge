@@ -6,7 +6,7 @@ lilith_safe: true
 status: stable
 generated: { by: devin/cloud, at: 2026-09-22T00:25:00Z }
 verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }, { by: human:jun, at: 2026-10-20T10:11:00Z }]
-stale_after: 2027-04-20T10:11:00Z
+stale_after: 2027-04-18T10:11:00Z
 cross_unit_detector: true
 tags: [lilith, dpo, anti-hallucination, clean-source]
 classification: HALLUCINATION_CROSS_UNIT

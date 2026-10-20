@@ -6,7 +6,7 @@ lilith_safe: true
 status: stable
 generated: { by: devin/local, at: 2026-09-17T00:29:00Z }
 verified: [{ by: human:jun, at: 2026-07-07T00:28:28Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }, { by: human:jun, at: 2026-10-20T10:11:00Z }]
-stale_after: 2027-04-20T10:11:00Z
+stale_after: 2027-04-18T10:11:00Z
 distribution_priors: true
 tags: [lilith, training, distill, distributions, clean-source]
 source_tables: [trades, trades_active, portfolio_snapshots]

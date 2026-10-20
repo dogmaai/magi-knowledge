@@ -6,7 +6,7 @@ lilith_safe: false
 status: stable
 generated: { by: devin/cli, at: 2026-10-19T13:00:00Z }
 verified: [{ by: human:jun, at: 2026-08-27T08:27:48Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }]
-stale_after: 2027-04-20T08:44:00Z
+stale_after: 2027-04-18T08:44:00Z
 tags: [constitution, v3, plm, position, risk, sl, tp, immutable]
 section_order: 13
 version: "3.8"
