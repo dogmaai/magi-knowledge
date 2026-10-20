@@ -1,5 +1,21 @@
 # Bundle Update Log
 
+## 2026-10-20 (order_intents partial-fill reconciliation)
+* **Amendment**: [order-intents](system/echidna-tables/order-intents.md)
+  Reconciliation contract aligned with magi-core#634 (fixes magi-core#626):
+  the open set now keeps `CONFIRMED` intents until the recorded fill covers
+  `qty` (`filled_qty < qty`), so partially-filled orders no longer drop out
+  of the sweep; an intent closes `RECONCILED` only on a terminal broker
+  order status (`FILLED_ALL`/`FILLED` or the no-fill terminal set), while a
+  still-working partial fill stays open and each sweep journals the
+  incremental delta into `order_fills`; ORPHAN FILL alerts fire once via an
+  `[orphan-notified]` `detail` tag and now run before the terminal branch.
+* **Record**: magi-core#635 fixed the evaluator write path
+  (`bulkUpdateTrades` coalescing `undefined` array params to `null`) that
+  had discarded the 2026-10-20 01:00Z close-settlement flush, unblocking
+  the magi-core#625 PLTR settlement; implementation-only fix, no spec
+  change.
+
 ## 2026-10-19 (long-only enforcement + L1.7 classification-lag notes)
 * **Lifecycle**: [position-management](system/constitution/position-management.md)
   and [l1-7](system/guards/l1-7.md) demoted `stable` → `draft` (with
