@@ -114,6 +114,7 @@ per-table docs are pending work, not waived:
 `manual_focus_symbols`, `model_training_log`, `pattern_discovery_kpi`,
 `portfolio_snapshots`, `stale_phrases`, `thought_analysis_findings`,
 `thought_embeddings`, `thought_outcome_feedback`, `thoughts_for_ds`,
-`thoughts_shadow`, `thoughts_simulation`, `trades_for_ds`, plus views
+`thoughts_shadow`, `thoughts_simulation`, `trades_for_ds`, `trades_shadow`,
+`trades_simulation`, plus views
 `isabel_trade_analysis`, `market_research_view`, `symbol_change_rates`,
 `trade_results`.
