@@ -3,10 +3,10 @@ type: Service
 title: magi-core
 description: The MAGI trading engine — trade loop, LLM orchestration, and guard layers.
 lilith_safe: false
-status: draft
-generated: { by: devin/cli, at: 2026-10-07T05:10:00Z }
-verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-06T08:31:20Z }]
-stale_after: 2027-04-04T08:31:20Z
+status: stable
+generated: { by: devin/cli, at: 2026-10-20T08:44:00Z }
+verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-06T08:31:20Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }]
+stale_after: 2027-04-20T08:44:00Z
 tags: [service, magi-core, core, trading]
 repo: dogmaai/magi-core
 ---
@@ -152,7 +152,7 @@ Source: `magi-core/.github/workflows/deploy.yml` @ baa5388. Scheduler and Job na
 | `magi-hermes-refresh` | `magi-hermes-refresh-1h` | `0 13-21 * * 1-5` (UTC) | HERMES intra-day refresh |
 | `magi-isabel-l4` | `magi-isabel-l4-scheduler` | `0 8 * * 1-5` (America/New_York) | ISABEL L4 pattern analysis |
 | `magi-llm-health-monitor` | `magi-llm-health-monitor-scheduler` | `*/5 13-22 * * 1-5` (UTC) | Provider health checks |
-| `magi-bridge-monitor` | `magi-bridge-monitor-scheduler` | `*/15 * * * *` (UTC) | Broker-path liveness probes + Telegram down/recovery alerts ([bridge_health_checks](/system/echidna-tables/bridge-health-checks.md)) — **pending merge**; definition source: magi-core [PR #624](https://github.com/dogmaai/magi-core/pull/624) `feat/bridge-health-monitor` (deploy.yml in that branch, not in `baa5388`) |
+| `magi-bridge-monitor` | `magi-bridge-monitor-scheduler` | `*/15 * * * *` (UTC) | Broker-path liveness probes + Telegram down/recovery alerts ([bridge_health_checks](/system/echidna-tables/bridge-health-checks.md)) — merged 2026-10-19 (magi-core#624 `feat/bridge-health-monitor`); deploy.yml on main now carries job + scheduler |
 | `magi-off-hours-chat` | `magi-off-hours-chat-scheduler` | `0 19 * * 1-5` (America/New_York) | Off-hours unit round-table |
 | `magi-off-hours-chat` | `magi-off-hours-chat-weekend-scheduler` | `0 12 * * 6,0` (America/New_York) | Off-hours weekend unit round-table |
 | `magi-surge-detector` | `magi-surge-detector-scheduler` | `*/5 9-15 * * 1-5` (America/New_York) | Intraday surge/crash watcher |

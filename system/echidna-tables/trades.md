@@ -4,10 +4,10 @@ title: trades
 description: Primary trade log — entry/exit, PnL, and unit attribution for every order.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=trades&page=table
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: devin/cli, at: 2026-10-19T11:00:00Z }
-verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
-stale_after: 2027-04-04T05:36:00Z
+verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }]
+stale_after: 2027-04-20T08:44:00Z
 tags: [echidna, bigquery, trades, core]
 dataset: magi_core
 table_type: BASE TABLE
@@ -130,9 +130,7 @@ contract).
 
 ## Close events
 
-> *Amendment pending Jun re-verification — the `verified` frontmatter stamp
-> (human:jun 2026-10-06) predates this section; treat it as a draft
-> proposal until Jun approves magi-knowledge#159.*
+> *Verified by Jun 2026-10-20 — magi-knowledge#159 merged 2026-10-19.*
 
 A **close event** is any row whose fill reduces an open long position. Two
 kinds exist and both drive FIFO settlement:
