@@ -316,7 +316,18 @@ the `magi-core` checkout at the PR head (and `origin/main` for comparison),
 the pinned `vendor/magi-knowledge` `system/` + `scripts/` + root documents,
 PR metadata, and existing PR reviews/comments. Secrets are not readable by
 the agent's allowed tools, and the PAT used for the submodule clone is
-removed from git config before Claude starts. The key is the GitHub Actions
+removed from git config before Claude starts. Claude is not given `gh api`; the
+workflow pre-fetches PR reviews and comments read-only for it.
+
+Jun decided on 2026-10-21 to keep allowing the reviewer to write and run
+probe tests (`Write`/`Edit` + `npm test` / `node --test`), so it can compare
+behavior on `main` and the PR head. Code run this way can read the job's
+`ANTHROPIC_API_KEY` and its `pull-requests: write` token. This was accepted
+because only trusted actors can push branches to the private `magi-core`
+repository, and same-repo `pull_request` runs already execute the PR's own
+workflow file with access to its secrets. The residual risk is prompt
+injection from PR text and comments. Revisit this if outside contributors
+or fork PRs are ever allowed. The key is the GitHub Actions
 secret `ANTHROPIC_API_KEY` in `magi-core` (see
 [secrets-inventory](system/services/secrets-inventory.md)). Extending this
 workflow to other repositories is a new egress decision.
