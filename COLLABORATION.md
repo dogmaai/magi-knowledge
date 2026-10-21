@@ -293,44 +293,66 @@ Any further egress expansion still needs Jun's explicit decision.
 ### Claude PR review (magi-core)
 
 `magi-core/.github/workflows/claude-review.yml` runs
-`anthropics/claude-code-action` (pinned by commit SHA) on `pull_request`
-events (`opened`, `synchronize`, `ready_for_review`, `reopened`; drafts and
-`github-actions[bot]` PRs skipped). Claude follows the OKF start procedure
-against the pinned `vendor/magi-knowledge` (sparse: `system/` + `scripts/` +
-root docs — `_lilith_safe/` is not checked out), runs `npm test` / `eslint`
-and ad-hoc probe tests in the runner, verifies the other bots' findings, and
-posts inline comments plus one top-level comment carrying a
-`<!-- claude-review sha=<head SHA> -->` marker (a head that already carries
-the marker is skipped). The job token is `contents: read` /
-`pull-requests: write`; the prompt forbids approve, push, merge and any
-production operation.
+`anthropics/claude-code-action` (pinned by commit SHA in that workflow file —
+the file, not this document, is the source for the pinned version) on
+`pull_request` events `opened`, `synchronize`, `ready_for_review` and
+`reopened`. Draft PRs are skipped while they are drafts; `ready_for_review`
+fires when a draft is marked ready, at which point the PR is no longer a
+draft and is reviewed. PRs opened by `github-actions[bot]` (e.g. the OKF pin
+bump) are skipped.
+
+What the job does:
+
+* A workflow step **outside Claude** fetches the PR's reviews, inline review
+  comments and issue comments with `gh api` (read-only GETs with the job
+  token) into files in the workspace. Claude itself is not allowed `gh api`;
+  it reads those files.
+* Claude follows the OKF start procedure in [AGENTS.md](AGENTS.md) against
+  the pinned `vendor/magi-knowledge`. magi-core's `scripts/init_knowledge.sh`
+  checks out only `system/` + `scripts/` + root documents; `_lilith_safe/` is
+  never checked out in magi-core (LILITH contamination boundary).
+* It runs `npm test` / `eslint` and ad-hoc probe tests in the runner, verifies
+  the other bots' findings, and posts inline comments plus one top-level
+  comment carrying a `<!-- claude-review sha=<head SHA> -->` marker. A head
+  that already carries a marker posted by `github-actions[bot]` is skipped.
+
+How the restrictions are enforced:
+
+* **By the job token** (`contents: read`, `pull-requests: write`): no push and
+  no merge.
+* **By the allowed-tools list**: no `gh api`, no `gh pr review`, no
+  `gh pr merge`, no shell beyond the listed git / test / `gh pr view|diff|comment`
+  commands.
+* **By the prompt only**: no approve / request-changes, no production
+  operation. With `pull-requests: write` the token could technically submit
+  a review, so this part relies on the prompt plus the tool list.
 
 Like the Mistral review, this is reference information: it never approves,
 never satisfies the independent-review requirement above on its own, and
 never counts as `verified` on any document.
 
-Jun approved on 2026-10-21 (Claude session, magi-core PR #645 follow-up)
-sending data to the Anthropic API for this workflow. Because Claude runs as an
-agent, the egress scope is **broader than the Mistral workflow**: any file in
-the `magi-core` checkout at the PR head (and `origin/main` for comparison),
-the pinned `vendor/magi-knowledge` `system/` + `scripts/` + root documents,
-PR metadata, and existing PR reviews/comments. Secrets are not readable by
-the agent's allowed tools, and the PAT used for the submodule clone is
-removed from git config before Claude starts. Claude is not given `gh api`; the
-workflow pre-fetches PR reviews and comments read-only for it.
+Egress. Jun approved on 2026-10-21 (Claude session, magi-core PR #645
+follow-up) sending data to the Anthropic API for this workflow. Because
+Claude runs as an agent, the scope is **broader than the Mistral workflow**:
+any file in the `magi-core` checkout at the PR head (and `origin/main` for
+comparison), the pinned `vendor/magi-knowledge` `system/` + `scripts/` +
+root documents, PR metadata, and the pre-fetched PR reviews/comments. The PAT
+used for the submodule clone is removed from git config before Claude starts.
+Extending this workflow to other repositories is a new egress decision.
 
-Jun decided on 2026-10-21 to keep allowing the reviewer to write and run
-probe tests (`Write`/`Edit` + `npm test` / `node --test`), so it can compare
-behavior on `main` and the PR head. Code run this way can read the job's
-`ANTHROPIC_API_KEY` and its `pull-requests: write` token. This was accepted
-because only trusted actors can push branches to the private `magi-core`
-repository, and same-repo `pull_request` runs already execute the PR's own
-workflow file with access to its secrets. The residual risk is prompt
-injection from PR text and comments. Revisit this if outside contributors
-or fork PRs are ever allowed. The key is the GitHub Actions
-secret `ANTHROPIC_API_KEY` in `magi-core` (see
-[secrets-inventory](system/services/secrets-inventory.md)). Extending this
-workflow to other repositories is a new egress decision.
+Probe-test execution. Jun decided on 2026-10-21 to keep allowing the reviewer
+to write and run probe tests (`Write`/`Edit` + `npm test` / `node --test`) so
+it can compare behavior on `main` and the PR head. Code run this way can read
+the job's `ANTHROPIC_API_KEY` and its `pull-requests: write` token. This was
+accepted because only trusted actors can push branches to the private
+`magi-core` repository, and same-repo `pull_request` runs already execute the
+PR's own workflow file with access to its secrets. The residual risk is
+prompt injection from PR text and comments. Revisit this if outside
+contributors or fork PRs are ever allowed.
+
+Key: GitHub Actions secret `ANTHROPIC_API_KEY` in `magi-core`, injected from
+Secret Manager `ANTHROPIC_API_KEY_PR_REVIEW` (see
+[secrets-inventory](system/services/secrets-inventory.md)).
 
 ## Drift checks: extend before adding
 

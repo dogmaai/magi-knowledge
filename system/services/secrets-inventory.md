@@ -4,7 +4,7 @@ title: Secrets inventory (Grafana Cloud, Cloudflare, GitHub, GCP tokens)
 description: Single ledger of the infrastructure tokens (Grafana Cloud, Cloudflare, GitHub, GCP) referenced across the MAGI repositories — canonical env var name, auth scheme, target endpoint, required scopes, source of truth, usage sites and rotation owner. GCP Secret Manager is the only source of truth; injected env-var copies can go stale.
 lilith_safe: false
 status: draft
-generated: { by: claude/cloud, at: 2026-10-21T02:20:00Z }
+generated: { by: claude/cloud, at: 2026-10-21T10:01:49Z }
 verified: [{ by: human:jun, at: 2026-09-17T17:23:06Z }, { by: devin/local, at: 2026-10-02T16:00:00Z }, { by: devin/cli, at: 2026-10-06T04:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: devin/cloud, at: 2026-10-07T06:25:37Z }, { by: human:jun, at: 2026-10-20T10:11:00Z }]
 stale_after: 2027-04-18T10:11:00Z
 tags: [service, secrets, grafana, cloudflare, github, gcp, security]
@@ -45,7 +45,10 @@ never held one either (repo deleted 2026-10-07). `magi-ui` never held one and
 via `anthropics/claude-code-action` — see
 [COLLABORATION.md](../../COLLABORATION.md#claude-pr-review-magi-core).
 Source of truth: `SM` secret **`ANTHROPIC_API_KEY_PR_REVIEW`** (version 1,
-registered 2026-10-21 by jun); the GitHub secret is an injected copy set with
+registered 2026-10-21 by jun). The names differ on purpose: the `SM` name
+`ANTHROPIC_API_KEY` was already taken by the legacy secret below, while
+`claude-code-action` reads the GitHub secret as `ANTHROPIC_API_KEY`. The
+GitHub secret is an injected copy set with
 `gcloud secrets versions access latest --secret=ANTHROPIC_API_KEY_PR_REVIEW |
 gh secret set ANTHROPIC_API_KEY -R dogmaai/magi-core`. Rotation owner: jun.
 The workflow skips the review with a notice when the secret is absent.

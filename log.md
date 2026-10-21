@@ -5,14 +5,19 @@
   records the new `magi-core` Claude PR review workflow
   (`.github/workflows/claude-review.yml`, `anthropics/claude-code-action`)
   and Jun's 2026-10-21 egress approval to the Anthropic API. Scope is wider
-  than the Mistral review (agent can read any file in the checkout plus the
-  pinned `system/` docs); the review stays reference-only and does not
-  satisfy independent review.
+  than the Mistral review (the agent can read any file in the checkout plus
+  the pinned `system/` + `scripts/` + root documents); the review stays
+  reference-only and does not satisfy independent review. Also records
+  Jun's decision to keep probe-test execution in the reviewer, and which
+  restrictions are enforced by the job token, by the allowed-tools list, or
+  by the prompt only.
 * **Lifecycle**: [secrets-inventory](system/services/secrets-inventory.md)
   demoted `stable` → `draft` for the unverified `ANTHROPIC_API_KEY`
   (GitHub Actions secret in `magi-core`, source of truth `SM`
   `ANTHROPIC_API_KEY_PR_REVIEW`) note, plus the unrecorded legacy `SM`
-  `ANTHROPIC_API_KEY`; restore `stable` on Jun's verification.
+  `ANTHROPIC_API_KEY`; restore `stable` on Jun's verification (check
+  that `ANTHROPIC_API_KEY_PR_REVIEW` exists in `SM` and that
+  `ANTHROPIC_API_KEY` is listed in `gh secret list -R dogmaai/magi-core`).
 
 ## 2026-10-20 (Jun re-verification — second batch, 9 more docs to stable)
 * **Lifecycle**: Jun verified the remaining re-verification queue
