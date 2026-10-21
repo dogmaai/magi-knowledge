@@ -18,6 +18,18 @@
   `ANTHROPIC_API_KEY`; restore `stable` on Jun's verification (check
   that `ANTHROPIC_API_KEY_PR_REVIEW` exists in `SM` and that
   `ANTHROPIC_API_KEY` is listed in `gh secret list -R dogmaai/magi-core`).
+
+## 2026-10-21 (L3 position-lookup-failure semantics — magi-core#640 / PR #645)
+* **Amendment**: [l3](system/guards/l3.md) — record the agreed
+  lookup-failure behaviour (PR #645 review decision (a)): on a failed
+  position lookup only a cash-account BUY is treated as
+  exposure-increasing and fails closed; SELL and margin-account BUY fail
+  open so exits are never blocked by a transient lookup error. Under
+  `L3_WARN_ONLY=true`, the would-be cash BUY block is journaled as
+  `WARN_ONLY` and the order proceeds — the same warn-only path as any
+  other L3 verdict. Doc remains `status: draft` pending Jun's
+  re-verification.
+
 ## 2026-10-20 (Claude review of magi-core — verified doc corrections)
 * **Amendments** (external Claude review of magi-core `eba1b0e`, each
   finding verified against code before adoption — `status: draft`
