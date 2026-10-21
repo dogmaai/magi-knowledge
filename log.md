@@ -10,8 +10,9 @@
   satisfy independent review.
 * **Lifecycle**: [secrets-inventory](system/services/secrets-inventory.md)
   demoted `stable` → `draft` for the unverified `ANTHROPIC_API_KEY`
-  (GitHub Actions secret in `magi-core`) note; restore `stable` on Jun's
-  verification.
+  (GitHub Actions secret in `magi-core`, source of truth `SM`
+  `ANTHROPIC_API_KEY_PR_REVIEW`) note, plus the unrecorded legacy `SM`
+  `ANTHROPIC_API_KEY`; restore `stable` on Jun's verification.
 
 ## 2026-10-20 (Jun re-verification — second batch, 9 more docs to stable)
 * **Lifecycle**: Jun verified the remaining re-verification queue

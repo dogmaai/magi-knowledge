@@ -44,9 +44,16 @@ never held one either (repo deleted 2026-10-07). `magi-ui` never held one and
 `.github/workflows/claude-review.yml` uses it for Claude PR review comments
 via `anthropics/claude-code-action` — see
 [COLLABORATION.md](../../COLLABORATION.md#claude-pr-review-magi-core).
-Whether a Secret Manager copy is the source of truth for this key is not yet
-recorded (pending Jun). Rotation owner: jun. The workflow skips the review
-with a notice when the secret is absent.
+Source of truth: `SM` secret **`ANTHROPIC_API_KEY_PR_REVIEW`** (version 1,
+registered 2026-10-21 by jun); the GitHub secret is an injected copy set with
+`gcloud secrets versions access latest --secret=ANTHROPIC_API_KEY_PR_REVIEW |
+gh secret set ANTHROPIC_API_KEY -R dogmaai/magi-core`. Rotation owner: jun.
+The workflow skips the review with a notice when the secret is absent.
+A separate, older `SM` secret named `ANTHROPIC_API_KEY` (created
+2025-09-19, versions 1–5, latest 2025-11-26) also exists; it has no
+reference in `magi-core` main or this bundle and its consumer is
+unrecorded — it was deliberately left untouched and is **not** the PR-review
+key.
 
 # Source-of-truth rule
 
