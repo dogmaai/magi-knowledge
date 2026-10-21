@@ -290,6 +290,37 @@ spec documents selected by diff keywords (capped at 30,000 characters total,
 6,000 per doc) — implemented in magi-core#612 and follow-up magi-core#614.
 Any further egress expansion still needs Jun's explicit decision.
 
+### Claude PR review (magi-core)
+
+`magi-core/.github/workflows/claude-review.yml` runs
+`anthropics/claude-code-action` (pinned by commit SHA) on `pull_request`
+events (`opened`, `synchronize`, `ready_for_review`, `reopened`; drafts and
+`github-actions[bot]` PRs skipped). Claude follows the OKF start procedure
+against the pinned `vendor/magi-knowledge` (sparse: `system/` + `scripts/` +
+root docs — `_lilith_safe/` is not checked out), runs `npm test` / `eslint`
+and ad-hoc probe tests in the runner, verifies the other bots' findings, and
+posts inline comments plus one top-level comment carrying a
+`<!-- claude-review sha=<head SHA> -->` marker (a head that already carries
+the marker is skipped). The job token is `contents: read` /
+`pull-requests: write`; the prompt forbids approve, push, merge and any
+production operation.
+
+Like the Mistral review, this is reference information: it never approves,
+never satisfies the independent-review requirement above on its own, and
+never counts as `verified` on any document.
+
+Jun approved on 2026-10-21 (Claude session, magi-core PR #645 follow-up)
+sending data to the Anthropic API for this workflow. Because Claude runs as an
+agent, the egress scope is **broader than the Mistral workflow**: any file in
+the `magi-core` checkout at the PR head (and `origin/main` for comparison),
+the pinned `vendor/magi-knowledge` `system/` + `scripts/` + root documents,
+PR metadata, and existing PR reviews/comments. Secrets are not readable by
+the agent's allowed tools, and the PAT used for the submodule clone is
+removed from git config before Claude starts. The key is the GitHub Actions
+secret `ANTHROPIC_API_KEY` in `magi-core` (see
+[secrets-inventory](system/services/secrets-inventory.md)). Extending this
+workflow to other repositories is a new egress decision.
+
 ## Drift checks: extend before adding
 
 Devin reports an existing `okf-drift` check in magi-core. Inspect its workflow,

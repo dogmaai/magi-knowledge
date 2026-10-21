@@ -1,5 +1,18 @@
 # Bundle Update Log
 
+## 2026-10-21 (Claude PR review workflow for magi-core)
+* **Collaboration**: [COLLABORATION.md](COLLABORATION.md#claude-pr-review-magi-core)
+  records the new `magi-core` Claude PR review workflow
+  (`.github/workflows/claude-review.yml`, `anthropics/claude-code-action`)
+  and Jun's 2026-10-21 egress approval to the Anthropic API. Scope is wider
+  than the Mistral review (agent can read any file in the checkout plus the
+  pinned `system/` docs); the review stays reference-only and does not
+  satisfy independent review.
+* **Lifecycle**: [secrets-inventory](system/services/secrets-inventory.md)
+  demoted `stable` → `draft` for the unverified `ANTHROPIC_API_KEY`
+  (GitHub Actions secret in `magi-core`) note; restore `stable` on Jun's
+  verification.
+
 ## 2026-10-20 (Jun re-verification — second batch, 9 more docs to stable)
 * **Lifecycle**: Jun verified the remaining re-verification queue
   in-session — [jev](system/guards/jev.md),
