@@ -4,8 +4,8 @@ title: trades
 description: Primary trade log — entry/exit, PnL, and unit attribution for every order.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=trades&page=table
 lilith_safe: false
-status: stable
-generated: { by: devin/cli, at: 2026-10-19T11:00:00Z }
+status: draft
+generated: { by: devin/cli, at: 2026-10-22T01:30:00Z }
 verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }]
 stale_after: 2027-04-18T08:44:00Z
 tags: [echidna, bigquery, trades, core]
@@ -35,9 +35,9 @@ table_type: BASE TABLE
 | unit_name | STRING | MAGI unit name (e.g. `MELCHIOR-1`). On `AUTO_CLOSE` rows this is the *executing* unit; FIFO-owner attribution is applied by the consumer (see [L1.7 daily-loss](/system/guards/l1-7.md)). |
 | result | STRING | See [Result vocabulary](#result-vocabulary) below. |
 | exit_price | FLOAT64 | Exit fill price. |
-| exit_timestamp | TIMESTAMP | For `WIN`/`LOSE` the actual last close-event time; for `AUTO_CLOSE`/`CLOSE`/`ORPHAN_CLOSE` the row's own timestamp; for `CANCELLED` the evaluation time. NULL while open/`HOLD`. |
-| pnl_amount | FLOAT64 | Realized PnL ($) for `WIN`/`LOSE`/`AUTO_CLOSE`/`CLOSE`; mark-to-market estimate while `HOLD`. |
-| pnl_percent | FLOAT64 | Realized PnL (%) for `WIN`/`LOSE`/`AUTO_CLOSE`/`CLOSE`; mark-to-market while `HOLD`. |
+| exit_timestamp | TIMESTAMP | For `WIN`/`LOSE`/`FLAT` the actual last close-event time; for `AUTO_CLOSE`/`CLOSE`/`ORPHAN_CLOSE` the row's own timestamp; for `CANCELLED` the evaluation time. NULL while open/`HOLD`. |
+| pnl_amount | FLOAT64 | Realized PnL ($) for `WIN`/`LOSE`/`FLAT`/`AUTO_CLOSE`/`CLOSE`; mark-to-market estimate while `HOLD`. |
+| pnl_percent | FLOAT64 | Realized PnL (%) for `WIN`/`LOSE`/`FLAT`/`AUTO_CLOSE`/`CLOSE`; mark-to-market while `HOLD`. |
 | evaluation_date | DATE | Date result was evaluated. |
 | prompt_version | STRING | Constitution / prompt version tag. |
 | atr_at_execution | FLOAT64 | ATR-14 at entry. |
@@ -121,7 +121,8 @@ contract).
 |---|---|
 | *(null)* | Open, not yet evaluated. |
 | `HOLD` | Position still open (incl. partially closed). `pnl_*` is mark-to-market telemetry, not realized. |
-| `WIN` / `LOSE` | Realized outcome — requires the full entry qty to be covered by FIFO-attributed close events after the entry. |
+| `WIN` / `LOSE` | Realized outcome — requires the full entry qty to be covered by FIFO-attributed close events after the entry, **and** a realized `pnl_percent` at or beyond the evaluator's ±2% band (`WIN ≥ +2%`, `LOSE ≤ −2%`). |
+| `FLAT` | Terminal realized outcome — the entry was fully covered but `ABS(pnl_percent) < 2%`, too small to call a win or loss (magi-core#654; aggregation decision 2026-10-22, magi-knowledge#167). Win rate is `WIN / (WIN + LOSE)` — `FLAT` is excluded from that denominator — but expectancy (`AVG(pnl_percent)`) and realized P&L (`SUM(pnl_amount)`) aggregate over `result IN ('WIN','LOSE','FLAT')`. Terminal like `WIN`/`LOSE`: it never re-enters evaluation, and in FIFO replay it claims closes only up to its own `exit_timestamp`. |
 | `AUTO_CLOSE` | A close *event* row (the exit leg written by positionMgmt for a guard-triggered close), not an entry. Its `pnl_amount`/`pnl_percent` are realized at the row's `timestamp`. |
 | `CLOSE` | A close *event* row written for a unit-initiated discretionary sell — the unit chose to exit, distinct from a guard-triggered `AUTO_CLOSE`. Kept as a separate value so the guard-intervention rate stays measurable. `pnl_*` is realized at the row's `timestamp` (sum of the FIFO allocations it settles). See [Close events](#close-events). |
 | `ORPHAN_CLOSE` | A confirmed `side='sell'` row with **no** open buy qty to settle (e.g. the position predates trade logging, or the entry rows are missing). Terminal, not mark-to-market; flags a lineage gap for manual review. |
@@ -172,7 +173,10 @@ Rules (added 2026-10-19, magi-core#625):
    mark-to-market of a broker position that no longer exists is a data
    bug, not a design choice (realized +$2,674.80 PLTR exit on 2026-10-13
    stayed `HOLD` under the old reading — that is the incident this rule
-   fixes).
+   fixes). The same invariant applies on the entry side: a fully covered
+   entry inside the ±2% WIN/LOSE band resolves as `FLAT`, never
+   perpetual `HOLD` (magi-core#654 — PLTR 45 @ −0.97% would otherwise
+   mark-to-market forever on a closed position).
 6. Downstream consumers that read realized P&L must source **close-event
    rows** (`AUTO_CLOSE` + `CLOSE`), not `AUTO_CLOSE` alone — otherwise
    discretionary exits escape daily-loss accounting ([L1.7](
