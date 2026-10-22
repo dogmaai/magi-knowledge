@@ -4,13 +4,25 @@
 * **Amendment**: [trades](system/echidna-tables/trades.md) — add `FLAT`
   to the result vocabulary: a fully covered entry whose realized
   `pnl_percent` stays inside the ±2% WIN/LOSE band resolves `FLAT`
-  (terminal, excluded from win-rate denominators), fixing the
-  rule-5 violation where such rows stayed `HOLD` forever on a closed
-  position (PLTR 45 @ −0.97%, 2026-10-22 run). The ±2% band itself is
-  now spelled out in the `WIN`/`LOSE` row, and `FLAT` joins the
-  realized/exit_timestamp column notes and the close-events rule-5
-  invariant. Doc demoted `stable` → `draft` pending Jun's
+  (terminal), fixing the rule-5 violation where such rows stayed `HOLD`
+  forever on a closed position (PLTR 45 @ −0.97%, 2026-10-22 run). The
+  ±2% band itself is now spelled out in the `WIN`/`LOSE` row, and `FLAT`
+  joins the realized/exit_timestamp column notes and the close-events
+  rule-5 invariant. Doc demoted `stable` → `draft` pending Jun's
   re-verification (`verified` unchanged).
+* **Aggregation decision (Jun, 2026-10-22 — magi-knowledge#167 review)**:
+  `FLAT` is excluded from the win-rate denominator only — win rate stays
+  `WIN / (WIN + LOSE)` — but is **included** in expectancy
+  (`AVG(pnl_percent)`) and realized P&L (`SUM(pnl_amount)`), which
+  aggregate over `result IN ('WIN','LOSE','FLAT')`. The FLAT vocabulary
+  row was rewritten to match, and its `|pnl_percent| < 2%` was re-escaped
+  as `ABS(pnl_percent) < 2%` — the raw `|` broke the Markdown table cell.
+* **Amendment**: [l1-7](system/guards/l1-7.md) — the L1.7 FIFO owner
+  predicate (close attributed to the earliest entry still open at close
+  time) now names `WIN`/`LOSE`/`FLAT` as the terminal results whose
+  `exit_timestamp` bounds ownership, matching `lib/daily-loss.js`.
+  Doc demoted `stable` → `draft` pending Jun's re-verification
+  (`verified` unchanged).
 
 ## 2026-10-21 (Claude PR review workflow for magi-core)
 * **Collaboration**: [COLLABORATION.md](COLLABORATION.md#claude-pr-review-magi-core)
