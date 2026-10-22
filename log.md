@@ -1,5 +1,17 @@
 # Bundle Update Log
 
+## 2026-10-22 (FLAT result vocabulary — magi-core#654)
+* **Amendment**: [trades](system/echidna-tables/trades.md) — add `FLAT`
+  to the result vocabulary: a fully covered entry whose realized
+  `pnl_percent` stays inside the ±2% WIN/LOSE band resolves `FLAT`
+  (terminal, excluded from win-rate denominators), fixing the
+  rule-5 violation where such rows stayed `HOLD` forever on a closed
+  position (PLTR 45 @ −0.97%, 2026-10-22 run). The ±2% band itself is
+  now spelled out in the `WIN`/`LOSE` row, and `FLAT` joins the
+  realized/exit_timestamp column notes and the close-events rule-5
+  invariant. Doc demoted `stable` → `draft` pending Jun's
+  re-verification (`verified` unchanged).
+
 ## 2026-10-21 (Claude PR review workflow for magi-core)
 * **Collaboration**: [COLLABORATION.md](COLLABORATION.md#claude-pr-review-magi-core)
   records the new `magi-core` Claude PR review workflow
