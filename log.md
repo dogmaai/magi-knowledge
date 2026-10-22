@@ -19,6 +19,48 @@
   that `ANTHROPIC_API_KEY_PR_REVIEW` exists in `SM` and that
   `ANTHROPIC_API_KEY` is listed in `gh secret list -R dogmaai/magi-core`).
 
+## 2026-10-21 (L3 position-lookup-failure semantics — magi-core#640 / PR #645)
+* **Amendment**: [l3](system/guards/l3.md) — record the agreed
+  lookup-failure behaviour (PR #645 review decision (a)): on a failed
+  position lookup only a cash-account BUY is treated as
+  exposure-increasing and fails closed; SELL and margin-account BUY fail
+  open so exits are never blocked by a transient lookup error. Under
+  `L3_WARN_ONLY=true`, the would-be cash BUY block is journaled as
+  `WARN_ONLY` and the order proceeds — the same warn-only path as any
+  other L3 verdict. Doc remains `status: draft` pending Jun's
+  re-verification.
+
+## 2026-10-20 (Claude review of magi-core — verified doc corrections)
+* **Amendments** (external Claude review of magi-core `eba1b0e`, each
+  finding verified against code before adoption — `status: draft`
+  pending Jun's re-verification):
+  - [l2](system/guards/l2.md) / [l3](system/guards/l3.md): record that
+    `L2_WARN_ONLY=true` / `L3_WARN_ONLY=true` are **live on all six
+    production units** (magi-core#565, merged 2026-10-03 by Jun) for the
+    counterfactual window — the code default stays `block` and formal
+    demotion remains pending. Previously the docs said only "default
+    block, demotion pending", which read as though warn-only were not
+    yet enabled.
+  - [l0-5](system/guards/l0-5.md): correct the `isHeldPosition`
+    citation — it lives in `src/llm.js` (session-scoped `heldSymbols`
+    populated by `get_positions` calls), not `positionMgmt.js`; noted
+    the caveat that a session that never calls `get_positions` cannot
+    prove a SELL is an exit.
+  - [magi-model-health-check](system/services/magi-model-health-check.md):
+    `repo` corrected — no standalone repo exists; the implementation is
+    magi-core's `magi-llm-health-monitor` job (`health-monitor.js`).
+    Coverage gap recorded: only the five hosted providers are probed;
+    Ollama units (ADAM/BOREAS), the HERMES Gemini model, and Cohere are
+    unmonitored. `llm_health_checks` remains uncatalogued.
+  - [echidna-tables/index](system/echidna-tables/index.md): drift
+    backlog gains `trades_shadow` and `trades_simulation`
+    (`thoughts_shadow`/`thoughts_simulation` were already listed).
+* Findings routed to magi-core issues instead of doc changes: L3
+  fail-open on position-lookup failure (guard fix, independent review
+  required), model-ID double definition in `callLLM`, Gemini API key
+  in URL query param, create-only Cloud Scheduler entries, undeployed
+  `magi-simulator.js`.
+
 ## 2026-10-20 (Jun re-verification — second batch, 9 more docs to stable)
 * **Lifecycle**: Jun verified the remaining re-verification queue
   in-session — [jev](system/guards/jev.md),
