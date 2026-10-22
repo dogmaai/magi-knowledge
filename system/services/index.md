@@ -16,7 +16,7 @@ callers don't hard-code endpoints.
 | [magi-moni](magi-moni.md) | dogmaai/magi-moni | Monitoring / reporting / alerting. |
 | [aka-memory](aka-memory.md) | dogmaai/magi-moni | AKA long-term memory on TIALA + daily GCS backup. |
 | [magi-deep-research](magi-deep-research.md) | Devin Automation + `magi-core/scripts/upload-deep-research.mjs` (`dogmaai/magi-deep-research` repo deleted 2026-10-07) | Weekday daily Deep Research brief via Devin Automation. |
-| [magi-model-health-check](magi-model-health-check.md) | dogmaai/magi-model-health-check | Periodic provider/model health checks. |
+| [magi-model-health-check](magi-model-health-check.md) | `dogmaai/magi-core` (`magi-llm-health-monitor` Cloud Run job, `health-monitor.js` — no standalone repo) | Periodic provider/model health checks. |
 
 # Retired
 
