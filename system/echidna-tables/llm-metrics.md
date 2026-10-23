@@ -27,7 +27,7 @@ One row per LLM API call. Backs cost dashboards and the model health check.
 | output_tokens | INT64 | Completion tokens. |
 | response_time_ms | INT64 | Latency. |
 | cost_usd | FLOAT64 | Computed cost. |
-| status | STRING | `success` / `failed` / `truncated`, with historical NULLs — written by `magi-core/src/llm.js`; any non-`success` value is a failed or incomplete call. (Corrected 2026-10-23: previously documented as `ok` / error class, a spec–implementation drift.) |
+| status | STRING | `success` / `failed` — written by `magi-core/src/llm.js`; any non-`success` value is a failed or incomplete call. Historical values: `truncated` (9 rows, 2026-08-03→09-15, provider `sakana` — written by the FUGU analyzer when `finish_reason='length'`; the Sakana/SEKHMET stack was removed in magi-core#477) and NULLs. (Corrected 2026-10-23: previously documented as `ok` / error class, a spec–implementation drift.) |
 | error_message | STRING | Error detail when failed. |
 
 # Joins
