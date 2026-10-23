@@ -1,5 +1,36 @@
 # Bundle Update Log
 
+## 2026-10-23 (public-repo hygiene — visibility wording + public-writing rule draft)
+* **Host security (private record)**: funnel remediation was carried out
+  on the host. Per the new public-writing rule, the details live in the
+  private `magi-core` record, not in this public repository.
+* **Visibility**: `dogmaai/magi-knowledge` confirmed **public** and
+  intended (`gh api repos/dogmaai/magi-knowledge` → `visibility: public`;
+  Jun, 2026-10-23).
+  [secrets-inventory](system/services/secrets-inventory.md) wording
+  fixed: the `GITHUB_TOKEN` row no longer claims the repo is private, and
+  the `MAGI_KNOWLEDGE_TOKEN` row now records all five magi-core consumer
+  workflows (`test.yml`, `okf-drift.yml`, `okf-pin-bump.yml`,
+  `auto-review.yml`, `claude-review.yml`).
+* **Policy (draft)**: [COLLABORATION.md](COLLABORATION.md) gains a
+  **draft / pending Jun verification** section "Writing rules for the
+  public repository" — never record unremediated-vulnerability details,
+  credential locations, internal ports or host identifiers here; record
+  vulnerabilities only after remediation; reviewers check PRs for leaks;
+  the rule covers PR bodies, issues, comments, commit messages and
+  review replies, not just committed files.
+* **Lifecycle**: `MAGI_KNOWLEDGE_TOKEN` marked *scheduled for removal* —
+  the repo is public, so the PAT is unnecessary. The companion magi-core
+  PR removes the `secrets.MAGI_KNOWLEDGE_TOKEN || github.token`
+  references (submodule clone falls back to `github.token`); tracked
+  under magi-core#659. Retirement: Jun deletes the `GH:magi-core`
+  Actions secret, then disables and destroys the `SM` secret after a
+  soak.
+* **Audit (private)**: a documentation audit for passages in existing
+  docs that violate the new rule (credential paths, listen ports,
+  hostnames) is recorded in a private `magi-core` issue; the findings
+  are intentionally not reproduced in this repository.
+
 ## 2026-10-22 (TIALA host cleanup — launchd inventory, netdata, Drive dedupe, gcloud correction)
 * **Amendment**: new [tiala-host](system/services/tiala-host.md) —
   launchd inventory of the TIALA Mac mini after the 2026-10-22 cleanup:
