@@ -14,7 +14,8 @@ repo: dogmaai/magi-moni
 # Overview
 
 **AKA** (あか) is the operator-facing agent Jun talks to on Telegram. It runs on
-[TIALA](#host) through the OpenClaw Gateway (port `18789`) and keeps a
+[TIALA](#host) through the OpenClaw Gateway (loopback port — see the
+private record) and keeps a
 **long-term memory** as Markdown on the host: a single `MEMORY.md` plus dated
 notes under `memory/`. That memory is the agent's own accumulated context —
 environment facts, standing instructions from Jun, and session notes — and it is
@@ -53,18 +54,19 @@ that truncation, and the total bootstrap budget is 60,000 chars.
 
 | Property | Value |
 |---|---|
-| Scheduler | launchd user agent `~/Library/LaunchAgents/com.openclaw.gcs-memory-sync.plist` (label `com.openclaw.gcs-memory-sync`) |
-| Script | `~/.openclaw/scripts/sync-memory-to-gcs.sh` on TIALA |
+| Scheduler | launchd user agent (label `com.openclaw.gcs-memory-sync`; plist path is host-local — private record) |
+| Script | `sync-memory-to-gcs.sh` under the OpenClaw scripts dir on TIALA |
 | Source | `~/clawd/MEMORY.md` + `~/clawd/memory/*.md` |
 | Destination | `gs://screen-share-459802-memory/` |
 | Schedule | `StartCalendarInterval`: Hour=21, Minute=0; daily at **21:00 JST (12:00 UTC)**; `RunAtLoad`: false |
-| Command | `/bin/bash -c 'source ~/.zprofile && ~/.openclaw/scripts/sync-memory-to-gcs.sh >> /tmp/gcs-memory-sync.log 2>&1'` |
-| Log | `/tmp/gcs-memory-sync.log` (stdout/stderr) |
+| Command | sources the user's shell profile, then runs the sync script with stdout/stderr appended to a host-local log |
+| Log | host-local log file (stdout/stderr; path in the private record) |
 | Identity | `aka-agent@screen-share-459802.iam.gserviceaccount.com` |
 | Versioning | Suspended — each run overwrites, so only the newest copy survives |
 
 The script uses `set -e`, activates `gcloud auth activate-service-account` with
-`~/.config/gcloud/service-account-key.json`, then copies the source files with
+a host-local service-account key file (path in the private record,
+dogmaai/magi-core#662), then copies the source files with
 `gsutil cp` (and `gsutil -m cp` for `memory/*.md`), using
 `Cache-Control: no-cache`. This is copy/overwrite only, not `rsync`, so locally
 deleted files are never removed from the bucket.
@@ -91,13 +93,13 @@ UTC.
 
 | Property | Value |
 |---|---|
-| Scheduler | launchd user agent `~/Library/LaunchAgents/com.openclaw.memory-sync.plist` (label `com.openclaw.memory-sync`), daily **22:30 JST**, `RunAtLoad`: false |
-| Script | `~/.openclaw/scripts/sync-memory-backup.sh` on TIALA |
+| Scheduler | launchd user agent (label `com.openclaw.memory-sync`; plist path is host-local — private record), daily **22:30 JST**, `RunAtLoad`: false |
+| Script | `sync-memory-backup.sh` under the OpenClaw scripts dir on TIALA |
 | Source | `~/clawd/MEMORY.md` + `~/clawd/memory/` |
-| Destinations | `/Volumes/Extention_SSD/clawd-memory/` (`MEMORY.md`, `memory/`, dated `history/MEMORY-YYYYMMDD-HHMM.md`) and Google Drive folder `1_lf3yBX-8unw-W_JW11VR681CdyXQIxp` via the `gdrive:` rclone remote |
-| Log | `~/.openclaw/logs/memory-sync.log` (launchd stdout/stderr: `memory-sync.launchd.log`) |
+| Destinations | the external SSD volume's `clawd-memory/` dir (`MEMORY.md`, `memory/`, dated `history/MEMORY-YYYYMMDD-HHMM.md`) and a Google Drive folder (ID in the private record) via the `gdrive:` rclone remote |
+| Log | host-local log files under the OpenClaw logs dir |
 | Verification | SHA-256 of the SSD copy and of every Drive `MEMORY.md` is compared against the source; the folder holds one `MEMORY.md` plus one dated keep-file `MEMORY-20260721-pre-truncation.md`, which the script ignores |
-| Guards | Skips overwriting the SSD/Drive copies when the source shrank >20% vs. the last SSD copy; exits non-zero when `/Volumes/Extention_SSD` is not mounted; warns when `MEMORY.md` has not changed for 7 days |
+| Guards | Skips overwriting the SSD/Drive copies when the source shrank >20% vs. the last SSD copy; exits non-zero when the SSD volume is not mounted; warns when `MEMORY.md` has not changed for 7 days |
 
 The Drive leg used to be an agent-driven cron job ("upload MEMORY.md to Drive"),
 which broke on 2026-08-28: the primary model turn ended with
@@ -107,13 +109,13 @@ The upload is now this deterministic script; cron `546ad7e7` (23:00 JST) only
 runs it and reports the log to Telegram, so a model failure costs the report,
 not the backup.
 
-The Drive folder (`1_lf3yBX-8unw-W_JW11VR681CdyXQIxp`) had accumulated **two**
-distinct `MEMORY.md` objects: `12gLHiTJFksWyITd3qWg-UMBKPGiPWuWB` (49,796 B,
+The Drive folder had accumulated **two**
+distinct `MEMORY.md` objects: one (49,796 B,
 modified 2026-09-10, sha256 matching the current local `~/clawd/MEMORY.md` and
-the SSD `history/MEMORY-20260908-2300.md` snapshot) and
-`1jTelSD5THh_cDkGhHpfX7ftVNkQO733L` (47,899 B, modified 2026-07-21, sha256
+the SSD `history/MEMORY-20260908-2300.md` snapshot) and an older one
+(47,899 B, modified 2026-07-21, sha256
 matching the SSD `history/MEMORY-20260828-2027.md` snapshot — the
-pre-truncation content). Because the script hashes *every*
+pre-truncation content; Drive file IDs in the private record). Because the script hashes *every*
 `MEMORY.md` in the folder, the run logged `Drive MISMATCH 1/2 copies differ`
 and exited status=1 on every run. On 2026-10-22 the older file was **renamed
 in place** (Drive API `files.update`, same ID, not trashed) to
@@ -123,7 +125,7 @@ script's >7-day WARN fires on every run.
 
 **Known issue (2026-10-22)**: the 22:30 JST launchd run
 (`com.openclaw.memory-sync`) fails its SSD leg — under the launchd context,
-rsync to `/Volumes/Extention_SSD/clawd-memory/` returns `Operation not
+rsync to the SSD backup dir returns `Operation not
 permitted` (macOS TCC: removable-volume access is not granted to launchd-run
 scripts), ending `status=1`. The **same script** run by OpenClaw cron
 `546ad7e7` at 23:00 JST succeeds on the SSD (88 files under `memory/`, sha256
@@ -135,8 +137,8 @@ bad `MEMORY.md` rewrite.
 
 # Host
 
-TIALA — Mac mini M4 (16 GB), 24/7, Tailscale `aka.aegean-boa.ts.net`
-(`100.114.185.1`). Ollama serves raw on loopback; the `local.ollama-proxy`
+TIALA — Mac mini M4 (16 GB), 24/7, reachable over the tailnet (address in
+the private record, dogmaai/magi-core#662). Ollama serves raw on loopback; the `local.ollama-proxy`
 Host-rewrite proxy fronts it for local clients, and the `ollama-auth-proxy`
 enforces the Bearer token in front of the `magi-ollama` Named Tunnel (used
 by [ADAM](/system/plm-units/adam.md) and

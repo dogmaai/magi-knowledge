@@ -14,7 +14,7 @@ Official docs: https://openapi.moomoo.com/moomoo-api-doc/jp/intro/intro.html
 
 - **OpenD**: Local TCP gateway program that relays protocol requests to MooMoo backend
 - **moomoo Python SDK**: `pip install moomoo-api` — wraps OpenD TCP protocol
-- OpenD runs on TIALA at `127.0.0.1:11111`
+- OpenD runs on TIALA's loopback interface (port in the private record)
 - The bridge (`bridge/moomoo_bridge.py`) connects to OpenD and exposes a REST API
 
 ## Context Objects

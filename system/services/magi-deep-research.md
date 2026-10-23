@@ -3,8 +3,8 @@ type: Service
 title: magi-deep-research
 description: Devin Automation that produces and uploads the weekday daily Deep Research market brief.
 lilith_safe: false
-status: stable
-generated: { by: devin/cli, at: 2026-10-06T22:50:00Z }
+status: draft
+generated: { by: devin/cli, at: 2026-10-23T11:30:00Z }
 verified: [{ by: human:jun, at: 2026-08-31T07:57:23Z }, { by: human:jun, at: 2026-10-20T10:11:00Z }]
 stale_after: 2027-04-18T10:11:00Z
 tags: [service, deep-research, devin-automation, market-research, magi-core]
@@ -47,7 +47,7 @@ The automation prompt asks the Devin session to:
    * `key_events` — inline YAML list of the most important market events.
 3. Strip the `## Section 5 (Jun Review Only)` block from the markdown body
    before upload.
-4. Run `magi-core/scripts/upload-deep-research.mjs --file /home/ubuntu/brief-upload.md`.
+4. Run `magi-core/scripts/upload-deep-research.mjs --file <brief>.md`.
 
 # Output / BigQuery row
 
@@ -72,8 +72,8 @@ Section 5, and writes one row to `magi_core.market_research` with:
 
 * The `## Section 5 (Jun Review Only)` block must never be inserted into
   BigQuery.
-* The input file path is restricted to `BRIEF_UPLOAD_BASE` (default
-  `/home/ubuntu`).
+* The input file path is restricted to `BRIEF_UPLOAD_BASE` (an
+  allowlisted upload directory configured per environment).
 * `--dry-run` prints a preview without writing BigQuery.
 
 # Related concepts

@@ -16,7 +16,7 @@ The Cloudflare **gRPC** setting (`Allow gRPC connections to the origin server`) 
 
 All services exposed through MAGI's Cloudflare tunnels use HTTP(S) only:
 
-- `magi-bridge` (Flask, `http://localhost:11436`)
+- `magi-bridge` (Flask, `http://localhost:<bridge-port>`)
 - `magi-ollama` (HTTP REST API, `http://localhost:${OLLAMA_PORT}`)
 - `magi-openclaw` (HTTP, `http://localhost:${OPENCLAW_PORT}`)
 
