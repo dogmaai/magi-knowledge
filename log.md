@@ -1,5 +1,65 @@
 # Bundle Update Log
 
+## 2026-10-22 (TIALA host cleanup — launchd inventory, netdata, Drive dedupe, gcloud correction)
+* **Amendment**: new [tiala-host](system/services/tiala-host.md) —
+  launchd inventory of the TIALA Mac mini after the 2026-10-22 cleanup:
+  13 active user agents (bridge watchdog + 3 Named Tunnels + Ollama
+  proxies + tailscale funnel + OpenClaw + memory syncs + ttyd + Devin
+  worker + netdata), 3 OpenClaw cron jobs, and 6 disabled jobs
+  (`com.magi.opend-tunnel`, `local.vix-collector`, `com.magi.hermes`,
+  `com.magi.telegram-bot`, `com.magi.openclaw-funnel` on 2026-10-22;
+  `com.magi.moomoo-bridge` earlier on 2026-10-18). The 5 disables were
+  executed **on the host** by Devin CLI with Jun's in-session approval
+  (`launchctl bootout` + plist archived under the launchd disabled dir);
+  restore details in magi-core#659. No GCP/BigQuery write was made — the
+  `opend-proxy` endpoint table's latest row already points at
+  `https://bridge.khaos.company`, so the stale-ngrok-row risk was
+  removed by stopping the writer, not by touching data.
+* **Amendment**: [aka-memory](system/services/aka-memory.md) — the Drive
+  backup folder held **two different** `MEMORY.md` objects, causing the
+  sync script's `Drive MISMATCH` + `status=1` on every run; the older
+  copy (pre-truncation 2026-07-21 content) was renamed in place to
+  `MEMORY-20260721-pre-truncation.md` on 2026-10-22. Also recorded: the
+  22:30 JST launchd SSD leg fails on macOS TCC (removable-volume access,
+  GUI fix is Jun's) while the same script succeeds under OpenClaw cron
+  at 23:00; `MEMORY.md` unchanged since 2026-09-10. Host section
+  corrected (raw Ollama, the local Host-rewrite proxy, the auth proxy;
+  TIARA → ADAM/BOREAS) and netdata rotation noted.
+* **Amendment**: [cloudflare](system/services/cloudflare.md) — corrected
+  the "TIALA has no gcloud" clause (the SDK is present with SA
+  `aka-agent@` holding `secretAccessor`; the env-file injection is a
+  deliberate start-up design, not an absence of access). Recorded a
+  finding: a `local.tailscale-funnel` Tailscale Funnel publication
+  exposed the unauthenticated local Ollama rewrite-proxy to the public
+  internet (verified 2026-10-22), and magi-core `dee48bf0`
+  `lib/secrets.js` still defaults `OLLAMA_BASE_URL` to the funnel host
+  when the env var is unset.
+* **Amendment**: [secrets-inventory](system/services/secrets-inventory.md)
+  — same gcloud correction; new ledger rows for the TIALA `aka-agent@`
+  SA key (service-account key stored on TIALA, roles listed) and
+  the ttyd basic-auth credential embedded as a literal in the `local.ttyd`
+  LaunchAgent (not in SM — gap). Tier 1 follow-up: `MAGI_QUERY_API_KEY`,
+  `NGROK_AUTHTOKEN`, `BRAVE_API_KEY` have no remaining consumer after
+  the cleanup (`magi-query-api` service and `market_indicators` already
+  absent; `BRAVE_API_KEY` ≠ `BRAVE_SEARCH_API_KEY` which HERMES uses) —
+  tracked in magi-core#659.
+* **Infrastructure** (all executed on the TIALA host, not GCP): netdata
+  `apps.plugin` disabled after its logging grew `collector.log` to ~40 GB
+  (root volume 52% → 20% used); a `newsyslog.d` entry rotates
+  the four netdata logs at 100 MB × 3 (bzip2). Revisions: magi-knowledge
+  base `5271e2ca`, magi-core `dee48bf0`, magi-moomoo `536e1de`.
+* **Lifecycle**: `aka-memory` and `cloudflare` demoted `stable` →
+  `draft` pending Jun's re-verification (`verified` lists unchanged);
+  `secrets-inventory` stays `draft`; `tiala-host` new `draft`.
+* **Update 2026-10-23**: the Tailscale Funnel publication was disabled
+  (LaunchAgent archived) — the unauthenticated-Ollama finding is
+  **remediated**; the authenticated Named Tunnel path is unaffected and
+  magi-core hardens `OLLAMA_BASE_URL` fail-closed (details:
+  dogmaai/magi-core#659). This entry's content was also sanitized for
+  the public repo — host-local file paths, listen ports, archive
+  filenames and the funnel URL removed; operational detail stays in the
+  private record.
+
 ## 2026-10-22 (FLAT result vocabulary — magi-core#654)
 * **Amendment**: [trades](system/echidna-tables/trades.md) — add `FLAT`
   to the result vocabulary: a fully covered entry whose realized
