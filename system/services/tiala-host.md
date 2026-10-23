@@ -4,7 +4,7 @@ title: TIALA host (Mac mini) — launchd job inventory
 description: The always-on TIALA Mac mini's launchd job inventory after the 2026-10-22 cleanup — active bridge/Ollama/OpenClaw/observability agents, OpenClaw cron jobs, the jobs disabled that day, the netdata log fix, and open security/maintenance items.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-22T09:30:00Z }
+generated: { by: devin/cli, at: 2026-10-23T07:00:00Z }
 stale_after: 2027-01-22T09:30:00Z
 tags: [service, infra, tiala, launchd, ollama, openclaw, netdata, tailscale]
 repo: infra (TIALA Mac mini M4, Tailscale 100.114.185.1)
@@ -54,7 +54,7 @@ program paths are host-local and intentionally not recorded here.
 | `ai.openclaw.gateway` | RunAtLoad | OpenClaw Gateway v2026.6.1 (env wrapper under the OpenClaw service-env dir) | [aka-memory](aka-memory.md), [cloudflare](cloudflare.md) |
 | `com.openclaw.gcs-memory-sync` | daily 21:00 JST | AKA memory backup → `gs://screen-share-459802-memory`; last run 2026-10-21 21:00:11 JST ok (86 objects) | [aka-memory](aka-memory.md) |
 | `com.openclaw.memory-sync` | daily 22:30 JST | AKA memory backup → SSD + Drive. **Known problem**: launchd rsync to the external SSD fails `Operation not permitted` (macOS TCC); ends `status=1` — see [aka-memory](aka-memory.md) | [aka-memory](aka-memory.md) |
-| `local.ttyd` | RunAtLoad | The web terminal; basic-auth credential embedded in the plist (not in [secrets-inventory](secrets-inventory.md)) | [aka-memory](aka-memory.md) |
+| `local.ttyd` | RunAtLoad | The web terminal — **loopback-only since 2026-10-23** (Jun changed the bind; verified on host) and published tailnet-only via an intentional `tailscale serve` entry (not Funnel). basic-auth credential still embedded in the LaunchAgent — see open items | [aka-memory](aka-memory.md) |
 | `ai.devin.worker` | RunAtLoad | Devin worker (`--outpost=my-outpost`); log on host | — |
 | `homebrew.mxcl.netdata` | RunAtLoad | Host metrics — see Observability | — |
 
@@ -121,7 +121,11 @@ logs at 102,400 KB × 3 generations, bzip2 (`J` flag);
 * **ttyd credential in plist**: `local.ttyd` carries a basic-auth
   `user:password` literal inside the LaunchAgent on TIALA; not in Secret
   Manager — a credential-location gap recorded in
-  [secrets-inventory](secrets-inventory.md).
+  [secrets-inventory](secrets-inventory.md). Partially remediated
+  2026-10-23 by Jun: the listener was narrowed to loopback and is
+  published tailnet-only via `tailscale serve` (no longer reachable on
+  the LAN). Remaining: rotate the credential and register it in Secret
+  Manager — Jun's to do.
 * **`com.magi.hermes` plaintext tokens**: the archived plist contains
   plaintext `BRAVE_SEARCH_API_KEY` / `TELEGRAM_BOT_TOKEN` /
   `TELEGRAM_CHAT_ID` — see private record (magi-core#659). Jun to decide
