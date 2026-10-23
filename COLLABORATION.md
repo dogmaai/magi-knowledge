@@ -226,6 +226,33 @@ account (a User account, not an Organization):
   and close it afterwards. Verified 2026-09-07 with
   `dogmaai/magi-knowledge#50` after adding the repository to the installation.
 
+## Writing rules for the public repository
+
+> **Draft — pending Jun verification.** `dogmaai/magi-knowledge` is a
+> **public** repository (confirmed 2026-10-23 via
+> `gh api repos/dogmaai/magi-knowledge` → `visibility: public`; Jun
+> confirmed public is intended). Everything committed here — and everything
+> posted on it — is world-readable. The rules below are a draft policy
+> recorded 2026-10-23; treat them as binding until Jun confirms or amends
+> them.
+
+- **Never record attacker-useful details in this repository.** Do not write
+  down: unremediated vulnerability locations or reproduction steps;
+  credential locations (local file paths, or which store holds a named
+  secret); internal or listening port numbers; or host identifiers
+  (tailnet hostnames, IP addresses, LAN details). Those belong in private
+  `magi-core` issues or docs — reference them from here by issue/PR
+  number only.
+- **Record vulnerabilities only after remediation.** A security fix may be
+  documented once it is deployed; describe what changed, not how to
+  exploit the pre-fix state.
+- **Reviewers must check PRs for these leaks.** A PR that adds any of the
+  categories above must not merge until the detail is moved to a private
+  location.
+- **The rule applies to every writable surface**, not just committed
+  files: PR titles and bodies, issue titles and bodies, comments, commit
+  messages, and code-review replies.
+
 ## Changes requiring independent review
 
 Changes to trade guards, order execution, trading mode, risk configuration or
