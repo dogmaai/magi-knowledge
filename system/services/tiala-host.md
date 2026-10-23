@@ -7,7 +7,7 @@ status: draft
 generated: { by: devin/cli, at: 2026-10-22T09:30:00Z }
 stale_after: 2027-01-22T09:30:00Z
 tags: [service, infra, tiala, launchd, ollama, openclaw, netdata, tailscale]
-repo: infra (TIALA Mac mini M4, Tailscale 100.114.185.1)
+repo: infra (TIALA Mac mini M4)
 ---
 
 # Overview
@@ -17,10 +17,12 @@ human-verified stable doc about AKA's memory pipeline, while the TIALA host
 inventory is cross-cutting: the moomoo broker bridge, Ollama, OpenClaw,
 observability and the Devin worker all live on the same box.
 
-**TIALA** — Mac mini M4 (16 GB), hostname `junnoMac-mini`, user `jun`
-(gui/501), timezone JST, Tailscale `100.114.185.1`, 24/7. There is **no
+**TIALA** — Mac mini M4 (16 GB), desktop user session (launchd `gui`
+domain), timezone JST, reachable over the tailnet, 24/7. Hostnames,
+tailnet IPs and absolute paths are intentionally not recorded here —
+they live in the private record (dogmaai/magi-core#662). There is **no
 user crontab**; all scheduled work runs through user LaunchAgents
-(launchd, `gui/501`) plus OpenClaw's own cron. All facts below were
+plus OpenClaw's own cron. All facts below were
 verified on the host on 2026-10-22.
 
 **gcloud on TIALA**: a local Google Cloud SDK (561.0.0) plus Homebrew

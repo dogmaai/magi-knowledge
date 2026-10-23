@@ -1,5 +1,28 @@
 # Bundle Update Log
 
+## 2026-10-23 (public-repo sanitization — magi-core#662 audit rewrite)
+* **Amendment**: applied the #662 audit list to existing docs —
+  host identifiers (tailnet hostnames/IPs, hostnames, LAN/WG IPs),
+  listen ports, and credential/config file paths were generalized to
+  role descriptions pointing at the private record (dogmaai/magi-core#662).
+  Touched: [aka-memory](system/services/aka-memory.md),
+  [cloudflare](system/services/cloudflare.md),
+  [magi-moomoo](system/services/magi-moomoo.md),
+  [secrets-inventory](system/services/secrets-inventory.md),
+  [tiala-host](system/services/tiala-host.md),
+  [magi-deep-research](system/services/magi-deep-research.md) and three
+  `.agents/skills/` files. `*.khaos.company` public DNS hostnames are
+  kept per the audit's exemption recommendation (Jun to confirm);
+  historical `log.md` entries left as-is. `magi-moomoo.md` and
+  `magi-deep-research.md` demoted `stable` → `draft` pending Jun's
+  re-verification.
+* **Ops state changes recorded**: `aka-mac-mini@` SA's project-wide
+  `secretAccessor` removed (no consumer found); GSM versions disabled
+  for `MAGI_QUERY_API_KEY` / `NGROK_AUTHTOKEN` / `BRAVE_API_KEY`;
+  `GH:magi-core` Actions secret `MAGI_KNOWLEDGE_TOKEN` deleted (all
+  workflow references already had `github.token` fallbacks). Details in
+  [secrets-inventory](system/services/secrets-inventory.md).
+
 ## 2026-10-23 (Ollama units outage — root cause identified, remediation pending)
 * **Amendment**: [boreas](system/plm-units/boreas.md) and
   [adam](system/plm-units/adam.md) — recorded that

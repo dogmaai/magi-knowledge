@@ -51,7 +51,7 @@ set and is superseded by this bundle — do not refresh it, and prefer a separat
 # One-time setup (DONE 2026-08-24 — keep for disaster recovery)
 
 ```bash
-export GOOGLE_APPLICATION_CREDENTIALS=/home/ubuntu/gcp-key.json
+export GOOGLE_APPLICATION_CREDENTIALS=<service-account-key>.json
 TOKEN=$(gcloud auth print-access-token)
 PROJECT=screen-share-459802
 BASE="https://discoveryengine.googleapis.com/v1/projects/$PROJECT/locations/global/collections/default_collection"
