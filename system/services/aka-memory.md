@@ -3,8 +3,8 @@ type: Service
 title: AKA memory (TIALA → GCS / SSD / Drive)
 description: AKA's long-term memory on TIALA, how it is written, and its daily backups to gs://screen-share-459802-memory, the external SSD and Google Drive.
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-08-28T11:31:18Z }
+status: draft
+generated: { by: devin/cli, at: 2026-10-22T09:30:00Z }
 verified: { by: human:jun, at: 2026-08-28T11:31:18Z }
 stale_after: 2027-02-24T11:31:18Z
 tags: [service, aka, tiala, memory, backup, gcs, ssd, drive]
@@ -96,7 +96,7 @@ UTC.
 | Source | `~/clawd/MEMORY.md` + `~/clawd/memory/` |
 | Destinations | `/Volumes/Extention_SSD/clawd-memory/` (`MEMORY.md`, `memory/`, dated `history/MEMORY-YYYYMMDD-HHMM.md`) and Google Drive folder `1_lf3yBX-8unw-W_JW11VR681CdyXQIxp` via the `gdrive:` rclone remote |
 | Log | `~/.openclaw/logs/memory-sync.log` (launchd stdout/stderr: `memory-sync.launchd.log`) |
-| Verification | SHA-256 of the SSD copy and of every Drive copy is compared against the source; the folder holds two identical `MEMORY.md` objects and the script accepts that |
+| Verification | SHA-256 of the SSD copy and of every Drive `MEMORY.md` is compared against the source; the folder holds one `MEMORY.md` plus one dated keep-file `MEMORY-20260721-pre-truncation.md`, which the script ignores |
 | Guards | Skips overwriting the SSD/Drive copies when the source shrank >20% vs. the last SSD copy; exits non-zero when `/Volumes/Extention_SSD` is not mounted; warns when `MEMORY.md` has not changed for 7 days |
 
 The Drive leg used to be an agent-driven cron job ("upload MEMORY.md to Drive"),
@@ -107,6 +107,28 @@ The upload is now this deterministic script; cron `546ad7e7` (23:00 JST) only
 runs it and reports the log to Telegram, so a model failure costs the report,
 not the backup.
 
+The Drive folder (`1_lf3yBX-8unw-W_JW11VR681CdyXQIxp`) had accumulated **two**
+distinct `MEMORY.md` objects: `12gLHiTJFksWyITd3qWg-UMBKPGiPWuWB` (49,796 B,
+modified 2026-09-10, sha256 matching the current local `~/clawd/MEMORY.md` and
+the SSD `history/MEMORY-20260908-2300.md` snapshot) and
+`1jTelSD5THh_cDkGhHpfX7ftVNkQO733L` (47,899 B, modified 2026-07-21, sha256
+matching the SSD `history/MEMORY-20260828-2027.md` snapshot — the
+pre-truncation content). Because the script hashes *every*
+`MEMORY.md` in the folder, the run logged `Drive MISMATCH 1/2 copies differ`
+and exited status=1 on every run. On 2026-10-22 the older file was **renamed
+in place** (Drive API `files.update`, same ID, not trashed) to
+`MEMORY-20260721-pre-truncation.md`, preserving the pre-truncation content as a
+dated keep-file. `MEMORY.md` itself has not changed since 2026-09-10 — the
+script's >7-day WARN fires on every run.
+
+**Known issue (2026-10-22)**: the 22:30 JST launchd run
+(`com.openclaw.memory-sync`) fails its SSD leg — under the launchd context,
+rsync to `/Volumes/Extention_SSD/clawd-memory/` returns `Operation not
+permitted` (macOS TCC: removable-volume access is not granted to launchd-run
+scripts), ending `status=1`. The **same script** run by OpenClaw cron
+`546ad7e7` at 23:00 JST succeeds on the SSD (88 files under `memory/`, sha256
+match). The fix needs a GUI Full Disk Access grant — Jun's to make.
+
 Snapshots under `history/` are append-only (a new file only when the content
 changed) and are never pruned by the script — they are the recovery path for a
 bad `MEMORY.md` rewrite.
@@ -114,9 +136,19 @@ bad `MEMORY.md` rewrite.
 # Host
 
 TIALA — Mac mini M4 (16 GB), 24/7, Tailscale `aka.aegean-boa.ts.net`
-(`100.114.185.1`). Also runs Ollama (`11435`, [TIARA](/system/plm-units/tiara.md)
-inference), OpenD (`11111`, the MooMoo gateway behind
-[magi-moomoo](magi-moomoo.md)), ttyd (`7681`) and Netdata (`19999`).
+(`100.114.185.1`). Ollama serves raw on loopback; the `local.ollama-proxy`
+Host-rewrite proxy fronts it for local clients, and the `ollama-auth-proxy`
+enforces the Bearer token in front of the `magi-ollama` Named Tunnel (used
+by [ADAM](/system/plm-units/adam.md) and
+[BOREAS](/system/plm-units/boreas.md); [TIARA](/system/plm-units/tiara.md) is
+legacy). Also runs OpenD (the MooMoo gateway behind
+[magi-moomoo](magi-moomoo.md)), the ttyd web terminal and Netdata.
+Netdata's `apps.plugin` was disabled 2026-10-22 (it flooded `collector.log` to
+~40 GB with macOS `Failed to get task info` errors) and a `newsyslog.d`
+entry now rotates the four Netdata logs at 100 MB
+× 3 generations (bzip2). The full launchd inventory, including the jobs
+disabled in the 2026-10-22 cleanup, lives in
+[tiala-host](tiala-host.md).
 
 # Boundary
 

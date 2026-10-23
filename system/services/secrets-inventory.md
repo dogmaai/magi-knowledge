@@ -4,7 +4,7 @@ title: Secrets inventory (Grafana Cloud, Cloudflare, GitHub, GCP tokens)
 description: Single ledger of the infrastructure tokens (Grafana Cloud, Cloudflare, GitHub, GCP) referenced across the MAGI repositories — canonical env var name, auth scheme, target endpoint, required scopes, source of truth, usage sites and rotation owner. GCP Secret Manager is the only source of truth; injected env-var copies can go stale.
 lilith_safe: false
 status: draft
-generated: { by: claude/cloud, at: 2026-10-21T10:01:49Z }
+generated: { by: devin/cli, at: 2026-10-22T09:30:00Z }
 verified: [{ by: human:jun, at: 2026-09-17T17:23:06Z }, { by: devin/local, at: 2026-10-02T16:00:00Z }, { by: devin/cli, at: 2026-10-06T04:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: devin/cloud, at: 2026-10-07T06:25:37Z }, { by: human:jun, at: 2026-10-20T10:11:00Z }]
 stale_after: 2027-04-18T10:11:00Z
 tags: [service, secrets, grafana, cloudflare, github, gcp, security]
@@ -93,8 +93,10 @@ version — every consumer reads `:latest`):
    newline that produced `ERR_INVALID_CHAR` in the Authorization header).
 2. Redeploy or restart each consumer in the *Usage* column so `:latest`
    resolves to the new version, and refresh every injected copy the same
-   day — TIALA has no `gcloud`, so `~/.config/magi-moomoo/*.env` files
-   sourced by launchd plists go stale otherwise.
+   day — the `~/.config/magi-moomoo/*.env` files sourced by TIALA's
+   launchd plists deliberately do not read SM at start-up, so they go
+   stale on rotation (TIALA *does* have gcloud + `secretAccessor`; the
+   env-file design just doesn't use it — see the TIALA SA row below).
 3. `gcloud secrets versions disable <old-version> --secret=<NAME>` — keep
    it disabled, not destroyed, until a soak confirms nothing pinned it.
 4. `gcloud secrets versions destroy <old-version> --secret=<NAME>` after
@@ -126,8 +128,10 @@ per-token exception explicitly approved by Jun for that rotation.
 | `GCP_SERVICE_ACCOUNT_KEY` | Service-account JSON → `GOOGLE_APPLICATION_CREDENTIALS=/home/ubuntu/gcp-key.json` | GCP project `screen-share-459802`: BigQuery, Secret Manager (`secretmanager.versions.access`), Cloud Run / Logging read | SA `github-actions@screen-share-459802.iam.gserviceaccount.com`; observed capabilities: BigQuery read/DML, `secretmanager.versions.access`, Cloud Run / Logging read (exact IAM roles not audited here) | `Devin org` + `GH:*` (deploy workflows). This *is* the key that unlocks Secret Manager, so by definition it cannot live there. | magi-core: `.agents/skills/testing-*` (all), Devin blueprint; magi-moni: `scripts/operate-tiala.js`, `.agents/skills/operate-tiala`, `.agents/skills/testing-magi-moni`; magi-moomoo: `.agents/skills/testing-moomoo-*` | jun (IAM). Rotate via `gcloud iam service-accounts keys create` and refresh every copy the same day. |
 | — (no env var; SA `devin-bq-admin@screen-share-459802.iam.gserviceaccount.com`) | service-account JSON keys — **none stored anywhere audited** | GCP project `screen-share-459802` (BigQuery access originally created for Devin; display name "Devin BigQuery Admin") | `roles/owner` + `roles/editor` + `roles/bigquery.admin` + `roles/discoveryengine.agentspaceAdmin` + `roles/discoveryengine.agentspaceUser` (project-level) — over-privileged for an unused SA; see Tier 2 | none — 2026-10-07 audit covered: Devin org secrets, session env / `~/gcp-key.json` / `~/.config/gcloud`, every GSM secret, the four live MAGI repos, magi-core GH Actions secrets, and the cognition-bigquery MCP install. Places Devin cannot reach (jun's machine, third-party stores, other GCP projects) are out of scope — deletion covered them anyway | none found; last real API use 2026-04-27 per audit logs | jun — **all 5 user-managed keys deleted 2026-10-07** (`27830b59`, `3c584ee5`, `5928b1d3`, `73029fb8`, `ed2cd589`; none existed in any audited store, 4 of 5 minted after the last recorded API use). Only the 2 Google-managed keys remain (expire 2027-04-27). The `roles/iam.serviceAccountKeyAdmin` binding jun granted `github-actions@` for the cleanup was **revoked same-day** (verified: `keys list` PERMISSION_DENIED again). The SA and its project roles are unchanged. See log.md 2026-10-07. |
 | `OPENCLAW_GATEWAY_TOKEN` | `Authorization: Bearer <token>` | `openclaw` Tailscale IP / `openclaw.khaos.company` → OpenClaw Gateway API (`/v1/*`, Control UI RPC) | n/a | `SM` | magi-moni: `config.py` (`OPENCLAW_GATEWAY_TOKEN`), `adapters/council_openclaw.py`; TIALA `~/.openclaw/openclaw.json` `gateway.auth.token` (enforcement side — gateway verifies against this value) | jun. Registered during the 2026-10-05 tunnel-auth audit; was previously only referenced in prose above. |
-| `MOOMOO_BRIDGE_AUTH_TOKEN` | `Authorization: Bearer <token>` | `bridge.khaos.company` → `moomoo_bridge.py` (every path except `GET /health`); injected into the bridge as `BRIDGE_AUTH_TOKEN` | n/a | `SM` (registered 2026-10-05 — **use version ≥2**: v1 carried a trailing newline that produced `ERR_INVALID_CHAR` in the proxy's Authorization header) | magi-moomoo: `bridge/moomoo_bridge.py`, `scripts/start-bridge.sh`, `server.js` (`BRIDGE_AUTH_TOKEN` env), `.github/workflows/deploy.yml` (Cloud Run `--set-secrets`); TIALA injected copy `~/.config/magi-moomoo/bridge.env` sourced by the `com.magi.bridge` plist (TIALA has no gcloud, so the bridge cannot read SM directly) | jun. Value minted in-session 2026-10-05 under Jun's implementation instruction (same class of one-off exception as `CLOUDFLARE_API_TOKEN`). |
+| `MOOMOO_BRIDGE_AUTH_TOKEN` | `Authorization: Bearer <token>` | `bridge.khaos.company` → `moomoo_bridge.py` (every path except `GET /health`); injected into the bridge as `BRIDGE_AUTH_TOKEN` | n/a | `SM` (registered 2026-10-05 — **use version ≥2**: v1 carried a trailing newline that produced `ERR_INVALID_CHAR` in the proxy's Authorization header) | magi-moomoo: `bridge/moomoo_bridge.py`, `scripts/start-bridge.sh`, `server.js` (`BRIDGE_AUTH_TOKEN` env), `.github/workflows/deploy.yml` (Cloud Run `--set-secrets`); TIALA injected copy `~/.config/magi-moomoo/bridge.env` sourced by the `com.magi.bridge` plist (the bridge reads the env file by design rather than calling SM at start-up; TIALA's `aka-agent@` SA *has* `secretAccessor`, so the copy goes stale on rotation and must be refreshed — see the TIALA SA row) | jun. Value minted in-session 2026-10-05 under Jun's implementation instruction (same class of one-off exception as `CLOUDFLARE_API_TOKEN`). |
 | `OLLAMA_AUTH_TOKEN` | `Authorization: Bearer <token>` | `ollama.khaos.company` → `ollama-auth-proxy` (`127.0.0.1:11437`) → Ollama `127.0.0.1:11434` | n/a | `SM` (registered 2026-10-05) | magi-core: `lib/secrets.js`, `src/llm.js`, `.github/workflows/deploy.yml` (`magi-core-adam` / `magi-core-boreas` `--set-secrets`); TIALA injected copy `~/.config/magi-moomoo/ollama.env` sourced by the `com.magi.ollama-auth-proxy` plist; magi-moomoo: `scripts/ollama-auth-proxy.py` (enforcement side) | jun. Proxy refuses to start without the env var (fail-closed). Minted in-session 2026-10-05 under Jun's implementation instruction. |
+| — (no env var; SA `aka-agent@screen-share-459802.iam.gserviceaccount.com` on TIALA) | service-account key stored on TIALA (+ active `gcloud auth` account) | GCP project `screen-share-459802` — read-only ops from TIALA: BigQuery read/jobs, Cloud Scheduler / Logging / Cloud Run viewer, Secret Manager `versions.access` | `roles/bigquery.dataViewer`, `roles/bigquery.jobUser`, `roles/cloudscheduler.viewer`, `roles/logging.viewer`, `roles/run.viewer`, `roles/secretmanager.secretAccessor` (project IAM read 2026-10-22) | TIALA local key file — a credential **location** (no value recorded here); a local SDK + Homebrew `gcloud`/`bq` shims exist but are *not* on the launchd PATH | TIALA: the daily GCS memory-backup script (activates this key); interactive `gcloud`/`bq` use | jun. The bridge/ollama-auth-proxy deliberately read injected `magi-moomoo` env-file copies instead of SM at start-up; `gcloud` is absent from the launchd PATH, which is why launchd-run scripts calling `gcloud` fail (the dead `local.vix-collector` hit this). Also configured on TIALA: `aka-mac-mini@screen-share-459802.iam.gserviceaccount.com` (`bigquery.dataViewer`/`jobUser`, `cloudscheduler.jobRunner`, `run.invoker`, `secretAccessor`) and `jun@dogma.jp`. |
+| — (no env var; ttyd basic-auth credential) | HTTP basic `user:password` embedded **as a literal argument in the `local.ttyd` LaunchAgent** on TIALA | the web terminal on TIALA | n/a | **Not in Secret Manager** — known gap (2026-10-22) | basic-auth credential embedded as a literal in the ttyd LaunchAgent on TIALA — not in SM, gap recorded 2026-10-22 | jun. Value lives only inside the plist; registering a managed copy and scrubbing the plist is Jun's call — see [tiala-host](tiala-host.md) open items. |
 
 # Follow-ups
 
@@ -148,6 +152,16 @@ Tier 1 (this ledger, no token re-issue):
   `src/sigil.js` `buildOtlpExporterConfig()` once every deployment has
   `GRAFANA_OTLP_TOKEN` bound.
 * Drop the `GRAFANA_ML_TOKEN` alias from magi-core `lib/secrets.js`.
+* GSM secrets with no remaining consumer in any dogmaai repo after the
+  2026-10-22 TIALA launchd cleanup — `MAGI_QUERY_API_KEY` (v1, 2026-02-27;
+  the `magi-query-api` Cloud Run service and `market_indicators` table are
+  already absent), `NGROK_AUTHTOKEN` (v1–v3, 2026-03-23; the
+  `com.magi.opend-tunnel` ngrok job is disabled) and `BRAVE_API_KEY` (v1,
+  2026-02-27; the disabled telegram-bot's name — distinct from
+  `BRAVE_SEARCH_API_KEY`, which HERMES still uses) — candidates for
+  disable/destroy, tracked in magi-core#659.
+  `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` stay (magi-core `deploy.yml`
+  and magi-moni still consume them).
 
 Tier 2 (requires re-issuing real tokens — **human approval before any step**):
 

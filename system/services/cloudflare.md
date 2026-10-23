@@ -3,8 +3,8 @@ type: Service
 title: Cloudflare (AI Search, R2 Data Catalog, Named Tunnel, AI Gateway)
 description: How MAGI uses Cloudflare — the magi-document AI Search mirror and okf.system Iceberg mirror of this spec on the magi-system bucket, the Named Tunnels exposing TIALA services, and the default AI Gateway behind AI Search.
 lilith_safe: false
-status: stable
-generated: { by: devin/cli, at: 2026-10-05T12:00:00Z }
+status: draft
+generated: { by: devin/cli, at: 2026-10-22T09:30:00Z }
 verified: [{ by: human:jun, at: 2026-09-03T09:04:15Z }, { by: devin/cli, at: 2026-09-16T07:25:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-04-04T05:36:00Z
 tags: [service, cloudflare, r2, ai-search, tunnel, ai-gateway]
@@ -105,7 +105,7 @@ therefore relies on its origin service's own authentication:
 
 | Hostname | Auth mechanism | Enforcement point | Observed state (2026-10-05) |
 |---|---|---|---|
-| `bridge.khaos.company` | `BRIDGE_AUTH_TOKEN` Bearer on every path except `GET /health` | `magi-moomoo/bridge/moomoo_bridge.py` `require_bridge_auth` | **Enforced since 2026-10-05** — `/health` reports `auth_required:true` and unauthenticated `/positions` returns 401. `MOOMOO_BRIDGE_AUTH_TOKEN` was created in GSM the same day (the rollout merged in PRs #73–#82 had never created it); TIALA has no gcloud so the bridge reads `~/.config/magi-moomoo/bridge.env` via the `com.magi.bridge` plist, and the Cloud Run proxy binds `BRIDGE_AUTH_TOKEN=MOOMOO_BRIDGE_AUTH_TOKEN:latest`. |
+| `bridge.khaos.company` | `BRIDGE_AUTH_TOKEN` Bearer on every path except `GET /health` | `magi-moomoo/bridge/moomoo_bridge.py` `require_bridge_auth` | **Enforced since 2026-10-05** — `/health` reports `auth_required:true` and unauthenticated `/positions` returns 401. `MOOMOO_BRIDGE_AUTH_TOKEN` was created in GSM the same day (the rollout merged in PRs #73–#82 had never created it); TIALA's gcloud SDK (SA `aka-agent@…`, `roles/secretmanager.secretAccessor`) *could* read SM, but the bridge deliberately reads an injected copy — `~/.config/magi-moomoo/bridge.env` sourced by the `com.magi.bridge` plist — rather than depending on SM at start-up; the env file still goes stale on rotation and must be refreshed. The Cloud Run proxy binds `BRIDGE_AUTH_TOKEN=MOOMOO_BRIDGE_AUTH_TOKEN:latest`. |
 | `openclaw.khaos.company` | `OPENCLAW_GATEWAY_TOKEN` Bearer | OpenClaw Gateway itself — `~/.openclaw/openclaw.json` `gateway.auth.mode=token` on TIALA | **Enforced** — unauthenticated `POST /v1/chat/completions` returns 401; `GET /health` and the Control UI static assets are public by design. GSM `OPENCLAW_GATEWAY_TOKEN` exists; injected copies can go stale on rotation (see [secrets-inventory](secrets-inventory.md)). |
 | `ollama.khaos.company` | `OLLAMA_AUTH_TOKEN` Bearer | `magi-moomoo/scripts/ollama-auth-proxy.py` on `127.0.0.1:11437`, in front of `127.0.0.1:11434` raw Ollama | **Enforced since 2026-10-05** — tunnel ingress (remotely-managed config `version=3`, `source: cloudflare`; the local `config-magi-ollama.yml` is inert for remotely-managed tunnels) now points at the proxy. Verified from the public hostname: unauthenticated `GET /api/tags`, `GET /api/version`, `POST /api/pull`, `DELETE /api/delete` all → 401; correct Bearer → 200; wrong token → 401. During the flip a stale second `cloudflared` process (started 2026-09-11, outside launchd) was found still serving the old ingress and was killed — the LaunchAgent (`com.magi.ollama.cloudflared`) is the only remaining instance. magi-core callers send the header via `src/llm.js` post-#578 (`9641da36`). |
 
@@ -122,6 +122,15 @@ magi-core `9641da36` (post-#578 caller side). Longer-term options
 (Cloudflare Access service-token, or moving PLM jobs onto the private
 WireGuard route once they have VPC egress) remain open policy decisions
 for Jun.
+
+**Remediated finding (2026-10-23)**: a Tailscale Funnel publication on
+TIALA exposed the unauthenticated local Ollama rewrite-proxy to the
+public internet (outside the Named Tunnel path, which has required the
+Bearer token since 2026-10-05). The publication was disabled on
+2026-10-23 and the LaunchAgent archived; `ollama.khaos.company`
+continues to enforce auth. magi-core additionally hardens
+`OLLAMA_BASE_URL` fail-closed (see dogmaai/magi-core ollama-base-url
+fail-closed PR). Detail record: magi-core#659.
 
 # 4. AI Gateway — `default`
 
