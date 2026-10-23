@@ -1,5 +1,16 @@
 # Bundle Update Log
 
+## 2026-10-23 (TIALA `aka-agent@` least-privilege Secret Manager access)
+* **Amendment**: [secrets-inventory](system/services/secrets-inventory.md)
+  TIALA SA row — project-wide `secretAccessor` on `aka-agent@` was removed
+  and replaced by per-secret bindings on exactly the three GSM secrets the
+  live bridge start path reads (`MOOMOO_BRIDGE_AUTH_TOKEN`,
+  `GRAFANA_OTLP_TOKEN`, `SIGIL_AUTH_TOKEN`), verified on-host by reading
+  each as the SA (three OK, unrelated secret PERMISSION_DENIED). Also
+  recorded the drift that the start script names three `PYROSCOPE_*`
+  secrets absent from GSM. Jun-approved scope; no other SA or secret
+  touched.
+
 ## 2026-10-23 (public-repo sanitization — magi-core#662 audit rewrite)
 * **Amendment**: applied the #662 audit list to existing docs —
   host identifiers (tailnet hostnames/IPs, hostnames, LAN/WG IPs),
