@@ -4,8 +4,8 @@ title: llm_metrics
 description: Per-call telemetry — tokens, latency, cost, status for every LLM request.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=llm_metrics&page=table
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-06-19T01:02:48Z }
+status: draft
+generated: { by: devin/cli, at: 2026-10-23T11:57:51Z }
 verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
 stale_after: 2026-12-16T01:02:48Z
 tags: [echidna, bigquery, metrics, cost, telemetry]
@@ -27,7 +27,7 @@ One row per LLM API call. Backs cost dashboards and the model health check.
 | output_tokens | INT64 | Completion tokens. |
 | response_time_ms | INT64 | Latency. |
 | cost_usd | FLOAT64 | Computed cost. |
-| status | STRING | `ok` / error class. |
+| status | STRING | `success` / `failed` / `truncated`, with historical NULLs — written by `magi-core/src/llm.js`; any non-`success` value is a failed or incomplete call. (Corrected 2026-10-23: previously documented as `ok` / error class, a spec–implementation drift.) |
 | error_message | STRING | Error detail when failed. |
 
 # Joins
