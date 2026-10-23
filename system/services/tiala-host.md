@@ -124,10 +124,12 @@ logs at 102,400 KB × 3 generations, bzip2 (`J` flag);
   `user:password` literal inside the LaunchAgent on TIALA; not in Secret
   Manager — a credential-location gap recorded in
   [secrets-inventory](secrets-inventory.md).
-* **`com.magi.hermes` plaintext tokens**: the archived plist contains
+* **`com.magi.hermes` plaintext tokens**: the archived plist contained
   plaintext `BRAVE_SEARCH_API_KEY` / `TELEGRAM_BOT_TOKEN` /
-  `TELEGRAM_CHAT_ID` — see private record (magi-core#659). Jun to decide
-  whether to scrub the file or rotate the tokens.
+  `TELEGRAM_CHAT_ID` — **scrubbed 2026-10-23** (values replaced with
+  dummy strings; the file stays in the disabled archive). The live
+  tokens themselves were not rotated — Jun to decide whether rotation
+  is still warranted. Private record: magi-core#659.
 
 # Boundary
 
