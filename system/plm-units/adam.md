@@ -3,8 +3,8 @@ type: PLM Unit
 title: ADAM
 description: Collaborative Ollama analyst using qwen2.5:7b with shared ISABEL context.
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-08-27T23:14:38Z }
+status: draft
+generated: { by: devin/cli, at: 2026-10-23T11:00:00Z }
 verified: { by: human:jun, at: 2026-08-27T23:14:38Z }
 stale_after: 2027-02-23T23:14:38Z
 tags: [plm, active, ollama, collaborative, analyst]
@@ -45,6 +45,15 @@ The exported `ADAM_IDENTITY` block in `magi-core/lib/constitution.js` is an
 independent-reasoner identity and is **not** what this Ollama job uses. That
 block is applied to [QWEN](qwen.md). The Ollama provider path is shared with
 legacy [TIARA](tiara.md).
+
+**Outage (2026-10-05 → 2026-10-23, remediation pending)**: ADAM shares the
+same authenticated Ollama ingress path as [BOREAS](boreas.md) and likewise
+produced no LLM decisions in this window — every call failed client-side
+because streamed responses were left unterminated (server-side inference
+completed normally; failures are journaled as `CALL_FAILED` thoughts).
+Root cause identified 2026-10-23, fixes proposed in magi-moomoo +
+magi-core; detail is in the private record (dogmaai/magi-core#665).
+Deployment remains Jun's.
 
 # Citations
 
