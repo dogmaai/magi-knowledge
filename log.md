@@ -30,6 +30,11 @@
   docs that violate the new rule (credential paths, listen ports,
   hostnames) is recorded in a private `magi-core` issue; the findings
   are intentionally not reproduced in this repository.
+* **Host (TIALA, Jun 2026-10-23 — verified on host)**: `local.ttyd` is
+  now bound to loopback only and published tailnet-only via an
+  intentional `tailscale serve` entry (no LAN exposure); its basic-auth
+  credential rotation + Secret Manager registration remain pending.
+  Recorded in [tiala-host](system/services/tiala-host.md).
 
 ## 2026-10-22 (TIALA host cleanup — launchd inventory, netdata, Drive dedupe, gcloud correction)
 * **Amendment**: new [tiala-host](system/services/tiala-host.md) —
