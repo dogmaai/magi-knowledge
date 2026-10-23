@@ -1,14 +1,15 @@
 # Bundle Update Log
 
 ## 2026-10-23 (Ollama units outage — root cause identified, remediation pending)
-* **Amendment**: [boreas](system/plm-units/boreas.md) — recorded that
+* **Amendment**: [boreas](system/plm-units/boreas.md) and
+  [adam](system/plm-units/adam.md) — recorded that
   BOREAS and ADAM (shared Ollama provider path) produced no LLM decisions
   since 2026-10-05: every call failed client-side because a
   response-termination defect in the authenticated ingress path left
   streamed responses unterminated (server-side inference completed
   normally; failed calls journaled `CALL_FAILED`). Root cause identified
   2026-10-23, fixes proposed in magi-moomoo + magi-core PRs, deploy
-  pending; private detail in dogmaai/magi-core#665. Doc demoted
+  pending; private detail in dogmaai/magi-core#665. Both docs demoted
   `stable` → `draft` pending Jun's re-verification.
 
 ## 2026-10-23 (public-repo hygiene — visibility wording + public-writing rule draft)
