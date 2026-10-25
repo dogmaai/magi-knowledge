@@ -4,7 +4,7 @@ title: BOREAS
 description: Local Mistral-family Ollama unit (ministral-3:8b-ctx32k) on TIALA, entering live NORMAL trading per Jun's 2026-09-22 decision.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-23T07:30:00Z }
+generated: { by: devin/cli, at: 2026-10-25T07:30:00Z }
 verified: { by: human:jun, at: 2026-10-02T00:00:00Z }
 stale_after: 2027-03-22T00:10:00Z
 tags: [plm, ollama, self-hosted, mistral, ministral, proposed]
@@ -95,16 +95,20 @@ sessions before 2026-10-02 failed inside the LLM call path (Ollama 0.33.1
 tool-call 500s on 14b, then 524 proxy timeouts), so `sessions` rows exist
 without matching `thoughts`/`trades` for that window.
 
-**Outage (2026-10-05 → 2026-10-23, remediation pending)**: since
-2026-10-05 every Ollama call through the authenticated ingress path has
+**Outage (2026-10-05 → 2026-10-23, resolved)**: from 2026-10-05 to
+2026-10-23 every Ollama call through the authenticated ingress path
 failed client-side — a response-termination defect on that path left
 streamed responses unterminated, so the connection was killed ~two
 minutes after the model finished generating (server-side inference
 completed normally throughout). BOREAS and [ADAM](adam.md) (same provider
 path) produced no LLM decisions in the window; failed calls are journaled
-as `CALL_FAILED` thoughts. Root cause identified 2026-10-23 and fixes
-proposed in magi-moomoo + magi-core; detail is in the private record
-(dogmaai/magi-core#665). Deployment remains Jun's.
+as `CALL_FAILED` thoughts. The ingress-path fix was deployed on
+2026-10-23 and verified against production traffic on the same day:
+seven of eight real Ollama calls completed end-to-end and normal
+`WARN_ONLY`/`HOLD` decisions resumed; the single failure was traced to a
+short-lived tunnel transport flap, unrelated to the defect. Detail is in
+the private record (dogmaai/magi-core#665). This document remains
+`draft` pending Jun's re-verification.
 
 # Citations
 
