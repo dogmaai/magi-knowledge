@@ -3,10 +3,12 @@
 ## 2026-10-23 (llm_metrics status vocabulary + launchd PATH correction)
 * **Correction**: [llm-metrics](system/echidna-tables/llm-metrics.md)
   demoted `stable` → `draft` — the `status` column was documented as
-  `ok` / error class but `magi-core/src/llm.js` writes
-  `success` / `failed` / `truncated` (plus historical NULLs); a
-  spec–implementation drift found while building the llm_metrics-based
-  health-monitor alerting (magi-core#666). Pending Jun re-verification.
+  `ok` / error class but `magi-core/src/llm.js` currently writes only
+  `success` / `failed` (the nine historical `truncated` rows came from
+  the since-deleted Sakana/FUGU analyzer, 2026-08-03→09-15; plus
+  historical NULLs); a spec–implementation drift found while building
+  the llm_metrics-based health-monitor alerting (magi-core#666).
+  Pending Jun re-verification.
 * **Correction**: [secrets-inventory](system/services/secrets-inventory.md)
   — the `com.magi.bridge` plist *does* set `PATH` including
   `/opt/homebrew/bin`, so the bridge's `gcloud` Secret Manager fetches
