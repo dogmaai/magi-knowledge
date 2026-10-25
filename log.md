@@ -1,5 +1,13 @@
 # Bundle Update Log
 
+## 2026-10-25 (Pyroscope ingest verified rejected — 401)
+* **Amendment**: [secrets-inventory](system/services/secrets-inventory.md)
+  `GRAFANA_OTLP_TOKEN` row — the Pyroscope fallback note now records that
+  profile pushes are **verified rejected**: `POST /ingest` on the
+  Profiles endpoint returns 401 with this token (its Access Policy lacks
+  `profiles:write`). No profiles have ever landed; remediation options
+  are with Jun.
+
 ## 2026-10-25 (GRAFANA_OTLP_TOKEN — Pyroscope fallback recorded)
 * **Amendment**: [secrets-inventory](system/services/secrets-inventory.md)
   `GRAFANA_OTLP_TOKEN` row — recorded that the bridge reuses this token
