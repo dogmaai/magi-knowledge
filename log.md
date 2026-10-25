@@ -1,5 +1,14 @@
 # Bundle Update Log
 
+## 2026-10-25 (GRAFANA_OTLP_TOKEN — Pyroscope fallback recorded)
+* **Amendment**: [secrets-inventory](system/services/secrets-inventory.md)
+  `GRAFANA_OTLP_TOKEN` row — recorded that the bridge reuses this token
+  as the Pyroscope basic-auth password fallback
+  (`PYROSCOPE_BASIC_AUTH_PASSWORD` unset → `GRAFANA_OTLP_TOKEN`; the three
+  dead `PYROSCOPE_*` GSM reads were removed in magi-moomoo#94). Noted
+  the `profiles:write` scope requirement for Profiles ingest as an open
+  verification item and the rotation coupling between the two consumers.
+
 ## 2026-10-25 (Ollama units outage — resolved, docs stay draft)
 * **Amendment**: [boreas](system/plm-units/boreas.md) and
   [adam](system/plm-units/adam.md) outage notes updated from
