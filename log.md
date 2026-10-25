@@ -1,5 +1,18 @@
 # Bundle Update Log
 
+## 2026-10-25 (Ollama units outage — resolved, docs stay draft)
+* **Amendment**: [boreas](system/plm-units/boreas.md) and
+  [adam](system/plm-units/adam.md) outage notes updated from
+  "remediation pending" to resolved: the ingress-path fix deployed on
+  2026-10-23 was verified against same-day production traffic — seven of
+  eight real Ollama calls completed end-to-end and normal
+  `WARN_ONLY`/`HOLD` decisions resumed; the single failure traced to a
+  short-lived tunnel transport flap, unrelated to the defect. ADAM's
+  scheduled runs that day exited 0 but skipped LLM calls via the normal
+  probabilistic throttle, so ADAM-side call evidence is pending its next
+  unthrottled run. Both docs remain `draft` until Jun re-verifies.
+  Private evidence: dogmaai/magi-core#665.
+
 ## 2026-10-23 (llm_metrics status vocabulary + launchd PATH correction)
 * **Correction**: [llm-metrics](system/echidna-tables/llm-metrics.md)
   demoted `stable` → `draft` — the `status` column was documented as
