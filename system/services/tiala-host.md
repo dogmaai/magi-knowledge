@@ -143,7 +143,7 @@ config): `tiala-alloy-metrics-stale` (no `job="tiala-host"` samples for
 in the Grafana `magi` folder by magi-core `grafana/provision-tiala-alerts.mjs`;
 Telegram ALERT delivery for the same two conditions comes from the
 `magi-tiala-host-monitor` Cloud Run job (15-min schedule, state in
-`magi_core.tiala_host_checks`) — Grafana routing itself only has the
+[tiala_host_checks](/system/echidna-tables/tiala-host-checks.md)) — Grafana routing itself only has the
 GCP-Alerts-email receiver today (magi-core#669).
 
 # Open items (NEEDS_JUN_DECISION)
