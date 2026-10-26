@@ -20,6 +20,20 @@
 * Trigger: moomoo↔Grafana sync audit (magi-core#668) — values matched
   the broker; connectivity/freshness display and P&L semantics did not.
 
+
+## 2026-10-26 (Grafana tokens for TIALA Alloy + bridge Pyroscope registered)
+* **Amendment**: [secrets-inventory](system/services/secrets-inventory.md) —
+  registered `GRAFANA_ALLOY_REMOTE_WRITE_TOKEN` (Access Policy
+  `tiala-alloy-remote-write`, `metrics:write` only) and
+  `PYROSCOPE_BASIC_AUTH_PASSWORD` (Access Policy `tiala-bridge-pyroscope-2`,
+  `profiles:write` only) in `screen-share-459802` Secret Manager; both
+  granted per-secret `secretAccessor` to TIALA's `aka-agent@` SA.
+  Resolved the `GRAFANA_OTLP_TOKEN` open item — it carries
+  `profiles:write` (probe: `POST profiles-prod-019.grafana.net/ingest`
+  reaches body validation). Recorded the Prom remote-write gotcha:
+  `basic_auth.username` must be the Hosted Metrics instance ID, not
+  `1557976`.
+
 ## 2026-10-25 (GRAFANA_OTLP_TOKEN — Pyroscope fallback recorded)
 * **Amendment**: [secrets-inventory](system/services/secrets-inventory.md)
   `GRAFANA_OTLP_TOKEN` row — recorded that the bridge reuses this token
