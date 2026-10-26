@@ -35,6 +35,14 @@
   see the inventory's open item. Recorded the Prom remote-write gotcha:
   `basic_auth.username` must be the Hosted Metrics instance ID, not
   `1557976`.
+* **Incident note (secrets-inventory rows)**: 2026-10-26 token rotation —
+  all Grafana Cloud stack tokens were deleted portal-side; both TIALA
+  ingest tokens were re-issued under recreated access policies and
+  re-registered in `screen-share-459802` Secret Manager as new versions
+  (values never transited chat). First Alloy re-issue was minted under
+  the wrong policy (`401 invalid scope requested`); corrected and
+  remote_write-verified before the host-local env swap. All superseded
+  GSM versions disabled; all superseded tokens deleted portal-side.
 * **Amendment**: [tiala-host](system/services/tiala-host.md) — `com.magi.alloy`
   recorded as running: `prometheus.exporter.unix` (per magi-core#667, not a
   netdata scrape; node_* series live-verified in `grafanacloud-aka-prom`),
