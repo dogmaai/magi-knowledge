@@ -6,7 +6,7 @@ resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi
 lilith_safe: false
 status: draft
 generated: { by: devin/cloud, at: 2026-10-26T11:40:00Z }
-stale_after: 2027-01-22T09:30:00Z
+stale_after: 2027-01-26T11:40:00Z
 tags: [echidna, bigquery, monitoring, alerting, tiala]
 dataset: magi_core
 table_type: BASE TABLE
@@ -15,7 +15,11 @@ table_type: BASE TABLE
 `tiala_host_checks` is the liveness log written by `tiala-host-monitor.js`
 (magi-core, `ENTRY_POINT=tiala-host-monitor.js`, Cloud Scheduler
 `magi-tiala-host-monitor-scheduler`) — the TIALA counterpart of
-[bridge_health_checks](bridge-health-checks.md) (magi-core#667). It exists
+[bridge_health_checks](bridge-health-checks.md) (magi-core#667).
+**Status: proposed — pending Jun approval** (magi-core#669; the job and
+scheduler extend the original #667 decision — disk-85% Telegram alert —
+into a new job + scheduler + this table; the DDL was applied by Jun
+2026-10-26 ahead of that approval). It exists
 because the `com.magi.alloy` LaunchAgent exits 0 — no restart loop — when its
 config is incomplete, so the agent can silently stop shipping metrics; the
 only reliable signal is "did `job="tiala-host"` samples reach
@@ -48,6 +52,9 @@ latest `alerted='down'` row to decide whether to send Telegram (shared
 * `down` persists: re-alert every `DOWN_REALERT_HOURS` (default 6h), deduped
   via the latest `alerted='down'` row.
 * `down → ok`: recovery `ALERT` with outage duration.
+* `unknown` leg persists: alert after `UNKNOWN_ALERT_MINUTES` (default 180)
+  then on the `DOWN_REALERT_HOURS` cadence (`alerted='unknown'`) — a
+  permanently failing Grafana query path must not go silent.
 
 # Schema
 
@@ -60,7 +67,7 @@ latest `alerted='down'` row to decide whether to send Telegram (shared
 | stale_leg | STRING | `ok` / `down` / `unknown`. |
 | disk_leg | STRING | `ok` / `down` / `unknown`. |
 | query_error | STRING | Grafana/PromQL query failure detail, if any. |
-| alerted | STRING | `down` / `recovered` when an alert was sent for this check, else NULL. |
+| alerted | STRING | `down` / `recovered` / `unknown` when an alert was sent for this check, else NULL. |
 
 # Notes
 

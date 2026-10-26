@@ -129,13 +129,18 @@ remote-writes to Grafana Cloud Hosted Metrics (stack `aka`) — the
 `alloy/magi-alloy.newsyslog.conf`); installed with the official tap
 (`brew tap grafana/grafana` -> `brew install grafana/grafana/alloy` ->
 `brew pin alloy`); the token and Hosted Metrics instance ID live only in
-`~/.config/magi-moomoo/alloy.env` (mode 600), pulled into the brew
-wrapper via an `/opt/homebrew/etc/alloy/config.env` shim. The
-remote-write basic_auth username is the Hosted Metrics instance ID, not
-the stack ID. Logs: `~/Library/Logs/magi-alloy.log`, rotated by
-newsyslog (the SIGTERM is caught by KeepAlive so the restarted process
-reopens the fresh file — same reason netdata-style rename rotation does
-not apply, see #93 policy).
+a host-local credential env file (mode 600; path in the private record),
+pulled into the brew wrapper via a shim env file. The remote-write
+basic_auth username is the Hosted Metrics instance ID, not the stack ID.
+Logs go to the host's user log dir (path in the private record) and are
+rotated by newsyslog: after rotation newsyslog SIGTERMs the agent and
+KeepAlive restarts it so the new process reopens the fresh file — plain
+rename rotation would leave the running process writing to the moved
+inode (same gap as #93).
+
+Provenance: the running agent was installed from the magi-moomoo#97
+branch layout before that PR merged (2026-10-26); re-verify parity with
+merged `main` (or re-run the installer) — pending Jun's timing.
 
 Alerts for the agent itself (it exits 0 — no restart loop — on missing
 config): `tiala-alloy-metrics-stale` (no `job="tiala-host"` samples for
