@@ -1,5 +1,25 @@
 # Bundle Update Log
 
+## 2026-10-26 (echidna catalog — portfolio_snapshots doc, freshness proposal, positions design)
+* **New doc (draft)**: [portfolio-snapshots](system/echidna-tables/portfolio-snapshots.md)
+  — live schema catalogued (6 columns, no partitioning); documents the
+  `daily_pnl`/`total_pnl_percent` naming drift (per-session deltas, not
+  daily/total aggregates). Column rename/writer change deferred — a Jun
+  decision, not silently resolved. Removed from the index's
+  uncatalogued-table backlog.
+* **New doc (draft proposal)**: [data-freshness-expectations](system/echidna-tables/data-freshness-expectations.md)
+  — staleness thresholds derived from observed write cadence (probe
+  >20/>60 min amber/red; session-driven >25/>72 h; market snapshots
+  >12/>72 h). Referenced as the single source for the Grafana threshold
+  values in magi-core#668.
+* **New doc (draft proposal)**: [broker-position-snapshots](system/echidna-tables/broker-position-snapshots.md)
+  — design for a new append-only per-symbol positions table written by
+  the existing 15-min bridge-monitor probe (new table, not columns on
+  `bridge_health_checks`). Table creation and implementation are Jun
+  operations — not performed.
+* Trigger: moomoo↔Grafana sync audit (magi-core#668) — values matched
+  the broker; connectivity/freshness display and P&L semantics did not.
+
 ## 2026-10-25 (GRAFANA_OTLP_TOKEN — Pyroscope fallback recorded)
 * **Amendment**: [secrets-inventory](system/services/secrets-inventory.md)
   `GRAFANA_OTLP_TOKEN` row — recorded that the bridge reuses this token
