@@ -28,11 +28,21 @@
   `PYROSCOPE_BASIC_AUTH_PASSWORD` (Access Policy `tiala-bridge-pyroscope-2`,
   `profiles:write` only) in `screen-share-459802` Secret Manager; both
   granted per-secret `secretAccessor` to TIALA's `aka-agent@` SA.
-  Resolved the `GRAFANA_OTLP_TOKEN` open item — it carries
-  `profiles:write` (probe: `POST profiles-prod-019.grafana.net/ingest`
-  reaches body validation). Recorded the Prom remote-write gotcha:
+  Recorded `GRAFANA_OTLP_TOKEN`'s `profiles:write` scope as a drift from
+  its documented metrics+traces scope (probe: `POST
+  profiles-prod-019.grafana.net/ingest` reaches body validation), with an
+  open item to strip it after the bridge's OTLP fallback is retired —
+  see the inventory's open item. Recorded the Prom remote-write gotcha:
   `basic_auth.username` must be the Hosted Metrics instance ID, not
   `1557976`.
+* **Amendment**: [tiala-host](system/services/tiala-host.md) — `com.magi.alloy`
+  recorded as running: `prometheus.exporter.unix` (per magi-core#667, not a
+  netdata scrape; node_* series live-verified in `grafanacloud-aka-prom`),
+  installed via the official `grafana/grafana` brew tap + `brew pin`, logs
+  to `~/Library/Logs` with newsyslog rotation. Companion alerts:
+  `tiala-alloy-metrics-stale` (15m absent) and `tiala-disk-usage-high`
+  (>=85%) provisioned in Grafana; Telegram ALERT delivery via the
+  `magi-tiala-host-monitor` job (magi-core#669).
 
 ## 2026-10-25 (GRAFANA_OTLP_TOKEN — Pyroscope fallback recorded)
 * **Amendment**: [secrets-inventory](system/services/secrets-inventory.md)

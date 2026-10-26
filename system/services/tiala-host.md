@@ -59,7 +59,7 @@ program paths are host-local and intentionally not recorded here.
 | `local.ttyd` | RunAtLoad | The web terminal; basic-auth credential embedded in the plist (not in [secrets-inventory](secrets-inventory.md)) | [aka-memory](aka-memory.md) |
 | `ai.devin.worker` | RunAtLoad | Devin worker (`--outpost=my-outpost`); log on host | — |
 | `homebrew.mxcl.netdata` | RunAtLoad | Host metrics — see Observability | — |
-| `com.magi.alloy` | RunAtLoad + KeepAlive on crash | Grafana Alloy — scrapes the local netdata Prometheus endpoint and remote-writes to Hosted Metrics (stack `aka`); token + endpoint user + scrape target live in a host-local env file, never in the repo. Templates in magi-moomoo `scripts/` (`alloy/config.alloy`, `start-alloy.sh`, `com.magi.alloy.plist`, `install-alloy-launchagent.sh`). Registered in this inventory 2026-10-26 — **pending first install on the host** | [secrets-inventory](secrets-inventory.md) |
+| `com.magi.alloy` | RunAtLoad + KeepAlive on crash | Grafana Alloy — `prometheus.exporter.unix` host metrics, remote-written to Hosted Metrics (stack `aka`); token + endpoint user live in a host-local env file, never in the repo. Templates in magi-moomoo `scripts/` (`alloy/config.alloy`, `start-alloy.sh`, `com.magi.alloy.plist`, `install-alloy-launchagent.sh`, `alloy/magi-alloy.newsyslog.conf`). Installed via `brew tap grafana/grafana` + `brew pin alloy`; running since 2026-10-26 — `job="tiala-host"` series confirmed live in `grafanacloud-aka-prom` | [secrets-inventory](secrets-inventory.md) |
 
 Ollama's historical consumer on this box was TIARA, which is **legacy**;
 current consumers are ADAM/BOREAS via the authenticated
@@ -112,17 +112,39 @@ logs at 102,400 KB × 3 generations, bzip2 (`J` flag);
 
 # Observability — Grafana Alloy (2026-10-26, draft)
 
-`homebrew.mxcl.netdata` collects host metrics locally. A `com.magi.alloy`
-LaunchAgent is being added to scrape netdata's Prometheus endpoint and
-remote-write to Grafana Cloud Hosted Metrics (stack `aka`) — this is the
-"Alloy" leg whose token (`GRAFANA_ALLOY_REMOTE_WRITE_TOKEN`, `metrics:write`
-only) is registered in [secrets-inventory](secrets-inventory.md). Layout
-(Jun-approved 2026-10-26): templates in magi-moomoo `scripts/`
-(`alloy/config.alloy`, `com.magi.alloy.plist`,
-`install-alloy-launchagent.sh`, `start-alloy.sh`); the token, Hosted
-Metrics instance ID and scrape address live only in a host-local env
-file sourced by the start script. The remote-write basic_auth username
-is the Hosted Metrics instance ID, not the stack ID.
+`prometheus.exporter.unix` (the Alloy-embedded node exporter) collects
+host metrics — per magi-core#667, NOT a netdata scrape (netdata emits no
+node_* series and is slated for removal in the same issue). Live check
+2026-10-26: `node_filesystem_*`, `node_cpu_seconds_total`, `node_memory_*`,
+`node_load*`, `node_network_*` and `node_disk_*` all reach
+`grafanacloud-aka-prom` as `job="tiala-host"` — darwin collector
+coverage is partial but sufficient (filesystem for the disk alert,
+cpu/memory/load/network present). A `com.magi.alloy` LaunchAgent
+remote-writes to Grafana Cloud Hosted Metrics (stack `aka`) — the
+"Alloy" leg whose token (`GRAFANA_ALLOY_REMOTE_WRITE_TOKEN`,
+`metrics:write` only) is registered in
+[secrets-inventory](secrets-inventory.md). Layout (Jun-approved
+2026-10-26): templates in magi-moomoo `scripts/` (`alloy/config.alloy`,
+`com.magi.alloy.plist`, `install-alloy-launchagent.sh`, `start-alloy.sh`,
+`alloy/magi-alloy.newsyslog.conf`); installed with the official tap
+(`brew tap grafana/grafana` -> `brew install grafana/grafana/alloy` ->
+`brew pin alloy`); the token and Hosted Metrics instance ID live only in
+`~/.config/magi-moomoo/alloy.env` (mode 600), pulled into the brew
+wrapper via an `/opt/homebrew/etc/alloy/config.env` shim. The
+remote-write basic_auth username is the Hosted Metrics instance ID, not
+the stack ID. Logs: `~/Library/Logs/magi-alloy.log`, rotated by
+newsyslog (the SIGTERM is caught by KeepAlive so the restarted process
+reopens the fresh file — same reason netdata-style rename rotation does
+not apply, see #93 policy).
+
+Alerts for the agent itself (it exits 0 — no restart loop — on missing
+config): `tiala-alloy-metrics-stale` (no `job="tiala-host"` samples for
+15m) and `tiala-disk-usage-high` (root filesystem >=85%) are provisioned
+in the Grafana `magi` folder by magi-core `grafana/provision-tiala-alerts.mjs`;
+Telegram ALERT delivery for the same two conditions comes from the
+`magi-tiala-host-monitor` Cloud Run job (15-min schedule, state in
+`magi_core.tiala_host_checks`) — Grafana routing itself only has the
+GCP-Alerts-email receiver today (magi-core#669).
 
 # Open items (NEEDS_JUN_DECISION)
 
