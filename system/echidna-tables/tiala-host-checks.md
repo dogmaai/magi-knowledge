@@ -23,7 +23,9 @@ into a new job + scheduler + this table; the DDL was applied by Jun
 because the `com.magi.alloy` LaunchAgent exits 0 — no restart loop — when its
 config is incomplete, so the agent can silently stop shipping metrics; the
 only reliable signal is "did `job="tiala-host"` samples reach
-`grafanacloud-aka-prom`".
+`grafanacloud-aka-prom`". (Datasource display name `grafanacloud-aka-prom`;
+the job and the provisioned rules address it by UID `grafanacloud-prom`
+via `GRAFANA_PROM_DS_UID`.)
 
 One row per scheduled run (every 15 min). The same table doubles as the
 monitor's dedupe state: before writing, the job reads the latest row and the
