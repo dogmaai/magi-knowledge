@@ -1,12 +1,12 @@
 ---
 type: Service
 title: TIALA host (Mac mini) — launchd job inventory
-description: The always-on TIALA Mac mini's launchd job inventory after the 2026-10-22 cleanup — active bridge/Ollama/OpenClaw/observability agents, OpenClaw cron jobs, the jobs disabled that day, the netdata log fix, and open security/maintenance items.
+description: The always-on TIALA Mac mini's launchd job inventory after the 2026-10-22 cleanup — active bridge/Ollama/OpenClaw/observability agents, OpenClaw cron jobs, the jobs disabled that day, the netdata log fix, the 2026-10-26 Grafana Alloy host-metrics migration, and open security/maintenance items.
 lilith_safe: false
 status: draft
 generated: { by: devin/cli, at: 2026-10-22T09:30:00Z }
 stale_after: 2027-01-22T09:30:00Z
-tags: [service, infra, tiala, launchd, ollama, openclaw, netdata, tailscale]
+tags: [service, infra, tiala, launchd, ollama, openclaw, netdata, grafana-alloy, tailscale]
 repo: infra (TIALA Mac mini M4)
 ---
 
@@ -58,7 +58,9 @@ program paths are host-local and intentionally not recorded here.
 | `com.openclaw.memory-sync` | daily 22:30 JST | AKA memory backup → SSD + Drive. **Known problem**: launchd rsync to the external SSD fails `Operation not permitted` (macOS TCC); ends `status=1` — see [aka-memory](aka-memory.md) | [aka-memory](aka-memory.md) |
 | `local.ttyd` | RunAtLoad | The web terminal; basic-auth credential embedded in the plist (not in [secrets-inventory](secrets-inventory.md)) | [aka-memory](aka-memory.md) |
 | `ai.devin.worker` | RunAtLoad | Devin worker (`--outpost=my-outpost`); log on host | — |
-| `homebrew.mxcl.netdata` | RunAtLoad | Host metrics — see Observability | — |
+| `com.magi.alloy` | RunAtLoad + KeepAlive | Grafana Alloy host metrics — unix exporter scraped every 60 s and remote-written to the Grafana Cloud Prometheus datasource (`grafanacloud-aka-prom`) with host labels; credentials injected via a host-local env file (same pattern as `MOOMOO_BRIDGE_AUTH_TOKEN`) | this doc §Observability, [secrets-inventory](secrets-inventory.md) |
+| `com.magi.alloy-logrotate` | daily | Rotates the Alloy log when it exceeds a size cap; the daemon is restarted on rotation so the reopened log path is fresh (avoids the netdata fd-follow flaw) | — |
+| `homebrew.mxcl.netdata` | RunAtLoad | Host metrics — **loaded but not running; scheduled for removal** after the Alloy observation window (see Observability) | — |
 
 Ollama's historical consumer on this box was TIARA, which is **legacy**;
 current consumers are ADAM/BOREAS via the authenticated
@@ -108,6 +110,26 @@ netdata serving again (HTTP 200), `collector.log` ~22 KB and quiet.
 Rotation added via `newsyslog.d` (passwordless sudo): the four netdata
 logs at 102,400 KB × 3 generations, bzip2 (`J` flag);
 `newsyslog -nv -f` parses clean.
+
+# Observability — Grafana Alloy (2026-10-26)
+
+Host metrics moved to **Grafana Alloy** (`com.magi.alloy`): the
+unix-exporter component is scraped every 60 s and remote-written to the
+`grafanacloud-aka-prom` datasource with `instance/host/job` labels. The
+remote-write credential is a dedicated `metrics:write`-scoped secret
+(`GRAFANA_ALLOY_REMOTE_WRITE_TOKEN`, see
+[secrets-inventory](secrets-inventory.md)) injected via a host-local env
+file — the same pattern the bridge uses for `MOOMOO_BRIDGE_AUTH_TOKEN`.
+A daily companion job (`com.magi.alloy-logrotate`) rotates the log file
+by restarting the daemon so the reopened path is fresh — deliberately
+avoiding the netdata rotation's fd-follow flaw. Verified live:
+`node_*` series for the host are queryable in Grafana, a "TIALA Host
+(node exporter)" dashboard exists in the magi folder, and a disk-usage
+alert rule (>85%, `team=magi` labels — same default notification routing
+as the other magi rules) was fire-tested end to end.
+
+`homebrew.mxcl.netdata` remains installed (loaded, not running) pending
+removal after a few days of Alloy observation — steps in magi-core#667.
 
 # Open items (NEEDS_JUN_DECISION)
 

@@ -1,5 +1,20 @@
 # Bundle Update Log
 
+## 2026-10-26 (TIALA host monitoring — netdata → Grafana Alloy)
+* **New doc section**: [tiala-host](system/services/tiala-host.md)
+  Observability — Grafana Alloy now ships host metrics (`node_*` series,
+  host labels) to the Grafana Cloud Prometheus datasource via a dedicated
+  `metrics:write` credential; companion daily job rotates the log by
+  restarting the daemon (avoids the netdata fd-follow flaw). `netdata`
+  remains installed-but-stopped pending removal after an observation
+  window (magi-core#667). Host dashboards and a disk-usage alert rule
+  (>85%, routed like the other magi alert rules) were verified end to end.
+* **Amendment**: [secrets-inventory](system/services/secrets-inventory.md)
+  added `GRAFANA_ALLOY_REMOTE_WRITE_TOKEN`; `aka-agent@` per-secret
+  bindings updated to four verified (a fifth —
+  `PYROSCOPE_BASIC_AUTH_PASSWORD`, created 2026-10-26 — is pending its
+  IAM binding; noted in the row).
+
 ## 2026-10-25 (GRAFANA_OTLP_TOKEN — Pyroscope fallback recorded)
 * **Amendment**: [secrets-inventory](system/services/secrets-inventory.md)
   `GRAFANA_OTLP_TOKEN` row — recorded that the bridge reuses this token
