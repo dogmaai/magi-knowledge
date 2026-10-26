@@ -43,6 +43,13 @@
   `tiala-alloy-metrics-stale` (15m absent) and `tiala-disk-usage-high`
   (>=85%) provisioned in Grafana; Telegram ALERT delivery via the
   `magi-tiala-host-monitor` job (magi-core#669).
+* **New**: [tiala-host-checks](system/echidna-tables/tiala-host-checks.md) —
+  concept doc for `magi_core.tiala_host_checks` (DDL in magi-core#669,
+  table not yet created). [magi-core](system/services/magi-core.md) job
+  table gained the `magi-tiala-host-monitor` row;
+  [data-freshness-expectations](system/echidna-tables/data-freshness-expectations.md)
+  gained a TIALA host-metrics row (same 20/60-min thresholds as
+  `bridge_health_checks`).
 
 ## 2026-10-25 (GRAFANA_OTLP_TOKEN — Pyroscope fallback recorded)
 * **Amendment**: [secrets-inventory](system/services/secrets-inventory.md)

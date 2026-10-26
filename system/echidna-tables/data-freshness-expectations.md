@@ -23,6 +23,7 @@ one — this is the display contract the dashboards follow.
 | Signal | Source | Write cadence | amber | red |
 |---|---|---|---|---|
 | Broker-path probe age | `bridge_health_checks` | every 15 min | > 20 min | > 60 min |
+| TIALA host-metrics age | `tiala_host_checks` / `node_*` on `job="tiala-host"` | every 15 min | > 20 min | > 60 min |
 | Session-driven table age | `portfolio_snapshots`, `sessions` | per session end, US market hours only | > 25 h | > 72 h |
 | Market-data snapshot age | `moomoo_snapshots` | hourly during market hours | > 12 h | > 72 h |
 

@@ -153,6 +153,7 @@ Source: `magi-core/.github/workflows/deploy.yml` @ baa5388. Scheduler and Job na
 | `magi-isabel-l4` | `magi-isabel-l4-scheduler` | `0 8 * * 1-5` (America/New_York) | ISABEL L4 pattern analysis |
 | `magi-llm-health-monitor` | `magi-llm-health-monitor-scheduler` | `*/5 13-22 * * 1-5` (UTC) | Provider health checks |
 | `magi-bridge-monitor` | `magi-bridge-monitor-scheduler` | `*/15 * * * *` (UTC) | Broker-path liveness probes + Telegram down/recovery alerts ([bridge_health_checks](/system/echidna-tables/bridge-health-checks.md)) — merged 2026-10-19 (magi-core#624 `feat/bridge-health-monitor`); deploy.yml on main now carries job + scheduler |
+| `magi-tiala-host-monitor` | `magi-tiala-host-monitor-scheduler` | `*/15 * * * *` (UTC) | TIALA host-metrics liveness (Alloy `job="tiala-host"` freshness + root disk ≥85%) + Telegram down/recovery alerts ([tiala_host_checks](/system/echidna-tables/tiala-host-checks.md)) — magi-core#669 (draft; table DDL pending Jun's apply) |
 | `magi-off-hours-chat` | `magi-off-hours-chat-scheduler` | `0 19 * * 1-5` (America/New_York) | Off-hours unit round-table |
 | `magi-off-hours-chat` | `magi-off-hours-chat-weekend-scheduler` | `0 12 * * 6,0` (America/New_York) | Off-hours weekend unit round-table |
 | `magi-surge-detector` | `magi-surge-detector-scheduler` | `*/5 9-15 * * 1-5` (America/New_York) | Intraday surge/crash watcher |
