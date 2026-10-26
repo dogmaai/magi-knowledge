@@ -4,7 +4,7 @@ title: TIALA host (Mac mini) — launchd job inventory
 description: The always-on TIALA Mac mini's launchd job inventory after the 2026-10-22 cleanup — active bridge/Ollama/OpenClaw/observability agents, OpenClaw cron jobs, the jobs disabled that day, the netdata log fix, and open security/maintenance items.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-22T09:30:00Z }
+generated: { by: devin/cloud, at: 2026-10-26T10:30:00Z }
 stale_after: 2027-01-22T09:30:00Z
 tags: [service, infra, tiala, launchd, ollama, openclaw, netdata, tailscale]
 repo: infra (TIALA Mac mini M4)
@@ -59,6 +59,7 @@ program paths are host-local and intentionally not recorded here.
 | `local.ttyd` | RunAtLoad | The web terminal; basic-auth credential embedded in the plist (not in [secrets-inventory](secrets-inventory.md)) | [aka-memory](aka-memory.md) |
 | `ai.devin.worker` | RunAtLoad | Devin worker (`--outpost=my-outpost`); log on host | — |
 | `homebrew.mxcl.netdata` | RunAtLoad | Host metrics — see Observability | — |
+| `com.magi.alloy` | RunAtLoad + KeepAlive on crash | Grafana Alloy — scrapes the local netdata Prometheus endpoint and remote-writes to Hosted Metrics (stack `aka`); token + endpoint user + scrape target live in a host-local env file, never in the repo. Templates in magi-moomoo `scripts/` (`alloy/config.alloy`, `start-alloy.sh`, `com.magi.alloy.plist`, `install-alloy-launchagent.sh`). Registered in this inventory 2026-10-26 — **pending first install on the host** | [secrets-inventory](secrets-inventory.md) |
 
 Ollama's historical consumer on this box was TIARA, which is **legacy**;
 current consumers are ADAM/BOREAS via the authenticated
@@ -109,6 +110,20 @@ Rotation added via `newsyslog.d` (passwordless sudo): the four netdata
 logs at 102,400 KB × 3 generations, bzip2 (`J` flag);
 `newsyslog -nv -f` parses clean.
 
+# Observability — Grafana Alloy (2026-10-26, draft)
+
+`homebrew.mxcl.netdata` collects host metrics locally. A `com.magi.alloy`
+LaunchAgent is being added to scrape netdata's Prometheus endpoint and
+remote-write to Grafana Cloud Hosted Metrics (stack `aka`) — this is the
+"Alloy" leg whose token (`GRAFANA_ALLOY_REMOTE_WRITE_TOKEN`, `metrics:write`
+only) is registered in [secrets-inventory](secrets-inventory.md). Layout
+(Jun-approved 2026-10-26): templates in magi-moomoo `scripts/`
+(`alloy/config.alloy`, `com.magi.alloy.plist`,
+`install-alloy-launchagent.sh`, `start-alloy.sh`); the token, Hosted
+Metrics instance ID and scrape address live only in a host-local env
+file sourced by the start script. The remote-write basic_auth username
+is the Hosted Metrics instance ID, not the stack ID.
+
 # Open items (NEEDS_JUN_DECISION)
 
 * **Tailscale Funnel Ollama exposure — remediated 2026-10-23** by
@@ -120,6 +135,10 @@ logs at 102,400 KB × 3 generations, bzip2 (`J` flag);
   `Operation not permitted` under launchd while the same script succeeds
   under OpenClaw cron at 23:00. Fix needs a GUI Full Disk Access grant —
   Jun-only.
+* **TIALA infra split**: host-monitoring assets (Alloy, tunnels,
+  launchd templates) keep accumulating in magi-moomoo — a repo whose
+  scope is the broker bridge. Extracting a dedicated TIALA-infra
+  repository is deferred but recorded as a Jun decision.
 * **ttyd credential in plist**: `local.ttyd` carries a basic-auth
   `user:password` literal inside the LaunchAgent on TIALA; not in Secret
   Manager — a credential-location gap recorded in
