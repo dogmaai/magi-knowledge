@@ -20,6 +20,49 @@
 * Trigger: moomoo↔Grafana sync audit (magi-core#668) — values matched
   the broker; connectivity/freshness display and P&L semantics did not.
 
+
+## 2026-10-26 (Grafana tokens for TIALA Alloy + bridge Pyroscope registered)
+* **Amendment**: [secrets-inventory](system/services/secrets-inventory.md) —
+  registered `GRAFANA_ALLOY_REMOTE_WRITE_TOKEN` (Access Policy
+  `tiala-alloy-remote-write`, `metrics:write` only) and
+  `PYROSCOPE_BASIC_AUTH_PASSWORD` (Access Policy `tiala-bridge-pyroscope-2`,
+  `profiles:write` only) in `screen-share-459802` Secret Manager; both
+  granted per-secret `secretAccessor` to TIALA's `aka-agent@` SA.
+  Recorded `GRAFANA_OTLP_TOKEN`'s `profiles:write` scope as a drift from
+  its documented metrics+traces scope (probe: `POST
+  profiles-prod-019.grafana.net/ingest` reaches body validation), with an
+  open item to strip it after the bridge's OTLP fallback is retired —
+  see the inventory's open item. Recorded the Prom remote-write gotcha:
+  `basic_auth.username` must be the Hosted Metrics instance ID, not
+  `1557976`.
+* **Incident note (secrets-inventory rows)**: 2026-10-26 token rotation —
+  the tokens under the two TIALA access policies (Alloy remote-write and
+  bridge Pyroscope) were deleted portal-side; other stack credentials
+  (OTLP, SA token) were unaffected. Only `tiala-alloy-remote-write` was
+  recreated (same name, `metrics:write`) — the Pyroscope token was
+  re-issued under the existing `tiala-bridge-pyroscope-2`. The first
+  Alloy re-issue was minted under the wrong policy (`401 invalid scope
+  requested`); the corrected token was remote_write-verified before the
+  host-local env swap (~13:02 UTC, fresh samples ~13:05 UTC). The bridge
+  env + restart landed ~13:10 UTC. All superseded GSM versions disabled;
+  current versions' values never transited chat (the rotation trigger
+  was that the first Alloy token's value had).
+* **Amendment**: [tiala-host](system/services/tiala-host.md) — `com.magi.alloy`
+  recorded as running: `prometheus.exporter.unix` (per magi-core#667, not a
+  netdata scrape; node_* series live-verified in `grafanacloud-aka-prom`),
+  installed via the official `grafana/grafana` brew tap + `brew pin`, logs
+  to `~/Library/Logs` with newsyslog rotation. Companion alerts:
+  `tiala-alloy-metrics-stale` (15m absent) and `tiala-disk-usage-high`
+  (>=85%) provisioned in Grafana; Telegram ALERT delivery via the
+  `magi-tiala-host-monitor` job (magi-core#669).
+* **New**: [tiala-host-checks](system/echidna-tables/tiala-host-checks.md) —
+  concept doc for `magi_core.tiala_host_checks` (DDL in magi-core#669,
+  table not yet created). [magi-core](system/services/magi-core.md) job
+  table gained the `magi-tiala-host-monitor` row;
+  [data-freshness-expectations](system/echidna-tables/data-freshness-expectations.md)
+  gained a TIALA host-metrics row (same 20/60-min thresholds as
+  `bridge_health_checks`).
+
 ## 2026-10-25 (GRAFANA_OTLP_TOKEN — Pyroscope fallback recorded)
 * **Amendment**: [secrets-inventory](system/services/secrets-inventory.md)
   `GRAFANA_OTLP_TOKEN` row — recorded that the bridge reuses this token
