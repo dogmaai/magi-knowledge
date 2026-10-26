@@ -24,6 +24,7 @@ Two write-path conventions matter:
 * [trades-unverifiable](trades-unverifiable.md) - Rows that can never be broker-verified (Alpaca gone / >90d moomoo).
 * [thoughts](thoughts.md) - LLM reasoning log (one row per decision).
 * [sessions](sessions.md) - Per-session run summary (equity, PnL).
+* [portfolio-snapshots](portfolio-snapshots.md) - Per-session-end portfolio snapshot (equity/cash/positions value); `daily_pnl`/`total_pnl_percent` are session deltas (documented naming drift).
 * [views](views.md) - `trades_active` / `thoughts_active` VIEW definitions.
 
 # Intelligence & analysis
@@ -51,6 +52,8 @@ Two write-path conventions matter:
 * [system-control](system-control.md) - Global emergency kill-switch state read by L0 and the magi-moomoo order gate.
 * [order-intents](order-intents.md) - Append-only order-intent journal; broker-response-loss recovery via remark-embedded intent ids (R10).
 * [bridge-health-checks](bridge-health-checks.md) - Broker-path liveness log + alert dedupe state for the magi-bridge-monitor job (draft).
+* [data-freshness-expectations](data-freshness-expectations.md) - Proposed staleness thresholds for probe- and session-driven tables (draft proposal).
+* [broker-position-snapshots](broker-position-snapshots.md) - Proposed per-symbol positions snapshot written by the bridge-monitor probe (design only — table not created).
 * `l4_probation` (deprecated 2026-10-06) - designed Guard L4 blocked-combo state; never materialized in `magi_core` — L4 runs warn-only from the ISABEL stats cache.
 * [lilith-hard-gate-events](lilith-hard-gate-events.md) - LILITH VIX hard-gate rewrites (deprecated 2026-09-23; table dropped — sibling ledgers `lilith_confidence_gate_events` / `lilith_forecast_gate_events` dropped in the same action).
 * [constitution](constitution.md) - Versioned MAGI Constitution store.
@@ -112,7 +115,7 @@ per-table docs are pending work, not waived:
 `daphne_loss_analysis`, `isabel_briefings`, `isabel_daily_cache`,
 `isabel_requests`, `lilith_training_examples`, `llm_health_checks`,
 `manual_focus_symbols`, `model_training_log`, `pattern_discovery_kpi`,
-`portfolio_snapshots`, `stale_phrases`, `thought_analysis_findings`,
+`stale_phrases`, `thought_analysis_findings`,
 `thought_embeddings`, `thought_outcome_feedback`, `thoughts_for_ds`,
 `thoughts_shadow`, `thoughts_simulation`, `trades_for_ds`, `trades_shadow`,
 `trades_simulation`, plus views
