@@ -5,7 +5,7 @@ description: Primary trade log — entry/exit, PnL, and unit attribution for eve
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=trades&page=table
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-22T01:30:00Z }
+generated: { by: claude/cloud, at: 2026-10-27T03:30:00Z }
 verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }]
 stale_after: 2027-04-18T08:44:00Z
 tags: [echidna, bigquery, trades, core]
@@ -30,7 +30,7 @@ table_type: BASE TABLE
 | requested_qty | FLOAT64 | Quantity requested at submission (written on manual/`AUTO_CLOSE` rows). |
 | price | FLOAT64 | Fill price. NULL until the fill is confirmed. |
 | reason | STRING | Short rationale string (`STOP_LOSS`, `TAKE_PROFIT`, …). |
-| trade_mode | STRING | `NORMAL` / `VIX_ONLY` / `SHADOW` / `POSITION_GUARD`. |
+| trade_mode | STRING | `NORMAL` / `VIX_ONLY` / `SHADOW` / `POSITION_GUARD`. `RECON_BASELINE` marks the synthetic seed rows (`unit_name='RECON_BASELINE'`, no `order_id`/`price`) inserted on 2026-10-03/05 by the since-removed `scripts/quarantine-ghost-ledger.mjs` to reset a recon MISMATCH to broker truth. |
 | llm_provider | STRING | Provider key (see [plm-units](/system/plm-units/)). |
 | unit_name | STRING | MAGI unit name (e.g. `MELCHIOR-1`). On `AUTO_CLOSE` rows this is the *executing* unit; FIFO-owner attribution is applied by the consumer (see [L1.7 daily-loss](/system/guards/l1-7.md)). |
 | result | STRING | See [Result vocabulary](#result-vocabulary) below. |
@@ -128,6 +128,7 @@ contract).
 | `ORPHAN_CLOSE` | A confirmed `side='sell'` row with **no** open buy qty to settle (e.g. the position predates trade logging, or the entry rows are missing). Terminal, not mark-to-market; flags a lineage gap for manual review. |
 | `CANCELLED` | Order terminally failed with no fill (broker no-fill status). |
 | `CONTAMINATED` | Quarantined fabricated fill — broker history proved the order never filled. Original row preserved in `magi_core.trades_quarantine`. Consumers must exclude it; positive-match filters (`result IN ('WIN','LOSE')` etc.) do so automatically. |
+| `BASELINE_SETTLED` | Terminal `RECON_BASELINE` seed row whose shares were sold by later broker-confirmed sells. The evaluator can never settle these rows (no `order_id`/`price`, so no FIFO basis and no MERGE key), so they are settled manually; `exit_timestamp` is the sell that completed the liquidation, `pnl_*` stays NULL (no basis — not P&L). Excluded from the evaluator queue and FIFO allocation. First applied 2026-10-27 (AMAT 35, WMT 167; Jun-approved ledger fix, backup in `magi_core.trades_recon_fix_backup_20261027`). |
 
 ## Close events
 
@@ -177,6 +178,17 @@ Rules (added 2026-10-19, magi-core#625):
    entry inside the ±2% WIN/LOSE band resolves as `FLAT`, never
    perpetual `HOLD` (magi-core#654 — PLTR 45 @ −0.97% would otherwise
    mark-to-market forever on a closed position).
+5a. Short round-trips (margin only — see [L0.5](/system/guards/l0-5.md)).
+   The cash account never shorts, but the short path is retained for a
+   future margin account. The covering **buy** of a short is that
+   round-trip's close leg and is journaled `CLOSE` (buy side) with the
+   short P&L; it must not be left `HOLD` as a long entry. Only instance to
+   date: NKE 2026-10-07 (sell 332723 opened an 840-share short while the
+   code default was `margin`; cover 332758 set to `CLOSE` with +$0.84 in
+   the 2026-10-27 ledger fix). Sell 332723 still carries the `CLOSE`
+   classification the evaluator gave it (it was the opening leg) — a
+   known historical misclassification, left untouched because both legs
+   are terminal and net to zero.
 6. Downstream consumers that read realized P&L must source **close-event
    rows** (`AUTO_CLOSE` + `CLOSE`), not `AUTO_CLOSE` alone — otherwise
    discretionary exits escape daily-loss accounting ([L1.7](
@@ -189,6 +201,7 @@ Rules (added 2026-10-19, magi-core#625):
 # Related tables
 
 * `magi_core.trades_quarantine` — full snapshot of every row marked `CONTAMINATED`, plus `quarantine_reason` / `quarantine_source` / `quarantined_at`.
+* `magi_core.trades_recon_fix_backup_20261027` — pre-fix snapshot (plus `backed_up_at`) of the four rows changed by the 2026-10-27 L1.6.RECON ledger fix (AMAT/WMT `RECON_BASELINE` → `BASELINE_SETTLED`, WMT AUTO_CLOSE 334659 `exit_timestamp` stamped, NKE 332758 → `CLOSE`). One-off rollback source; no reader or writer in code.
 * `magi_core.trades_price_corrections` — original values of rows whose `price`/`qty`/`pnl_*` were backfilled with the broker `dealt_avg_price`/`dealt_qty`, plus `corrected_price` / `corrected_qty` / `backed_up_at`.
 
 # Joins

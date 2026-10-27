@@ -21,6 +21,7 @@ changes in `lib/constitution.js`, update the corresponding section doc here.
 
 | # | Section | Key rule | Mutable? |
 |---|---|---|---|
+| 0 | [CASH ACCOUNT CONSTRAINT](cash-account-constraint.md) — **draft** | Conditional (cash account, the default): no short selling; BUY to open, SELL only held longs | **conditional** |
 | 1 | [IDENTITY](identity.md) | Competitive swing-trader mission | yes |
 | 2 | [NORTH STAR](north-star.md) | Three cardinal objectives (risk-adj return > alpha > survival) | yes |
 | 3 | [YOUR EDGE](edge.md) | Six competitive advantages (timeframe, ensemble, ISABEL, HERMES, anti-crowding, adaptivity) | yes |
