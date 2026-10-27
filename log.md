@@ -1,5 +1,23 @@
 # Bundle Update Log
 
+## 2026-10-27 (SES and GRRR removed from the trading universe)
+* **Decision (Jun 2026-10-27)**: SES and GRRR are no longer monitored or
+  traded. magi-core#676 removes them from `TRADING_UNIVERSE` (62 → 60) and
+  every derived list (`VIX_SYMBOLS`, `FINDINGS_SYMBOLS`; HERMES collection
+  and ISABEL symbol lists alias the universe).
+* **Universe filters added** (implementation, magi-core#676): ISABEL's daily
+  [focus-symbols](system/echidna-tables/focus-symbols.md) selection and the
+  PLM prompt's ISABEL "High win rate / Caution" lines now only include
+  `TRADING_UNIVERSE` symbols — otherwise SES (in `focus_symbols` daily until
+  2026-10-26) kept resurfacing from its historical win rate. "Avoid"
+  warnings remain for all symbols. The focus-symbols doc (stable) does not
+  yet state the universe filter — to be added with a `human:jun`
+  re-verification.
+* **Not enforced**: `place_order` does not validate the universe; a hard
+  block (e.g. L3 exclusion) would be a guard change and is Jun's decision.
+* [trading-universe](system/constitution/trading-universe.md) documents the
+  universe as dynamic (no symbol list) — unchanged.
+
 ## 2026-10-27 (Node.js Oct 2026 security release; OpenClaw → Gemini 3.8 Flash; Sakana fully retired)
 * **Node.js runtimes** (2026-10-21 security release: 10 CVEs, 4 High incl.
   CVE-2026-111497 Brotli decoder RCE; patched only in 22.23.4 / 24.22.1 /
