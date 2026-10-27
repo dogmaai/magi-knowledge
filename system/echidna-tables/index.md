@@ -52,7 +52,7 @@ Two write-path conventions matter:
 * [system-control](system-control.md) - Global emergency kill-switch state read by L0 and the magi-moomoo order gate.
 * [order-intents](order-intents.md) - Append-only order-intent journal; broker-response-loss recovery via remark-embedded intent ids (R10).
 * [bridge-health-checks](bridge-health-checks.md) - Broker-path liveness log + alert dedupe state for the magi-bridge-monitor job (draft).
-* [tiala-host-checks](tiala-host-checks.md) - TIALA host-metrics liveness log + alert dedupe state for the magi-tiala-host-monitor job (draft — DDL in magi-core#669, table not yet created).
+* [tiala-host-checks](tiala-host-checks.md) - TIALA host-metrics liveness log + alert dedupe state for the magi-tiala-host-monitor job (draft — DDL applied by Jun 2026-10-26; job + scheduler deployed 2026-10-26 14:00Z, magi-core `979283f`; first run verified 14:15Z, overall=ok).
 * [data-freshness-expectations](data-freshness-expectations.md) - Proposed staleness thresholds for probe- and session-driven tables (draft proposal).
 * [broker-position-snapshots](broker-position-snapshots.md) - Proposed per-symbol positions snapshot written by the bridge-monitor probe (design only — table not created).
 * `l4_probation` (deprecated 2026-10-06) - designed Guard L4 blocked-combo state; never materialized in `magi_core` — L4 runs warn-only from the ISABEL stats cache.

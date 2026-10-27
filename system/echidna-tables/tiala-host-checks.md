@@ -16,14 +16,18 @@ table_type: BASE TABLE
 (magi-core, `ENTRY_POINT=tiala-host-monitor.js`, Cloud Scheduler
 `magi-tiala-host-monitor-scheduler`) — the TIALA counterpart of
 [bridge_health_checks](bridge-health-checks.md) (magi-core#667).
-**Status: proposed — pending Jun approval** (magi-core#669; the job and
-scheduler extend the original #667 decision — disk-85% Telegram alert —
-into a new job + scheduler + this table; the DDL was applied by Jun
-2026-10-26 ahead of that approval). It exists
+**Status: deployed 2026-10-26 14:00Z (magi-core `979283f`), first run
+verified 14:15Z** (magi-core#669 merged 13:58Z; the job and scheduler
+extend the original #667 decision — disk-85% Telegram alert — into a new
+job + scheduler + this table; the DDL was applied by Jun 2026-10-26;
+first scheduled run wrote `overall=ok`, `stale_leg=ok`, `disk_leg=ok`).
+It exists
 because the `com.magi.alloy` LaunchAgent exits 0 — no restart loop — when its
 config is incomplete, so the agent can silently stop shipping metrics; the
 only reliable signal is "did `job="tiala-host"` samples reach
-`grafanacloud-aka-prom`".
+`grafanacloud-aka-prom`". (Datasource display name `grafanacloud-aka-prom`;
+the job and the provisioned rules address it by UID `grafanacloud-prom`
+via `GRAFANA_PROM_DS_UID`.)
 
 One row per scheduled run (every 15 min). The same table doubles as the
 monitor's dedupe state: before writing, the job reads the latest row and the
