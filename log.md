@@ -1,5 +1,28 @@
 # Bundle Update Log
 
+## 2026-10-27 (magi-tiala-host-monitor deployed + first run verified)
+* **Amendment**: [magi-core](system/services/magi-core.md) operational
+  jobs table — the `magi-tiala-host-monitor` row now records the job +
+  scheduler as deployed (magi-core#669 + #670, magi-core `979283f`),
+  replacing the "proposed — pending Jun approval" wording. Job exists
+  in asia-northeast1; scheduler enabled at `*/15 * * * *`; the 14:15Z
+  first run wrote `overall=ok` / `stale_leg=ok` / `disk_leg=ok` to
+  `magi_core.tiala_host_checks`. The cited `deploy.yml` revision was
+  bumped to magi-core main `c36aa91` (post-#670).
+* **Amendment**: [tiala-host-checks](system/echidna-tables/tiala-host-checks.md)
+  Status updated to "deployed 2026-10-26 14:00Z, first run verified
+  14:15Z" (magi-knowledge#181). The prior entry's "table not yet
+  created" note is superseded — the table exists and is receiving
+  15-minute rows. `verified` on magi-core.md gained a `devin/cloud`
+  stamp; `human:jun` verification of the new wording is pending.
+* **Corrections (magi-core#670)**: post-merge fixes to the alert
+  transitions — unmeasured (unknown-leg) runs are transition-neutral
+  (no false recovery), `alerted` is recorded only when Telegram
+  accepts the send, unknown-streak re-alerting is bounded per streak,
+  and the Grafana disk rule threshold is `gte` to match the job's
+  `>=85` classification (live rule needs re-provisioning — a Jun
+  operation).
+
 ## 2026-10-26 (echidna catalog — portfolio_snapshots doc, freshness proposal, positions design)
 * **New doc (draft)**: [portfolio-snapshots](system/echidna-tables/portfolio-snapshots.md)
   — live schema catalogued (6 columns, no partitioning); documents the
@@ -56,8 +79,8 @@
   (>=85%) provisioned in Grafana; Telegram ALERT delivery via the
   `magi-tiala-host-monitor` job (magi-core#669).
 * **New**: [tiala-host-checks](system/echidna-tables/tiala-host-checks.md) —
-  concept doc for `magi_core.tiala_host_checks` (DDL in magi-core#669,
-  table not yet created). [magi-core](system/services/magi-core.md) job
+  concept doc for `magi_core.tiala_host_checks` (DDL in magi-core#669;
+  table applied later the same day — see the 2026-10-27 entry). [magi-core](system/services/magi-core.md) job
   table gained the `magi-tiala-host-monitor` row;
   [data-freshness-expectations](system/echidna-tables/data-freshness-expectations.md)
   gained a TIALA host-metrics row (same 20/60-min thresholds as
