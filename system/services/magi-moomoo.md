@@ -3,8 +3,8 @@ type: Service
 title: magi-moomoo
 description: MooMoo broker integration — account, positions, orders, market snapshots.
 lilith_safe: false
-status: stable
-generated: { by: devin/cli, at: 2026-10-02T23:50:00Z }
+status: draft
+generated: { by: devin/cli, at: 2026-10-23T11:30:00Z }
 verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: devin/cli, at: 2026-09-16T07:25:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-04-04T05:36:00Z
 tags: [service, moomoo, broker]
@@ -121,20 +121,21 @@ dual-route, selected per request by `BRIDGE_ROUTE_MODE`:
 | `private` | Private route only — no fallback. Planned steady state once the private path is proven stable. |
 | `legacy` | Cloudflare tunnel only; `BRIDGE_PRIVATE_URL` ignored. Clean rollback path. |
 
-**Private route** (`BRIDGE_PRIVATE_URL=http://10.42.0.10:11436`):
+**Private route** (`BRIDGE_PRIVATE_URL=http://<gateway>:<port>` —
+concrete addresses/ports are in the private record, dogmaai/magi-core#662):
 
 ```
 Cloud Run (Direct VPC Egress, --vpc-egress=private-ranges-only)
-  → magi-vpc / magi-subnet-tokyo (10.42.0.0/24, asia-northeast1)
-  → bridge-gw VM (e2-micro, 10.42.0.10, asia-northeast1-a, can-ip-forward)
-  → nftables DNAT tcp:11436 → WireGuard peer 10.99.0.2
-  → TIALA → moomoo-bridge (localhost:11436) → OpenD (localhost:11111)
+  → magi-vpc / magi-subnet-tokyo (asia-northeast1)
+  → a dedicated gateway VM (e2-micro, asia-northeast1-a, can-ip-forward)
+  → nftables DNAT → WireGuard peer → TIALA
+  → moomoo-bridge (loopback) → OpenD (loopback)
 ```
 
-WireGuard: `bridge-gw` is `10.99.0.1` (public endpoint `35.189.148.92:51820`,
-static IP `bridge-gw-ip`); TIALA is `10.99.0.2`. VPC firewall:
-`magi-allow-bridge` (tcp:11436 from 10.42.0.0/24) and `magi-allow-wg`
-(udp:51820 ingress, target tag `bridge-gw`). Setup scripts live in
+WireGuard: the gateway VM is the hub (a static public IP is reserved for
+its endpoint); TIALA is the peer. VPC firewall: a rule allowing the
+bridge TCP port from the VPC subnet, and a WireGuard UDP ingress rule
+scoped by the gateway's network tag. Setup scripts live in
 `scripts/setup-wireguard-*.sh`. Because egress is `private-ranges-only`,
 BigQuery (order gate, `opend-proxy` lookup) and the Cloudflare fallback keep
 using the default egress — no Cloud NAT is required.

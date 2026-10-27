@@ -5,7 +5,7 @@ description: The MAGI trading engine — trade loop, LLM orchestration, and guar
 lilith_safe: false
 status: stable
 generated: { by: devin/cli, at: 2026-10-20T08:44:00Z }
-verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-06T08:31:20Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }]
+verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-06T08:31:20Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }, { by: devin/cloud, at: 2026-10-27T01:09:00Z }]
 stale_after: 2027-04-18T08:44:00Z
 tags: [service, magi-core, core, trading]
 repo: dogmaai/magi-core
@@ -144,7 +144,7 @@ Role boundaries: see
 
 # Operational jobs
 
-Source: `magi-core/.github/workflows/deploy.yml` @ baa5388. Scheduler and Job names are separate resources.
+Source: `magi-core/.github/workflows/deploy.yml` @ c36aa91. Scheduler and Job names are separate resources.
 
 | Cloud Run Job | Scheduler | Schedule (TZ) | Role |
 |---|---|---|---|
@@ -153,6 +153,7 @@ Source: `magi-core/.github/workflows/deploy.yml` @ baa5388. Scheduler and Job na
 | `magi-isabel-l4` | `magi-isabel-l4-scheduler` | `0 8 * * 1-5` (America/New_York) | ISABEL L4 pattern analysis |
 | `magi-llm-health-monitor` | `magi-llm-health-monitor-scheduler` | `*/5 13-22 * * 1-5` (UTC) | Provider health checks |
 | `magi-bridge-monitor` | `magi-bridge-monitor-scheduler` | `*/15 * * * *` (UTC) | Broker-path liveness probes + Telegram down/recovery alerts ([bridge_health_checks](/system/echidna-tables/bridge-health-checks.md)) — merged 2026-10-19 (magi-core#624 `feat/bridge-health-monitor`); deploy.yml on main now carries job + scheduler |
+| `magi-tiala-host-monitor` | `magi-tiala-host-monitor-scheduler` | `*/15 * * * *` (UTC) | TIALA host-metrics liveness (Alloy `job="tiala-host"` freshness + root disk ≥85%) + Telegram down/recovery/unknown-streak alerts ([tiala_host_checks](/system/echidna-tables/tiala-host-checks.md)) — magi-core#669 + #670; deployed 2026-10-26 14:00Z (magi-core `979283f`), first run verified 14:15Z (table DDL applied by Jun 2026-10-26) |
 | `magi-off-hours-chat` | `magi-off-hours-chat-scheduler` | `0 19 * * 1-5` (America/New_York) | Off-hours unit round-table |
 | `magi-off-hours-chat` | `magi-off-hours-chat-weekend-scheduler` | `0 12 * * 6,0` (America/New_York) | Off-hours weekend unit round-table |
 | `magi-surge-detector` | `magi-surge-detector-scheduler` | `*/5 9-15 * * 1-5` (America/New_York) | Intraday surge/crash watcher |

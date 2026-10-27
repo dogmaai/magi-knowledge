@@ -1,5 +1,210 @@
 # Bundle Update Log
 
+## 2026-10-27 (L1.6.RECON fail-closed halt — ledger fix, epoch-based recon, cash-only account policy)
+* **Incident**: no `trades` rows on 2026-10-21, 22, 23 and 26 (four US
+  sessions). L1.6.RECON blocked every risk-increasing order because WMT
+  (ledger 66), NKE (840) and AMAT (35) read as `PHANTOM_LEDGER` against
+  broker 0. Root cause: the reconciler summed only `exit_timestamp IS NULL`
+  rows, while close legs are stamped terminal per row since
+  magi-core#625/#630 and `RECON_BASELINE` seed rows (no `order_id`/price)
+  can never be settled by the evaluator. Separate finding: the NKE position
+  was a real 840-share short (2026-10-07, QWEN) opened while the L0.5 code
+  default was `margin` (before magi-core#631).
+* **Data fix (Jun-approved, executed 2026-10-27 02:54Z,
+  job_7lKcvabi8GD4QKfaSbq1vwHt0wsn)**: AMAT/WMT `RECON_BASELINE` →
+  `BASELINE_SETTLED`; WMT AUTO_CLOSE 334659 `exit_timestamp` stamped; NKE
+  cover 332758 → `CLOSE` (short P&L +$0.84). Backup:
+  `magi_core.trades_recon_fix_backup_20261027`. Open ledger net is zero
+  on all symbols after the fix.
+* **New doc (draft)**: [l1-6-recon](system/guards/l1-6-recon.md) — the
+  guard had no concept doc; records the epoch-based ledger semantics
+  (`RECON_LEDGER_EPOCH`, default 2026-10-27T03:00Z), the reset procedure
+  and the incident. Linked from the guard index.
+* **New doc (draft)**: [cash-account-constraint](system/constitution/cash-account-constraint.md)
+  — the `[CASH ACCOUNT CONSTRAINT]` prompt block has rendered on every
+  unit since magi-core#631 but had no section doc (pre-existing drift,
+  surfaced by `okf-constitution-drift` once the default flips to cash).
+  Needs `human:jun` verification → `stable` before the magi-core change
+  can pass that test.
+* **Amendment**: [l0-5](system/guards/l0-5.md) — account policy (Jun
+  2026-10-27): cash account only; short path kept for a future margin
+  account behind an explicit `ACCOUNT_TYPE=margin`; fail-safe default
+  `cash` (magi-core PR pending).
+* **Amendment**: [trades](system/echidna-tables/trades.md) — `result`
+  vocabulary gains `BASELINE_SETTLED`; `trade_mode` documents
+  `RECON_BASELINE`; Close-events rule 5a records short round-trips (cover
+  buy = `CLOSE`, margin only); related tables list the backup table.
+
+## 2026-10-27 (magi-tiala-host-monitor deployed + first run verified)
+* **Amendment**: [magi-core](system/services/magi-core.md) operational
+  jobs table — the `magi-tiala-host-monitor` row now records the job +
+  scheduler as deployed (magi-core#669 + #670, magi-core `979283f`),
+  replacing the "proposed — pending Jun approval" wording. Job exists
+  in asia-northeast1; scheduler enabled at `*/15 * * * *`; the 14:15Z
+  first run wrote `overall=ok` / `stale_leg=ok` / `disk_leg=ok` to
+  `magi_core.tiala_host_checks`. The cited `deploy.yml` revision was
+  bumped to magi-core main `c36aa91` (post-#670).
+* **Amendment**: [tiala-host-checks](system/echidna-tables/tiala-host-checks.md)
+  Status updated to "deployed 2026-10-26 14:00Z, first run verified
+  14:15Z" (magi-knowledge#181). The prior entry's "table not yet
+  created" note is superseded — the table exists and is receiving
+  15-minute rows. `verified` on magi-core.md gained a `devin/cloud`
+  stamp; `human:jun` verification of the new wording is pending.
+* **Corrections (magi-core#670)**: post-merge fixes to the alert
+  transitions — unmeasured (unknown-leg) runs are transition-neutral
+  (no false recovery), `alerted` is recorded only when Telegram
+  accepts the send, unknown-streak re-alerting is bounded per streak,
+  and the Grafana disk rule threshold is `gte` to match the job's
+  `>=85` classification (live rule needs re-provisioning — a Jun
+  operation).
+
+## 2026-10-26 (echidna catalog — portfolio_snapshots doc, freshness proposal, positions design)
+* **New doc (draft)**: [portfolio-snapshots](system/echidna-tables/portfolio-snapshots.md)
+  — live schema catalogued (6 columns, no partitioning); documents the
+  `daily_pnl`/`total_pnl_percent` naming drift (per-session deltas, not
+  daily/total aggregates). Column rename/writer change deferred — a Jun
+  decision, not silently resolved. Removed from the index's
+  uncatalogued-table backlog.
+* **New doc (draft proposal)**: [data-freshness-expectations](system/echidna-tables/data-freshness-expectations.md)
+  — staleness thresholds derived from observed write cadence (probe
+  >20/>60 min amber/red; session-driven >25/>72 h; market snapshots
+  >12/>72 h). Referenced as the single source for the Grafana threshold
+  values in magi-core#668.
+* **New doc (draft proposal)**: [broker-position-snapshots](system/echidna-tables/broker-position-snapshots.md)
+  — design for a new append-only per-symbol positions table written by
+  the existing 15-min bridge-monitor probe (new table, not columns on
+  `bridge_health_checks`). Table creation and implementation are Jun
+  operations — not performed.
+* Trigger: moomoo↔Grafana sync audit (magi-core#668) — values matched
+  the broker; connectivity/freshness display and P&L semantics did not.
+
+
+## 2026-10-26 (Grafana tokens for TIALA Alloy + bridge Pyroscope registered)
+* **Amendment**: [secrets-inventory](system/services/secrets-inventory.md) —
+  registered `GRAFANA_ALLOY_REMOTE_WRITE_TOKEN` (Access Policy
+  `tiala-alloy-remote-write`, `metrics:write` only) and
+  `PYROSCOPE_BASIC_AUTH_PASSWORD` (Access Policy `tiala-bridge-pyroscope-2`,
+  `profiles:write` only) in `screen-share-459802` Secret Manager; both
+  granted per-secret `secretAccessor` to TIALA's `aka-agent@` SA.
+  Recorded `GRAFANA_OTLP_TOKEN`'s `profiles:write` scope as a drift from
+  its documented metrics+traces scope (probe: `POST
+  profiles-prod-019.grafana.net/ingest` reaches body validation), with an
+  open item to strip it after the bridge's OTLP fallback is retired —
+  see the inventory's open item. Recorded the Prom remote-write gotcha:
+  `basic_auth.username` must be the Hosted Metrics instance ID, not
+  `1557976`.
+* **Incident note (secrets-inventory rows)**: 2026-10-26 token rotation —
+  the tokens under the two TIALA access policies (Alloy remote-write and
+  bridge Pyroscope) were deleted portal-side; other stack credentials
+  (OTLP, SA token) were unaffected. Only `tiala-alloy-remote-write` was
+  recreated (same name, `metrics:write`) — the Pyroscope token was
+  re-issued under the existing `tiala-bridge-pyroscope-2`. The first
+  Alloy re-issue was minted under the wrong policy (`401 invalid scope
+  requested`); the corrected token was remote_write-verified before the
+  host-local env swap (~13:02 UTC, fresh samples ~13:05 UTC). The bridge
+  env + restart landed ~13:10 UTC. All superseded GSM versions disabled;
+  current versions' values never transited chat (the rotation trigger
+  was that the first Alloy token's value had).
+* **Amendment**: [tiala-host](system/services/tiala-host.md) — `com.magi.alloy`
+  recorded as running: `prometheus.exporter.unix` (per magi-core#667, not a
+  netdata scrape; node_* series live-verified in `grafanacloud-aka-prom`),
+  installed via the official `grafana/grafana` brew tap + `brew pin`, logs
+  to `~/Library/Logs` with newsyslog rotation. Companion alerts:
+  `tiala-alloy-metrics-stale` (15m absent) and `tiala-disk-usage-high`
+  (>=85%) provisioned in Grafana; Telegram ALERT delivery via the
+  `magi-tiala-host-monitor` job (magi-core#669).
+* **New**: [tiala-host-checks](system/echidna-tables/tiala-host-checks.md) —
+  concept doc for `magi_core.tiala_host_checks` (DDL in magi-core#669;
+  table applied later the same day — see the 2026-10-27 entry). [magi-core](system/services/magi-core.md) job
+  table gained the `magi-tiala-host-monitor` row;
+  [data-freshness-expectations](system/echidna-tables/data-freshness-expectations.md)
+  gained a TIALA host-metrics row (same 20/60-min thresholds as
+  `bridge_health_checks`).
+
+## 2026-10-25 (GRAFANA_OTLP_TOKEN — Pyroscope fallback recorded)
+* **Amendment**: [secrets-inventory](system/services/secrets-inventory.md)
+  `GRAFANA_OTLP_TOKEN` row — recorded that the bridge reuses this token
+  as the Pyroscope basic-auth password fallback
+  (`PYROSCOPE_BASIC_AUTH_PASSWORD` unset → `GRAFANA_OTLP_TOKEN`; the three
+  dead `PYROSCOPE_*` GSM reads were removed in magi-moomoo#94). Noted
+  the `profiles:write` scope requirement for Profiles ingest as an open
+  verification item and the rotation coupling between the two consumers.
+
+## 2026-10-25 (Ollama units outage — resolved, docs stay draft)
+* **Amendment**: [boreas](system/plm-units/boreas.md) and
+  [adam](system/plm-units/adam.md) outage notes updated from
+  "remediation pending" to resolved: the ingress-path fix deployed on
+  2026-10-23 was verified against same-day production traffic — seven of
+  eight real Ollama calls completed end-to-end and normal
+  `WARN_ONLY`/`HOLD` decisions resumed; the single failure traced to a
+  short-lived tunnel transport flap, unrelated to the defect. ADAM's
+  scheduled runs that day exited 0 but skipped LLM calls via the normal
+  probabilistic throttle, so ADAM-side call evidence is pending its next
+  unthrottled run. Both docs remain `draft` until Jun re-verifies.
+  Private evidence: dogmaai/magi-core#665.
+
+## 2026-10-23 (llm_metrics status vocabulary + launchd PATH correction)
+* **Correction**: [llm-metrics](system/echidna-tables/llm-metrics.md)
+  demoted `stable` → `draft` — the `status` column was documented as
+  `ok` / error class but `magi-core/src/llm.js` currently writes only
+  `success` / `failed` (the nine historical `truncated` rows came from
+  the since-deleted Sakana/FUGU analyzer, 2026-08-03→09-15; plus
+  historical NULLs); a spec–implementation drift found while building
+  the llm_metrics-based health-monitor alerting (magi-core#666).
+  Pending Jun re-verification.
+* **Correction**: [secrets-inventory](system/services/secrets-inventory.md)
+  — the `com.magi.bridge` plist *does* set `PATH` including
+  `/opt/homebrew/bin`, so the bridge's `gcloud` Secret Manager fetches
+  work under launchd (traces confirmed arriving 2026-10-23); the
+  "gcloud absent from launchd PATH" note applies to the default PATH
+  only.
+
+## 2026-10-23 (TIALA `aka-agent@` least-privilege Secret Manager access)
+* **Amendment**: [secrets-inventory](system/services/secrets-inventory.md)
+  TIALA SA row — project-wide `secretAccessor` on `aka-agent@` was removed
+  and replaced by per-secret bindings on exactly the three GSM secrets the
+  live bridge start path reads (`MOOMOO_BRIDGE_AUTH_TOKEN`,
+  `GRAFANA_OTLP_TOKEN`, `SIGIL_AUTH_TOKEN`), verified on-host by reading
+  each as the SA (three OK, unrelated secret PERMISSION_DENIED). Also
+  recorded the drift that the start script names three `PYROSCOPE_*`
+  secrets absent from GSM. Jun-approved scope; no other SA or secret
+  touched.
+
+## 2026-10-23 (public-repo sanitization — magi-core#662 audit rewrite)
+* **Amendment**: applied the #662 audit list to existing docs —
+  host identifiers (tailnet hostnames/IPs, hostnames, LAN/WG IPs),
+  listen ports, and credential/config file paths were generalized to
+  role descriptions pointing at the private record (dogmaai/magi-core#662).
+  Touched: [aka-memory](system/services/aka-memory.md),
+  [cloudflare](system/services/cloudflare.md),
+  [magi-moomoo](system/services/magi-moomoo.md),
+  [secrets-inventory](system/services/secrets-inventory.md),
+  [tiala-host](system/services/tiala-host.md),
+  [magi-deep-research](system/services/magi-deep-research.md) and three
+  `.agents/skills/` files. `*.khaos.company` public DNS hostnames are
+  kept per the audit's exemption recommendation (Jun to confirm);
+  historical `log.md` entries left as-is. `magi-moomoo.md` and
+  `magi-deep-research.md` demoted `stable` → `draft` pending Jun's
+  re-verification.
+* **Ops state changes recorded**: `aka-mac-mini@` SA's project-wide
+  `secretAccessor` removed (no consumer found); GSM versions disabled
+  for `MAGI_QUERY_API_KEY` / `NGROK_AUTHTOKEN` / `BRAVE_API_KEY`;
+  `GH:magi-core` Actions secret `MAGI_KNOWLEDGE_TOKEN` deleted (all
+  workflow references already had `github.token` fallbacks). Details in
+  [secrets-inventory](system/services/secrets-inventory.md).
+
+## 2026-10-23 (Ollama units outage — root cause identified, remediation pending)
+* **Amendment**: [boreas](system/plm-units/boreas.md) and
+  [adam](system/plm-units/adam.md) — recorded that
+  BOREAS and ADAM (shared Ollama provider path) produced no LLM decisions
+  since 2026-10-05: every call failed client-side because a
+  response-termination defect in the authenticated ingress path left
+  streamed responses unterminated (server-side inference completed
+  normally; failed calls journaled `CALL_FAILED`). Root cause identified
+  2026-10-23, fixes proposed in magi-moomoo + magi-core PRs, deploy
+  pending; private detail in dogmaai/magi-core#665. Both docs demoted
+  `stable` → `draft` pending Jun's re-verification.
+
 ## 2026-10-23 (public-repo hygiene — visibility wording + public-writing rule draft)
 * **Host security (private record)**: funnel remediation was carried out
   on the host. Per the new public-writing rule, the details live in the
