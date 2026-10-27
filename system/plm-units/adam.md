@@ -56,7 +56,9 @@ against production traffic on 2026-10-23 (see [BOREAS](boreas.md));
 ADAM's scheduled runs on that day were exit(0) but skipped LLM calls via
 the normal probabilistic throttle, so ADAM-side call evidence is pending
 its next unthrottled run. Detail is in the private record
-(dogmaai/magi-core#665). This document remains `draft` pending Jun's
+(dogmaai/magi-core#665). As of 2026-10-27 ADAM-side call evidence is
+**still absent** (no ADAM `thoughts` rows 2026-10-23→27 — every
+scheduled run throttled). This document remains `draft` pending Jun's
 re-verification.
 
 # Citations

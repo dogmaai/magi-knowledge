@@ -107,8 +107,11 @@ as `CALL_FAILED` thoughts. The ingress-path fix was deployed on
 seven of eight real Ollama calls completed end-to-end and normal
 `WARN_ONLY`/`HOLD` decisions resumed; the single failure was traced to a
 short-lived tunnel transport flap, unrelated to the defect. Detail is in
-the private record (dogmaai/magi-core#665). This document remains
-`draft` pending Jun's re-verification.
+the private record (dogmaai/magi-core#665). Post-fix evidence
+(2026-10-27 BigQuery check): BOREAS produced normal BUY/HOLD/WARN_ONLY
+decisions 2026-10-23→26; its three `CALL_FAILED` rows in that window are
+transient Ollama-endpoint HTTP 502/524 errors, not the ingress defect.
+This document remains `draft` pending Jun's re-verification.
 
 # Citations
 
