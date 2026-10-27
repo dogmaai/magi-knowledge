@@ -1,5 +1,40 @@
 # Bundle Update Log
 
+## 2026-10-27 (L1.6.RECON fail-closed halt — ledger fix, epoch-based recon, cash-only account policy)
+* **Incident**: no `trades` rows on 2026-10-21, 22, 23 and 26 (four US
+  sessions). L1.6.RECON blocked every risk-increasing order because WMT
+  (ledger 66), NKE (840) and AMAT (35) read as `PHANTOM_LEDGER` against
+  broker 0. Root cause: the reconciler summed only `exit_timestamp IS NULL`
+  rows, while close legs are stamped terminal per row since
+  magi-core#625/#630 and `RECON_BASELINE` seed rows (no `order_id`/price)
+  can never be settled by the evaluator. Separate finding: the NKE position
+  was a real 840-share short (2026-10-07, QWEN) opened while the L0.5 code
+  default was `margin` (before magi-core#631).
+* **Data fix (Jun-approved, executed 2026-10-27 02:54Z,
+  job_7lKcvabi8GD4QKfaSbq1vwHt0wsn)**: AMAT/WMT `RECON_BASELINE` →
+  `BASELINE_SETTLED`; WMT AUTO_CLOSE 334659 `exit_timestamp` stamped; NKE
+  cover 332758 → `CLOSE` (short P&L +$0.84). Backup:
+  `magi_core.trades_recon_fix_backup_20261027`. Open ledger net is zero
+  on all symbols after the fix.
+* **New doc (draft)**: [l1-6-recon](system/guards/l1-6-recon.md) — the
+  guard had no concept doc; records the epoch-based ledger semantics
+  (`RECON_LEDGER_EPOCH`, default 2026-10-27T03:00Z), the reset procedure
+  and the incident. Linked from the guard index.
+* **New doc (draft)**: [cash-account-constraint](system/constitution/cash-account-constraint.md)
+  — the `[CASH ACCOUNT CONSTRAINT]` prompt block has rendered on every
+  unit since magi-core#631 but had no section doc (pre-existing drift,
+  surfaced by `okf-constitution-drift` once the default flips to cash).
+  Needs `human:jun` verification → `stable` before the magi-core change
+  can pass that test.
+* **Amendment**: [l0-5](system/guards/l0-5.md) — account policy (Jun
+  2026-10-27): cash account only; short path kept for a future margin
+  account behind an explicit `ACCOUNT_TYPE=margin`; fail-safe default
+  `cash` (magi-core PR pending).
+* **Amendment**: [trades](system/echidna-tables/trades.md) — `result`
+  vocabulary gains `BASELINE_SETTLED`; `trade_mode` documents
+  `RECON_BASELINE`; Close-events rule 5a records short round-trips (cover
+  buy = `CLOSE`, margin only); related tables list the backup table.
+
 ## 2026-10-27 (magi-tiala-host-monitor deployed + first run verified)
 * **Amendment**: [magi-core](system/services/magi-core.md) operational
   jobs table — the `magi-tiala-host-monitor` row now records the job +
