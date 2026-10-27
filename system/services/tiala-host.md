@@ -4,7 +4,7 @@ title: TIALA host (Mac mini) — launchd job inventory
 description: The always-on TIALA Mac mini's launchd job inventory after the 2026-10-22 cleanup — active bridge/Ollama/OpenClaw/observability agents, OpenClaw cron jobs, the jobs disabled that day, the netdata log fix, and open security/maintenance items.
 lilith_safe: false
 status: draft
-generated: { by: claude/cloud, at: 2026-10-27T05:10:00Z }
+generated: { by: claude/cloud, at: 2026-10-27T07:55:00Z }
 stale_after: 2027-01-22T09:30:00Z
 tags: [service, infra, tiala, launchd, ollama, openclaw, netdata, tailscale]
 repo: infra (TIALA Mac mini M4)
@@ -53,7 +53,7 @@ program paths are host-local and intentionally not recorded here.
 | `local.ollama-proxy` | RunAtLoad | The local Host-rewrite proxy in front of Ollama — **no auth**; never in the tunnel path | [cloudflare](cloudflare.md) |
 | `local.ollama-env` | at login | `launchctl setenv OLLAMA_CONTEXT_LENGTH 65536` — host tuning | — |
 | `local.tailscale-funnel` | — | **Disabled 2026-10-23** (unauthenticated publication remediated — see [cloudflare](cloudflare.md); details in magi-core#659) | [cloudflare](cloudflare.md), [aka-memory](aka-memory.md) |
-| `ai.openclaw.gateway` | RunAtLoad | OpenClaw Gateway v2026.6.1 (env wrapper under the OpenClaw service-env dir) | [aka-memory](aka-memory.md), [cloudflare](cloudflare.md) |
+| `ai.openclaw.gateway` | RunAtLoad | OpenClaw Gateway v2026.6.1 (env wrapper under the OpenClaw service-env dir), running on Homebrew `node@22` — **22.23.4 since 2026-10-27** (Oct 2026 Node.js security release; was 22.22.0). Models (Jun 2026-10-27): primary `google/gemini-3.8-flash`, fallback `google/gemini-3.5-flash-lite` — replaced primary `sakana/fugu` (Sakana retired) and fallback `google/gemini-2.5-flash` (2.5 series being shut down); the `sakana` provider block is removed from `openclaw.json` and the agent `models.json` | [aka-memory](aka-memory.md), [cloudflare](cloudflare.md) |
 | `com.openclaw.gcs-memory-sync` | daily 21:00 JST | AKA memory backup → `gs://screen-share-459802-memory`; last run 2026-10-21 21:00:11 JST ok (86 objects) | [aka-memory](aka-memory.md) |
 | `com.openclaw.memory-sync` | daily 22:30 JST | AKA memory backup → SSD + Drive. **Known problem**: launchd rsync to the external SSD fails `Operation not permitted` (macOS TCC); ends `status=1` — see [aka-memory](aka-memory.md) | [aka-memory](aka-memory.md) |
 | `local.ttyd` | RunAtLoad | The web terminal — **loopback-only since 2026-10-23** (Jun changed the bind; verified on host) and published tailnet-only via an intentional `tailscale serve` entry (not Funnel). basic-auth credential still embedded in the LaunchAgent — see open items | [aka-memory](aka-memory.md) |

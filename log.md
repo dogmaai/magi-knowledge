@@ -1,5 +1,32 @@
 # Bundle Update Log
 
+## 2026-10-27 (Node.js Oct 2026 security release; OpenClaw → Gemini 3.8 Flash; Sakana fully retired)
+* **Node.js runtimes** (2026-10-21 security release: 10 CVEs, 4 High incl.
+  CVE-2026-111497 Brotli decoder RCE; patched only in 22.23.4 / 24.22.1 /
+  26.12.1 — Node 18/20 are EOL and never patched). Moved every Cloud Run
+  image to `node:24.22.1-bookworm-slim`: magi-core#674 (was `node:20-slim`;
+  main/briefing/sentiment/thought-scorer), magi-moomoo#98 (was
+  `node:20-slim`), magi-moni#55 (was `node:18-slim`) — all deployed
+  2026-10-27 ~07:05–07:29Z. TIALA: Homebrew `node@22` 22.22.0 → 22.23.4
+  (OpenClaw Gateway restarted on it), unversioned `node` 25.9.0 → 26.12.1.
+  central-dogma is archived (not deployed) — n/a.
+* **Amendment**: [tiala-host](system/services/tiala-host.md)
+  `ai.openclaw.gateway` row — Node runtime and model routing recorded.
+  OpenClaw now uses `google/gemini-3.8-flash` (primary) +
+  `google/gemini-3.5-flash-lite` (fallback), replacing `sakana/fugu` and
+  `google/gemini-2.5-flash` (Gemini API deprecations page recommends 3.8
+  Flash / 3.5 Flash-Lite; 2.5 shutdown dates are inconsistent and early
+  404s were reported). The `sakana` provider definition is removed from
+  the OpenClaw config — Sakana is fully retired (Jun 2026-10-27).
+* **Drift found (not edited — stable doc, needs Jun)**:
+  [melchior-1](system/plm-units/melchior-1.md) says the config fallback is
+  `gemini-2.5-flash`; magi-core `lib/config.js` (`c242498`) falls back to
+  `gemini-3.8-flash` and no `gemini-2.5` reference remains in magi-core
+  code. Fix together with a `human:jun` re-verification.
+* magi-core#675 removes the executed one-shot
+  `scripts/delete-retired-jobs-and-schedulers.sh` (all five targets
+  deleted 2026-09-23).
+
 ## 2026-10-27 (L1.6.RECON fail-closed halt — ledger fix, epoch-based recon, cash-only account policy)
 * **Incident**: no `trades` rows on 2026-10-21, 22, 23 and 26 (four US
   sessions). L1.6.RECON blocked every risk-increasing order because WMT
