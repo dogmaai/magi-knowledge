@@ -33,6 +33,11 @@ position-reducing orders always pass.
   the evaluator reconciles the fill, so a real fill shows as a transient
   divergence (fail-closed), never as a false "consistent".
 * **Broker side**: MooMoo positions (signed qty).
+* Malformed input — a broker position or ledger row without a symbol, or
+  an unparseable quantity — throws, so the verdict becomes `unknown`
+  (fail-closed); it is never skipped or coerced to 0, which could report a
+  divergent book as consistent. Duplicate broker rows for one symbol are
+  netted.
 * Per symbol, `|ledger − broker| >= 0.5` is divergent: `MISMATCH` (both
   sides hold), `PHANTOM_LEDGER` (ledger only), `UNTRACKED` (broker only).
   Each divergent symbol is journaled as a `thoughts` row
