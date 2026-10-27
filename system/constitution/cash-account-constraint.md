@@ -3,10 +3,10 @@ type: Constitution Section
 title: "CASH ACCOUNT CONSTRAINT"
 description: Conditional prompt block forbidding short selling on a cash account (現物口座); rendered first, before IDENTITY.
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: claude/cloud, at: 2026-10-27T03:30:00Z }
-verified: [{ by: claude/cloud, at: 2026-10-27T03:30:00Z }]
-stale_after: 2027-04-27T03:30:00Z
+verified: [{ by: claude/cloud, at: 2026-10-27T03:30:00Z }, { by: human:jun, at: 2026-10-27T05:15:00Z }]
+stale_after: 2027-04-27T05:15:00Z
 tags: [constitution, v3, plm, cash-account, short-selling, conditional]
 section_order: 0
 version: "3.9"
