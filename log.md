@@ -2,7 +2,11 @@
 
 ## 2026-10-27 (SES and GRRR removed from the trading universe)
 * **Decision (Jun 2026-10-27)**: SES and GRRR are no longer monitored or
-  traded. magi-core#676 removes them from `TRADING_UNIVERSE` (62 → 60) and
+  traded. **Reason**: both cannot be sold short on margin (信用の空売り不可).
+  They are acceptable for the cash account, but are removed so the universe
+  stays usable for a future margin account; if margin trading starts, a
+  margin-only "not shortable" list blocking new short SELLs would let them
+  return to the universe for cash buys (design not started). magi-core#676 removes them from `TRADING_UNIVERSE` (62 → 60) and
   every derived list (`VIX_SYMBOLS`, `FINDINGS_SYMBOLS`; HERMES collection
   and ISABEL symbol lists alias the universe).
 * **Universe filters added** (implementation, magi-core#676): ISABEL's daily
