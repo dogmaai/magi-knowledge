@@ -4,7 +4,7 @@ title: TIALA host (Mac mini) — launchd job inventory
 description: The always-on TIALA Mac mini's launchd job inventory after the 2026-10-22 cleanup — active bridge/Ollama/OpenClaw/observability agents, OpenClaw cron jobs, the jobs disabled that day, the netdata log fix, and open security/maintenance items.
 lilith_safe: false
 status: draft
-generated: { by: devin/cloud, at: 2026-10-26T10:30:00Z }
+generated: { by: claude/cloud, at: 2026-10-27T05:10:00Z }
 stale_after: 2027-01-22T09:30:00Z
 tags: [service, infra, tiala, launchd, ollama, openclaw, netdata, tailscale]
 repo: infra (TIALA Mac mini M4)
@@ -56,7 +56,7 @@ program paths are host-local and intentionally not recorded here.
 | `ai.openclaw.gateway` | RunAtLoad | OpenClaw Gateway v2026.6.1 (env wrapper under the OpenClaw service-env dir) | [aka-memory](aka-memory.md), [cloudflare](cloudflare.md) |
 | `com.openclaw.gcs-memory-sync` | daily 21:00 JST | AKA memory backup → `gs://screen-share-459802-memory`; last run 2026-10-21 21:00:11 JST ok (86 objects) | [aka-memory](aka-memory.md) |
 | `com.openclaw.memory-sync` | daily 22:30 JST | AKA memory backup → SSD + Drive. **Known problem**: launchd rsync to the external SSD fails `Operation not permitted` (macOS TCC); ends `status=1` — see [aka-memory](aka-memory.md) | [aka-memory](aka-memory.md) |
-| `local.ttyd` | RunAtLoad | The web terminal; basic-auth credential embedded in the plist (not in [secrets-inventory](secrets-inventory.md)) | [aka-memory](aka-memory.md) |
+| `local.ttyd` | RunAtLoad | The web terminal — **loopback-only since 2026-10-23** (Jun changed the bind; verified on host) and published tailnet-only via an intentional `tailscale serve` entry (not Funnel). basic-auth credential still embedded in the LaunchAgent — see open items | [aka-memory](aka-memory.md) |
 | `ai.devin.worker` | RunAtLoad | Devin worker (`--outpost=my-outpost`); log on host | — |
 | `homebrew.mxcl.netdata` | RunAtLoad | Host metrics — see Observability | — |
 | `com.magi.alloy` | RunAtLoad + KeepAlive on crash | Grafana Alloy — `prometheus.exporter.unix` host metrics, remote-written to Hosted Metrics (stack `aka`); token + endpoint user live in a host-local env file, never in the repo. Templates in magi-moomoo `scripts/` (`alloy/config.alloy`, `start-alloy.sh`, `com.magi.alloy.plist`, `install-alloy-launchagent.sh`, `alloy/magi-alloy.newsyslog.conf`). Installed via `brew tap grafana/grafana` + `brew pin alloy`; running since 2026-10-26 — `job="tiala-host"` series confirmed live in `grafanacloud-aka-prom` | [secrets-inventory](secrets-inventory.md) |
@@ -169,7 +169,11 @@ GCP-Alerts-email receiver today (magi-core#669).
 * **ttyd credential in plist**: `local.ttyd` carries a basic-auth
   `user:password` literal inside the LaunchAgent on TIALA; not in Secret
   Manager — a credential-location gap recorded in
-  [secrets-inventory](secrets-inventory.md).
+  [secrets-inventory](secrets-inventory.md). Partially remediated
+  2026-10-23 by Jun: the listener was narrowed to loopback and is
+  published tailnet-only via `tailscale serve` (no longer reachable on
+  the LAN). Remaining: rotate the credential and register it in Secret
+  Manager — Jun's to do.
 * **`com.magi.hermes` plaintext tokens**: the archived plist contained
   plaintext `BRAVE_SEARCH_API_KEY` / `TELEGRAM_BOT_TOKEN` /
   `TELEGRAM_CHAT_ID` — **scrubbed 2026-10-23** (values replaced with
