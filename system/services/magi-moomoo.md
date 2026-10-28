@@ -4,7 +4,7 @@ title: magi-moomoo
 description: MooMoo broker integration — account, positions, orders, market snapshots.
 lilith_safe: false
 status: draft
-generated: { by: claude/cloud, at: 2026-10-28T11:40:00Z }
+generated: { by: codex/cloud, at: 2026-10-28T13:40:20Z }
 verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: devin/cli, at: 2026-09-16T07:25:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-04-04T05:36:00Z
 tags: [service, moomoo, broker]
@@ -162,29 +162,40 @@ monitors can detect an unprotected deployment.
 
 # Cash-only guard (bridge)
 
-Account policy (Jun, 2026-10-28): the **REAL** account trades cash-only
-(現物のみ) for now, and the **SIMULATE** account is operated the same way
-to mirror production — even though the MooMoo paper account itself
-permits margin / shorts. Enforced in the on-prem bridge
-(`bridge/moomoo_bridge.py`, `_cash_only_violation`) — the last hop before
-OpenD — so it holds regardless of caller, LLM prompt or magi-core
-`ACCOUNT_TYPE`.
+Account policy (Jun, 2026-10-28, clarified): **SIMULATE retains margin
+buying and short selling; REAL trades cash-only (現物のみ) for now**.
+SIMULATE does not require `MOOMOO_ALLOW_MARGIN=true`. Its existing account
+and ledger are retained; this policy does not reattribute any fills.
 
-* Active unless `MOOMOO_ALLOW_MARGIN` is exactly `true` (fail-safe:
-  unset / empty / misspelled keeps it on). `/health` reports `cash_only`.
-* Runs after the `MOOMOO_ALLOW_REAL_ORDERS` check; each check fail-closed
-  (any lookup failure or exception blocks):
-  1. REAL only: the pinned `MOOMOO_ACC_ID` must be a broker-confirmed
-     `acc_type=CASH` sub-account (`get_acc_list`). Not applied to SIMULATE:
-     the dedicated paper account is kept (ledger is never reattributed).
+The on-prem bridge (`bridge/moomoo_bridge.py`, `_cash_only_violation`)
+enforces the REAL rule at the last hop before OpenD, independently of the
+caller, LLM prompt or magi-core `ACCOUNT_TYPE`.
+
+* Active only in REAL unless `MOOMOO_ALLOW_MARGIN` is exactly `true`
+  (unset / empty / misspelled keeps the REAL guard on). `/health` reports
+  the effective `cash_only`: false in SIMULATE, true in REAL unless overridden.
+* Runs after the independent `MOOMOO_ALLOW_REAL_ORDERS` check. Each check
+  fails closed on a lookup failure or exception:
+  1. The pinned REAL `MOOMOO_ACC_ID` must be a broker-confirmed
+     `acc_type=CASH` sub-account (`get_acc_list`).
   2. **SELL** qty ≤ the long position's `can_sell_qty` (long `qty` if
      absent) — no new shorts.
   3. **BUY** qty × reference price ≤ account cash (`us_cash`, else `cash`);
      LIMIT price, or MARKET snapshot `last_price` + 2% — no margin buying.
 * Blocked orders return HTTP 403 with `blocked_by: cash_only_guard`.
-* Relation to [L0.5](/system/guards/l0-5.md): L0.5 is the magi-core
-  prompt/tool-level guard driven by `ACCOUNT_TYPE`; this is the broker-side
-  enforcement.
+* SIMULATE skips all three cash-only checks; broker eligibility, order
+  validation and other existing risk guards still apply.
+* Relation to [L0.5](/system/guards/l0-5.md): magi-core permits margin only
+  when both `TRD_ENV=SIMULATE` and `ACCOUNT_TYPE=margin` are explicit.
+  REAL, missing or unrecognised routing resolves to cash, including with
+  `ACCOUNT_TYPE=margin`. The unit deploy configuration declares the simulator
+  pair; deployment is a separate Jun operation. `TRD_ENV` is caller
+  configuration, not broker proof: the REAL bridge remains the final guard
+  if caller configuration and the actual bridge environment disagree.
+* This clarification supersedes the earlier “SIMULATE mirrors REAL” draft
+  wording in #190 and the unconditional cash default proposed in #189 for
+  explicitly configured simulator sessions. Fixed-universe enforcement
+  remains unchanged in both environments.
 
 # Discovery
 
@@ -195,3 +206,4 @@ OpenD — so it holds regardless of caller, LLM prompt or magi-core
   same table with `service='opend-proxy'` — the `legacy` route and the
   `auto` fallback leg (see Bridge routing). The private route needs no
   lookup: it is the static `BRIDGE_PRIVATE_URL` env var.
+
