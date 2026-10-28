@@ -5,7 +5,7 @@ description: Primary trade log — entry/exit, PnL, and unit attribution for eve
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=trades&page=table
 lilith_safe: false
 status: draft
-generated: { by: claude/cloud, at: 2026-10-27T03:30:00Z }
+generated: { by: claude/cloud, at: 2026-10-28T03:10:00Z }
 verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }]
 stale_after: 2027-04-18T08:44:00Z
 tags: [echidna, bigquery, trades, core]
@@ -201,6 +201,7 @@ Rules (added 2026-10-19, magi-core#625):
 # Related tables
 
 * `magi_core.trades_quarantine` — full snapshot of every row marked `CONTAMINATED`, plus `quarantine_reason` / `quarantine_source` / `quarantined_at`.
+* `magi_core.trades_recon_fix_backup_20261028` — pre-fix snapshot (plus `backed_up_at`) of the two unconfirmed rows back-filled on 2026-10-28 (AMAT 348816, CVX 348837; orphan CVX 348838 was inserted, so it has no backup row). One-off rollback source; no reader or writer in code.
 * `magi_core.trades_recon_fix_backup_20261027` — pre-fix snapshot (plus `backed_up_at`) of the four rows changed by the 2026-10-27 L1.6.RECON ledger fix (AMAT/WMT `RECON_BASELINE` → `BASELINE_SETTLED`, WMT AUTO_CLOSE 334659 `exit_timestamp` stamped, NKE 332758 → `CLOSE`). One-off rollback source; no reader or writer in code.
 * `magi_core.trades_price_corrections` — original values of rows whose `price`/`qty`/`pnl_*` were backfilled with the broker `dealt_avg_price`/`dealt_qty`, plus `corrected_price` / `corrected_qty` / `backed_up_at`.
 
