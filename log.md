@@ -1,21 +1,19 @@
 # Bundle Update Log
 
-## 2026-10-28 (REAL account cash-only guard in moomoo-bridge)
-* **Decision (Jun 2026-10-28)**: the MooMoo SIMULATE account may keep
-  margin / short behaviour; the **REAL** (production) account trades
-  cash-only (現物のみ) for now, as a safety setting ahead of REAL order
-  enablement (REAL `/place_order` is still off by default via
-  `MOOMOO_ALLOW_REAL_ORDERS`).
-* **Implementation (magi-moomoo PR)**: the bridge blocks, in REAL only, any
-  order when the pinned `acc_id` is not a broker-confirmed CASH account,
-  any SELL beyond the held long's `can_sell_qty`, and any BUY whose
-  notional exceeds account cash. Fail-closed; opt-out only via
-  `MOOMOO_REAL_ALLOW_MARGIN=true`.
+## 2026-10-28 (cash-only guard in moomoo-bridge — SIMULATE mirrors REAL)
+* **Decision (Jun 2026-10-28)**: the REAL (production) account trades
+  cash-only (現物のみ) for now, and the SIMULATE account is operated the
+  same way to mirror production, although the paper account itself
+  permits margin / shorts. REAL order enablement is deferred
+  (`MOOMOO_ALLOW_REAL_ORDERS` stays off).
+* **Implementation (magi-moomoo#99)**: the bridge blocks any SELL beyond
+  the held long's `can_sell_qty` and any BUY whose notional exceeds account
+  cash (both environments), plus — REAL only — any order when the pinned
+  `acc_id` is not a broker-confirmed CASH account. Fail-closed; opt-out only
+  via `MOOMOO_ALLOW_MARGIN=true`.
 * **Amendment**: [magi-moomoo](system/services/magi-moomoo.md) — new
-  "REAL cash-only guard (bridge)" section (doc remains `draft`).
-* **Unchanged / open**: magi-core `ACCOUNT_TYPE=cash` (L0.5) still applies to
-  every unit including SIMULATE sessions; letting SIMULATE sessions short
-  (`ACCOUNT_TYPE=margin`) is a separate policy change not made here.
+  "Cash-only guard (bridge)" section (doc remains `draft`).
+* magi-core `ACCOUNT_TYPE=cash` (L0.5) is unchanged and consistent.
 
 ## 2026-10-28 (L1.6.RECON blocked the 2026-10-27 night after an unconfirmed fill; ledger back-fill)
 * **Incident**: from 18:45Z on 2026-10-27, RECON read AMAT ledger 81 vs
