@@ -7,25 +7,26 @@
   trades row**. From 17:00Z RECON read AMAT ledger 31 vs broker 0
   (`PHANTOM_LEDGER`) and blocked 6 risk-increasing orders until close
   (BAC ×2, SNDK, CVX ×2, WMT).
-* **Root cause** (also explains the 2026-10-27 CVX 348838 orphan, whose
-  "root cause open" note above is now closed): `validateTradeRow`
+* **Probable root cause** (reproduced in code; attribution to these two
+  orders awaits the Cloud Logging `[DQ BLOCKED] … DUPLICATE within 5min`
+  lines — Devin; would also explain the 2026-10-27 CVX 348838 orphan):
+  `validateTradeRow`
   (`magi-core/lib/bigquery.js`) keyed duplicates on
   `symbol:side:price:llm_provider` over 5 min. Unconfirmed fills carry
   `price = NULL`, so a second unconfirmed close of the same symbol by the
   same provider (349652 → 349653, ~1 min apart) collided and was
   DQ-blocked; DQ blocks are intentionally not retried, so the row was
   lost. `position_guard_evals` shows the close reached `ORDER_PENDING_FILL`.
-* **Fix (magi-core PR `claude/trades-dedupe-order-id`)**: rows with an
-  `order_id` dedupe on the broker order id; rows without one keep the
-  legacy key.
+* **Fix (magi-core#682)**: rows with an `order_id` dedupe on the broker
+  order id; rows without one keep the legacy key. Mismatch logs no longer
+  claim "enqueued for retry" for DQ-blocked rows (they never are).
 * **Data fix (Jun-approved 2026-10-29 08:09 JST)**: backup
   `magi_core.trades_recon_fix_backup_20261029` taken. The missing row is
   recreated as positionMgmt would have written it — unconfirmed
   (`qty 0`, `requested_qty 31`, `price NULL`, `price_confirmed FALSE`,
   `result AUTO_CLOSE`, `entry_price` = broker avg cost 341.625) — so RECON
   resolves it from broker order history and the evaluator back-fills the
-  price; no fill price is guessed. INSERT execution pending (run by Jun;
-  the agent's write was not permitted).
+  price; no fill price is guessed. INSERT delegated to Devin (Jun, 2026-10-29).
 
 ## 2026-10-28 (Mistral #190 review: clarify verified scope)
 * Checked the Mistral review on #190 head `f6901a135909272a9a9f8cbabac8660e164d56e8`
