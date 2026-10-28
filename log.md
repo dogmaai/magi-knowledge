@@ -1,9 +1,31 @@
 # Bundle Update Log
 
+## 2026-10-28 (Mistral #190 review: clarify verified scope)
+* Checked the Mistral review on #190 head `f6901a135909272a9a9f8cbabac8660e164d56e8`
+  and the later-posted review of `ce540a1` against the actual sources.
+* Clarified caller-environment conditions, seven unit config declarations,
+  test commands/CI evidence, and the separation of document lifecycle from
+  unverified live-deployment status.
+* Documented existing bridge margin-value normalisation, REAL account-row
+  matching, price precedence, rejection logs and upstream HTTP 403 handling.
+* Limited the zero-cash/zero-position filter claim to the checked portfolio
+  dashboard, including its genuine-zero/null ambiguity. Identified the
+  initial-capital constant and the effect of editing it.
+* Asset-allocation discrepancy remains unverified. Added a concrete
+  same-account/currency/time reconciliation procedure; no cause or
+  correction factor is asserted. Existing ledger/RECON semantics and the
+  historical NKE classification are not changed by this documentation.
+* No policy, guard implementation, table/schema, historical row, infrastructure
+  or LILITH-boundary changes. Draft concepts and existing verification
+  history are retained. This PR's guard/constitution documentation is in
+  the independent-review scope defined by COLLABORATION.md; automated
+  Mistral output alone is not approval.
+
 ## 2026-10-28 (clarification: SIMULATE margin/shorts; REAL cash-only)
 * **Decision (Jun, clarified in ChatGPT)**: SIMULATE retains margin buying
-  and short selling. Only REAL is cash-only for now. This corrects the
-  earlier “SIMULATE mirrors REAL” draft in this PR.
+  and short selling. Only REAL is cash-only for now. This supersedes the
+  rejected “SIMULATE mirrors REAL” wording at PR revision `fc67c0a`; the
+  final diff against main therefore contains only the corrected policy.
 * **magi-moomoo#99**: skip the cash-only guard entirely in SIMULATE;
   retain REAL CASH-account / sellable-long / cash-coverage checks and
   the independent REAL order-enable gate. `/health.cash_only` reports
