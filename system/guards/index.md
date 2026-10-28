@@ -14,12 +14,12 @@ historical blocks already live in `thoughts`, so nothing is lost.
 | Layer | Name | Checks | On fail | Class |
 |---|---|---|---|---|
 | [L0](l0-kill-switch.md) | Emergency Kill Switch | Global halt from `magi_core.system_control` | block all orders | risk-control |
+| [UNIVERSE / L0.5](trading-policy.md) — draft implementation update | Fixed universe + cash-first policy | Fixed-list entries only; cash SELL and outside-list orders require broker-proven reductions | block | risk-control |
 | [L1.6.RECON](l1-6-recon.md) | Ledger↔broker Reconciliation | Ledger net qty (signed sum of all fills since `RECON_LEDGER_EPOCH`) vs broker position list per symbol | block risk increases (`RECON_FAIL_CLOSED`) | risk-control |
 | [JEV](jev.md) | Decision Validator | Order ↔ linked `log_analysis` consistency; typed PASS/BLOCK/ESCALATE verdict | warn (`JEV_MODE=shadow`) / block (`enforce`) | validator |
 | Shadow short circuit | Shadow-mode recording | `isConfiguredShadowMode()` → `recordShadowOrder()`; no broker call | record | pipeline |
 | [L-1](l-1.md) | Broker Availability | Broker reachable / tradable | block | risk-control |
 | [L0](l0.md) | PositionManager | PositionManager veto on symbol/side | block | risk-control |
-| [L0.5](l0-5.md) | Cash Account Guard | Block new short SELLs in cash accounts (cash is the fail-safe default; margin only by explicit `ACCOUNT_TYPE=margin`) | block | risk-control |
 | [L0.9](l0-9.md) | HOLD / zero-quantity | Reject missing or non-positive quantities | block | risk-control |
 | [L1](l1.md) | Data Validation (データ検証層) | Required params present and valid | block | risk-control |
 | [L1.6](l1-6.md) | Sellable Quantity | Clamp exit SELL to `can_sell_qty` | block or clamp | risk-control |
@@ -34,7 +34,8 @@ historical blocks already live in `thoughts`, so nothing is lost.
 | [L7](l7.md) | Composite Score (複合スコア層) | Optuna 1000-trial composite gate | warn (impl; demotion pending review) | statistical-gate |
 
 The numeric labels are historical and the table is in actual code execution
-order. The L0 emergency kill switch runs first, then L1.6.RECON (fail-closed
+order. The L0 emergency kill switch runs first, then the draft
+[fixed-universe / cash-first update](trading-policy.md), then L1.6.RECON (fail-closed
 when ledger↔broker divergence is detected or cannot be verified — it
 deliberately precedes JEV and the shadow short circuit so divergent state
 halts every unit, including
