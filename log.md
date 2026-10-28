@@ -1,5 +1,21 @@
 # Bundle Update Log
 
+## 2026-10-28 (Fixed monitoring universe and cash-first policy; separate from RECON)
+* **Jun instruction**: use a fixed candidate list of symbols suitable for
+  both cash and margin trading; cash is the default. Implement independently
+  of RECON. Keep the existing 60-symbol universe, including the SES/GRRR
+  removals; this work does not certify current broker eligibility anew.
+* **Implementation update (pending review)**: a separate `UNIVERSE / L0.5`
+  order policy rejects outside-list entries and unverified cash SELLs before
+  SHADOW recording. Broker-proven reductions remain possible for removed
+  holdings. Working exits reserve quantity; unfilled entries cannot supply
+  shares. Watchlists and HERMES focus/override candidates cannot expand the list.
+* **Specification**: [trading-policy](system/guards/trading-policy.md) is a
+  new draft. Base OKF `08edf13`, implementation base magi-core `953637d`.
+  Existing RECON, ledger data, account-mode configuration and LILITH boundary
+  are untouched. Independent implementation review and Jun's deployment
+  remain separate from this record.
+
 ## 2026-10-28 (L1.6.RECON blocked the 2026-10-27 night after an unconfirmed fill; ledger back-fill)
 * **Incident**: from 18:45Z on 2026-10-27, RECON read AMAT ledger 81 vs
   broker 106 and blocked every risk-increasing order (QWEN XOM ×2, AMAT ×1).
