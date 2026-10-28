@@ -29,9 +29,10 @@ position-reducing orders always pass.
   the signed sum (`buy` +qty, `sell` −qty) of **every** non-quarantined
   `trades` row (`result` not `CANCELLED`/`CONTAMINATED`) with `timestamp >=
   RECON_LEDGER_EPOCH`, terminal rows included — the same netting the broker
-  applies. Unconfirmed rows still carrying `qty=0` contribute nothing until
-  the evaluator reconciles the fill, so a real fill shows as a transient
-  divergence (fail-closed), never as a false "consistent".
+  applies. In this raw sum, an unconfirmed row still carrying `qty=0`
+  contributes nothing; RECON separately adjusts the ledger net from broker
+  order history before comparison, as described below. Without a matching
+  history record, a real fill remains divergent (fail-closed).
 * **Broker side**: MooMoo positions (signed qty).
 * **Unconfirmed fills** (magi-core PR, 2026-10-28): rows with
   `price_confirmed = FALSE` (journaled `qty=0` because the fill was not

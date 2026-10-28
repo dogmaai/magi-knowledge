@@ -19,6 +19,7 @@ Two write-path conventions matter:
 # Core trading tables
 
 * [trades](trades.md) - Primary trade log (entry/exit, PnL, attribution).
+* [trades-recon-fix-backup-20261028](trades-recon-fix-backup-20261028.md) - One-off pre-back-fill snapshot for the 2026-10-28 RECON ledger correction.
 * [trades-quarantine](trades-quarantine.md) - Original snapshots of `CONTAMINATED` trades rows.
 * [trades-price-corrections](trades-price-corrections.md) - Pre-correction snapshots of quote-price fixes.
 * [trades-unverifiable](trades-unverifiable.md) - Rows that can never be broker-verified (Alpaca gone / >90d moomoo).
