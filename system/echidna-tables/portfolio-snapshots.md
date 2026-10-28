@@ -5,7 +5,7 @@ description: Per-session-end portfolio snapshot (equity, cash, positions value, 
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=portfolio_snapshots&page=table
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-26T10:36:00Z }
+generated: { by: codex/cloud, at: 2026-10-28T14:00:34Z }
 verified: [{ by: devin/cli, at: 2026-10-26T10:36:00Z }]
 stale_after: 2027-04-26T10:36:00Z
 tags: [echidna, bigquery, portfolio, grafana]
@@ -43,6 +43,55 @@ per day). Grafana panels previously mislabeled these — corrected at the query
 layer (magi-core#668), which derives daily P&L as the day-over-day delta of
 each trading day's last-snapshot equity.
 
+Provisioning drift (found 2026-10-28): the #668 query fixes were merged into
+`magi-core/grafana/portfolio-chart.json` but never provisioned, so the live
+dashboard kept the session-delta panels until it was synced on 2026-10-28
+(magi-core PR `claude/portfolio-align-moomoo-app`).
+
+**Fallback rows**: when MooMoo is unreachable at session end the writer stores
+`equity = startingEquity`, `cash = 0`, `positions_value = 0` (46 rows in the
+30 days to 2026-10-28). The six asset-value and P&L snapshot queries in
+`magi-core/grafana/portfolio-chart.json` (#680) use `equity > 0` and
+`NOT (IFNULL(cash,0) = 0 AND IFNULL(positions_value,0) = 0)`.
+The dashboard's `Snapshot age` and `Last snapshot at` queries do not use
+this filter: a fallback row can refresh those indicators while the value/P&L
+panels still show an older valid snapshot. Freshness alone therefore does
+not establish that the displayed balances are current.
+This is the verified scope; it is not a guarantee that broker-sync or custom
+consumers apply the same filter. Check each consumer query independently.
+The condition is a heuristic, not a writer-supplied validity flag: it also
+excludes a genuine zero-cash/zero-position row (and treats nulls as zero).
+Do not interpret an excluded row as proof of an outage or use the filter
+to certify account solvency. Adding a provenance flag is a separate
+writer/schema change; none is introduced here.
+
+**MooMoo app alignment (Jun, 2026-10-28)**: the demo app's 損益合計 / 損益率
+are measured against the account's initial capital of **$1,000,000**
+(app 2026-10-28: +68,797.80 / +6.88%). The dashboard derives them as
+`equity − initial_capital` and `equity / initial_capital − 1` (dashboard
+constant `initial_capital`); 当日損益 is the day-over-day equity delta per
+America/New_York trading day. Values are session-end snapshots, so they lag
+the app's live quotes until the next session.
+
+`initial_capital` is a hidden Grafana constant (`type: constant`, `hide: 2`,
+`query: "1000000"`) in `grafana/portfolio-chart.json`, not a BigQuery column
+or an automatically discovered balance. Its value can be changed by editing
+that dashboard definition and provisioning it through the normal process.
+Changing it recalculates total P&L and total P&L % for every displayed
+snapshot; it does not rewrite snapshot equity or change daily equity deltas.
+
+**Open reconciliation**: the 2026-10-28 app cash/stock allocation
+(96.65% / 3.35%) differs from bridge `cash` / `market_val` (about
+92.6% / 7.4%). Cause is unverified; fees, FX and valuation differences are
+hypotheses, not findings. Allocation panels are not yet verified to match
+the app; no correction factor should be inferred from these percentages.
+Before claiming full app alignment, compare the same account/environment,
+currency and observation time in the app's assets tab and bridge account
+response; reconcile the individual positions and field definitions, then
+check the corresponding snapshot and dashboard query. This discrepancy
+concerns the cash/stock breakdown; the total-equity P&L formula is separate
+but still depends on the accuracy and time of the broker equity input.
+
 Renaming the columns or changing the writer is **deferred** — it would
 redefine every historical row. Consumers must not read `daily_pnl` as a daily
 aggregate. Any semantic change is a separate Jun decision.
@@ -53,3 +102,4 @@ aggregate. Any semantic change is a separate Jun decision.
 - Grafana `magi-broker-sync` — snapshot freshness and latest-row panels
   (magi-core#668; freshness thresholds per
   [data-freshness-expectations](data-freshness-expectations.md), draft).
+

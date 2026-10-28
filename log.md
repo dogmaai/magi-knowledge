@@ -1,5 +1,62 @@
 # Bundle Update Log
 
+## 2026-10-28 (Mistral #190 review: clarify verified scope)
+* Checked the Mistral review on #190 head `f6901a135909272a9a9f8cbabac8660e164d56e8`
+  and the later-posted review of `ce540a1` against the actual sources.
+* Clarified caller-environment conditions, seven unit config declarations,
+  test commands/CI evidence, and the separation of document lifecycle from
+  unverified live-deployment status.
+* Documented existing bridge margin-value normalisation, REAL account-row
+  matching, price precedence, rejection logs and upstream HTTP 403 handling.
+* Limited the zero-cash/zero-position filter claim to the checked portfolio
+  dashboard, including its genuine-zero/null ambiguity. Identified the
+  initial-capital constant and the effect of editing it.
+* Asset-allocation discrepancy remains unverified. Added a concrete
+  same-account/currency/time reconciliation procedure; no cause or
+  correction factor is asserted. Existing ledger/RECON semantics and the
+  historical NKE classification are not changed by this documentation.
+* No policy, guard implementation, table/schema, historical row, infrastructure
+  or LILITH-boundary changes. Draft concepts and existing verification
+  history are retained. This PR's guard/constitution documentation is in
+  the independent-review scope defined by COLLABORATION.md; automated
+  Mistral output alone is not approval.
+
+## 2026-10-28 (clarification: SIMULATE margin/shorts; REAL cash-only)
+* **Decision (Jun, clarified in ChatGPT)**: SIMULATE retains margin buying
+  and short selling. Only REAL is cash-only for now. This supersedes the
+  rejected “SIMULATE mirrors REAL” wording at PR revision `fc67c0a`; the
+  final diff against main therefore contains only the corrected policy.
+* **magi-moomoo#99**: skip the cash-only guard entirely in SIMULATE;
+  retain REAL CASH-account / sellable-long / cash-coverage checks and
+  the independent REAL order-enable gate. `/health.cash_only` reports
+  the effective environment-specific policy.
+* **magi-core#679**: permit margin only with explicit `TRD_ENV=SIMULATE`
+  and `ACCOUNT_TYPE=margin`; configure those values for unit jobs.
+  REAL or unknown/missing routing stays cash-only. The REAL bridge
+  enforces its own policy even if caller configuration is wrong.
+* **Scope**: account-type prompt/L0.5 and bridge order guard; no RECON,
+  fixed-universe, table/schema, historical ledger or LILITH changes.
+  Existing draft #189's cash default is superseded only for the explicit
+  simulator pair. The amended cash-account constitution concept is downgraded to draft
+  pending re-verification; existing verification history is retained.
+  No new human verification
+  entry or deployment is claimed. Independent review is required.
+
+## 2026-10-28 (Grafana portfolio chart aligned with the MooMoo demo app)
+* **Request (Jun)**: Grafana (BigQuery) figures should match the MooMoo
+  simulator app. App reference 2026-10-28: 損益合計 +68,797.80, 損益率
+  +6.88% → initial capital $1,000,000.
+* **Drift found**: magi-core#668's `grafana/portfolio-chart.json` was merged
+  but never provisioned; the live dashboard still showed the last
+  session's equity delta as "Total P&L %" / "Daily P&L", and endSession
+  fallback rows (cash=0, positions=0) polluted the stat panels.
+* **Fix**: magi-core PR `claude/portfolio-align-moomoo-app` + live dashboard
+  synced (Grafana version 8). Amendment:
+  [portfolio-snapshots](system/echidna-tables/portfolio-snapshots.md).
+* **Open**: the app's 預り金 / 株式 split (96.65% / 3.35%) does not match
+  the bridge's `cash` / `market_val` (≈92.6% / 7.4%) for the same holdings;
+  needs the app's 資産 tab to reconcile.
+
 ## 2026-10-28 (L1.6.RECON blocked the 2026-10-27 night after an unconfirmed fill; ledger back-fill)
 * **Incident**: from 18:45Z on 2026-10-27, RECON read AMAT ledger 81 vs
   broker 106 and blocked every risk-increasing order (QWEN XOM ×2, AMAT ×1).
