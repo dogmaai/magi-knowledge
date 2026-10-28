@@ -4,7 +4,7 @@ title: magi-moomoo
 description: MooMoo broker integration — account, positions, orders, market snapshots.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-23T11:30:00Z }
+generated: { by: claude/cloud, at: 2026-10-28T11:40:00Z }
 verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: devin/cli, at: 2026-09-16T07:25:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-04-04T05:36:00Z
 tags: [service, moomoo, broker]
@@ -159,6 +159,33 @@ SIMULATE endpoints keep legacy behaviour during rollout, but a REAL
 `/place_order` fails closed with HTTP 403 — an unauthenticated bridge can
 never place a real-money order. `/health` reports `auth_required` so
 monitors can detect an unprotected deployment.
+
+# REAL cash-only guard (bridge)
+
+Account policy (Jun, 2026-10-28): the **SIMULATE** account may keep
+margin / short behaviour, but **REAL** orders are cash-only (現物のみ) for
+now. Enforced in the on-prem bridge (`bridge/moomoo_bridge.py`,
+`_real_cash_only_violation`) — the last hop before OpenD and the only
+component bound to `TRD_ENV` — so it holds regardless of caller, LLM
+prompt or magi-core `ACCOUNT_TYPE` setting.
+
+* Active when `TRD_ENV=REAL`, unless `MOOMOO_REAL_ALLOW_MARGIN` is exactly
+  `true` (fail-safe: unset / empty / misspelled keeps it on). SIMULATE is
+  never affected. `/health` reports `real_cash_only`.
+* Runs after the `MOOMOO_ALLOW_REAL_ORDERS` check; three checks, each
+  fail-closed (any lookup failure or exception blocks):
+  1. The pinned `MOOMOO_ACC_ID` must be a broker-confirmed REAL
+     `acc_type=CASH` sub-account (`get_acc_list`) — the JP comprehensive
+     account also exposes a MARGIN sub-account with its own `acc_id`.
+  2. **SELL** qty ≤ the long position's `can_sell_qty` (long `qty` if
+     absent) — closes/reduces held longs only; no new shorts.
+  3. **BUY** qty × reference price ≤ account cash (`us_cash`, else
+     `cash`); the reference is the LIMIT price, or for MARKET the
+     snapshot `last_price` + 2% — no margin buying.
+* Blocked orders return HTTP 403 with `blocked_by: real_cash_only_guard`.
+* Relation to [L0.5](/system/guards/l0-5.md): L0.5 is the magi-core
+  prompt/tool-level cash-account guard driven by `ACCOUNT_TYPE`; this is
+  the broker-side enforcement for REAL only.
 
 # Discovery
 
