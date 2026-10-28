@@ -1,5 +1,26 @@
 # Bundle Update Log
 
+## 2026-10-28 (L1.6.RECON blocked the 2026-10-27 night after an unconfirmed fill; ledger back-fill)
+* **Incident**: from 18:45Z on 2026-10-27, RECON read AMAT ledger 81 vs
+  broker 106 and blocked every risk-increasing order (QWEN XOM ×2, AMAT ×1).
+  Cause: AMAT buy 348816 filled at the broker but was journaled `qty=0`
+  (`price_confirmed=FALSE`); the evaluator back-fills only rows older than
+  24h, so the next session (2026-10-28) would also have started divergent.
+  Also found: CVX sell 348837 journaled `qty=0`, and an **orphan fill** —
+  CVX sell 348838 (BOREAS, intent `i_61f19b037d90`) filled with no trades
+  row (root cause open; needs the Cloud Run logs for session
+  `9992f137-…`). Earlier that night RECON was clean (first session after
+  the 2026-10-27 fix: no RECON rows; 6 buys + 3 sells filled).
+* **Data fix (Jun-approved, 2026-10-28 01:51Z,
+  job_UuJifn1ZqrhKzRFFbwRPc8k9gNyA)**: from `order_intents` RECONCILED
+  evidence (broker FILLED_ALL) — 348816 qty 25 @395.10, 348837 qty 25
+  @228.345 (both `price_confirmed=TRUE`); orphan 348838 inserted (sell 10
+  @228.345, `result` NULL for the evaluator). Ledger net since the epoch
+  after the fix: AMAT 106, CVX 15, WMT 215. Backup:
+  `magi_core.trades_recon_fix_backup_20261028`.
+* **Amendment**: [l1-6-recon](system/guards/l1-6-recon.md) — RECON resolves
+  unconfirmed fills read-only from broker order history (magi-core PR).
+
 ## 2026-10-27 (SES and GRRR removed from the trading universe)
 * **Decision (Jun 2026-10-27)**: SES and GRRR are no longer monitored or
   traded. **Reason**: both cannot be sold short on margin (信用の空売り不可).

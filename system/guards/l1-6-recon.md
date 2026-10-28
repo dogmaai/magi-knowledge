@@ -4,7 +4,7 @@ title: L1.6.RECON Ledger↔Broker Reconciliation
 description: Fail-closed reconciliation of the trades ledger's net quantity per symbol against the broker position list; blocks risk-increasing orders while divergent or unverified.
 lilith_safe: false
 status: draft
-generated: { by: claude/cloud, at: 2026-10-27T03:30:00Z }
+generated: { by: claude/cloud, at: 2026-10-28T03:10:00Z }
 verified: [{ by: claude/cloud, at: 2026-10-27T03:30:00Z }]
 stale_after: 2027-04-27T03:30:00Z
 tags: [guard, l1.6, reconciliation, ledger, broker, fail-closed]
@@ -33,6 +33,20 @@ position-reducing orders always pass.
   the evaluator reconciles the fill, so a real fill shows as a transient
   divergence (fail-closed), never as a false "consistent".
 * **Broker side**: MooMoo positions (signed qty).
+* **Unconfirmed fills** (magi-core PR, 2026-10-28): rows with
+  `price_confirmed = FALSE` (journaled `qty=0` because the fill was not
+  confirmed at order time) are resolved read-only against broker order
+  history (`getMoomooOrderHistory`, matched by broker order id) and the
+  broker-filled quantity is added to the ledger net. The evaluator still
+  back-fills the row itself, but only after 24h — without this, one
+  unconfirmed fill kept RECON divergent for the rest of that session and
+  the whole next one (2026-10-27 AMAT 348816). An order absent from history
+  stays divergent; a history fetch failure makes the verdict `unknown`.
+  Duplicate unconfirmed rows for one order are aggregated before the fill
+  is applied; malformed unconfirmed rows (missing order id/symbol, unknown
+  side, unparseable qty) throw → `unknown`.
+  Fills with **no trades row at all** (orphans, e.g. CVX 348838) are not
+  resolvable this way and stay divergent until journaled by a human.
 * Malformed input — a broker position or ledger row without a symbol, or
   an unparseable quantity — throws, so the verdict becomes `unknown`
   (fail-closed); it is never skipped or coerced to 0, which could report a
