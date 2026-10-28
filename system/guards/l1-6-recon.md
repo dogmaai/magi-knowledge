@@ -42,6 +42,9 @@ position-reducing orders always pass.
   unconfirmed fill kept RECON divergent for the rest of that session and
   the whole next one (2026-10-27 AMAT 348816). An order absent from history
   stays divergent; a history fetch failure makes the verdict `unknown`.
+  Duplicate unconfirmed rows for one order are aggregated before the fill
+  is applied; malformed unconfirmed rows (missing order id/symbol, unknown
+  side, unparseable qty) throw → `unknown`.
   Fills with **no trades row at all** (orphans, e.g. CVX 348838) are not
   resolvable this way and stay divergent until journaled by a human.
 * Malformed input — a broker position or ledger row without a symbol, or
