@@ -50,9 +50,13 @@ dashboard kept the session-delta panels until it was synced on 2026-10-28
 
 **Fallback rows**: when MooMoo is unreachable at session end the writer stores
 `equity = startingEquity`, `cash = 0`, `positions_value = 0` (46 rows in the
-30 days to 2026-10-28). The snapshot queries in
+30 days to 2026-10-28). The six asset-value and P&L snapshot queries in
 `magi-core/grafana/portfolio-chart.json` (#680) use `equity > 0` and
 `NOT (IFNULL(cash,0) = 0 AND IFNULL(positions_value,0) = 0)`.
+The dashboard's `Snapshot age` and `Last snapshot at` queries do not use
+this filter: a fallback row can refresh those indicators while the value/P&L
+panels still show an older valid snapshot. Freshness alone therefore does
+not establish that the displayed balances are current.
 This is the verified scope; it is not a guarantee that broker-sync or custom
 consumers apply the same filter. Check each consumer query independently.
 The condition is a heuristic, not a writer-supplied validity flag: it also
