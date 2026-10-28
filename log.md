@@ -1,19 +1,24 @@
 # Bundle Update Log
 
-## 2026-10-28 (cash-only guard in moomoo-bridge — SIMULATE mirrors REAL)
-* **Decision (Jun 2026-10-28)**: the REAL (production) account trades
-  cash-only (現物のみ) for now, and the SIMULATE account is operated the
-  same way to mirror production, although the paper account itself
-  permits margin / shorts. REAL order enablement is deferred
-  (`MOOMOO_ALLOW_REAL_ORDERS` stays off).
-* **Implementation (magi-moomoo#99)**: the bridge blocks any SELL beyond
-  the held long's `can_sell_qty` and any BUY whose notional exceeds account
-  cash (both environments), plus — REAL only — any order when the pinned
-  `acc_id` is not a broker-confirmed CASH account. Fail-closed; opt-out only
-  via `MOOMOO_ALLOW_MARGIN=true`.
-* **Amendment**: [magi-moomoo](system/services/magi-moomoo.md) — new
-  "Cash-only guard (bridge)" section (doc remains `draft`).
-* magi-core `ACCOUNT_TYPE=cash` (L0.5) is unchanged and consistent.
+## 2026-10-28 (clarification: SIMULATE margin/shorts; REAL cash-only)
+* **Decision (Jun, clarified in ChatGPT)**: SIMULATE retains margin buying
+  and short selling. Only REAL is cash-only for now. This corrects the
+  earlier “SIMULATE mirrors REAL” draft in this PR.
+* **magi-moomoo#99**: skip the cash-only guard entirely in SIMULATE;
+  retain REAL CASH-account / sellable-long / cash-coverage checks and
+  the independent REAL order-enable gate. `/health.cash_only` reports
+  the effective environment-specific policy.
+* **magi-core#679**: permit margin only with explicit `TRD_ENV=SIMULATE`
+  and `ACCOUNT_TYPE=margin`; configure those values for unit jobs.
+  REAL or unknown/missing routing stays cash-only. The REAL bridge
+  enforces its own policy even if caller configuration is wrong.
+* **Scope**: account-type prompt/L0.5 and bridge order guard; no RECON,
+  fixed-universe, table/schema, historical ledger or LILITH changes.
+  Existing draft #189's cash default is superseded only for the explicit
+  simulator pair. The amended cash-account constitution concept is downgraded to draft
+  pending re-verification; existing verification history is retained.
+  No new human verification
+  entry or deployment is claimed. Independent review is required.
 
 ## 2026-10-28 (Grafana portfolio chart aligned with the MooMoo demo app)
 * **Request (Jun)**: Grafana (BigQuery) figures should match the MooMoo
