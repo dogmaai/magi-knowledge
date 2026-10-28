@@ -15,6 +15,21 @@
   "Cash-only guard (bridge)" section (doc remains `draft`).
 * magi-core `ACCOUNT_TYPE=cash` (L0.5) is unchanged and consistent.
 
+## 2026-10-28 (Grafana portfolio chart aligned with the MooMoo demo app)
+* **Request (Jun)**: Grafana (BigQuery) figures should match the MooMoo
+  simulator app. App reference 2026-10-28: 損益合計 +68,797.80, 損益率
+  +6.88% → initial capital $1,000,000.
+* **Drift found**: magi-core#668's `grafana/portfolio-chart.json` was merged
+  but never provisioned; the live dashboard still showed the last
+  session's equity delta as "Total P&L %" / "Daily P&L", and endSession
+  fallback rows (cash=0, positions=0) polluted the stat panels.
+* **Fix**: magi-core PR `claude/portfolio-align-moomoo-app` + live dashboard
+  synced (Grafana version 8). Amendment:
+  [portfolio-snapshots](system/echidna-tables/portfolio-snapshots.md).
+* **Open**: the app's 預り金 / 株式 split (96.65% / 3.35%) does not match
+  the bridge's `cash` / `market_val` (≈92.6% / 7.4%) for the same holdings;
+  needs the app's 資産 tab to reconcile.
+
 ## 2026-10-28 (L1.6.RECON blocked the 2026-10-27 night after an unconfirmed fill; ledger back-fill)
 * **Incident**: from 18:45Z on 2026-10-27, RECON read AMAT ledger 81 vs
   broker 106 and blocked every risk-increasing order (QWEN XOM ×2, AMAT ×1).

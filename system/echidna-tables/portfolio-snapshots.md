@@ -5,7 +5,7 @@ description: Per-session-end portfolio snapshot (equity, cash, positions value, 
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=portfolio_snapshots&page=table
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-26T10:36:00Z }
+generated: { by: claude/cloud, at: 2026-10-28T13:10:00Z }
 verified: [{ by: devin/cli, at: 2026-10-26T10:36:00Z }]
 stale_after: 2027-04-26T10:36:00Z
 tags: [echidna, bigquery, portfolio, grafana]
@@ -42,6 +42,24 @@ single session, typically a ~4–20 minute window; multiple sessions per unit
 per day). Grafana panels previously mislabeled these — corrected at the query
 layer (magi-core#668), which derives daily P&L as the day-over-day delta of
 each trading day's last-snapshot equity.
+
+Provisioning drift (found 2026-10-28): the #668 query fixes were merged into
+`magi-core/grafana/portfolio-chart.json` but never provisioned, so the live
+dashboard kept the session-delta panels until it was synced on 2026-10-28
+(magi-core PR `claude/portfolio-align-moomoo-app`).
+
+**Fallback rows**: when MooMoo is unreachable at session end the writer stores
+`equity = startingEquity`, `cash = 0`, `positions_value = 0` (46 rows in the
+30 days to 2026-10-28). Consumers exclude rows where `cash = 0 AND
+positions_value = 0`.
+
+**MooMoo app alignment (Jun, 2026-10-28)**: the demo app's 損益合計 / 損益率
+are measured against the account's initial capital of **$1,000,000**
+(app 2026-10-28: +68,797.80 / +6.88%). The dashboard derives them as
+`equity − initial_capital` and `equity / initial_capital − 1` (dashboard
+constant `initial_capital`); 当日損益 is the day-over-day equity delta per
+America/New_York trading day. Values are session-end snapshots, so they lag
+the app's live quotes until the next session.
 
 Renaming the columns or changing the writer is **deferred** — it would
 redefine every historical row. Consumers must not read `daily_pnl` as a daily
