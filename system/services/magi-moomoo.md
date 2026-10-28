@@ -4,7 +4,7 @@ title: magi-moomoo
 description: MooMoo broker integration — account, positions, orders, market snapshots.
 lilith_safe: false
 status: draft
-generated: { by: codex/cloud, at: 2026-10-28T13:40:20Z }
+generated: { by: codex/cloud, at: 2026-10-28T14:00:34Z }
 verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: devin/cli, at: 2026-09-16T07:25:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-04-04T05:36:00Z
 tags: [service, moomoo, broker]
@@ -171,24 +171,41 @@ The on-prem bridge (`bridge/moomoo_bridge.py`, `_cash_only_violation`)
 enforces the REAL rule at the last hop before OpenD, independently of the
 caller, LLM prompt or magi-core `ACCOUNT_TYPE`.
 
-* Active only in REAL unless `MOOMOO_ALLOW_MARGIN` is exactly `true`
-  (unset / empty / misspelled keeps the REAL guard on). `/health` reports
+* Active only in REAL unless `MOOMOO_ALLOW_MARGIN.strip().lower()` equals
+  `"true"`: `true`, `True`, `TRUE` and `" TRUE "` disable it; unset, empty,
+  `yes`, `1` or a typo keep it on. This documents existing parsing and
+  does not relax the guard. `/health` reports
   the effective `cash_only`: false in SIMULATE, true in REAL unless overridden.
 * Runs after the independent `MOOMOO_ALLOW_REAL_ORDERS` check. Each check
   fails closed on a lookup failure or exception:
   1. The pinned REAL `MOOMOO_ACC_ID` must be a broker-confirmed
-     `acc_type=CASH` sub-account (`get_acc_list`).
+     `acc_type=CASH` sub-account (`get_acc_list`). The selected row must
+     match `acc_id == MOOMOO_ACC_ID` and `trd_env=REAL`. A missing match,
+     missing/non-CASH type or failed query blocks the order.
   2. **SELL** qty ≤ the long position's `can_sell_qty` (long `qty` if
      absent) — no new shorts.
   3. **BUY** qty × reference price ≤ account cash (`us_cash`, else `cash`);
-     LIMIT price, or MARKET snapshot `last_price` + 2% — no margin buying.
-* Blocked orders return HTTP 403 with `blocked_by: cash_only_guard`.
+     a positive LIMIT price is used directly. Otherwise the bridge queries
+     a snapshot and uses `max(last_price, positive caller price hint) * 1.02`.
+     A failed/empty quote or no usable reference price blocks the order.
+     The 2% buffer is an implementation allowance, not a proven slippage
+     bound or a guarantee of the final execution price.
+* Blocked orders return HTTP 403 with `blocked_by: cash_only_guard` and
+  a reason, before `place_order` reaches OpenD. The bridge logs
+  `[ORDER] Blocked by cash-only guard`; exceptions log
+  `[ORDER] cash-only guard error`, reset the trade context and also block.
+  In magi-core `lib/moomoo.js`, an HTTP 403 is journaled as `REJECTED`
+  with `orderDisposition='rejected'` / `refusedBy='proxy'`. It is not a
+  broker business refusal eligible for SELL self-heal. Diagnose the
+  account pin, holdings/cash or connectivity, restore valid evidence,
+  then reassess the order; do not bypass the guard to recover.
 * SIMULATE skips all three cash-only checks; broker eligibility, order
   validation and other existing risk guards still apply.
 * Relation to [L0.5](/system/guards/l0-5.md): magi-core permits margin only
   when both `TRD_ENV=SIMULATE` and `ACCOUNT_TYPE=margin` are explicit.
-  REAL, missing or unrecognised routing resolves to cash, including with
-  `ACCOUNT_TYPE=margin`. The unit deploy configuration declares the simulator
+  `TRD_ENV=REAL`, or an unset, empty or unrecognised `TRD_ENV`, resolves to
+  cash even with `ACCOUNT_TYPE=margin`. Missing or invalid `ACCOUNT_TYPE`
+  also resolves to cash. The unit deploy configuration declares the simulator
   pair; deployment is a separate Jun operation. `TRD_ENV` is caller
   configuration, not broker proof: the REAL bridge remains the final guard
   if caller configuration and the actual bridge environment disagree.
@@ -196,6 +213,11 @@ caller, LLM prompt or magi-core `ACCOUNT_TYPE`.
   wording in #190 and the unconditional cash default proposed in #189 for
   explicitly configured simulator sessions. Fixed-universe enforcement
   remains unchanged in both environments.
+
+Implementation checked for these semantics: magi-moomoo
+`434c796410b7d23f8a44edc695be321fba55c2f8`, `bridge/moomoo_bridge.py`;
+magi-core `d9f39d7ebb091f2e7baddb475b92e747fd34cfad`, `lib/moomoo.js`.
+Live configuration and broker connectivity are not established by this check.
 
 # Discovery
 
@@ -206,4 +228,5 @@ caller, LLM prompt or magi-core `ACCOUNT_TYPE`.
   same table with `service='opend-proxy'` — the `legacy` route and the
   `auto` fallback leg (see Bridge routing). The private route needs no
   lookup: it is the static `BRIDGE_PRIVATE_URL` env var.
+
 
