@@ -10,6 +10,7 @@ callers don't hard-code endpoints.
 | Service | Repo | Role |
 |---|---|---|
 | [magi-core](magi-core.md) | dogmaai/magi-core | Trading engine: trade loop, LLM orchestration, guard layers. |
+| [Gemini AI Studio policy](gemini-ai-studio.md) — draft | dogmaai/magi-core | AI Studio-only generation for Gemini research/analysis; no Vertex fallback. |
 | [magi-moomoo](magi-moomoo.md) | dogmaai/magi-moomoo | MooMoo broker integration (account, positions, orders, snapshots). |
 | [magi-price-tracker](magi-price-tracker.md) | dogmaai/magi-price-tracker | Realtime price/market-data tracking. |
 | [magi-isabel](magi-isabel.md) | dogmaai/magi-core | ISABEL pattern framework (centroids, embeddings). |
