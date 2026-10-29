@@ -1,5 +1,21 @@
 # Bundle Update Log
 
+## 2026-10-29 (Gemini generation unified on AI Studio)
+* **Jun instruction**: Vertex AI cannot be used; unify Gemini generation on
+  AI Studio. Models, trading modes and analysis responsibilities do not change.
+* **Implementation update, pending review/deployment**: HERMES macro changes
+  from a Vertex SDK client to API-key-based AI Studio while retaining Search
+  Grounding. Gemini Analyzer removes its Vertex/ADC fallback and validates
+  credentials before table/schema work. Shared analyzer transport naming and
+  operating documentation now describe AI Studio. DAPHNE already used this API.
+* **OKF correction**: [DAPHNE](system/echidna-tables/daphne-feedback.md) changes
+  the stale Vertex wording to AI Studio and returns to draft for review;
+  historical human verification is retained without inventing a new review.
+  [Gemini AI Studio policy](system/services/gemini-ai-studio.md) is a new draft.
+* Reference pin `c00baf0`; implementation base magi-core `7a8175a`. No changes
+  to tables/schemas, ledger data, guards, RECON, account mode, GCP infrastructure
+  or the LILITH boundary. No production operation is performed by this update.
+
 ## 2026-10-28 (Mistral #190 review: clarify verified scope)
 * Checked the Mistral review on #190 head `f6901a135909272a9a9f8cbabac8660e164d56e8`
   and the later-posted review of `ce540a1` against the actual sources.
