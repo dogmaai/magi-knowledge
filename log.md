@@ -14,6 +14,10 @@
   chunk array (`thinking` + `text`) instead of a string, so the first run
   posted `[object Object]`. The workflows now concatenate only `text`
   chunks (reasoning is not posted) and still accept plain-string content.
+  Reasoning chunks also consume `max_tokens`, so two repos then posted an
+  empty review; `max_tokens` is raised to 16000 in all five workflows, and
+  an empty result now posts `finish_reason` and chunk types instead of a
+  bare `(no output)`.
 * **Docs**: [COLLABORATION.md](COLLABORATION.md#automated-pr-review-bots)
   and [secrets-inventory](system/services/secrets-inventory.md) model name.
   secrets-inventory stays `draft`; no verification entry is added.
