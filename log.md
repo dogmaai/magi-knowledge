@@ -10,6 +10,10 @@
 * **Implementation**: `MISTRAL_MODEL` in `.github/workflows/auto-review.yml`
   of `magi-knowledge`, `magi-core`, `magi-moni`, `magi-moomoo` and
   `magi-price-tracker` (branch `claude/mistral-review-large-4` in each).
+* **Response format fix**: `mistral-large-4` returns `message.content` as a
+  chunk array (`thinking` + `text`) instead of a string, so the first run
+  posted `[object Object]`. The workflows now concatenate only `text`
+  chunks (reasoning is not posted) and still accept plain-string content.
 * **Docs**: [COLLABORATION.md](COLLABORATION.md#automated-pr-review-bots)
   and [secrets-inventory](system/services/secrets-inventory.md) model name.
   secrets-inventory stays `draft`; no verification entry is added.
