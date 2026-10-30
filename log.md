@@ -6,10 +6,14 @@
   `mistral-large-4` (Mistral Large 4, Public Preview on the Mistral API
   since 2026-10-06 per the Mistral changelog). Pinning makes the model in
   use visible in each review header; if the preview ID changes or is
-  withdrawn, the Mistral step fails instead of silently switching models.
+  withdrawn, the Mistral step errors (job stays green via
+  `continue-on-error`; the review is simply missing) instead of silently
+  switching models.
 * **Implementation**: `MISTRAL_MODEL` in `.github/workflows/auto-review.yml`
-  of `magi-knowledge`, `magi-core`, `magi-moni`, `magi-moomoo` and
-  `magi-price-tracker` (branch `claude/mistral-review-large-4` in each).
+  of `magi-knowledge` (#194), `magi-core` (#685), `magi-moni` (#56),
+  `magi-moomoo` (#100) and `magi-price-tracker` (#7) (branch
+  `claude/mistral-review-large-4` in each). Each PR's own auto-review run
+  confirmed `mistral-large-4` responds and the review body is posted.
 * **Response format fix**: `mistral-large-4` returns `message.content` as a
   chunk array (`thinking` + `text`) instead of a string, so the first run
   posted `[object Object]`. The workflows now concatenate only `text`
