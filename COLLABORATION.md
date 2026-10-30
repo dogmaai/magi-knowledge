@@ -321,12 +321,13 @@ Any further egress expansion still needs Jun's explicit decision.
 
 `magi-core/.github/workflows/claude-review.yml` runs
 `anthropics/claude-code-action` (pinned by commit SHA in that workflow file —
-the file, not this document, is the source for the pinned version) on
-`pull_request` events `opened`, `synchronize`, `ready_for_review` and
-`reopened`. Draft PRs are skipped while they are drafts; `ready_for_review`
-fires when a draft is marked ready, at which point the PR is no longer a
-draft and is reviewed. PRs opened by `github-actions[bot]` (e.g. the OKF pin
-bump) are skipped.
+the file, not this document, is the source for the pinned version) **only on
+request**: an `issue_comment` on a PR whose body contains `@claude review`,
+written by a non-bot user with `OWNER`, `MEMBER` or `COLLABORATOR`
+association. Opening or pushing to a PR no longer triggers a review (Jun's
+decision 2026-10-30: the per-push review produced cost spikes; reviews are
+now requested when needed). Fork PRs and closed PRs are skipped; drafts may
+be reviewed on request. The requesting comment gets an 👀 reaction.
 
 What the job does:
 
@@ -340,8 +341,10 @@ What the job does:
   never checked out in magi-core (LILITH contamination boundary).
 * It runs `npm test` / `eslint` and ad-hoc probe tests in the runner, verifies
   the other bots' findings, and posts inline comments plus one top-level
-  comment carrying a `<!-- claude-review sha=<head SHA> -->` marker. A head
-  that already carries a marker posted by `github-actions[bot]` is skipped.
+  comment carrying a `<!-- claude-review sha=<head SHA> -->` marker. Each
+  request runs a fresh review, even for a head that was reviewed before.
+* If the Claude step fails (for example the subscription usage limit), the
+  job stays green and posts a PR comment asking to re-request later.
 
 How the restrictions are enforced:
 
@@ -370,16 +373,27 @@ Extending this workflow to other repositories is a new egress decision.
 Probe-test execution. Jun decided on 2026-10-21 to keep allowing the reviewer
 to write and run probe tests (`Write`/`Edit` + `npm test` / `node --test`) so
 it can compare behavior on `main` and the PR head. Code run this way can read
-the job's `ANTHROPIC_API_KEY` and its `pull-requests: write` token. This was
-accepted because only trusted actors can push branches to the private
-`magi-core` repository, and same-repo `pull_request` runs already execute the
-PR's own workflow file with access to its secrets. The residual risk is
+the job's `CLAUDE_CODE_OAUTH_TOKEN` and its `pull-requests: write` token.
+This was accepted because only trusted actors can push branches to the
+private `magi-core` repository and fork PRs are skipped. (Since 2026-10-30
+the workflow runs on `issue_comment`, so the workflow file itself comes from
+the default branch, but the PR's code is still checked out and executed.) The residual risk is
 prompt injection from PR text and comments. Revisit this if outside
 contributors or fork PRs are ever allowed.
 
-Key: GitHub Actions secret `ANTHROPIC_API_KEY` in `magi-core`, injected from
-Secret Manager `ANTHROPIC_API_KEY_PR_REVIEW` (see
-[secrets-inventory](system/services/secrets-inventory.md)).
+Authentication. Jun decided on 2026-10-30 to run this workflow on his Claude
+subscription instead of API billing: GitHub Actions secret
+`CLAUDE_CODE_OAUTH_TOKEN` in `magi-core` (a `claude setup-token` OAuth token
+tied to Jun's subscription), injected from Secret Manager
+`CLAUDE_CODE_OAUTH_TOKEN_PR_REVIEW` (see
+[secrets-inventory](system/services/secrets-inventory.md)). Consequences:
+reviews draw from the same usage limits as Jun's own Claude use; data
+handling follows Jun's subscription plan terms rather than the API terms
+covered by the 2026-10-21 approval (the data scope above is unchanged); and
+probe-test code in the runner can read a token for Jun's personal
+subscription rather than a dedicated API key. The previous key
+(`ANTHROPIC_API_KEY` secret / `SM` `ANTHROPIC_API_KEY_PR_REVIEW`) is
+scheduled for retirement once the new path is confirmed.
 
 ## Drift checks: extend before adding
 

@@ -1,5 +1,25 @@
 # Bundle Update Log
 
+## 2026-10-30 (Claude PR review: on-request only, subscription auth)
+* **Decision (Jun, Claude session 2026-10-30)**: the magi-core Claude PR
+  review no longer runs on every PR open/push — the per-push review caused
+  cost spikes. It now runs only when a PR comment contains `@claude review`
+  (non-bot user with write association; fork and closed PRs skipped). It
+  authenticates with Jun's Claude subscription
+  (`CLAUDE_CODE_OAUTH_TOKEN`, source `SM` `CLAUDE_CODE_OAUTH_TOKEN_PR_REVIEW`)
+  instead of the API key.
+* **Docs**: [COLLABORATION.md](COLLABORATION.md#claude-pr-review-magi-core)
+  (trigger, failure handling, authentication consequences, probe-test token
+  exposure) and [secrets-inventory](system/services/secrets-inventory.md)
+  (new secret; `ANTHROPIC_API_KEY` / `ANTHROPIC_API_KEY_PR_REVIEW` scheduled
+  for retirement). secrets-inventory stays `draft`; no verification entry
+  is added.
+* **Implementation**: magi-core PR (branch
+  `claude/claude-review-manual-oauth`). Pending Jun operations: create the
+  `SM` secret and the GitHub secret, test with `@claude review`, then retire
+  the old key (tracking Issue). No trading, guard, table, scheduler or
+  LILITH-boundary change.
+
 ## 2026-10-28 (Mistral #190 review: clarify verified scope)
 * Checked the Mistral review on #190 head `f6901a135909272a9a9f8cbabac8660e164d56e8`
   and the later-posted review of `ce540a1` against the actual sources.
