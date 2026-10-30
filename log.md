@@ -1,5 +1,25 @@
 # Bundle Update Log
 
+## 2026-10-30 (Mistral PR review pinned to `mistral-large-4`)
+* **Decision (Jun, Claude session 2026-10-30)**: the automated Mistral PR
+  review moves from the `mistral-large-latest` alias to an explicit
+  `mistral-large-4` (Mistral Large 4, Public Preview on the Mistral API
+  since 2026-10-06 per the Mistral changelog). Pinning makes the model in
+  use visible in each review header; if the preview ID changes or is
+  withdrawn, the Mistral step fails instead of silently switching models.
+* **Implementation**: `MISTRAL_MODEL` in `.github/workflows/auto-review.yml`
+  of `magi-knowledge`, `magi-core`, `magi-moni`, `magi-moomoo` and
+  `magi-price-tracker` (branch `claude/mistral-review-large-4` in each).
+* **Docs**: [COLLABORATION.md](COLLABORATION.md#automated-pr-review-bots)
+  and [secrets-inventory](system/services/secrets-inventory.md) model name.
+  secrets-inventory stays `draft`; no verification entry is added.
+* **Scope**: same Mistral API endpoint and the same data sent, so the
+  2026-09-17 / 2026-10-11 egress approvals are unchanged. Review bots only:
+  no trading, guard, PLM unit, table, scheduler or LILITH-boundary change.
+  The local BOREAS unit (`ministral-3:8b-ctx32k` on TIALA) is unchanged —
+  Mistral Large 4 is offered on Ollama only as a `:cloud` tag and does not
+  fit TIALA locally.
+
 ## 2026-10-30 (Claude PR review: on-request only, subscription auth)
 * **Decision (Jun, Claude session 2026-10-30)**: the magi-core Claude PR
   review no longer runs on every PR open/push — the per-push review caused
