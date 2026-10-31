@@ -1,5 +1,24 @@
 # Bundle Update Log
 
+## 2026-10-31 (LILITH clean-source runtime skip removed — docs follow code)
+* **Drift found**: [magi-core](system/services/magi-core.md) (HERMES
+  "Pre-trade (read)") and
+  [pre-trade-intelligence](system/echidna-tables/pre-trade-intelligence.md)
+  still described `skipLLMProcessed` as current behavior. The option has
+  been unreachable since the `lilith` provider path was retired
+  (magi-core#494), and the residual code was removed in
+  dogmaai/magi-core#690 (`lilith` is in `DEPRECATED_PROVIDERS` and cannot
+  be dispatched).
+* **Docs**: `system/services/magi-core.md` L44 now states all units
+  receive the full `[HERMES]` block;
+  `system/echidna-tables/pre-trade-intelligence.md` L18–21 records that the
+  row was excluded from the retired LILITH prompt path and that the
+  `_lilith_safe/` training boundary is unchanged.
+* **Scope**: documentation-only drift correction — no table, unit, guard,
+  scheduler or boundary change. Merge after magi-core#690 lands; the
+  magi-core `vendor/magi-knowledge` pin follows in a later bump. Jun adds
+  `verified` + `stale_after` (verification date + 6 months) at review.
+
 ## 2026-10-31 (BOREAS: 14b size corrected; `ministral-3:14b` removed from TIALA)
 * **Drift found (Claude session 2026-10-30)**: [BOREAS](system/plm-units/boreas.md)
   stated the `ministral-3:14b` Q4_K_M weight file was ~16.8 GB; `ollama list`
