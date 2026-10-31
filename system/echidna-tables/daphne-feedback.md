@@ -4,8 +4,8 @@ title: daphne_feedback
 description: DAPHNE loss-pattern (LP) classification of LOSE trades with a static causal/non-causal flag.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=daphne_feedback&page=table
 lilith_safe: false
-status: stable
-generated: { by: devin/local, at: 2026-09-17T17:36:54Z }
+status: draft
+generated: { by: codex/cloud, at: 2026-10-29T12:02:14Z }
 verified: { by: human:jun, at: 2026-09-17T17:36:54Z }
 stale_after: 2027-03-17T17:36:54Z
 tags: [echidna, bigquery, daphne, causal, feedback]
@@ -19,8 +19,15 @@ taxonomy in BigQuery SQL** (`REGEXP_CONTAINS`), aggregated per provider, and
 flagged causal / non-causal from the **static `IS_CAUSAL` map** in the job — this
 is rule-based classification, *not* LLM causal inference. LLM causal reasoning
 was assigned to the retired SEKHMET analyzer (deprecated 2026-09-17) and is
-currently unassigned. Gemini (Vertex) is used only
+currently unassigned. Gemini via **AI Studio** is used only
 to write the why-lost narrative and to rewrite ineffective hints.
+
+**Backend correction (2026-10-29):** the implementation already uses AI Studio;
+the former Vertex wording was stale. Jun has also instructed that remaining
+Gemini generation paths use [AI Studio only](/system/services/gemini-ai-studio.md).
+This document is draft while that update is reviewed. The human verification
+entry above records the earlier table concept, not verification of the new
+implementation or its deployment. The schema and SQL classification are unchanged.
 
 # Schema
 
