@@ -1,5 +1,24 @@
 # Bundle Update Log
 
+## 2026-10-31 (cash-account-constraint re-verified → stable)
+* **Verification (Jun, Claude session 2026-10-31)**: Jun reviewed
+  [cash-account-constraint](system/constitution/cash-account-constraint.md)
+  as amended by #190 (cash prompt omitted only for explicit
+  `TRD_ENV=SIMULATE` + `ACCOUNT_TYPE=margin`; REAL / unset / unrecognised
+  resolve to cash; REAL bridge enforces cash checks independently) and
+  confirmed the content. `status: draft` → `stable`; a new
+  `verified: human:jun` entry is added and `stale_after` is updated to
+  verification + 6 calendar months (2027-04-30, same rule as the previous
+  2026-10-27 → 2027-04-27 pair). Earlier verification history is kept.
+* **Why now**: magi-core's `okf-constitution-drift` test requires every
+  rendered prompt section to be documented by a stable concept; with this
+  doc in `draft`, bumping magi-core's `vendor/magi-knowledge` pin past #190
+  failed on `[CASH ACCOUNT CONSTRAINT]`. This unblocks the pin bump.
+* **Scope**: verification metadata and one clarifying sentence only. No
+  policy, guard, prompt text, deployment, table or LILITH-boundary change.
+  Live deployment of the 2026-10-28 condition remains unverified by this
+  document.
+
 ## 2026-10-30 (Mistral PR review pinned to `mistral-large-4`)
 * **Decision (Jun, Claude session 2026-10-30)**: the automated Mistral PR
   review moves from the `mistral-large-latest` alias to an explicit
