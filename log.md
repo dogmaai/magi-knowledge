@@ -12,7 +12,9 @@
   (kept; shares the weight blob, so removing it frees no space) and
   `qwen2.5:7b` (ADAM). External SSD model directory: 20 GB after removal.
 * **Scope**: documentation of a host cleanup and a factual correction. No
-  unit, model, deploy, budget, guard, table or LILITH-boundary change.
+  unit/model configuration, deploy, budget, guard, table or LILITH-boundary
+  change (the removed model was already unused). Also drops a stale
+  sentence in boreas.md that still said the doc "remains `draft`".
   boreas.md stays `status: stable`: Jun reviewed and confirmed this change
   in the session (2026-10-31T07:25:42Z); a `verified: human:jun` entry is added and
   `stale_after` set to verification + 6 months.

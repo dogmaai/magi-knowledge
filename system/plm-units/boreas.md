@@ -28,8 +28,10 @@ eval, HTTP 524 timeouts through the Cloudflare tunnel). The 14b model is
 figure recorded here as the weight-file size did not match that and has
 been removed — whether it described the loaded footprint (weights plus KV
 cache) is unverified. `ministral-3:14b` was deleted from TIALA on
-2026-10-31 (Jun, `ollama rm`); historical rows keep cohort
-`(BOREAS, ministral-3:14b)`.
+2026-10-31 (Jun, `ollama rm`). Removing the local model does not change
+history: pre-2026-10-02 BOREAS rows remain cohort
+`(BOREAS, ministral-3:14b)` under the draft
+[model-cohorting](/system/constitution/model-cohorting.md) rule.
 On 2026-10-02 Jun approved replacing it with `ministral-3:8b` (6.0 GB),
 rebuilt locally as `ministral-3:8b-ctx32k` with `PARAMETER num_ctx 32768`
 (KV cache ~4.5 GB; ~3k tok/s prompt eval observed). The weights live on
@@ -119,7 +121,6 @@ the private record (dogmaai/magi-core#665). Post-fix evidence
 (2026-10-27 BigQuery check): BOREAS produced normal BUY/HOLD/WARN_ONLY
 decisions 2026-10-23→26; its three `CALL_FAILED` rows in that window are
 transient Ollama-endpoint HTTP 502/524 errors, not the ingress defect.
-This document remains `draft` pending Jun's re-verification.
 
 # Citations
 
