@@ -11,7 +11,10 @@
   `Report Mistral review failure` runs only when that step's outcome is
   `failure`: it posts one PR comment per head SHA
   (`<!-- mistral-review-failed sha=<head SHA> -->` marker) with the run URL
-  and emits a warning annotation. The Mistral review script is unchanged;
+  and emits a warning annotation (the notice step is itself
+  `continue-on-error`). Failure path verified on magi-price-tracker #8 with
+  a temporary invalid model (Mistral API 400 `invalid_model` → notice
+  comment + annotation; reverted). The Mistral review script is unchanged;
   no error body or secret is copied into the comment.
 * **Docs**: [COLLABORATION.md](COLLABORATION.md#automated-pr-review-bots).
 * **Scope**: review bots only; no new egress (GitHub API only). No trading,

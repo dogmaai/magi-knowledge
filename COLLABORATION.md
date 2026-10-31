@@ -296,7 +296,10 @@ The Mistral step runs with `continue-on-error`, so a failure leaves the job
 green. A following `Report Mistral review failure` step (runs only when the
 Mistral step's outcome is `failure`) posts a PR comment with a
 `<!-- mistral-review-failed sha=<head SHA> -->` marker — at most once per
-head — linking the run log, and emits a workflow warning annotation. A
+head — linking the run log, and emits a workflow warning annotation (the
+annotation is emitted first; the notice step itself also runs with
+`continue-on-error`, so a GitHub API error while posting cannot turn the
+job red). A
 missing Mistral review therefore shows up on the PR instead of passing
 unnoticed. Skips that are not failures (no `MISTRAL_API_KEY`, review already
 posted for the head) do not trigger the notice.
