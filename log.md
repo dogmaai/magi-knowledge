@@ -1,5 +1,59 @@
 # Bundle Update Log
 
+## 2026-10-30 (Mistral PR review pinned to `mistral-large-4`)
+* **Decision (Jun, Claude session 2026-10-30)**: the automated Mistral PR
+  review moves from the `mistral-large-latest` alias to an explicit
+  `mistral-large-4` (Mistral Large 4, Public Preview on the Mistral API
+  since 2026-10-06 per the Mistral changelog). Pinning makes the model in
+  use visible in each review header; if the preview ID changes or is
+  withdrawn, the Mistral step errors (job stays green via
+  `continue-on-error`; the review is simply missing) instead of silently
+  switching models.
+* **Implementation**: `MISTRAL_MODEL` in `.github/workflows/auto-review.yml`
+  of `magi-knowledge` (#194), `magi-core` (#685), `magi-moni` (#56),
+  `magi-moomoo` (#100) and `magi-price-tracker` (#7) (branch
+  `claude/mistral-review-large-4` in each). Sequence on each PR's own
+  auto-review runs: (1) first run — model responded, body posted as
+  `[object Object]`; (2) after the chunk-parse fix — three repos posted a
+  normal review, two posted an empty one; (3) after raising `max_tokens` —
+  all five posted a non-empty review headed `mistral-large-4`.
+* **Response format fix**: `mistral-large-4` returns `message.content` as a
+  chunk array (`thinking` + `text`) instead of a string, so the first run
+  posted `[object Object]`. The workflows now concatenate only `text`
+  chunks (reasoning is not posted) and still accept plain-string content.
+  Reasoning chunks also consume `max_tokens`, so two repos then posted an
+  empty review; `max_tokens` is raised to 16000 in all five workflows, and
+  an empty result now posts `finish_reason` and a count per chunk type
+  instead of a bare `(no output)`. The Mistral call also gets a 300 s
+  `AbortSignal.timeout`, a review cut off by `max_tokens`
+  (`finish_reason=length`) is posted with an explicit truncation notice,
+  and each run logs `finish_reason` and token `usage` (counts only) for
+  cost monitoring.
+* **Cost / limits (external figures, unverified against the Mistral
+  console)**: Mistral Large 4 lists up to 256K output tokens, so 16000 is
+  within the model limit; listed price is $2.10 per 1M output tokens
+  ($0.70 input), i.e. at most ≈ $0.034 of output per review even if the
+  whole 16000 budget is used. Actual consumption is read from the new
+  `usage` log line. Sources: Mistral changelog
+  <https://docs.mistral.ai/resources/changelogs> (model ID, Public Preview
+  2026-10-06); OpenRouter model page
+  <https://openrouter.ai/mistralai/mistral-large-4-0> (output limit,
+  price); Ollama library <https://ollama.com/library/mistral-large-4>
+  (`:cloud` tag only). The chunk schema (`type: "text"` / `text`) is the
+  observed API behaviour on these runs, not a quoted spec.
+* **Not changed (pre-existing, out of scope)**: the Mistral step's
+  `continue-on-error: true` means a failed review is silent (no alert, no
+  PR comment). Detecting a missing Mistral review is an open item.
+* **Docs**: [COLLABORATION.md](COLLABORATION.md#automated-pr-review-bots)
+  and [secrets-inventory](system/services/secrets-inventory.md) model name.
+  secrets-inventory stays `draft`; no verification entry is added.
+* **Scope**: same Mistral API endpoint and the same data sent, so the
+  2026-09-17 / 2026-10-11 egress approvals are unchanged. Review bots only:
+  no trading, guard, PLM unit, table, scheduler or LILITH-boundary change.
+  The local BOREAS unit (`ministral-3:8b-ctx32k` on TIALA) is unchanged —
+  Mistral Large 4 is offered on Ollama only as a `:cloud` tag and does not
+  fit TIALA locally.
+
 ## 2026-10-30 (Claude PR review: on-request only, subscription auth)
 * **Decision (Jun, Claude session 2026-10-30)**: the magi-core Claude PR
   review no longer runs on every PR open/push — the per-push review caused

@@ -4,7 +4,7 @@ title: Secrets inventory (Grafana Cloud, Cloudflare, GitHub, GCP tokens)
 description: Single ledger of the infrastructure tokens (Grafana Cloud, Cloudflare, GitHub, GCP) referenced across the MAGI repositories — canonical env var name, auth scheme, target endpoint, required scopes, source of truth, usage sites and rotation owner. GCP Secret Manager is the only source of truth; injected env-var copies can go stale.
 lilith_safe: false
 status: draft
-generated: { by: claude/cloud, at: 2026-10-30T01:30:00Z }
+generated: { by: claude/cloud, at: 2026-10-30T09:45:00Z }
 verified: [{ by: human:jun, at: 2026-09-17T17:23:06Z }, { by: devin/local, at: 2026-10-02T16:00:00Z }, { by: devin/cli, at: 2026-10-06T04:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: devin/cloud, at: 2026-10-07T06:25:37Z }, { by: human:jun, at: 2026-10-20T10:11:00Z }, { by: devin/cloud, at: 2026-10-26T10:00:00Z }]
 stale_after: 2027-04-18T10:11:00Z
 tags: [service, secrets, grafana, cloudflare, github, gcp, security]
@@ -31,7 +31,7 @@ One injected copy is recorded here because it has its own usage site:
 `magi-knowledge`, `magi-moni`, `magi-moomoo`, `magi-price-tracker`
 and `magi-core` (added 2026-09-17), where
 `.github/workflows/auto-review.yml` uses it to send PR diffs to the Mistral
-API (`mistral-large-latest`) for automated review comments — see
+API (`mistral-large-4`) for automated review comments — see
 [COLLABORATION.md](../../COLLABORATION.md#automated-pr-review-bots). The GSM
 secret remains the source of truth; the repo secrets are injected copies that
 can go stale on rotation. Rotation owner: jun. `lilith-training`

@@ -284,7 +284,12 @@ configured and verified.
 ## Automated PR review bots
 
 `.github/workflows/auto-review.yml` posts a template checklist review and a
-Mistral (`mistral-large-latest`) review on `pull_request` events. Both are
+Mistral (`mistral-large-4`, pinned explicitly since 2026-10-30 — Mistral
+Large 4 is a Public Preview model on the Mistral API, so an ID change or
+withdrawal makes the Mistral step error out — the job itself stays green
+via `continue-on-error`, so the symptom is a missing Mistral review, not a
+red check — rather than silently switch models)
+review on `pull_request` events. Both are
 `github-actions[bot]` `COMMENT` reviews; the Mistral review carries a
 `<!-- mistral-review sha=<head SHA> -->` marker and is skipped when the marker
 already exists for that head.
