@@ -5,7 +5,7 @@ description: The MAGI trading engine — trade loop, LLM orchestration, and guar
 lilith_safe: false
 status: stable
 generated: { by: devin/cli, at: 2026-10-20T08:44:00Z }
-verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-06T08:31:20Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }, { by: devin/cloud, at: 2026-10-27T01:09:00Z }]
+verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-06T08:31:20Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }, { by: devin/cloud, at: 2026-10-27T01:09:00Z }, { by: devin/cloud, at: 2026-10-31T14:00:00Z }]
 stale_after: 2027-04-18T08:44:00Z
 tags: [service, magi-core, core, trading]
 repo: dogmaai/magi-core
@@ -41,7 +41,7 @@ that consumes an external search API is **`[HERMES:BRAVE]`**:
 | Stage | Who | Role |
 |---|---|---|
 | Pre-trade (collect) | `magi-hermes-refresh` Cloud Run job (Scheduler `magi-hermes-refresh-1h`, `0 13-21 * * 1-5` UTC) and, as a fallback, [MELCHIOR-1](/system/plm-units/melchior-1.md) at the start of its cycle (`LLM_PROVIDER=google` only) | `collectHermesIntelligence()` — one **Brave Search** web query per symbol (`freshness=pd`, 5 results; optional catalyst query via `HERMES_CATALYST_QUERY_ENABLED`) → **Gemini** (`HERMES_GEMINI_MODEL`, structured-output schema) scores sentiment / key events → `pre_trade_intelligence`. Rows younger than `HERMES_REFRESH_INTERVAL_HOURS` (default 2h) are reused, which is the Brave cost lever. |
-| Pre-trade (read) | All PLM units via `buildHermesPrompt()` → `buildHermesSection()` | Reads the latest `pre_trade_intelligence` row per symbol, computes tape bias / divergence, and injects the `[HERMES]` block into the prompt. LILITH clean-source mode (`skipLLMProcessed`) skips this block and receives only raw Alpha Vantage / MooMoo data. |
+| Pre-trade (read) | All PLM units via `buildHermesPrompt()` → `buildHermesSection()` | Reads the latest `pre_trade_intelligence` row per symbol, computes tape bias / divergence, and injects the `[HERMES]` block into the prompt. (The retired LILITH provider's clean-source mode `skipLLMProcessed`, which skipped this block, was removed in magi-core#690.) |
 | In-trade / post-trade | — | Brave is **not** used. DAPHNE, thought-outcome, Fugu and Gemini pattern analyzers work on ECHIDNA tables only. |
 
 The Brave-consuming LLM is therefore Gemini only (HERMES analyst role), not a

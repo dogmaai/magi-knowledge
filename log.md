@@ -1,5 +1,23 @@
 # Bundle Update Log
 
+## 2026-10-31 (LILITH clean-source path removal reflected)
+
+* **Amendment**: [magi-core](system/services/magi-core.md) HERMES
+  intelligence stack — the Pre-trade (read) row no longer describes
+  LILITH clean-source mode (`skipLLMProcessed`) as current behaviour;
+  it records the mode's removal in magi-core#690 (merged 2026-10-31).
+* **Amendment**: [pre-trade-intelligence](system/echidna-tables/pre-trade-intelligence.md)
+  — the "Must never reach LILITH" invariant is kept, but the stale
+  `skipLLMProcessed` mechanism reference now notes the removal in
+  magi-core#690. `verified` on both docs gained a `devin/cloud` stamp;
+  `human:jun` verification of the new wording is pending.
+* **Context**: magi-core#494 removed the `lilith` provider session
+  path (`src/lilith.js`, `runLilithSession()`, the
+  `getLLMProvider() === 'lilith'` dispatch); magi-core#690 removed the
+  residual unreachable clean-source branches (`isLilith`,
+  `cleanSource`, `skipLLMProcessed`). The drift was flagged by the
+  auto-review on magi-core#690.
+
 ## 2026-10-31 (BOREAS: 14b size corrected; `ministral-3:14b` removed from TIALA)
 * **Drift found (Claude session 2026-10-30)**: [BOREAS](system/plm-units/boreas.md)
   stated the `ministral-3:14b` Q4_K_M weight file was ~16.8 GB; `ollama list`
