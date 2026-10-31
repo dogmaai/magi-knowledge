@@ -43,6 +43,14 @@
   `thought_id 0c6f78c2-05bf-43f1-82e8-751d80973694`) — so RECON resolves
   it from broker order history and the evaluator back-fills the price; no
   fill price is guessed (broker history: FILLED_ALL @ 415.34).
+* **Verification (Devin, 2026-10-31)**: RECON stayed consistent through
+  the next two trading nights — all magi-core-* units ran 2026-10-29
+  14:38–20:58Z and 2026-10-30 13:31Z onward (audit-log `Jobs.RunJob`), and
+  `thoughts` gained **no** `concerns='L1.6.RECON'` row in
+  2026-10-29 12:30Z → 2026-10-30 21:00Z (577 thoughts total, 15 new
+  `trades` rows). Normal trading resumed; the AMAT 349653 back-fill let
+  the ledger reconcile. The leftover XOM 349450 buy self-resolved to
+  `CANCELLED_ALL` unfilled — no broker position, ledger 0 = broker 0.
 
 ## 2026-10-28 (Mistral #190 review: clarify verified scope)
 * Checked the Mistral review on #190 head `f6901a135909272a9a9f8cbabac8660e164d56e8`
