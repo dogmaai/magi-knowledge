@@ -4,9 +4,9 @@ title: BOREAS
 description: Local Mistral-family Ollama unit (ministral-3:8b-ctx32k) on TIALA, entering live NORMAL trading per Jun's 2026-09-22 decision.
 lilith_safe: false
 status: stable
-generated: { by: devin/cli, at: 2026-10-25T07:30:00Z }
-verified: [{ by: human:jun, at: 2026-10-02T00:00:00Z }, { by: human:jun, at: 2026-10-27T05:15:00Z }]
-stale_after: 2027-04-27T05:15:00Z
+generated: { by: claude/cloud, at: 2026-10-31T07:23:42Z }
+verified: [{ by: human:jun, at: 2026-10-02T00:00:00Z }, { by: human:jun, at: 2026-10-27T05:15:00Z }, { by: human:jun, at: 2026-10-31T07:25:42Z }]
+stale_after: 2027-04-30T07:25:42Z
 tags: [plm, ollama, self-hosted, mistral, ministral, proposed]
 provider: ollama
 model: ministral-3:8b-ctx32k
@@ -21,14 +21,22 @@ BOREAS is a self-hosted Ollama PLM unit running the Mistral-family
 `ministral-3:8b-ctx32k` model locally on TIALA (Mac mini M4 16 GB). It
 originally ran `ministral-3:14b`, which was selected because
 `mistral-small3.x:24b` (~14 GB) did not fit comfortably in TIALA's
-unified-memory GPU budget; however the 14b Q4_K_M weight file (~16.8 GB)
-still exceeded physical RAM, so every request thrashed pages from disk
-(~130 tok/s prompt eval, HTTP 524 timeouts through the Cloudflare tunnel).
+unified-memory GPU budget; however it still did not run within TIALA's
+memory budget — every request thrashed pages from disk (~130 tok/s prompt
+eval, HTTP 524 timeouts through the Cloudflare tunnel). The 14b model is
+9.1 GB on disk (`ollama list` on TIALA, 2026-10-30); an earlier ~16.8 GB
+figure recorded here as the weight-file size did not match that and has
+been removed — whether it described the loaded footprint (weights plus KV
+cache) is unverified. `ministral-3:14b` was deleted from TIALA on
+2026-10-31 (Jun, `ollama rm`); historical rows keep cohort
+`(BOREAS, ministral-3:14b)`.
 On 2026-10-02 Jun approved replacing it with `ministral-3:8b` (6.0 GB),
 rebuilt locally as `ministral-3:8b-ctx32k` with `PARAMETER num_ctx 32768`
 (KV cache ~4.5 GB; ~3k tok/s prompt eval observed). The weights live on
 TIALA's external SSD at `/Volumes/Extention_SSD/ollama-models/` (the
-`~/.ollama/models` symlink target), shared with `qwen2.5:7b` (ADAM).
+`~/.ollama/models` symlink target), shared with `qwen2.5:7b` (ADAM). The
+plain `ministral-3:8b` tag stays installed as the Modelfile base of
+`ministral-3:8b-ctx32k`; the two tags share the same weight blob.
 
 Like [ADAM](adam.md), BOREAS uses the `ollama` provider path with an explicit
 `UNIT_NAME=BOREAS` override, so the session prompt resolves to the shared

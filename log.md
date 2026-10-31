@@ -1,5 +1,22 @@
 # Bundle Update Log
 
+## 2026-10-31 (BOREAS: 14b size corrected; `ministral-3:14b` removed from TIALA)
+* **Drift found (Claude session 2026-10-30)**: [BOREAS](system/plm-units/boreas.md)
+  stated the `ministral-3:14b` Q4_K_M weight file was ~16.8 GB; `ollama list`
+  on TIALA (2026-10-30, Ollama 0.40.4) shows 9.1 GB. The ~16.8 GB figure is
+  removed; whether it described the loaded footprint is left unverified.
+  The recorded symptoms (page thrashing, ~130 tok/s, HTTP 524) are unchanged.
+* **Host change (Jun, 2026-10-31)**: `ollama rm ministral-3:14b` on TIALA
+  (retired since the 2026-10-02 cohort boundary). Remaining Ollama models
+  used by MAGI: `ministral-3:8b-ctx32k` (BOREAS), its base `ministral-3:8b`
+  (kept; shares the weight blob, so removing it frees no space) and
+  `qwen2.5:7b` (ADAM). External SSD model directory: 20 GB after removal.
+* **Scope**: documentation of a host cleanup and a factual correction. No
+  unit, model, deploy, budget, guard, table or LILITH-boundary change.
+  boreas.md stays `status: stable`: Jun reviewed and confirmed this change
+  in the session (2026-10-31T07:25:42Z); a `verified: human:jun` entry is added and
+  `stale_after` set to verification + 6 months.
+
 ## 2026-10-31 (Mistral review failure notice)
 * **Request (Jun, Claude session 2026-10-31)**: make a failed Mistral PR review
   visible — previously `continue-on-error: true` kept the job green and the
