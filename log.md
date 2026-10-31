@@ -25,8 +25,10 @@
   empty review; `max_tokens` is raised to 16000 in all five workflows, and
   an empty result now posts `finish_reason` and a count per chunk type
   instead of a bare `(no output)`. The Mistral call also gets a 300 s
-  `AbortSignal.timeout`, and each run logs `finish_reason` and token
-  `usage` (counts only) for cost monitoring.
+  `AbortSignal.timeout`, a review cut off by `max_tokens`
+  (`finish_reason=length`) is posted with an explicit truncation notice,
+  and each run logs `finish_reason` and token `usage` (counts only) for
+  cost monitoring.
 * **Cost / limits (external figures, unverified against the Mistral
   console)**: Mistral Large 4 lists up to 256K output tokens, so 16000 is
   within the model limit; listed price is $2.10 per 1M output tokens
