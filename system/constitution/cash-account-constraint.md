@@ -6,7 +6,7 @@ lilith_safe: false
 status: stable
 generated: { by: codex/cloud, at: 2026-10-28T14:00:34Z }
 verified: [{ by: claude/cloud, at: 2026-10-27T03:30:00Z }, { by: human:jun, at: 2026-10-27T05:15:00Z }, { by: human:jun, at: 2026-10-31T04:50:04Z }]
-stale_after: 2027-04-29T04:50:04Z
+stale_after: 2027-04-30T04:50:04Z
 tags: [constitution, v3, plm, cash-account, short-selling, conditional]
 section_order: 0
 version: "3.9"

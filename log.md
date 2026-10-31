@@ -7,8 +7,9 @@
   `TRD_ENV=SIMULATE` + `ACCOUNT_TYPE=margin`; REAL / unset / unrecognised
   resolve to cash; REAL bridge enforces cash checks independently) and
   confirmed the content. `status: draft` → `stable`; a new
-  `verified: human:jun` entry and `stale_after` are added. Earlier
-  verification history is kept.
+  `verified: human:jun` entry is added and `stale_after` is updated to
+  verification + 6 calendar months (2027-04-30, same rule as the previous
+  2026-10-27 → 2027-04-27 pair). Earlier verification history is kept.
 * **Why now**: magi-core's `okf-constitution-drift` test requires every
   rendered prompt section to be documented by a stable concept; with this
   doc in `draft`, bumping magi-core's `vendor/magi-knowledge` pin past #190
