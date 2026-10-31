@@ -1,5 +1,25 @@
 # Bundle Update Log
 
+## 2026-10-31 (Mistral review failure notice)
+* **Request (Jun, Claude session 2026-10-31)**: make a failed Mistral PR review
+  visible — previously `continue-on-error: true` kept the job green and the
+  review was simply missing.
+* **Implementation**: in `.github/workflows/auto-review.yml` of
+  `magi-knowledge`, `magi-core`, `magi-moni`, `magi-moomoo` and
+  `magi-price-tracker` (branch `claude/mistral-review-failure-notice`), the
+  Mistral step gets `id: mistral_review` and a new step
+  `Report Mistral review failure` runs only when that step's outcome is
+  `failure`: it posts one PR comment per head SHA
+  (`<!-- mistral-review-failed sha=<head SHA> -->` marker) with the run URL
+  and emits a warning annotation (the notice step is itself
+  `continue-on-error`). Failure path verified on magi-price-tracker #8 with
+  a temporary invalid model (Mistral API 400 `invalid_model` → notice
+  comment + annotation; reverted). The Mistral review script is unchanged;
+  no error body or secret is copied into the comment.
+* **Docs**: [COLLABORATION.md](COLLABORATION.md#automated-pr-review-bots).
+* **Scope**: review bots only; no new egress (GitHub API only). No trading,
+  guard, PLM unit, table, scheduler or LILITH-boundary change.
+
 ## 2026-10-31 (cash-account-constraint re-verified → stable)
 * **Verification (Jun, Claude session 2026-10-31)**: Jun reviewed
   [cash-account-constraint](system/constitution/cash-account-constraint.md)
@@ -62,7 +82,7 @@
   observed API behaviour on these runs, not a quoted spec.
 * **Not changed (pre-existing, out of scope)**: the Mistral step's
   `continue-on-error: true` means a failed review is silent (no alert, no
-  PR comment). Detecting a missing Mistral review is an open item.
+  PR comment). Resolved on 2026-10-31 — see the failure-notice entry.
 * **Docs**: [COLLABORATION.md](COLLABORATION.md#automated-pr-review-bots)
   and [secrets-inventory](system/services/secrets-inventory.md) model name.
   secrets-inventory stays `draft`; no verification entry is added.

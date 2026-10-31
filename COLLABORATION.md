@@ -286,13 +286,23 @@ configured and verified.
 `.github/workflows/auto-review.yml` posts a template checklist review and a
 Mistral (`mistral-large-4`, pinned explicitly since 2026-10-30 — Mistral
 Large 4 is a Public Preview model on the Mistral API, so an ID change or
-withdrawal makes the Mistral step error out — the job itself stays green
-via `continue-on-error`, so the symptom is a missing Mistral review, not a
-red check — rather than silently switch models)
-review on `pull_request` events. Both are
+withdrawal makes the Mistral step error out rather than silently switch
+models) review on `pull_request` events. Both are
 `github-actions[bot]` `COMMENT` reviews; the Mistral review carries a
 `<!-- mistral-review sha=<head SHA> -->` marker and is skipped when the marker
 already exists for that head.
+
+The Mistral step runs with `continue-on-error`, so a failure leaves the job
+green. A following `Report Mistral review failure` step (runs only when the
+Mistral step's outcome is `failure`) posts a PR comment with a
+`<!-- mistral-review-failed sha=<head SHA> -->` marker — at most once per
+head — linking the run log, and emits a workflow warning annotation (the
+annotation is emitted first; the notice step itself also runs with
+`continue-on-error`, so a GitHub API error while posting cannot turn the
+job red). A
+missing Mistral review therefore shows up on the PR instead of passing
+unnoticed. Skips that are not failures (no `MISTRAL_API_KEY`, review already
+posted for the head) do not trigger the notice.
 
 - Enabled with the Mistral step: `magi-knowledge`, `magi-moni`, `magi-moomoo`,
   `magi-price-tracker`, `magi-core`.
