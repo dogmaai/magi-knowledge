@@ -5,8 +5,8 @@ description: The MAGI trading engine — trade loop, LLM orchestration, and guar
 lilith_safe: false
 status: stable
 generated: { by: devin/cloud, at: 2026-10-31T13:49:23Z }
-verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-06T08:31:20Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }, { by: devin/cloud, at: 2026-10-27T01:09:00Z }]
-stale_after: 2027-04-18T08:44:00Z
+verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-06T08:31:20Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }, { by: devin/cloud, at: 2026-10-27T01:09:00Z }, { by: human:jun, at: 2026-10-31T14:00:11Z }]
+stale_after: 2027-04-30T14:00:11Z
 tags: [service, magi-core, core, trading]
 repo: dogmaai/magi-core
 ---

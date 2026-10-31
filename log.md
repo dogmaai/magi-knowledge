@@ -15,9 +15,10 @@
   row was excluded from the retired LILITH prompt path and that the
   `_lilith_safe/` training boundary is unchanged.
 * **Scope**: documentation-only drift correction — no table, unit, guard,
-  scheduler or boundary change. Merge after magi-core#690 lands; the
-  magi-core `vendor/magi-knowledge` pin follows in a later bump. Jun adds
-  `verified` + `stale_after` (verification date + 6 months) at review.
+  scheduler or boundary change. Merged after magi-core#690; the magi-core
+  `vendor/magi-knowledge` pin follows in a later bump. Jun reviewed and
+  approved (2026-10-31T14:00:11Z): a `verified: human:jun` entry is added
+  to both docs and `stale_after` is set to verification + 6 months.
 
 ## 2026-10-31 (BOREAS: 14b size corrected; `ministral-3:14b` removed from TIALA)
 * **Drift found (Claude session 2026-10-30)**: [BOREAS](system/plm-units/boreas.md)

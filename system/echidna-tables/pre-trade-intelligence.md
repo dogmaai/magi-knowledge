@@ -6,8 +6,8 @@ resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi
 lilith_safe: false
 status: stable
 generated: { by: devin/cloud, at: 2026-10-31T13:49:23Z }
-verified: [{ by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-09-16T02:00:00Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
-stale_after: 2027-04-04T05:36:00Z
+verified: [{ by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-09-16T02:00:00Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-31T14:00:11Z }]
+stale_after: 2027-04-30T14:00:11Z
 tags: [echidna, bigquery, hermes, sentiment, news]
 dataset: magi_core
 table_type: BASE TABLE
