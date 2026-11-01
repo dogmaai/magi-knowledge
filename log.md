@@ -1,5 +1,18 @@
 # Bundle Update Log
 
+## 2026-11-01 (Secrets ledger carved out of the public-repo writing rules)
+* **Request (Jun, Devin session 2026-11-01)**: Devin Review on #201 flagged
+  `secrets-inventory.md`'s store column as conflicting with the public-repo
+  rule against recording "which store holds a named secret". Jun chose to
+  keep the ledger as an explicit exception rather than redact rows or move
+  the document private.
+* **Docs**: `COLLABORATION.md` public-repo writing rules gain a carve-out —
+  `system/services/secrets-inventory.md` may record secret names and their
+  stores (`SM` / `Devin org` / `GH:<repo>`), but still never secret values,
+  local credential file paths, or host identifiers.
+* **Scope**: documentation-only policy amendment — no service, guard,
+  table, scheduler or boundary change.
+
 ## 2026-11-01 (Gemini Enterprise deletion — drift sweep)
 * **Request (Jun, Devin session 2026-11-01)**: Gemini Enterprise is deleted —
   sweep the bundle for references that still describe it as current.

@@ -243,6 +243,12 @@ account (a User account, not an Organization):
   (tailnet hostnames, IP addresses, LAN details). Those belong in private
   `magi-core` issues or docs — reference them from here by issue/PR
   number only.
+- **Exception — the secrets ledger.** [secrets-inventory.md](system/services/secrets-inventory.md)
+  exists precisely to inventory which store holds each named secret; its
+  store column (`SM` / `Devin org` / `GH:<repo>`) is permitted despite the
+  rule above. It must still never record secret *values* (or enough
+  characters to reconstruct one), local file paths to credentials, or
+  host identifiers. (Jun-approved carve-out, 2026-11-01.)
 - **Record vulnerabilities only after remediation.** A security fix may be
   documented once it is deployed; describe what changed, not how to
   exploit the pre-fix state.
