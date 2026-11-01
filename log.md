@@ -1,5 +1,55 @@
 # Bundle Update Log
 
+## 2026-11-01 (Gemini Enterprise deletion — drift sweep)
+* **Request (Jun, Devin session 2026-11-01)**: Gemini Enterprise is deleted —
+  sweep the bundle for references that still describe it as current.
+* **Verified against reality (2026-11-01)**: the "MAGI GE spec 同期" Devin
+  Automation no longer exists in the automations list (previously disabled
+  since the 2026-08-27 subscription cancellation). The Discovery Engine
+  resources still existed in project `screen-share-459802` as residuals:
+  12 data stores (`magi-knowledge`, `magi-news`, `magi-earnings`,
+  `magi-sec-filings` + 8 BigQuery-backed stores including
+  `data-analyzer_1777082186052_stock_ai_analysis`) and 3 engines
+  (`gemini-enterprise-…`, `magi-research`, `magi-system-bqdatastore-…`). The
+  `magi-knowledge` store's indexed content had stayed frozen at the
+  2026-08-26 import. The Devin org secret `MAGI_GE_OAUTH_CLIENT_SECRET`
+  also remained.
+* **Docs**: `PROMPT.md` no longer lists Gemini Enterprise among live
+  mirrors; `.agents/skills/syncing-spec-to-gemini-enterprise/SKILL.md` is
+  marked DEPRECATED (kept as history — its `magi-dataset` A2A workaround is
+  dead with the app gone); `system/services/secrets-inventory.md` records
+  `MAGI_GE_OAUTH_CLIENT_SECRET` (previously undocumented, now stale) and
+  notes the `devin-bq-admin` `agentspace*` roles target a deleted product;
+  `system/services/magi-deep-research.md` gains a "Current status" section
+  — the `MAGI 日次市場ブリーフ投入` automation is disabled and the last
+  `DAILY_DEEP_RESEARCH` row is 2026-10-29.
+* **Deletion (Jun-instructed, completed 2026-11-01)**: all 3 engines and 8
+  data stores deleted via the Discovery Engine API; the remaining 4
+  BigQuery-connected stores (`data-analyzer_…_stock_ai_analysis` — the
+  `stock_ai_analysis` counted among the 12 above — plus
+  `magi-datastore_…_thoughts` / `_trades` / `_isabel_briefings`) reject
+  public-API deletion ("Connected data store can only be deleted by
+  internal requests") so Jun deleted their two console-level parent
+  entities (`magi_datastore`, `Data Analyzer`) from AI Applications →
+  Data stores. Verified empty: `engines: []`, `dataStores: []`. Their
+  daily connector sync had already been failing 149/149. Still remaining:
+  the BQ connection `398890937507.us.vertex_ai_connection` and org secret
+  `MAGI_GE_OAUTH_CLIENT_SECRET` — revoke/delete at Jun's discretion, along
+  with the `devin-bq-admin` role reduction (Tier 2).
+  The Devin org knowledge note `MAGI-GE-DESIGN-001-v2` (outside this repo)
+  is marked historical separately; `l6.md`, `vix-regime.md` and
+  `syncing-spec-to-r2-data-catalog` still cite its §2.3/§5.2 — kept as a
+  citation source, not deleted.
+* **Sweep evidence**: `rg -il 'gemini.enterprise|discoveryengine|agentspace'`
+  over the bundle (incl. `.agents/`) now hits only the deprecated SKILL.md
+  (kept as history), this log entry, and `secrets-inventory.md` (the
+  `MAGI_GE_OAUTH_CLIENT_SECRET` row + `agentspace*` note) — no document
+  still describes Gemini Enterprise as current. The `MAGI-GE-DESIGN-001-v2`
+  citations in `l6.md` / `vix-regime.md` / `syncing-spec-to-r2-data-catalog`
+  are intentional historical references.
+* **Scope**: documentation-only drift correction — no service, guard,
+  table, scheduler or boundary change.
+
 ## 2026-11-01 (MooMoo official API overview ingested)
 * **Request (Jun, Devin session 2026-11-01)**: capture the official MooMoo API documentation entry
   page (https://openapi.moomoo.com/moomoo-api-doc/jp/ 概要 node,

@@ -1,12 +1,21 @@
 ---
 name: syncing-spec-to-gemini-enterprise
-description: How to sync the MAGI common spec (this bundle's system/ tree) into a Gemini Enterprise / Vertex AI Search data store so Gemini-side agents can cite it. Use when asked to make the latest MAGI spec available to Gemini Enterprise, when refreshing that data store after a magi-knowledge merge, or when creating the data store for the first time.
+description: DEPRECATED 2026-11-01 — Gemini Enterprise subscription/app is deleted (Jun's confirmation) and the sync automation has been removed; kept as a historical record of the retired sync path. Historically synced the MAGI common spec (this bundle's system/ tree) into a Gemini Enterprise / Vertex AI Search data store so Gemini-side agents could cite it.
 type: Workflow
 lilith_safe: false
 tags: [workflow, gemini-enterprise, discoveryengine, vertex-ai-search, gcs, sync]
 ---
 
 # Overview
+
+> **DEPRECATED (2026-11-01):** The Gemini Enterprise app/subscription has been
+> deleted (Jun's confirmation), the "MAGI GE spec 同期" Devin Automation no
+> longer exists in the automations list (previously disabled since the
+> 2026-08-27 subscription cancellation), and the `magi-knowledge` data store
+> itself was deleted on 2026-11-01 (verified empty: `dataStores: []` — its
+> last indexed import had been frozen at 2026-08-26). The `magi-dataset` A2A
+> workaround below is equally dead — the path it fed no longer exists. This
+> runbook is kept for history; do not run it.
 
 Gemini-side agents cannot read `dogmaai/magi-knowledge`. The sync path is:
 
@@ -24,7 +33,7 @@ would put other units' processed intelligence one query away from the training
 corpus. `okf_export.py` exports exactly one tree per run, so keep the flag at
 `--tree system`.
 
-# Environment (verified 2026-08-24)
+# Environment (verified 2026-08-24 — all resources below deleted 2026-11-01)
 
 | Item | Value |
 |---|---|
@@ -48,7 +57,7 @@ Upload the digest as `okf/system.txt`; the content is unchanged Markdown.
 set and is superseded by this bundle — do not refresh it, and prefer a separate
 `okf/` prefix so the two are never confused.
 
-# One-time setup (DONE 2026-08-24 — keep for disaster recovery)
+# One-time setup (DONE 2026-08-24 — historical record; the store no longer exists)
 
 ```bash
 export GOOGLE_APPLICATION_CREDENTIALS=<service-account-key>.json
@@ -75,13 +84,16 @@ curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/jso
    when the app is managed there. An unattached data store is indexed but
    invisible to agents.
 
-# Refresh (disabled — manual fallback only if the app is re-enabled)
+# Refresh (dead — the app and its data stores were deleted 2026-11-01)
 
 > **Status (2026-08-27)**: the GeminiEnterprise App subscription has been
 > cancelled, so the Devin Automation “MAGI GE spec 同期 (magi-knowledge main →
 > Gemini Enterprise)” is **disabled**. Keep the manual steps below as a fallback
 > only if the app is re-enabled; do not run them automatically while it is
 > cancelled.
+>
+> **Update (2026-11-01):** the app and all data stores were deleted — nothing
+> remains to re-enable; the commands below are dead.
 
 ```bash
 cd magi-knowledge && git pull
@@ -111,23 +123,22 @@ curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/jso
   `GET https://discoveryengine.googleapis.com/v1/<operation.name>` until
   `done: true` and check `errorSamples`.
 
-## Current status: `magi-dataset`
+## Historical status: `magi-dataset` (pre-deletion)
 
 Direct grounding from the Gemini Enterprise app to `magi-dataset` could not be
-established, so it is currently connected through A2A (Agent2Agent). A2A
-provides enough browsing and reference access for now; therefore, migrating
-back to a direct data-store connection is **on hold** and the current setup
-should remain unchanged.
+established, so it was connected through A2A (Agent2Agent). That A2A path died
+with the app on 2026-11-01 — the "current setup" described here no longer
+exists.
 
-Direct data-store attachment is still the canonical pattern — as with
-`magi-news`, an unstructured GCS-backed data store should be attached to the
-engine's `dataStoreIds`. A2A is a workaround, not the target architecture.
+Direct data-store attachment was the canonical pattern — as with
+`magi-news`, an unstructured GCS-backed data store would be attached to the
+engine's `dataStoreIds`. A2A was a workaround, not the target architecture.
 This status does not change the `MAGI-GE-DESIGN-001-v2` §2.3 boundary: the
 eight PLM Cloud Run Jobs must not use Gemini Enterprise or this A2A path.
 
-### Known issue / TODO
+### Known issue (historical)
 
-When direct grounding is investigated again:
+Recorded for the postmortem — had direct grounding been revisited:
 
 1. Confirm whether `magi-dataset` is a GCS unstructured data store
    (`CONTENT_REQUIRED`) or a BigQuery structured data store. A structured BQ
@@ -138,7 +149,7 @@ When direct grounding is investigated again:
 3. Confirm that `magi-dataset` is attached to the target engine's
    `dataStoreIds`.
 
-# Verification
+# Verification (historical — pre-deletion)
 
 1. `GET $BASE/dataStores/magi-knowledge/branches/default_branch/documents` —
    the document's `content.uri` is the GCS object and `indexStatus.indexTime` is

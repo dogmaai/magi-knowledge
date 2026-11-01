@@ -4,8 +4,8 @@ title: magi-deep-research
 description: Devin Automation that produces and uploads the weekday daily Deep Research market brief.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-23T11:30:00Z }
-verified: [{ by: human:jun, at: 2026-08-31T07:57:23Z }, { by: human:jun, at: 2026-10-20T10:11:00Z }]
+generated: { by: devin/cloud, at: 2026-11-01T04:58:00Z }
+verified: [{ by: human:jun, at: 2026-08-31T07:57:23Z }, { by: human:jun, at: 2026-10-20T10:11:00Z }, { by: devin/cloud, at: 2026-11-01T04:58:00Z }]
 stale_after: 2027-04-18T10:11:00Z
 tags: [service, deep-research, devin-automation, market-research, magi-core]
 repo: dogmaai/magi-core
@@ -24,6 +24,15 @@ Verification before deletion: no Cloud Run Job, Service or Scheduler named
 `magi-deep-research` exists in project `screen-share-459802` — the Gemini
 Enterprise `streamAssist` job was never deployed. The production flow is
 the Devin Automation.
+
+# Current status
+
+**The automation is currently disabled** (verified 2026-11-01: it is present
+in the automations list but `enabled: false`). The last
+`DAILY_DEEP_RESEARCH` row in `magi_core.market_research` is dated
+2026-10-29 — no briefs have been produced since. Whether the pause is
+intentional is Jun's call; if it is, the schedule table below describes
+the intended cadence, not current behavior.
 
 # Automation schedule
 
