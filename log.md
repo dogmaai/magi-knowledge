@@ -223,6 +223,23 @@
   the ledger reconcile. The leftover XOM 349450 buy self-resolved to
   `CANCELLED_ALL` unfilled — no broker position, ledger 0 = broker 0.
 
+## 2026-10-28 (Fixed monitoring universe and cash-first policy; separate from RECON)
+* **Jun instruction**: use a fixed candidate list of symbols suitable for
+  both cash and margin trading; cash is the default. Implement independently
+  of RECON. Keep the existing 60-symbol universe, including the SES/GRRR
+  removals; this work does not certify current broker eligibility anew.
+* **Implementation update (pending review)**: a separate `UNIVERSE / L0.5`
+  order policy rejects outside-list entries and unverified cash SELLs before
+  SHADOW recording. Broker-proven reductions remain possible for removed
+  holdings. Working exits reserve quantity; unfilled entries cannot supply
+  shares. Watchlists and HERMES focus/override candidates cannot expand the list.
+* **Specification**: [trading-policy](system/guards/trading-policy.md) is a
+  new draft. Base OKF `08edf13`, implementation base magi-core `953637d`.
+  Existing RECON, ledger data, account-mode configuration and LILITH boundary
+  are untouched. Independent implementation review and Jun's deployment
+  remain separate from this record.
+
+
 ## 2026-10-28 (Mistral #190 review: clarify verified scope)
 * Checked the Mistral review on #190 head `f6901a135909272a9a9f8cbabac8660e164d56e8`
   and the later-posted review of `ce540a1` against the actual sources.
