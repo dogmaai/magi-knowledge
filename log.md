@@ -31,11 +31,12 @@
   empty (no collections); `magi_core.arbiter_verdicts` exists with 0 rows;
   no Cloud Run job or service sets `ARCSIG_*`/`FIRESTORE`/`DECISION_SOURCES`
   env (28 jobs + 5 services scanned, asia-northeast1) — the experiment is
-  OFF in prod. IAM: jobs run as the default compute SA, which has no
-  datastore role; the dedicated `arc-sig-experiment` SA holds
-  project-level `roles/datastore.user`, unused — matching the
-  "dispatcher wiring under workload identity — Jun executes" open
-  decision in [model-consolidation](system/constitution/model-consolidation.md).
+  OFF in prod. IAM (wired same day, Jun-instructed): `roles/datastore.user`
+  granted project-level to the default compute SA every job runs as —
+  per-database IAM is unsupported on this DB; the dedicated
+  `arc-sig-experiment` SA keeps its identical binding for a future
+  dedicated-dispatcher split. Enabling `ARCSIG_EXPERIMENT` remains Jun's
+  step — see [model-consolidation](system/constitution/model-consolidation.md).
 * **Docs**: [echidna-tables index](system/echidna-tables/index.md)
   wording aligned with model-consolidation — producers are wired in code
   but both flags (`DECISION_SOURCES_ENABLED`, `ARCSIG_EXPERIMENT`) are

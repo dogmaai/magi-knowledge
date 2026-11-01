@@ -423,12 +423,13 @@ Key invariants (GPT review adopted):
   fencing are verified by the opt-in integration suite
   (`ARCSIG_FIRESTORE_IT=1`, 6/6 pass on the real database). Verified
   2026-11-01 against prod: the database exists and holds no collections
-  yet, `ARCSIG_EXPERIMENT` is unset on all 28 Cloud Run jobs and 5
-  services (asia-northeast1), and jobs run as the default compute SA —
-  which carries no datastore role — while the dedicated
-  `arc-sig-experiment` SA holds project-level `roles/datastore.user`,
-  unused. Remaining: dispatcher wiring under workload identity at
-  experiment start — Jun executes.
+  yet and `ARCSIG_EXPERIMENT` is unset on all 28 Cloud Run jobs and 5
+  services (asia-northeast1). IAM wired same day per Jun:
+  `roles/datastore.user` (project-level — per-database IAM is
+  unsupported on this DB) granted to the default compute SA every job
+  runs as; the dedicated `arc-sig-experiment` SA keeps its identical
+  binding for a future dedicated-dispatcher split. Remaining: enabling
+  `ARCSIG_EXPERIMENT` at experiment start — Jun executes.
 * Cost assumptions where fills/fees cannot be confirmed.
 * Scope of "1–2": decision core only (this document) vs. wider processing —
   undecided.
