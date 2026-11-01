@@ -215,9 +215,15 @@ Direction note (2026-10-08): Jun approved proceeding toward the **A**
 variant (agent-curated loop) conditionally — see *Jun determinations*.
 The gap list there is the precondition for any production wiring.
 
-These are candidate modules tested against fixtures/stubs only. They are
-**not** connected to production sessions, brokers, BigQuery or prompts.
-Wiring any of them into a live path requires a new, independently
+These are candidate modules tested against fixtures/stubs only — plus the
+opt-in real-DB integration suite for the Firestore store
+(`ARCSIG_FIRESTORE_IT=1`). The dispatch path is **wired in code**
+(`lib/experiment-dispatch.js` call sites in `src/llm.js` /
+`src/positionMgmt.js` / `src/session.js`) but gated by
+`ARCSIG_EXPERIMENT`, unset on every prod Cloud Run job/service (verified
+2026-11-01): while the flag is off `dispatchOrder()` is a pure
+pass-through and nothing reaches production sessions, brokers, BigQuery
+or prompts. Enabling it in a live path requires a new, independently
 reviewed change, and this section must be updated in the same change so
 the recorded status never trails the implementation.
 
@@ -354,9 +360,13 @@ evaluation criteria on 2026-10-09.
 Proposed data architecture implementing the measurement plan and
 preparation requirements 4–6. Per-table drafts live under
 [echidna-tables](/system/echidna-tables/index.md) ("Experience-distillation
-corpus"); DDL is prepared in `magi-core` `sql/` for Jun to apply. **No
-table exists yet and no producer is wired** — the L0 live-path writers
-each require a separate reviewed change.
+corpus"); DDL is prepared in `magi-core` `sql/` for Jun to apply. **All
+tables exist but are mostly empty** (verified 2026-11-01): `order_fills`
+already accumulates rows (231) from the live fill writer
+(`lib/order-fills.js`), while `decision_sources` / `arbiter_verdicts`
+hold 0 rows — their producers are wired in code but flag-gated OFF in
+prod (`DECISION_SOURCES_ENABLED`, `ARCSIG_EXPERIMENT` — both unset), and
+each enable is a separate reviewed change.
 
 * **L0 raw evidence (append-only)** —
   [decision-sources](/system/echidna-tables/decision-sources.md) records
