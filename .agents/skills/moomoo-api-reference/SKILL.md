@@ -28,6 +28,9 @@ Use it to orient before diving into per-API pages.
 - Getting started: 1) install and launch OpenD locally or in the cloud;
   2) install the moomoo API SDK and finish environment setup.
 
+(MAGI's concrete deployment of these components is in
+[Architecture](#architecture) below.)
+
 ### Account model
 
 Two distinct account types:
@@ -69,8 +72,14 @@ tick, order book), or query latest snapshots and historical K-line.
 
 ### Trading coverage
 
-Trading APIs cover 5 markets — HK, US, A-share, SG, JP — for stocks,
-options and futures. Availability by brokerage entity:
+Trading APIs support 5 markets — HK, US, A-share, SG, JP — where the
+available products vary by market and brokerage entity (stocks, options,
+futures; SG and JP entities cover futures only — their stock/REIT rows are
+✗ on every entity). The official table also lists AU and CA market rows;
+they are currently unsupported (✗) everywhere and shown for completeness.
+
+Availability (Demo column = paper trading, the rest are live brokerage
+entities):
 
 | Market | Products | Demo | FUTU HK | Moomoo US | Moomoo SG | Moomoo AU | Moomoo MY | Moomoo CA | Moomoo JP |
 |---|---|---|---|---|---|---|---|---|---|
