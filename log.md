@@ -1,11 +1,13 @@
 # Bundle Update Log
 
 ## 2026-11-01 (Secrets ledger carved out of the public-repo writing rules)
-* **Request (Jun, Devin session 2026-11-01)**: Devin Review on #201 flagged
-  `secrets-inventory.md`'s store column as conflicting with the public-repo
-  rule against recording "which store holds a named secret". Jun chose to
-  keep the ledger as an explicit exception rather than redact rows or move
-  the document private.
+* **Request (Jun, Devin session 2026-11-01)**: Devin Review on
+  magi-knowledge#201 flagged `secrets-inventory.md`'s store column as
+  conflicting with the public-repo rule against recording "which store
+  holds a named secret". Jun chose to keep the ledger as an explicit
+  exception rather than redact rows or move the document private —
+  accepting the residual risk that the name↔store mapping itself informs
+  an attacker's targeting.
 * **Docs**: `COLLABORATION.md` public-repo writing rules gain a carve-out —
   `system/services/secrets-inventory.md` may record secret names and their
   stores (`SM` / `Devin org` / `GH:<repo>`), but still never secret values,

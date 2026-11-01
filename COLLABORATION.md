@@ -244,11 +244,15 @@ account (a User account, not an Organization):
   `magi-core` issues or docs — reference them from here by issue/PR
   number only.
 - **Exception — the secrets ledger.** [secrets-inventory.md](system/services/secrets-inventory.md)
-  exists precisely to inventory which store holds each named secret; its
-  store column (`SM` / `Devin org` / `GH:<repo>`) is permitted despite the
-  rule above. It must still never record secret *values* (or enough
-  characters to reconstruct one), local file paths to credentials, or
-  host identifiers. (Jun-approved carve-out, 2026-11-01.)
+  exists precisely to inventory which store holds each named secret. Its
+  secret-name column and store column (`SM` / `Devin org` / `GH:<repo>`)
+  are permitted despite the "Never record attacker-useful details" rule
+  above; Jun accepted the residual risk that the name↔store mapping itself
+  informs an attacker's targeting (approved 2026-11-01 — see the
+  [log.md](log.md) entry "Secrets ledger carved out of the public-repo
+  writing rules" and magi-knowledge#201). The ledger must still never
+  record secret *values* (or enough characters to reconstruct one), local
+  file paths to credentials, or host identifiers.
 - **Record vulnerabilities only after remediation.** A security fix may be
   documented once it is deployed; describe what changed, not how to
   exploit the pre-fix state.
