@@ -14,6 +14,38 @@
 * **Scope**: documentation-only; no service, guard, table, scheduler or
   LILITH-boundary change.
 
+## 2026-11-01 (ARC×SIG Firestore reservation backend — implementation & prod state verified)
+* **Request (Jun, Devin session 2026-11-01)**: confirm whether Firebase /
+  Datastore (Firestore) is actually implemented in MAGI, from both the
+  OKF and the running system.
+* **Verified (magi-core `91a2ee1`, project `screen-share-459802`)**: the
+  ARC×SIG reservation store is implemented —
+  `@google-cloud/firestore` ^9.2.0 in `package.json`,
+  `lib/reservation-store-firestore.js`, `lib/experiment-dispatch.js`
+  (`ARCSIG_EXPERIMENT=1` master switch; `dispatchOrder()` is a pure
+  pass-through while off), `lib/verdict-mirror.js`, call sites in
+  `src/llm.js` / `src/positionMgmt.js` / `src/session.js`, init script
+  `scripts/arc-sig-init-experiment.mjs`, unit + real-DB integration tests
+  (`ARCSIG_FIRESTORE_IT=1`). Production: the `arc-sig-experiment` database
+  (asia-northeast1, `FIRESTORE_NATIVE` — not Datastore mode) exists and is
+  empty (no collections); `magi_core.arbiter_verdicts` exists with 0 rows;
+  no Cloud Run job or service sets `ARCSIG_*`/`FIRESTORE`/`DECISION_SOURCES`
+  env (28 jobs + 5 services scanned, asia-northeast1) — the experiment is
+  OFF in prod. IAM: jobs run as the default compute SA, which has no
+  datastore role; the dedicated `arc-sig-experiment` SA holds
+  project-level `roles/datastore.user`, unused — matching the
+  "dispatcher wiring under workload identity — Jun executes" open
+  decision in [model-consolidation](system/constitution/model-consolidation.md).
+* **Docs**: [echidna-tables index](system/echidna-tables/index.md)
+  wording aligned with model-consolidation — producers are wired in code
+  but both flags (`DECISION_SOURCES_ENABLED`, `ARCSIG_EXPERIMENT`) are
+  unset in prod; the open-decision bullet now records the verified prod
+  state (empty DB, flag unset, SA wiring pending). magi-core
+  `docs/arc-sig-firestore-setup.md` sample code corrected
+  (`firebase-admin` → `@google-cloud/firestore`) in a magi-core PR.
+* **Scope**: documentation-only; no guard, table, unit, scheduler, IAM or
+  LILITH-boundary change.
+
 ## 2026-10-31 (LILITH clean-source runtime skip removed — docs follow code)
 * **Drift found**: [magi-core](system/services/magi-core.md) (HERMES
   "Pre-trade (read)") and

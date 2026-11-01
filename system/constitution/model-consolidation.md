@@ -411,9 +411,14 @@ Key invariants (GPT review adopted):
   `arc-sig-experiment` (asia-northeast1) and the service account are
   provisioned; real-backend atomicity, restart hydration and stale-epoch
   fencing are verified by the opt-in integration suite
-  (`ARCSIG_FIRESTORE_IT=1`, 6/6 pass on the real database). Remaining:
-  dispatcher wiring under workload identity at experiment start — Jun
-  executes.
+  (`ARCSIG_FIRESTORE_IT=1`, 6/6 pass on the real database). Verified
+  2026-11-01 against prod: the database exists and holds no collections
+  yet, `ARCSIG_EXPERIMENT` is unset on all 28 Cloud Run jobs and 5
+  services (asia-northeast1), and jobs run as the default compute SA —
+  which carries no datastore role — while the dedicated
+  `arc-sig-experiment` SA holds project-level `roles/datastore.user`,
+  unused. Remaining: dispatcher wiring under workload identity at
+  experiment start — Jun executes.
 * Cost assumptions where fills/fees cannot be confirmed.
 * Scope of "1–2": decision core only (this document) vs. wider processing —
   undecided.
