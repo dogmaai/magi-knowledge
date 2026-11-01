@@ -1,12 +1,20 @@
 ---
 name: syncing-spec-to-gemini-enterprise
-description: How to sync the MAGI common spec (this bundle's system/ tree) into a Gemini Enterprise / Vertex AI Search data store so Gemini-side agents can cite it. Use when asked to make the latest MAGI spec available to Gemini Enterprise, when refreshing that data store after a magi-knowledge merge, or when creating the data store for the first time.
+description: DEPRECATED 2026-11-01 — Gemini Enterprise subscription/app is deleted (Jun's confirmation) and the sync automation has been removed; kept as a historical record of the retired sync path. Historically synced the MAGI common spec (this bundle's system/ tree) into a Gemini Enterprise / Vertex AI Search data store so Gemini-side agents could cite it.
 type: Workflow
 lilith_safe: false
 tags: [workflow, gemini-enterprise, discoveryengine, vertex-ai-search, gcs, sync]
 ---
 
 # Overview
+
+> **DEPRECATED (2026-11-01):** The Gemini Enterprise app/subscription has been
+> deleted (Jun's confirmation), the "MAGI GE spec 同期" Devin Automation no
+> longer exists in the automations list (previously disabled since the
+> 2026-08-27 subscription cancellation), and the `magi-knowledge` data store
+> content remains frozen at the 2026-08-26 import. The `magi-dataset` A2A
+> workaround below is equally dead — the path it fed no longer exists. This
+> runbook is kept for history; do not run it.
 
 Gemini-side agents cannot read `dogmaai/magi-knowledge`. The sync path is:
 

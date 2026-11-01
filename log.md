@@ -1,5 +1,36 @@
 # Bundle Update Log
 
+## 2026-11-01 (Gemini Enterprise deletion — drift sweep)
+* **Request (Jun, Devin session 2026-11-01)**: Gemini Enterprise is deleted —
+  sweep the bundle for references that still describe it as current.
+* **Verified against reality (2026-11-01)**: the "MAGI GE spec 同期" Devin
+  Automation no longer exists in the automations list (previously disabled
+  since the 2026-08-27 subscription cancellation). The Discovery Engine
+  data stores and engines (`magi-knowledge`, `magi-news`, `magi-earnings`,
+  `magi-sec-filings`, `stock_ai_analysis` + 7 BigQuery-structured stores;
+  engines `gemini-enterprise-…`, `magi-research`, `magi-system-bqdatastore-…`)
+  still exist in project `screen-share-459802` as residual resources; the
+  `magi-knowledge` store's indexed content stays frozen at the 2026-08-26
+  import. The Devin org secret `MAGI_GE_OAUTH_CLIENT_SECRET` also remains.
+* **Docs**: `PROMPT.md` no longer lists Gemini Enterprise among live
+  mirrors; `.agents/skills/syncing-spec-to-gemini-enterprise/SKILL.md` is
+  marked DEPRECATED (kept as history — its `magi-dataset` A2A workaround is
+  dead with the app gone); `system/services/secrets-inventory.md` records
+  `MAGI_GE_OAUTH_CLIENT_SECRET` (previously undocumented, now stale) and
+  notes the `devin-bq-admin` `agentspace*` roles target a deleted product;
+  `system/services/magi-deep-research.md` gains a "Current status" section
+  — the `MAGI 日次市場ブリーフ投入` automation is disabled and the last
+  `DAILY_DEEP_RESEARCH` row is 2026-10-29.
+* **Open for Jun**: delete the residual Discovery Engine data stores /
+  engines, revoke `MAGI_GE_OAUTH_CLIENT_SECRET`, and decide on the
+  `devin-bq-admin` role reduction (Tier 2) — all production changes, so
+  left to Jun. The Devin org knowledge note `MAGI-GE-DESIGN-001-v2`
+  (outside this repo) is marked historical separately; `l6.md`,
+  `vix-regime.md` and `syncing-spec-to-r2-data-catalog` still cite its
+  §2.3/§5.2 — kept as a citation source, not deleted.
+* **Scope**: documentation-only drift correction — no service, guard,
+  table, scheduler or boundary change.
+
 ## 2026-11-01 (MooMoo official API overview ingested)
 * **Request (Jun, Devin session 2026-11-01)**: capture the official MooMoo API documentation entry
   page (https://openapi.moomoo.com/moomoo-api-doc/jp/ 概要 node,

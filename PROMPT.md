@@ -16,7 +16,7 @@ GPT / Gemini / Antigravity など repo を直接読まない・毎回同じ前�
 
 ```text
 MAGI の仕様の正本は GitHub dogmaai/magi-knowledge の main（OKF バンドル）だけです。
-記憶・過去の会話・他 repo の README/コメント・旧仕様・ミラー（AI Search / R2 / Gemini Enterprise）は派生物で、食い違えば main が勝ちます。
+記憶・過去の会話・他 repo の README/コメント・旧仕様・ミラー（AI Search / R2）は派生物で、食い違えば main が勝ちます。
 着手前に index.md → AGENTS.md → 対象の概念文書を読み、参照したコミットハッシュを成果物に記録してください。repo を読めなければ推測せず、最新 main のダイジェスト提供を依頼してください。
 文書は frontmatter の status で扱いを変えます: stable かつ human: 検証済み = 正典 / draft = 仮説として明示 / deprecated = 参照禁止（後継へ）/ stale_after 超過 = 再検証待ちと明記。ミラー検索では trust_tier=human-reviewed かつ status=stable を優先します。
 仕様（意図）と実装・デプロイ設定（実際）が食い違ったら、どちらも黙って直さず、両方のリビジョンを添えてドリフトとして報告してください。ポリシー・トレーディング方針・アーキテクチャの未解決事項は決めずにエスカレーションします。
@@ -31,7 +31,7 @@ magi-knowledge の外に仕様の別コピーを作らないこと、権限が�
 ## 1. 真実の所在（Single Source of Truth）
 
 - MAGI の仕様は **`dogmaai/magi-knowledge` リポジトリの `main` ブランチ**にある OKF（Open Knowledge Format）バンドルのみが正です。
-- このプロンプト、あなたの事前知識、過去の会話、他リポジトリのコメント・README、`magi-stg` 等の旧仕様、エクスポート済みダイジェスト、Cloudflare AI Search / R2 Data Catalog / Gemini Enterprise 等のミラーは、すべて **派生コピーまたは古い可能性のある情報**です。食い違えば `magi-knowledge` の `main` が勝ちます。
+- このプロンプト、あなたの事前知識、過去の会話、他リポジトリのコメント・README、`magi-stg` 等の旧仕様、エクスポート済みダイジェスト、Cloudflare AI Search / R2 Data Catalog 等のミラーは、すべて **派生コピーまたは古い可能性のある情報**です。食い違えば `magi-knowledge` の `main` が勝ちます。
 - 仕様は頻繁に変わります。**具体的な値（閾値・テーブル名・ユニット名・ジョブ名・URL・ガード条件など）を記憶や本文書から引用してはいけません。** 必ず作業時点の OKF から読み取ってください。
 
 ## 2. 着手前の必須手順（順番どおりに実施）
