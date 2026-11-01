@@ -242,7 +242,22 @@ account (a User account, not an Organization):
   secret); internal or listening port numbers; or host identifiers
   (tailnet hostnames, IP addresses, LAN details). Those belong in private
   `magi-core` issues or docs — reference them from here by issue/PR
-  number only.
+  number only. (Subject to the secrets-ledger carve-out below.)
+- **Exception — the secrets ledger.** [secrets-inventory.md](system/services/secrets-inventory.md)
+  (if the file moves or is renamed, update this reference) exists
+  precisely to inventory which store holds each named secret. Its
+  secret-name column and store column (`SM` / `Devin org` / `GH:<repo>`)
+  are permitted despite the "Never record attacker-useful details" rule
+  above; Jun accepted the residual risk that the name↔store mapping itself
+  informs an attacker's targeting (approved in-session 2026-11-01 and
+  recorded in the [log.md](log.md) entry "Secrets ledger carved out of
+  the public-repo writing rules"; the flag it resolves came from
+  magi-knowledge#201). Only those two columns are exempt — any other
+  content in the ledger, existing or added later, stays subject to the
+  rule, and edits to that file require review by someone other than the
+  implementer (or Jun). The ledger must still never record secret *values*
+  (or enough characters to reconstruct one), local file paths to
+  credentials, or host identifiers.
 - **Record vulnerabilities only after remediation.** A security fix may be
   documented once it is deployed; describe what changed, not how to
   exploit the pre-fix state.
