@@ -14,6 +14,44 @@
 * **Scope**: documentation-only; no service, guard, table, scheduler or
   LILITH-boundary change.
 
+## 2026-11-01 (ARC×SIG Firestore reservation backend — implementation & prod state verified)
+* **Request (Jun, Devin session 2026-11-01)**: confirm whether Firebase /
+  Datastore (Firestore) is actually implemented in MAGI, from both the
+  OKF and the running system.
+* **Verified (magi-core `91a2ee1`, project `screen-share-459802`)**: the
+  ARC×SIG reservation store is implemented —
+  `@google-cloud/firestore` ^9.2.0 in `package.json`,
+  `lib/reservation-store-firestore.js`, `lib/experiment-dispatch.js`
+  (`ARCSIG_EXPERIMENT=1` master switch; `dispatchOrder()` is a pure
+  pass-through while off), `lib/verdict-mirror.js`, call sites in
+  `src/llm.js` / `src/positionMgmt.js` / `src/session.js`, init script
+  `scripts/arc-sig-init-experiment.mjs`, unit + real-DB integration tests
+  (`ARCSIG_FIRESTORE_IT=1`). Production: the `arc-sig-experiment` database
+  (asia-northeast1, `FIRESTORE_NATIVE` — not Datastore mode) exists and is
+  empty (no collections); `magi_core.arbiter_verdicts` exists with 0 rows;
+  no Cloud Run job or service sets `ARCSIG_*`/`FIRESTORE`/`DECISION_SOURCES`
+  env (28 jobs + 5 services scanned, asia-northeast1) — the experiment is
+  OFF in prod. IAM (wired same day, Jun-instructed): `roles/datastore.user`
+  granted project-level to the default compute SA every job runs as —
+  per-database IAM is unsupported on this DB; the dedicated
+  `arc-sig-experiment` SA keeps its identical binding for a future
+  dedicated-dispatcher split. Enabling `ARCSIG_EXPERIMENT` remains Jun's
+  step — see [model-consolidation](system/constitution/model-consolidation.md).
+  Cloud Monitoring (`firestore.googleapis.com/Database`, 30d): read ops
+  463 / write ops 184 total, all within 2026-10-08T09Z–10-09T07Z
+  (JST 10/08 18:00–10/09 16:00 — provisioning + `ARCSIG_FIRESTORE_IT`
+  run) and zero since — consistent with provisioning-and-verification
+  only, no production use.
+* **Docs**: [echidna-tables index](system/echidna-tables/index.md)
+  wording aligned with model-consolidation — producers are wired in code
+  but both flags (`DECISION_SOURCES_ENABLED`, `ARCSIG_EXPERIMENT`) are
+  unset in prod; the open-decision bullet now records the verified prod
+  state (empty DB, flag unset, SA wiring pending). magi-core
+  `docs/arc-sig-firestore-setup.md` sample code corrected
+  (`firebase-admin` → `@google-cloud/firestore`) in a magi-core PR.
+* **Scope**: documentation-only; no guard, table, unit, scheduler, IAM or
+  LILITH-boundary change.
+
 ## 2026-10-31 (LILITH clean-source runtime skip removed — docs follow code)
 * **Drift found**: [magi-core](system/services/magi-core.md) (HERMES
   "Pre-trade (read)") and

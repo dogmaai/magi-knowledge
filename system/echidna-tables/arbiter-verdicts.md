@@ -11,9 +11,12 @@ dataset: magi_core
 table_type: BASE TABLE (proposed — created 2026-10-10; draft schema)
 ---
 
-> **Draft — proposed schema; table created 2026-10-10 in `magi_core`.** The mirror writer (verdict
-> → BigQuery) is a new write path requiring a separate reviewed change;
-> the DDL lives in `magi-core` (`sql/`) and was applied by Jun on 2026-10-10.
+> **Draft — proposed schema; table created 2026-10-10 in `magi_core`, 0 rows as of 2026-11-01.** The mirror
+> writer (verdict → BigQuery) is implemented (`lib/verdict-mirror.js`,
+> bound via `experiment-dispatch.js`'s `mirrorVerdict` dep) but gated by
+> `ARCSIG_EXPERIMENT` — unset in prod — so enabling it remains a separate
+> reviewed change; the DDL lives in `magi-core` (`sql/`) and was applied
+> by Jun on 2026-10-10.
 
 The shared execution authority records its verdict per decision in
 Firestore. `arbiter_verdicts` mirrors those verdicts into ECHIDNA so the
