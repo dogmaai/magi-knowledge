@@ -37,6 +37,11 @@
   `arc-sig-experiment` SA keeps its identical binding for a future
   dedicated-dispatcher split. Enabling `ARCSIG_EXPERIMENT` remains Jun's
   step — see [model-consolidation](system/constitution/model-consolidation.md).
+  Cloud Monitoring (`firestore.googleapis.com/Database`, 30d): read ops
+  463 / write ops 184 total, all within 2026-10-08T09Z–10-09T07Z
+  (JST 10/08 18:00–10/09 16:00 — provisioning + `ARCSIG_FIRESTORE_IT`
+  run) and zero since — consistent with provisioning-and-verification
+  only, no production use.
 * **Docs**: [echidna-tables index](system/echidna-tables/index.md)
   wording aligned with model-consolidation — producers are wired in code
   but both flags (`DECISION_SOURCES_ENABLED`, `ARCSIG_EXPERIMENT`) are

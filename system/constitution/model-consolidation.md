@@ -428,7 +428,9 @@ Key invariants (GPT review adopted):
   `roles/datastore.user` (project-level — per-database IAM is
   unsupported on this DB) granted to the default compute SA every job
   runs as; the dedicated `arc-sig-experiment` SA keeps its identical
-  binding for a future dedicated-dispatcher split. Remaining: enabling
+  binding for a future dedicated-dispatcher split. Cloud Monitoring shows
+  no DB access since the 2026-10-08/09 provisioning + IT burst (reads
+  463 / writes 184 total, zero after). Remaining: enabling
   `ARCSIG_EXPERIMENT` at experiment start — Jun executes.
 * Cost assumptions where fills/fees cannot be confirmed.
 * Scope of "1–2": decision core only (this document) vs. wider processing —
