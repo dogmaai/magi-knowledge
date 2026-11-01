@@ -21,16 +21,18 @@
   `system/services/magi-deep-research.md` gains a "Current status" section
   — the `MAGI 日次市場ブリーフ投入` automation is disabled and the last
   `DAILY_DEEP_RESEARCH` row is 2026-10-29.
-* **Deletion (Jun-instructed, executed 2026-11-01)**: all 3 engines and 8
-  data stores deleted via the Discovery Engine API. The 4 BigQuery-connected
-  stores (`data-analyzer_…_stock_ai_analysis`, `magi-datastore_…_thoughts`,
-  `_trades`, `_isabel_briefings`) reject public-API deletion ("Connected
-  data store can only be deleted by internal requests") — they must be
-  deleted from the Cloud console (AI Applications → Data stores). Their
-  daily connector sync was already failing 149/149. The BQ connection
-  `398890937507.us.vertex_ai_connection` and org secret
-  `MAGI_GE_OAUTH_CLIENT_SECRET` also remain — revoke/delete at Jun's
-  discretion, along with the `devin-bq-admin` role reduction (Tier 2).
+* **Deletion (Jun-instructed, completed 2026-11-01)**: all 3 engines and 8
+  data stores deleted via the Discovery Engine API; the remaining 4
+  BigQuery-connected stores (`data-analyzer_…_stock_ai_analysis`,
+  `magi-datastore_…_thoughts` / `_trades` / `_isabel_briefings`) reject
+  public-API deletion ("Connected data store can only be deleted by
+  internal requests") so Jun deleted their two console-level parent
+  entities (`magi_datastore`, `Data Analyzer`) from AI Applications →
+  Data stores. Verified empty: `engines: []`, `dataStores: []`. Their
+  daily connector sync had already been failing 149/149. Still remaining:
+  the BQ connection `398890937507.us.vertex_ai_connection` and org secret
+  `MAGI_GE_OAUTH_CLIENT_SECRET` — revoke/delete at Jun's discretion, along
+  with the `devin-bq-admin` role reduction (Tier 2).
   The Devin org knowledge note `MAGI-GE-DESIGN-001-v2` (outside this repo)
   is marked historical separately; `l6.md`, `vix-regime.md` and
   `syncing-spec-to-r2-data-catalog` still cite its §2.3/§5.2 — kept as a
