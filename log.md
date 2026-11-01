@@ -1,5 +1,18 @@
 # Bundle Update Log
 
+## 2026-11-01 (MooMoo official API overview ingested)
+* **Request (Jun)**: capture the official MooMoo API documentation entry
+  page (https://openapi.moomoo.com/moomoo-api-doc/jp/ 概要 node,
+  `url=202012035`, docs v10.12) into the knowledge bundle.
+* **Enhancement**: [moomoo-api-reference](/.agents/skills/moomoo-api-reference/SKILL.md)
+  gained an "Official API overview (docs v10.12)" section — the OpenD +
+  API SDK component model, the platform-account vs trading-account model
+  (HK / US / A-share Connect / futures), the market-data and trading
+  coverage matrices by brokerage entity, and the doc portal link.
+  The skill's Python SDK reference is unchanged.
+* **Scope**: documentation-only; no service, guard, table, scheduler or
+  LILITH-boundary change.
+
 ## 2026-10-31 (LILITH clean-source runtime skip removed — docs follow code)
 * **Drift found**: [magi-core](system/services/magi-core.md) (HERMES
   "Pre-trade (read)") and

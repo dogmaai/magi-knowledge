@@ -8,7 +8,96 @@ tags: [reference, moomoo, opend, trading, api]
 
 # MooMoo OpenAPI Python SDK Reference
 
-Official docs: https://openapi.moomoo.com/moomoo-api-doc/jp/intro/intro.html
+Official docs (JA): https://openapi.moomoo.com/moomoo-api-doc/jp/intro/intro.html
+Doc portal (SPA): https://openapi.moomoo.com/moomoo-api-doc/jp/ — 概要 node `url=202012035` (API docs v10.12)
+
+## Official API overview (docs v10.12)
+
+Captured from the official 概要 (overview) page — the doc portal's entry node.
+Use it to orient before diving into per-API pages.
+
+### Components
+
+- **OpenD** — the MooMoo API gateway program. Runs on a local PC or cloud
+  server, exposes a custom TCP protocol, relays protocol requests to the
+  moomoo backend and returns processed data. The protocol is
+  language-agnostic.
+- **API SDK** — moomoo-provided SDKs for Python, Java, C#, C++ and
+  JavaScript; other languages can implement the native TCP protocol
+  directly.
+- Getting started: 1) install and launch OpenD locally or in the cloud;
+  2) install the moomoo API SDK and finish environment setup.
+
+### Account model
+
+Two distinct account types:
+
+- **Platform account** — the moomoo user ID (moomoo ID), shared by the
+  moomoo app and the MooMoo API. Logging OpenD in with the platform account
+  + login password grants market-data access.
+- **Trading accounts** — real brokerage accounts, each requiring account
+  opening at the corresponding broker. Used for deposits/withdrawals,
+  margin trading, trading each product, and holding assets/positions:
+
+  | Trading account | Covers |
+  |---|---|
+  | 香港株口座 (HK stocks) | HK-market securities and options |
+  | 米国株口座 (US stocks) | US-market stocks, ETFs, options |
+  | A株通口座 (A-share Connect) | A-share Connect stocks |
+  | 先物口座 (Futures) | Global futures — HK, US CME Group, SG, JP markets; HK index options also trade in the HK futures account |
+
+- One platform account can hold trading accounts at multiple brokers — a
+  single moomoo ID may own several brokerage trading accounts.
+
+### Market data coverage
+
+Quote access requires the related market-data permission. Support for
+moomoo users:
+
+| Market | Products | Quote data |
+|---|---|---|
+| HK | stocks, ETFs, warrants, CBBC, inline warrants / options / futures / indices / sectors | ✓ all |
+| US | stocks, ETFs / options / futures / sectors | ✓ — OTC stocks and indices ✗ |
+| A-share | stocks, ETFs / indices / sectors | ✓ all |
+| SG | stocks, ETFs, warrants, REITs, DLC / futures | ✗ |
+| JP | stocks, ETFs, REITs / futures | ✗ |
+| AU | stocks, ETFs | ✗ |
+| Global | forex | ✗ |
+
+Two ways to obtain data: subscribe to realtime pushes (quote, K-line,
+tick, order book), or query latest snapshots and historical K-line.
+
+### Trading coverage
+
+Trading APIs cover 5 markets — HK, US, A-share, SG, JP — for stocks,
+options and futures. Availability by brokerage entity:
+
+| Market | Products | Demo | FUTU HK | Moomoo US | Moomoo SG | Moomoo AU | Moomoo MY | Moomoo CA | Moomoo JP |
+|---|---|---|---|---|---|---|---|---|---|
+| HK | stocks, ETFs, warrants, CBBC, inline warrants | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✗ | ✗ |
+| HK | options | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| HK | futures | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| US | stocks, ETFs | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| US | options | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
+| US | futures | ✓ | ✓ | ✗ | ✓ | ✗ | ✓ | ✗ | ✗ |
+| A-share | A-share Connect stocks | ✓ | ✓ | ✓ | ✓ | ✗ | ✓ | ✗ | ✗ |
+| A-share | non-Connect stocks | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| SG | stocks, ETFs, warrants, REITs, DLC | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| SG | futures | ✓ | ✓ | ✗ | ✓ | ✗ | ✗ | ✗ | ✗ |
+| JP | stocks, ETFs, REITs | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| JP | futures | ✓ | ✓ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| AU | stocks, ETFs | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+| CA | stocks | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ | ✗ |
+
+Real and demo trading share the same trading APIs (`trd_env` switches).
+
+### Key facts
+
+- OpenD runs on Windows, macOS, CentOS, Ubuntu.
+- Advertised order latency: as fast as 0.0014s; no extra fee for trading
+  via the MooMoo API.
+- MAGI trades through Moomoo US (`SecurityFirm.FUTUINC`) — US
+  stocks/ETFs/options are supported; US futures and OTC stocks are not.
 
 ## Architecture
 
