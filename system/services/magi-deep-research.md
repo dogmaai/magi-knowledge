@@ -4,8 +4,8 @@ title: magi-deep-research
 description: Devin Automation that produces and uploads the weekday daily Deep Research market brief.
 lilith_safe: false
 status: draft
-generated: { by: devin/cloud, at: 2026-11-01T04:35:00Z }
-verified: [{ by: human:jun, at: 2026-08-31T07:57:23Z }, { by: human:jun, at: 2026-10-20T10:11:00Z }]
+generated: { by: devin/cloud, at: 2026-11-01T04:58:00Z }
+verified: [{ by: human:jun, at: 2026-08-31T07:57:23Z }, { by: human:jun, at: 2026-10-20T10:11:00Z }, { by: devin/cloud, at: 2026-11-01T04:58:00Z }]
 stale_after: 2027-04-18T10:11:00Z
 tags: [service, deep-research, devin-automation, market-research, magi-core]
 repo: dogmaai/magi-core

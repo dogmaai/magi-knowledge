@@ -6,12 +6,14 @@
 * **Verified against reality (2026-11-01)**: the "MAGI GE spec 同期" Devin
   Automation no longer exists in the automations list (previously disabled
   since the 2026-08-27 subscription cancellation). The Discovery Engine
-  data stores and engines (`magi-knowledge`, `magi-news`, `magi-earnings`,
-  `magi-sec-filings`, `stock_ai_analysis` + 7 BigQuery-structured stores;
-  engines `gemini-enterprise-…`, `magi-research`, `magi-system-bqdatastore-…`)
-  still exist in project `screen-share-459802` as residual resources; the
-  `magi-knowledge` store's indexed content stays frozen at the 2026-08-26
-  import. The Devin org secret `MAGI_GE_OAUTH_CLIENT_SECRET` also remains.
+  resources still existed in project `screen-share-459802` as residuals:
+  12 data stores (`magi-knowledge`, `magi-news`, `magi-earnings`,
+  `magi-sec-filings` + 8 BigQuery-backed stores including
+  `data-analyzer_1777082186052_stock_ai_analysis`) and 3 engines
+  (`gemini-enterprise-…`, `magi-research`, `magi-system-bqdatastore-…`). The
+  `magi-knowledge` store's indexed content had stayed frozen at the
+  2026-08-26 import. The Devin org secret `MAGI_GE_OAUTH_CLIENT_SECRET`
+  also remained.
 * **Docs**: `PROMPT.md` no longer lists Gemini Enterprise among live
   mirrors; `.agents/skills/syncing-spec-to-gemini-enterprise/SKILL.md` is
   marked DEPRECATED (kept as history — its `magi-dataset` A2A workaround is
@@ -23,7 +25,8 @@
   `DAILY_DEEP_RESEARCH` row is 2026-10-29.
 * **Deletion (Jun-instructed, completed 2026-11-01)**: all 3 engines and 8
   data stores deleted via the Discovery Engine API; the remaining 4
-  BigQuery-connected stores (`data-analyzer_…_stock_ai_analysis`,
+  BigQuery-connected stores (`data-analyzer_…_stock_ai_analysis` — the
+  `stock_ai_analysis` counted among the 12 above — plus
   `magi-datastore_…_thoughts` / `_trades` / `_isabel_briefings`) reject
   public-API deletion ("Connected data store can only be deleted by
   internal requests") so Jun deleted their two console-level parent
@@ -37,6 +40,13 @@
   is marked historical separately; `l6.md`, `vix-regime.md` and
   `syncing-spec-to-r2-data-catalog` still cite its §2.3/§5.2 — kept as a
   citation source, not deleted.
+* **Sweep evidence**: `rg -il 'gemini.enterprise|discoveryengine|agentspace'`
+  over the bundle (incl. `.agents/`) now hits only the deprecated SKILL.md
+  (kept as history), this log entry, and `secrets-inventory.md` (the
+  `MAGI_GE_OAUTH_CLIENT_SECRET` row + `agentspace*` note) — no document
+  still describes Gemini Enterprise as current. The `MAGI-GE-DESIGN-001-v2`
+  citations in `l6.md` / `vix-regime.md` / `syncing-spec-to-r2-data-catalog`
+  are intentional historical references.
 * **Scope**: documentation-only drift correction — no service, guard,
   table, scheduler or boundary change.
 
