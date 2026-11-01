@@ -1,6 +1,6 @@
 ---
 name: moomoo-api-reference
-description: MooMoo OpenAPI Python SDK reference for the magi-moomoo bridge. Covers trading objects, account management, demo trading, order placement, position/fund queries, market data APIs, and key enum definitions. Use when modifying bridge endpoints, adding new trading features, or debugging MooMoo SDK behavior.
+description: MooMoo OpenAPI Python SDK reference for the magi-moomoo bridge. Covers the official API overview (component and account models, per-market/per-entity data & trading coverage), trading objects, account management, demo trading, order placement, position/fund queries, market data APIs, and key enum definitions. Use when modifying bridge endpoints, adding new trading features, or debugging MooMoo SDK behavior.
 type: Reference
 lilith_safe: false
 tags: [reference, moomoo, opend, trading, api]
@@ -13,8 +13,9 @@ Doc portal: https://openapi.moomoo.com/moomoo-api-doc/jp/ — 概要 node `url=2
 
 ## Official API overview (docs v10.12)
 
-Captured from the official 概要 (overview) page — the doc portal's entry node.
-Use it to orient before diving into per-API pages.
+Captured 2026-11-01 from the official 概要 (overview) page — the doc
+portal's entry node (`url=202012035`, docs v10.12). Use it to orient
+before diving into per-API pages.
 
 ### Components
 
@@ -103,12 +104,14 @@ Real and demo trading share the same trading APIs (`trd_env` switches).
 ### Key facts
 
 - OpenD runs on Windows, macOS, CentOS, Ubuntu.
-- Advertised order latency: as fast as 0.0014s; no extra fee for trading
-  via the MooMoo API (per the official overview).
+- Advertised order latency: as fast as 0.0014s; the official overview also
+  claims no *additional* fee for trading via the API itself
+  (Moomoo API 経由の取引に追加料金なし — ordinary brokerage fees still
+  apply).
 - MAGI trades through Moomoo US (`SecurityFirm.FUTUINC`) — per the entity
-  matrix above, US stocks/ETFs/options are supported; US futures are not,
-  and OTC stocks have no quote data (and are absent from the trading
-  product list).
+  matrix above, US stocks/ETFs/options are supported; futures on every
+  market (HK/US/SG/JP) are not, and OTC stocks have no quote data (and are
+  absent from the trading product list).
 
 ## Architecture
 
@@ -146,8 +149,10 @@ trd_ctx = OpenFutureTradeContext(
     port=11111,
     security_firm=SecurityFirm.FUTUINC
 )
-# Generic SDK signature — per the entity matrix above, Moomoo US
-# (FUTUINC) does NOT support US futures; use a futures-capable entity.
+# Generic SDK signature for illustration — per the entity matrix above,
+# Moomoo US (FUTUINC) supports NO futures market (HK/US/SG/JP all ✗), so
+# this exact security_firm cannot trade futures; use a futures-capable
+# entity (e.g. FUTUSECURITIES for HK futures, FUTUSG for US/SG futures).
 ```
 
 **Key differences:**

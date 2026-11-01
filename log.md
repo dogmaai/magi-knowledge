@@ -9,7 +9,8 @@
   API SDK component model, the platform-account vs trading-account model
   (HK / US / A-share Connect / futures), the market-data and trading
   coverage matrices by brokerage entity, and the doc portal link.
-  The skill's Python SDK reference is unchanged.
+  The skill's Python SDK reference content is unchanged apart from
+  review-driven comment annotations (futures-entity support notes).
 * **Scope**: documentation-only; no service, guard, table, scheduler or
   LILITH-boundary change.
 
