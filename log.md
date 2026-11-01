@@ -1,5 +1,176 @@
 # Bundle Update Log
 
+## 2026-10-31 (LILITH clean-source runtime skip removed — docs follow code)
+* **Drift found**: [magi-core](system/services/magi-core.md) (HERMES
+  "Pre-trade (read)") and
+  [pre-trade-intelligence](system/echidna-tables/pre-trade-intelligence.md)
+  still described `skipLLMProcessed` as current behavior. The option has
+  been unreachable since the `lilith` provider path was retired
+  (magi-core#494), and the residual code was removed in
+  dogmaai/magi-core#690 (`lilith` is in `DEPRECATED_PROVIDERS` and cannot
+  be dispatched).
+* **Docs**: `system/services/magi-core.md` L44 now states all units
+  receive the full `[HERMES]` block;
+  `system/echidna-tables/pre-trade-intelligence.md` L18–21 records that the
+  row was excluded from the retired LILITH prompt path and that the
+  `_lilith_safe/` training boundary is unchanged.
+* **Scope**: documentation-only drift correction — no table, unit, guard,
+  scheduler or boundary change. Merged after magi-core#690; the magi-core
+  `vendor/magi-knowledge` pin follows in a later bump. Jun reviewed and
+  approved (2026-10-31T14:00:11Z): a `verified: human:jun` entry is added
+  to both docs and `stale_after` is set to verification + 6 months.
+
+## 2026-10-31 (BOREAS: 14b size corrected; `ministral-3:14b` removed from TIALA)
+* **Drift found (Claude session 2026-10-30)**: [BOREAS](system/plm-units/boreas.md)
+  stated the `ministral-3:14b` Q4_K_M weight file was ~16.8 GB; `ollama list`
+  on TIALA (2026-10-30, Ollama 0.40.4) shows 9.1 GB. The ~16.8 GB figure is
+  removed; whether it described the loaded footprint is left unverified.
+  The recorded symptoms (page thrashing, ~130 tok/s, HTTP 524) are unchanged.
+* **Host change (Jun, 2026-10-31)**: `ollama rm ministral-3:14b` on TIALA
+  (retired since the 2026-10-02 cohort boundary). Remaining Ollama models
+  used by MAGI: `ministral-3:8b-ctx32k` (BOREAS), its base `ministral-3:8b`
+  (kept; shares the weight blob, so removing it frees no space) and
+  `qwen2.5:7b` (ADAM). External SSD model directory: 20 GB after removal.
+* **Scope**: documentation of a host cleanup and a factual correction. No
+  unit/model configuration, deploy, budget, guard, table or LILITH-boundary
+  change (the removed model was already unused). Also drops a stale
+  sentence in boreas.md that still said the doc "remains `draft`".
+  boreas.md stays `status: stable`: Jun reviewed and confirmed this change
+  in the session (2026-10-31T07:25:42Z); a `verified: human:jun` entry is added and
+  `stale_after` set to verification + 6 months.
+
+## 2026-10-31 (Mistral review failure notice)
+* **Request (Jun, Claude session 2026-10-31)**: make a failed Mistral PR review
+  visible — previously `continue-on-error: true` kept the job green and the
+  review was simply missing.
+* **Implementation**: in `.github/workflows/auto-review.yml` of
+  `magi-knowledge`, `magi-core`, `magi-moni`, `magi-moomoo` and
+  `magi-price-tracker` (branch `claude/mistral-review-failure-notice`), the
+  Mistral step gets `id: mistral_review` and a new step
+  `Report Mistral review failure` runs only when that step's outcome is
+  `failure`: it posts one PR comment per head SHA
+  (`<!-- mistral-review-failed sha=<head SHA> -->` marker) with the run URL
+  and emits a warning annotation (the notice step is itself
+  `continue-on-error`). Failure path verified on magi-price-tracker #8 with
+  a temporary invalid model (Mistral API 400 `invalid_model` → notice
+  comment + annotation; reverted). The Mistral review script is unchanged;
+  no error body or secret is copied into the comment.
+* **Docs**: [COLLABORATION.md](COLLABORATION.md#automated-pr-review-bots).
+* **Scope**: review bots only; no new egress (GitHub API only). No trading,
+  guard, PLM unit, table, scheduler or LILITH-boundary change.
+
+## 2026-10-31 (cash-account-constraint re-verified → stable)
+* **Verification (Jun, Claude session 2026-10-31)**: Jun reviewed
+  [cash-account-constraint](system/constitution/cash-account-constraint.md)
+  as amended by #190 (cash prompt omitted only for explicit
+  `TRD_ENV=SIMULATE` + `ACCOUNT_TYPE=margin`; REAL / unset / unrecognised
+  resolve to cash; REAL bridge enforces cash checks independently) and
+  confirmed the content. `status: draft` → `stable`; a new
+  `verified: human:jun` entry is added and `stale_after` is updated to
+  verification + 6 calendar months (2027-04-30, same rule as the previous
+  2026-10-27 → 2027-04-27 pair). Earlier verification history is kept.
+* **Why now**: magi-core's `okf-constitution-drift` test requires every
+  rendered prompt section to be documented by a stable concept; with this
+  doc in `draft`, bumping magi-core's `vendor/magi-knowledge` pin past #190
+  failed on `[CASH ACCOUNT CONSTRAINT]`. This unblocks the pin bump.
+* **Scope**: verification metadata and one clarifying sentence only. No
+  policy, guard, prompt text, deployment, table or LILITH-boundary change.
+  Live deployment of the 2026-10-28 condition remains unverified by this
+  document.
+
+## 2026-10-30 (Mistral PR review pinned to `mistral-large-4`)
+* **Decision (Jun, Claude session 2026-10-30)**: the automated Mistral PR
+  review moves from the `mistral-large-latest` alias to an explicit
+  `mistral-large-4` (Mistral Large 4, Public Preview on the Mistral API
+  since 2026-10-06 per the Mistral changelog). Pinning makes the model in
+  use visible in each review header; if the preview ID changes or is
+  withdrawn, the Mistral step errors (job stays green via
+  `continue-on-error`; the review is simply missing) instead of silently
+  switching models.
+* **Implementation**: `MISTRAL_MODEL` in `.github/workflows/auto-review.yml`
+  of `magi-knowledge` (#194), `magi-core` (#685), `magi-moni` (#56),
+  `magi-moomoo` (#100) and `magi-price-tracker` (#7) (branch
+  `claude/mistral-review-large-4` in each). Sequence on each PR's own
+  auto-review runs: (1) first run — model responded, body posted as
+  `[object Object]`; (2) after the chunk-parse fix — three repos posted a
+  normal review, two posted an empty one; (3) after raising `max_tokens` —
+  all five posted a non-empty review headed `mistral-large-4`.
+* **Response format fix**: `mistral-large-4` returns `message.content` as a
+  chunk array (`thinking` + `text`) instead of a string, so the first run
+  posted `[object Object]`. The workflows now concatenate only `text`
+  chunks (reasoning is not posted) and still accept plain-string content.
+  Reasoning chunks also consume `max_tokens`, so two repos then posted an
+  empty review; `max_tokens` is raised to 16000 in all five workflows, and
+  an empty result now posts `finish_reason` and a count per chunk type
+  instead of a bare `(no output)`. The Mistral call also gets a 300 s
+  `AbortSignal.timeout`, a review cut off by `max_tokens`
+  (`finish_reason=length`) is posted with an explicit truncation notice,
+  and each run logs `finish_reason` and token `usage` (counts only) for
+  cost monitoring.
+* **Cost / limits (external figures, unverified against the Mistral
+  console)**: Mistral Large 4 lists up to 256K output tokens, so 16000 is
+  within the model limit; listed price is $2.10 per 1M output tokens
+  ($0.70 input), i.e. at most ≈ $0.034 of output per review even if the
+  whole 16000 budget is used. Actual consumption is read from the new
+  `usage` log line. Sources: Mistral changelog
+  <https://docs.mistral.ai/resources/changelogs> (model ID, Public Preview
+  2026-10-06); OpenRouter model page
+  <https://openrouter.ai/mistralai/mistral-large-4-0> (output limit,
+  price); Ollama library <https://ollama.com/library/mistral-large-4>
+  (`:cloud` tag only). The chunk schema (`type: "text"` / `text`) is the
+  observed API behaviour on these runs, not a quoted spec.
+* **Not changed (pre-existing, out of scope)**: the Mistral step's
+  `continue-on-error: true` means a failed review is silent (no alert, no
+  PR comment). Resolved on 2026-10-31 — see the failure-notice entry.
+* **Docs**: [COLLABORATION.md](COLLABORATION.md#automated-pr-review-bots)
+  and [secrets-inventory](system/services/secrets-inventory.md) model name.
+  secrets-inventory stays `draft`; no verification entry is added.
+* **Scope**: same Mistral API endpoint and the same data sent, so the
+  2026-09-17 / 2026-10-11 egress approvals are unchanged. Review bots only:
+  no trading, guard, PLM unit, table, scheduler or LILITH-boundary change.
+  The local BOREAS unit (`ministral-3:8b-ctx32k` on TIALA) is unchanged —
+  Mistral Large 4 is offered on Ollama only as a `:cloud` tag and does not
+  fit TIALA locally.
+
+## 2026-10-30 (Claude PR review: on-request only, subscription auth)
+* **Decision (Jun, Claude session 2026-10-30)**: the magi-core Claude PR
+  review no longer runs on every PR open/push — the per-push review caused
+  cost spikes. It now runs only when a PR comment contains `@claude review`
+  (non-bot user with write association; fork and closed PRs skipped). It
+  authenticates with Jun's Claude subscription
+  (`CLAUDE_CODE_OAUTH_TOKEN`, source `SM` `CLAUDE_CODE_OAUTH_TOKEN_PR_REVIEW`)
+  instead of the API key.
+* **Docs**: [COLLABORATION.md](COLLABORATION.md#claude-pr-review-magi-core)
+  (trigger, failure handling, authentication consequences, probe-test token
+  exposure) and [secrets-inventory](system/services/secrets-inventory.md)
+  (new secret; `ANTHROPIC_API_KEY` / `ANTHROPIC_API_KEY_PR_REVIEW` scheduled
+  for retirement). secrets-inventory stays `draft`; no verification entry
+  is added.
+* **Implementation**: magi-core PR (branch
+  `claude/claude-review-manual-oauth`). Pending Jun operations: create the
+  `SM` secret and the GitHub secret, test with `@claude review`, then retire
+  the old key (tracking Issue). No trading, guard, table, scheduler or
+  LILITH-boundary change.
+
+## 2026-10-29 (Gemini generation unified on AI Studio)
+* **Jun instruction**: Vertex AI cannot be used; unify Gemini generation on
+  AI Studio. Models, trading modes and analysis responsibilities do not change.
+* **Implementation update, pending review/deployment**: HERMES macro changes
+  from a Vertex SDK client to API-key-based AI Studio while retaining Search
+  Grounding. Gemini Analyzer removes its Vertex/ADC fallback and validates
+  credentials before table/schema work. Shared analyzer transport naming and
+  operating documentation now describe AI Studio. DAPHNE already used this API.
+* **OKF correction**: [DAPHNE](system/echidna-tables/daphne-feedback.md) changes
+  the stale Vertex wording to AI Studio and returns to draft for review;
+  historical human verification is retained without inventing a new review.
+  [Gemini AI Studio policy](system/services/gemini-ai-studio.md) is a new draft.
+* Reference pin `c00baf0`; implementation base magi-core `7a8175a`. No changes
+  to tables/schemas, ledger data, guards, RECON, account mode, GCP infrastructure
+  or the LILITH boundary. No production operation is performed by this update.
+* **Reconfirmed (Jun, Claude session 2026-10-31)**: the AI Studio unification
+  stands; magi-core#683 / this PR stay open for merge. The new docs remain
+  `draft` — this reconfirmation is not recorded as a `verified` entry.
+
 ## 2026-10-29 (L1.6.RECON blocked the 2026-10-28 night: orphan AMAT 349653 — root cause confirmed, ledger back-filled)
 * **Incident**: AMAT sell 75 (349652, CASPER) and AMAT sell 31 (349653, the
   CASPER-session AUTO_CLOSE `TAKE_PROFIT_HIGH`) both filled at the broker,
