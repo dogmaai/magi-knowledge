@@ -11,7 +11,10 @@
 * **Docs**: `COLLABORATION.md` public-repo writing rules gain a carve-out —
   `system/services/secrets-inventory.md` may record secret names and their
   stores (`SM` / `Devin org` / `GH:<repo>`), but still never secret values,
-  local credential file paths, or host identifiers.
+  local credential file paths, or host identifiers. Tightened in review:
+  only the name/store columns are exempt, the base rule cites the carve-out,
+  and ledger edits require review by someone other than the implementer
+  (or Jun).
 * **Scope**: documentation-only policy amendment — no service, guard,
   table, scheduler or boundary change.
 
