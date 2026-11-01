@@ -74,8 +74,8 @@ tick, order book), or query latest snapshots and historical K-line.
 
 Trading APIs support 5 markets — HK, US, A-share, SG, JP — where the
 available products vary by market and brokerage entity (stocks, options,
-futures; SG and JP entities cover futures only — their stock/REIT rows are
-✗ on every entity). The official table also lists AU and CA market rows;
+futures; for the SG and JP markets only futures rows are supported —
+their stock/REIT rows are ✗ on every entity). The official table also lists AU and CA market rows;
 they are currently unsupported (✗) everywhere and shown for completeness.
 
 Availability (Demo column = paper trading, the rest are live brokerage
@@ -104,11 +104,11 @@ Real and demo trading share the same trading APIs (`trd_env` switches).
 
 - OpenD runs on Windows, macOS, CentOS, Ubuntu.
 - Advertised order latency: as fast as 0.0014s; no extra fee for trading
-  via the MooMoo API.
+  via the MooMoo API (per the official overview).
 - MAGI trades through Moomoo US (`SecurityFirm.FUTUINC`) — per the entity
-  matrix above, US stocks/ETFs/options are supported; US futures and OTC
-  stocks are not. (The `OpenFutureTradeContext` example below is the
-  generic SDK signature; the Moomoo US entity column for US futures is ✗.)
+  matrix above, US stocks/ETFs/options are supported; US futures are not,
+  and OTC stocks have no quote data (and are absent from the trading
+  product list).
 
 ## Architecture
 
@@ -146,6 +146,8 @@ trd_ctx = OpenFutureTradeContext(
     port=11111,
     security_firm=SecurityFirm.FUTUINC
 )
+# Generic SDK signature — per the entity matrix above, Moomoo US
+# (FUTUINC) does NOT support US futures; use a futures-capable entity.
 ```
 
 **Key differences:**
