@@ -1,7 +1,7 @@
 # Bundle Update Log
 
 ## 2026-11-01 (MooMoo official API overview ingested)
-* **Request (Jun)**: capture the official MooMoo API documentation entry
+* **Request (Jun, Devin session 2026-11-01)**: capture the official MooMoo API documentation entry
   page (https://openapi.moomoo.com/moomoo-api-doc/jp/ 概要 node,
   `url=202012035`, docs v10.12) into the knowledge bundle.
 * **Enhancement**: [moomoo-api-reference](/.agents/skills/moomoo-api-reference/SKILL.md)

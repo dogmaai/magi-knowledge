@@ -9,7 +9,7 @@ tags: [reference, moomoo, opend, trading, api]
 # MooMoo OpenAPI Python SDK Reference
 
 Official docs (JA): https://openapi.moomoo.com/moomoo-api-doc/jp/intro/intro.html
-Doc portal (SPA): https://openapi.moomoo.com/moomoo-api-doc/jp/ — 概要 node `url=202012035` (API docs v10.12)
+Doc portal: https://openapi.moomoo.com/moomoo-api-doc/jp/ — 概要 node `url=202012035` (API docs v10.12)
 
 ## Official API overview (docs v10.12)
 
@@ -44,10 +44,10 @@ Two distinct account types:
 
   | Trading account | Covers |
   |---|---|
-  | 香港株口座 (HK stocks) | HK-market securities and options |
+  | 香港株口座 (HK stocks) | HK-market securities (stocks/ETFs) and securities options (個別株オプション) |
   | 米国株口座 (US stocks) | US-market stocks, ETFs, options |
   | A株通口座 (A-share Connect) | A-share Connect stocks |
-  | 先物口座 (Futures) | Global futures — HK, US CME Group, SG, JP markets; HK index options also trade in the HK futures account |
+  | 先物口座 (Futures) | Global futures — HK, US CME Group, SG, JP markets; HK index options (指数オプション, distinct from securities options) also trade in the HK futures account |
 
 - One platform account can hold trading accounts at multiple brokers — a
   single moomoo ID may own several brokerage trading accounts.
@@ -105,8 +105,10 @@ Real and demo trading share the same trading APIs (`trd_env` switches).
 - OpenD runs on Windows, macOS, CentOS, Ubuntu.
 - Advertised order latency: as fast as 0.0014s; no extra fee for trading
   via the MooMoo API.
-- MAGI trades through Moomoo US (`SecurityFirm.FUTUINC`) — US
-  stocks/ETFs/options are supported; US futures and OTC stocks are not.
+- MAGI trades through Moomoo US (`SecurityFirm.FUTUINC`) — per the entity
+  matrix above, US stocks/ETFs/options are supported; US futures and OTC
+  stocks are not. (The `OpenFutureTradeContext` example below is the
+  generic SDK signature; the Moomoo US entity column for US futures is ✗.)
 
 ## Architecture
 
