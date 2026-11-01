@@ -171,6 +171,58 @@
   stands; magi-core#683 / this PR stay open for merge. The new docs remain
   `draft` — this reconfirmation is not recorded as a `verified` entry.
 
+## 2026-10-29 (L1.6.RECON blocked the 2026-10-28 night: orphan AMAT 349653 — root cause confirmed, ledger back-filled)
+* **Incident**: AMAT sell 75 (349652, CASPER) and AMAT sell 31 (349653, the
+  CASPER-session AUTO_CLOSE `TAKE_PROFIT_HIGH`) both filled at the broker,
+  but 349653 has **no trades row**. From 17:00Z RECON read AMAT ledger 31
+  vs broker 0 (`PHANTOM_LEDGER`) and blocked 6 risk-increasing orders
+  until close (BAC ×2, SNDK, CVX ×2, WMT). (XOM buy 120 349450 was
+  journaled unconfirmed; broker order history now shows it still
+  `SUBMITTED` with no fill — it never became a position.)
+* **Root cause (confirmed in Cloud Logging by Devin, 2026-10-29)**:
+  `validateTradeRow`
+  (`magi-core/lib/bigquery.js`) keyed duplicates on
+  `symbol:side:price:llm_provider` over 5 min. Unconfirmed fills carry
+  `price = NULL`, so a second unconfirmed close of the same symbol by the
+  same provider (349652 → 349653, ~1 min apart) collided and was
+  DQ-blocked; DQ blocks are intentionally not retried, so the row was
+  lost. `position_guard_evals` shows the close reached `ORDER_PENDING_FILL`.
+  * AMAT 349653: `magi-core-deepseek` logged
+    `[DQ BLOCKED] trades insert blocked: DUPLICATE within 5min` at
+    2026-10-28 16:57:59.588930Z, followed by `[AUTO_CLOSE BQ MISMATCH]
+    Close order 349653 (AMAT sell x31) … enqueued for retry` (16:58:00Z;
+    the retry claim was wrong — fixed in magi-core#682). Deployed image:
+    `main:89280e74ff22717b64fbd1be67de9ae334458542` (ReplaceJob
+    13:59:53Z).
+  * CVX 348838 (2026-10-27 orphan): `magi-core-boreas` logged the same
+    `[DQ BLOCKED] trades insert blocked: DUPLICATE within 5min` at
+    2026-10-27 20:52:49.082445Z (`session_id 9992f137-07fa-43a7-9d62-000340a54aa3`,
+    `llm_provider ollama`), then `[TRADE BQ MISMATCH] Broker order 348838
+    (CVX sell x10) filled but … enqueued for retry`. Deployed image:
+    `main:4e410d184e8c9ae2ca97063e85db2fa5f61b96b3` (ReplaceJob
+    09:55:50Z). Same mechanism — closes the open root cause on 348838.
+* **Fix (magi-core#682)**: rows with an `order_id` dedupe on the broker
+  order id; rows without one keep the legacy key. Mismatch logs no longer
+  claim "enqueued for retry" for DQ-blocked rows (they never are).
+* **Data fix (Jun-approved 2026-10-29 08:09 JST; executed by Devin
+  2026-10-28 23:43Z / 08:43 JST, job
+  `bqjob_r1bf28b2fdddfa851_000001a184e6ec43_1`, 1 row inserted)**: backup `magi_core.trades_recon_fix_backup_20261029`
+  taken. The missing row was recreated as positionMgmt would have written
+  it — unconfirmed (`qty 0`, `requested_qty 31`, `price NULL`,
+  `price_confirmed FALSE`, `result AUTO_CLOSE`, `entry_price` = broker avg
+  cost 341.625, `signal_price` 414.7 from `position_guard_evals`,
+  `thought_id 0c6f78c2-05bf-43f1-82e8-751d80973694`) — so RECON resolves
+  it from broker order history and the evaluator back-fills the price; no
+  fill price is guessed (broker history: FILLED_ALL @ 415.34).
+* **Verification (Devin, 2026-10-31)**: RECON stayed consistent through
+  the next two trading nights — all magi-core-* units ran 2026-10-29
+  14:38–20:58Z and 2026-10-30 13:31Z onward (audit-log `Jobs.RunJob`), and
+  `thoughts` gained **no** `concerns='L1.6.RECON'` row in
+  2026-10-29 12:30Z → 2026-10-30 21:00Z (577 thoughts total, 15 new
+  `trades` rows). Normal trading resumed; the AMAT 349653 back-fill let
+  the ledger reconcile. The leftover XOM 349450 buy self-resolved to
+  `CANCELLED_ALL` unfilled — no broker position, ledger 0 = broker 0.
+
 ## 2026-10-28 (Mistral #190 review: clarify verified scope)
 * Checked the Mistral review on #190 head `f6901a135909272a9a9f8cbabac8660e164d56e8`
   and the later-posted review of `ce540a1` against the actual sources.
