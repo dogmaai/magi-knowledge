@@ -5,9 +5,9 @@ description: HERMES per-symbol Brave/Gemini pre-trade intelligence — sentiment
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=pre_trade_intelligence&page=table
 lilith_safe: false
 status: stable
-generated: { by: devin/local, at: 2026-09-17T00:29:00Z }
-verified: [{ by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-09-16T02:00:00Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
-stale_after: 2027-04-04T05:36:00Z
+generated: { by: devin/cloud, at: 2026-10-31T13:49:23Z }
+verified: [{ by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-09-16T02:00:00Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-31T14:00:11Z }]
+stale_after: 2027-04-30T14:00:11Z
 tags: [echidna, bigquery, hermes, sentiment, news]
 dataset: magi_core
 table_type: BASE TABLE
@@ -17,8 +17,9 @@ table_type: BASE TABLE
 symbol per collection pass, produced by Brave Search retrieval + Gemini
 structured-output scoring (see the HERMES intelligence stack in
 [magi-core](/system/services/magi-core.md)). **Must never reach LILITH** —
-it is processed cross-source intelligence; LILITH clean-source mode
-(`skipLLMProcessed`) skips this block.
+it is processed cross-source intelligence that the retired LILITH prompt
+path excluded. The runtime skip was removed in magi-core#690 (`lilith` is
+undispatchable); the training-data boundary remains `_lilith_safe/`.
 
 Schema verified against the live table (`bq show`) on 2026-09-16; the writer
 implementation was compared at magi-core `9ae8a966b732da5a735ad8c1a5554777fa07c215`
