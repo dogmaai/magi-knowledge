@@ -1,5 +1,22 @@
 # Bundle Update Log
 
+## 2026-11-02 (Daily market brief automation re-enabled, cloud-only prompt)
+* **Request (Jun, Devin session 2026-11-01)**: re-enable the weekday
+  `MAGI 日次市場ブリーフ投入` automation after Jun's Mac (the previous
+  execution host) became unavailable; keep per-run cost bounded.
+* **Change**: the automation prompt was rewritten so the whole flow runs on
+  the Devin VM — brief files moved to `/home/ubuntu/brief-*.md`, repo path
+  `~/repos/magi-core`, GCP auth via the `GCP_SERVICE_ACCOUNT_KEY` env secret
+  (`GOOGLE_APPLICATION_CREDENTIALS` + `bq` fallback). Schedule
+  (`0 7 * * 1-5` UTC), brief format, Section 5 stripping, and
+  `max_acu_limit=1` are unchanged.
+* **Cost**: per-run cap 1 ACU (existing `max_acu_limit`); ~21-22 runs/month
+  ceiling ≈ 22 ACU/month. Historical runs consumed 0 ACU because work ran
+  on Jun's local machine — cloud runs will now consume real ACU within the
+  cap.
+* **Docs**: `system/services/magi-deep-research.md` Current status updated
+  (enabled; prompt described).
+
 ## 2026-11-01 (Secrets ledger carved out of the public-repo writing rules)
 * **Request (Jun, Devin session 2026-11-01)**: Devin Review on
   magi-knowledge#201 flagged `secrets-inventory.md`'s store column as
