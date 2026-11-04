@@ -1,5 +1,28 @@
 # Bundle Update Log
 
+## 2026-11-07 (PROMPT.md refreshed for external LLMs; pin-first confirmed)
+* **Request (Jun, Devin session 2026-11-04)**: produce the latest MAGI
+  instruction for other LLMs. **Jun confirmed pin-first revision selection
+  (option A) on 2026-11-07** ([#207](https://github.com/dogmaai/magi-knowledge/pull/207)).
+* **Docs**: `PROMPT.md` Consumer Preamble (still 6 lines, value-free) and
+  full version aligned with the current bundle rules:
+  revision selection follows the target repo's `vendor/magi-knowledge` pin
+  (`main` + "ピン無し" only when no pin exists), as in
+  `.agents/skills/consulting-magi-north-star`; a pin older than `main` is not
+  silently switched to `main`, and relevant post-pin `main` changes in
+  `log.md` are reported as pin-lag drift with both commits; on spec content
+  the OKF revision wins over a target repo's `AGENTS.md` and the conflict is
+  reported to Jun; `magi-stg` recorded as deleted; independent review for
+  sensitive changes (incl. Constitution and changes via config, scripts or
+  spec), automated reviews (Mistral / Claude / Gemini / Codex) as reference
+  only, no fabricated `human:` verification (`COLLABORATION.md`);
+  escalation covers mode switches and comes with concrete options;
+  public-repo writing rules, credential handling and the external-egress
+  approval rule added to the prohibitions; digest requests name
+  `scripts/okf_export.py`; PR format Summary / Key Changes / Verification.
+* **Scope**: documentation-only — no service, guard, table, scheduler or
+  boundary change.
+
 ## 2026-11-06 (PLM model lifecycle and Gemini fallback correction)
 * **Request**: ChatGPT conversation, monitoring report of 2026-11-05 and Jun's
   2026-11-06 instruction "OKF修正お願い", recorded by Codex. The report
