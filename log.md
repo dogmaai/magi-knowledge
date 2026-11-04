@@ -7,9 +7,9 @@
 * **Docs**: `COLLABORATION.md` "Automated PR review bots" records the new role
   (magi-core#701).
 * **Scope**: `magi-core` only. Results stay reference information and the
-  independent-review rule is unchanged. PR diffs still go to the same external
-  API under the approval of 2026-09-17, with a larger share of each diff sent.
-  No service, guard, table, scheduler or boundary change.
+  independent-review rule is unchanged. PR diffs and OKF excerpts still go to
+  the same external API within the existing limits (30,000 characters total,
+  6,000 per doc). No service, guard, table, scheduler or boundary change.
 
 ## 2026-11-01 (Secrets ledger carved out of the public-repo writing rules)
 * **Request (Jun, Devin session 2026-11-01)**: Devin Review on
