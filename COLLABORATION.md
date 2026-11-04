@@ -328,8 +328,9 @@ posted for the head) do not trigger the notice.
   review, and it posts a notice without calling Mistral when no OKF doc
   applies. The other repositories keep the general review for now.
 - **Section selection ([magi-core#702](https://github.com/dogmaai/magi-core/pull/702)):**
-  review-operation changes additionally select
-  sections of the pinned `COLLABORATION.md` by exact changed path:
+  in `magi-core` only, the Mistral OKF drift-check step additionally selects
+  sections of the pinned `COLLABORATION.md` using the exhaustive table below.
+  Paths are relative to the `magi-core` repository root:
 
   | Changed path | Priority section |
   |---|---|
@@ -337,14 +338,23 @@ posted for the head) do not trigger the notice.
   | `scripts/okf-drift-context.cjs` | `Automated PR review bots` |
   | `.github/workflows/claude-review.yml` | `Claude PR review (magi-core)` |
 
-  Other workflows, including `deploy.yml`, do not select collaboration
-  sections. Sections split at `##` and `###`, ignoring code-block headings;
-  only the selected section is sent, ahead of identifier-selected docs.
+  No path outside this table selects collaboration sections; this includes
+  other scripts and workflows such as `deploy.yml`. Sections split at `##`
+  and `###`, ignoring code-block headings. If multiple paths select the same
+  section, it is attached once, ahead of identifier-selected docs. Identifier
+  selection scans `system/` only; it cannot select `COLLABORATION.md` as a
+  whole.
   Multiple sections share the original document's 6,000-character budget;
-  the OKF total remains 30,000 characters and the diff limit remains 30,000.
+  OKF excerpts together remain capped at 30,000 characters. Independently,
+  the diff selection limit remains 30,000 characters, as in the
+  [pre-#702 workflow](https://github.com/dogmaai/magi-core/blob/f4abf8e59fda049805d4166837c164bd75f375f9/.github/workflows/auto-review.yml).
+  These are separate limits, not a combined API request-body limit.
   Labels and truncation markers count against the excerpt budget.
   The generated coverage footer names attached, truncated, omitted and
-  unavailable sections as `COLLABORATION.md#<heading>`.
+  unavailable sections as `COLLABORATION.md#<heading>`, where `<heading>` is
+  the original heading text without Markdown heading markers, preserving
+  case and spaces, not a GitHub anchor slug. Truncated sections also appear
+  in the attached list.
   These sections have no lifecycle metadata and are labelled
   `status:none — workflow rule, no lifecycle metadata`. They are workflow
   rules: inconsistencies are ordinary drift, not disagreements with a
@@ -377,8 +387,9 @@ Jun confirmed on 2026-11-04 (magi-core#701) that selecting these docs by the
 table names, job names and similar identifiers in the changed lines is within
 "diff keywords". The caps are unchanged. Any further egress expansion still needs Jun's explicit decision.
 
-Jun explicitly approved on 2026-11-04 (ChatGPT implementation-planning
-conversation) sending the `COLLABORATION.md` sections selected by the exact
+Jun explicitly approved on 2026-11-04 (ChatGPT conversation;
+[Codex-transcribed record](https://github.com/dogmaai/magi-knowledge/pull/206#issuecomment-6624671578))
+sending the `COLLABORATION.md` sections selected by the exact
 paths above to Mistral within these existing caps. This does not raise the
 limits, authorize sending the whole document, expand other repositories'
 review workflows, or make automated reviews independent approval.
