@@ -207,8 +207,9 @@ def concept_id_for(bundle_root: Path, path: Path) -> str:
 
 def iter_concept_files(root: Path):
     """Yield every non-reserved markdown file under ``root``."""
+    ignored_dirs = {".git", "node_modules", "dist", "src", "public"}
     for dirpath, _dirnames, filenames in os.walk(root):
-        if ".git" in Path(dirpath).parts:
+        if any(part in ignored_dirs for part in Path(dirpath).parts):
             continue
         for name in sorted(filenames):
             if not name.endswith(".md"):

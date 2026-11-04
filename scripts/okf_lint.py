@@ -276,8 +276,9 @@ def lint(fail_on_stale: bool = False) -> int:
             )
 
     # --- reserved index.md frontmatter rule (only bundle-root may have it) -
+    ignored_dirs = {".git", "node_modules", "dist", "src", "public"}
     for index_path in BUNDLE_ROOT.rglob("index.md"):
-        if ".git" in index_path.parts:
+        if any(part in ignored_dirs for part in index_path.parts):
             continue
         text = index_path.read_text(encoding="utf-8")
         rel = _rel(index_path)
