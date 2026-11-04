@@ -327,6 +327,28 @@ posted for the head) do not trigger the notice.
   footer names every doc and file it did not check. It does no general code
   review, and it posts a notice without calling Mistral when no OKF doc
   applies. The other repositories keep the general review for now.
+- **Section-selection update (pending [magi-core#702](https://github.com/dogmaai/magi-core/pull/702);
+  merge that core PR first):** review-operation changes additionally select
+  sections of the pinned `COLLABORATION.md` by exact changed path:
+
+  | Changed path | Priority section |
+  |---|---|
+  | `.github/workflows/auto-review.yml` | `Automated PR review bots` |
+  | `scripts/okf-drift-context.cjs` | `Automated PR review bots` |
+  | `.github/workflows/claude-review.yml` | `Claude PR review (magi-core)` |
+
+  Other workflows, including `deploy.yml`, do not select collaboration
+  sections. Sections split at `##` and `###`, ignoring code-block headings;
+  only the selected section is sent, ahead of identifier-selected docs.
+  Multiple sections share the original document's 6,000-character budget;
+  the OKF total remains 30,000 characters and the diff limit remains 30,000.
+  Labels and truncation markers count against the excerpt budget.
+  The generated coverage footer names attached, truncated, omitted and
+  unavailable sections as `COLLABORATION.md#<heading>`.
+  These sections have no lifecycle metadata and are labelled
+  `status:none — workflow rule, no lifecycle metadata`. They are workflow
+  rules: inconsistencies are ordinary drift, not disagreements with a
+  hypothesis. Other documents retain their existing lifecycle/trust labels.
 - `magi-ui` and `magi-deep-research` were deleted on 2026-10-07 (Jun's
   decision); their workflow entries are gone with the repositories.
 - `lilith-training`, `magi-shared`, `magi-core-public` and `magi-stg` were
@@ -354,6 +376,12 @@ spec documents selected by diff keywords (capped at 30,000 characters total,
 Jun confirmed on 2026-11-04 (magi-core#701) that selecting these docs by the
 table names, job names and similar identifiers in the changed lines is within
 "diff keywords". The caps are unchanged. Any further egress expansion still needs Jun's explicit decision.
+
+Jun explicitly approved on 2026-11-04 (ChatGPT implementation-planning
+conversation) sending the `COLLABORATION.md` sections selected by the exact
+paths above to Mistral within these existing caps. This does not raise the
+limits, authorize sending the whole document, expand other repositories'
+review workflows, or make automated reviews independent approval.
 
 ### Claude PR review (magi-core)
 

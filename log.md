@@ -1,5 +1,30 @@
 # Bundle Update Log
 
+## 2026-11-04 (Mistral drift check: collaboration-rule sections)
+* **Jun instruction and explicit egress approval (ChatGPT conversation):**
+  include selected `COLLABORATION.md` sections within the existing approved
+  limits. Exact mapping: `auto-review.yml` and `scripts/okf-drift-context.cjs`
+  select "Automated PR review bots"; `claude-review.yml` selects
+  "Claude PR review (magi-core)". Other workflows, including `deploy.yml`,
+  do not select these sections.
+* **Implementation update, pending [magi-core#702](https://github.com/dogmaai/magi-core/pull/702)**
+  (`bfe475ca32804bfcbd4db70d95b23eef3c6051ec`): split on H2/H3
+  headings outside code blocks, prioritize/deduplicate sections, and share
+  the original document's 6,000-character budget across all selected sections.
+  OKF total 30,000 and diff 30,000 remain unchanged. Report clipped,
+  omitted or unavailable sections in the deterministic coverage footer.
+* **Rule label**: `status:none — workflow rule, no lifecycle metadata` for
+  collaboration sections; mismatches are normal drift. Other documents keep
+  their lifecycle labels. No lifecycle status or human verification is
+  invented for this workflow document.
+* **References**: latest OKF base `383a616553308fd69a48a86c449750b1dae94c4b`;
+  core base `f4abf8e59fda049805d4166837c164bd75f375f9`; core runtime pin remains
+  `8f77020e66d1bc84f2880a6f508eb2edd7b36b66`. The pin predates #205's description
+  of the #701 drift-only role; that difference is recorded, not silently fixed.
+* **Merge order**: merge magi-core#702 first, this OKF PR
+  afterwards. No merges/deployments or production operations are performed
+  by this work. Mistral remains reference information, not independent review.
+
 ## 2026-11-04 (magi-core Mistral review narrowed to an OKF drift check)
 * **Request (Jun, Claude session 2026-11-04)**: use Mistral in `magi-core` only
   to check PRs against the OKF. General code review stays with Copilot, Gemini
