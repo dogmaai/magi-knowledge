@@ -327,8 +327,8 @@ posted for the head) do not trigger the notice.
   footer names every doc and file it did not check. It does no general code
   review, and it posts a notice without calling Mistral when no OKF doc
   applies. The other repositories keep the general review for now.
-- **Section-selection update (pending [magi-core#702](https://github.com/dogmaai/magi-core/pull/702);
-  merge that core PR first):** review-operation changes additionally select
+- **Section selection ([magi-core#702](https://github.com/dogmaai/magi-core/pull/702)):**
+  review-operation changes additionally select
   sections of the pinned `COLLABORATION.md` by exact changed path:
 
   | Changed path | Priority section |

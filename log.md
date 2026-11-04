@@ -7,7 +7,7 @@
   select "Automated PR review bots"; `claude-review.yml` selects
   "Claude PR review (magi-core)". Other workflows, including `deploy.yml`,
   do not select these sections.
-* **Implementation update, pending [magi-core#702](https://github.com/dogmaai/magi-core/pull/702)**
+* **Implementation ([magi-core#702](https://github.com/dogmaai/magi-core/pull/702))**
   (`bfe475ca32804bfcbd4db70d95b23eef3c6051ec`): split on H2/H3
   headings outside code blocks, prioritize/deduplicate sections, and share
   the original document's 6,000-character budget across all selected sections.
@@ -21,9 +21,9 @@
   core base `f4abf8e59fda049805d4166837c164bd75f375f9`; core runtime pin remains
   `8f77020e66d1bc84f2880a6f508eb2edd7b36b66`. The pin predates #205's description
   of the #701 drift-only role; that difference is recorded, not silently fixed.
-* **Merge order**: merge magi-core#702 first, this OKF PR
-  afterwards. No merges/deployments or production operations are performed
-  by this work. Mistral remains reference information, not independent review.
+* **Scope**: review-input selection and its documentation only. Mistral
+  remains reference information, not independent review. This work performs
+  no merges, deployments or production operations.
 
 ## 2026-11-04 (magi-core Mistral review narrowed to an OKF drift check)
 * **Request (Jun, Claude session 2026-11-04)**: use Mistral in `magi-core` only
