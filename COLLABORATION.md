@@ -321,6 +321,12 @@ posted for the head) do not trigger the notice.
 
 - Enabled with the Mistral step: `magi-knowledge`, `magi-moni`, `magi-moomoo`,
   `magi-price-tracker`, `magi-core`.
+- In `magi-core`, the Mistral step is an OKF drift check only, since
+  magi-core#701. It reports `ドリフト`, `OKF未定義` or `問題なし` against OKF
+  docs selected from the identifiers in the changed lines, and a generated
+  footer names every doc and file it did not check. It does no general code
+  review, and it posts a notice without calling Mistral when no OKF doc
+  applies. The other repositories keep the general review for now.
 - `magi-ui` and `magi-deep-research` were deleted on 2026-10-07 (Jun's
   decision); their workflow entries are gone with the repositories.
 - `lilith-training`, `magi-shared`, `magi-core-public` and `magi-stg` were
@@ -345,7 +351,9 @@ review context, to reduce "not documented" hallucinations. The magi-core
 workflow may likewise send excerpts of the pinned `vendor/magi-knowledge`
 spec documents selected by diff keywords (capped at 30,000 characters total,
 6,000 per doc) — implemented in magi-core#612 and follow-up magi-core#614.
-Any further egress expansion still needs Jun's explicit decision.
+Jun confirmed on 2026-11-04 (magi-core#701) that selecting these docs by the
+table names, job names and similar identifiers in the changed lines is within
+"diff keywords". The caps are unchanged. Any further egress expansion still needs Jun's explicit decision.
 
 ### Claude PR review (magi-core)
 
