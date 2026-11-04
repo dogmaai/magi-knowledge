@@ -351,7 +351,9 @@ review context, to reduce "not documented" hallucinations. The magi-core
 workflow may likewise send excerpts of the pinned `vendor/magi-knowledge`
 spec documents selected by diff keywords (capped at 30,000 characters total,
 6,000 per doc) — implemented in magi-core#612 and follow-up magi-core#614.
-Any further egress expansion still needs Jun's explicit decision.
+Jun confirmed on 2026-11-04 (magi-core#701) that selecting these docs by the
+table names, job names and similar identifiers in the changed lines is within
+"diff keywords". The caps are unchanged. Any further egress expansion still needs Jun's explicit decision.
 
 ### Claude PR review (magi-core)
 
