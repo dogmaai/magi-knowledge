@@ -1,5 +1,16 @@
 # Bundle Update Log
 
+## 2026-11-04 (magi-core Mistral review narrowed to an OKF drift check)
+* **Request (Jun, Claude session 2026-11-04)**: use Mistral in `magi-core` only
+  to check PRs against the OKF. General code review stays with Copilot, Gemini
+  and Codex.
+* **Docs**: `COLLABORATION.md` "Automated PR review bots" records the new role
+  (magi-core#701).
+* **Scope**: `magi-core` only. Results stay reference information and the
+  independent-review rule is unchanged. PR diffs still go to the same external
+  API under the approval of 2026-09-17, with a larger share of each diff sent.
+  No service, guard, table, scheduler or boundary change.
+
 ## 2026-11-01 (Secrets ledger carved out of the public-repo writing rules)
 * **Request (Jun, Devin session 2026-11-01)**: Devin Review on
   magi-knowledge#201 flagged `secrets-inventory.md`'s store column as

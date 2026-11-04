@@ -321,6 +321,12 @@ posted for the head) do not trigger the notice.
 
 - Enabled with the Mistral step: `magi-knowledge`, `magi-moni`, `magi-moomoo`,
   `magi-price-tracker`, `magi-core`.
+- In `magi-core`, the Mistral step is an OKF drift check only, since
+  magi-core#701. It reports `ドリフト`, `OKF未定義` or `問題なし` against OKF
+  docs selected from the identifiers in the changed lines, and a generated
+  footer names every doc and file it did not check. It does no general code
+  review, and it posts a notice without calling Mistral when no OKF doc
+  applies. The other repositories keep the general review for now.
 - `magi-ui` and `magi-deep-research` were deleted on 2026-10-07 (Jun's
   decision); their workflow entries are gone with the repositories.
 - `lilith-training`, `magi-shared`, `magi-core-public` and `magi-stg` were
