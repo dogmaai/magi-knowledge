@@ -1,16 +1,19 @@
 # Bundle Update Log
 
 ## 2026-11-06 (PLM model lifecycle and Gemini fallback correction)
-* **Request**: Jun requested an OKF correction after the API-model monitoring
-  report identified CASPER's provider-side replacement and MELCHIOR-1's
-  stale fallback description.
+* **Request**: ChatGPT conversation, monitoring report of 2026-11-05 and Jun's
+  2026-11-06 instruction "OKF修正お願い", recorded by Codex. The report
+  identified CASPER's provider-side replacement and MELCHIOR-1's stale
+  fallback description; this is a transcription of the request, not a new
+  human-verification event.
 * **Docs**: `system/plm-units/casper.md` distinguishes the configured
   `deepseek-v4-flash` request ID from the provider-documented served version
   `DeepSeek-V4.1-Flash-1017` and recommended request ID `deepseek-flash`.
   [DeepSeek's notices](https://api-docs.deepseek.com/updates/) and
   [model details](https://api-docs.deepseek.com/quick_start/pricing/) were
-  checked on 2026-11-06. The old alias is still accepted in the provider's
-  documentation; its final acceptance deadline and MAGI's first affected
+  checked on 2026-11-06. Provider documentation says the old alias remains
+  accepted for temporary routing to its replacement; its final acceptance
+  deadline and MAGI's first affected
   request are not established. The registry explains the request-ID/served-model
   distinction without claiming a runtime model or cohort migration.
 * **Correction**: `system/plm-units/melchior-1.md` now records
@@ -26,7 +29,7 @@
   `generated.by: process:codex`. Prior human verification is retained as
   history, not extended to these revisions. Unit status, trading policy,
   model requests, statistics/history, guards, tables and data boundaries
-  are unchanged. No live API probe, production verification, merge or
+  are unchanged. No live API probe, production verification or
   deployment was performed. No Qwen retirement is inferred from unreadable
   announcement details.
 

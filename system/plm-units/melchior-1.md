@@ -45,8 +45,10 @@ analyzer (deprecated 2026-09-17) and is currently unassigned. See
 | HERMES model | `gemini-3.5-flash-lite` (`HERMES_GEMINI_MODEL`) |
 
 Configuration reference: `magi-core` revision
-`e991ce1db9a0c5043c26d19e0c407da3f6f4420d`, `lib/config.js`
-(`getLLMModel('google')`) and `.github/workflows/deploy.yml`. Both specify
+`e991ce1db9a0c5043c26d19e0c407da3f6f4420d`,
+[lib/config.js](https://github.com/dogmaai/magi-core/blob/e991ce1db9a0c5043c26d19e0c407da3f6f4420d/lib/config.js)
+(`getLLMModel('google')`) and
+[.github/workflows/deploy.yml](https://github.com/dogmaai/magi-core/blob/e991ce1db9a0c5043c26d19e0c407da3f6f4420d/.github/workflows/deploy.yml). Both specify
 `gemini-3.8-flash`. This corrects the former fallback description; it is a
 source/deploy-definition comparison, not a model switch or a check of the
 running job.

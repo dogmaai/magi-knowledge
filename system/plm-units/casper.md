@@ -31,7 +31,7 @@ downtrends, favouring high-momentum names, and carries the highest budget weight
 | Field | Value |
 |---|---|
 | Provider | `deepseek` |
-| Configured API model ID | `deepseek-v4-flash` (legacy alias, still accepted according to provider documentation) |
+| Model | `deepseek-v4-flash` (configured request ID; provider documentation says the alias remains accepted for temporary routing to its replacement) |
 | Served model in provider documentation | `DeepSeek-V4.1-Flash-1017` (checked 2026-11-06; not a MAGI runtime observation) |
 | Provider-recommended request ID | `deepseek-flash` |
 | Budget weight (NORMAL) | `0.999` (Optuna: highest) |
@@ -42,13 +42,15 @@ downtrends, favouring high-momentum names, and carries the highest budget weight
 
 The `model` frontmatter and registry row identify the configured request ID.
 At `magi-core` revision `e991ce1db9a0c5043c26d19e0c407da3f6f4420d`,
-`lib/config.js` (`getLLMModel`) and `src/llm.js` still specify
+[lib/config.js](https://github.com/dogmaai/magi-core/blob/e991ce1db9a0c5043c26d19e0c407da3f6f4420d/lib/config.js)
+(`getLLMModel`) and
+[src/llm.js](https://github.com/dogmaai/magi-core/blob/e991ce1db9a0c5043c26d19e0c407da3f6f4420d/src/llm.js) still specify
 `deepseek-v4-flash`. The provider-recommended ID above records migration
 guidance, not an implemented MAGI configuration change.
 
-DeepSeek's [2026-09-10 release notice](https://api-docs.deepseek.com/updates/)
+DeepSeek's [2026-09-10 release notice](https://api-docs.deepseek.com/updates/#date-2026-09-10)
 states that V4 Flash was retired and its legacy request ID temporarily routes
-to V4.1 Flash. The 2026-10-17 update and
+to V4.1 Flash. The [2026-10-17 update](https://api-docs.deepseek.com/updates/#date-2026-10-17) and
 [current model details](https://api-docs.deepseek.com/quick_start/pricing/),
 checked on 2026-11-06, identify the served version as
 `DeepSeek-V4.1-Flash-1017` and recommend `deepseek-flash`. No final acceptance
