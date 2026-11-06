@@ -3,8 +3,8 @@ type: PLM Unit
 title: MELCHIOR-1
 description: Systematic multi-factor analyst; runs HERMES intelligence collection.
 lilith_safe: false
-status: stable
-generated: { by: devin/local, at: 2026-09-17T17:36:54Z }
+status: draft
+generated: { by: process:codex, at: 2026-11-06T10:19:40Z }
 verified: { by: human:jun, at: 2026-09-17T17:36:54Z }
 stale_after: 2027-03-17T17:36:54Z
 tags: [plm, shadow, google, gemini, hermes]
@@ -16,6 +16,10 @@ cloud_run_job: magi-core-gemini
 ---
 
 # Overview
+
+> Revision note (2026-11-06): this documentary correction is not yet
+> human-verified. The retained `verified` entry covers the earlier revision;
+> `unit_status` remains `shadow`.
 
 MELCHIOR-1 is a **systematic multi-factor analyst** — "your edge is thoroughness
 and precision." It is the unit that triggers **HERMES intelligence collection**
@@ -34,11 +38,20 @@ analyzer (deprecated 2026-09-17) and is currently unassigned. See
 | Field | Value |
 |---|---|
 | Provider | `google` |
-| Model | `gemini-3.8-flash` (`GEMINI_MODEL` in the job; config fallback `gemini-2.5-flash`) |
+| Model | `gemini-3.8-flash` (`GEMINI_MODEL` in the job; config fallback `gemini-3.8-flash`) |
 | Budget weight (NORMAL) | `0.954` (Optuna: high; still used for shadow sizing) |
 | Trade mode | `SHADOW` — records to `trades_shadow` / `thoughts_shadow`; no live broker orders |
 | Cloud Run job | `magi-core-gemini` |
 | HERMES model | `gemini-3.5-flash-lite` (`HERMES_GEMINI_MODEL`) |
+
+Configuration reference: `magi-core` revision
+`e991ce1db9a0c5043c26d19e0c407da3f6f4420d`,
+[lib/config.js](https://github.com/dogmaai/magi-core/blob/e991ce1db9a0c5043c26d19e0c407da3f6f4420d/lib/config.js)
+(`getLLMModel('google')`) and
+[.github/workflows/deploy.yml](https://github.com/dogmaai/magi-core/blob/e991ce1db9a0c5043c26d19e0c407da3f6f4420d/.github/workflows/deploy.yml). Both specify
+`gemini-3.8-flash`. This corrects the former fallback description; it is a
+source/deploy-definition comparison, not a model switch or a check of the
+running job.
 
 # Relationships
 

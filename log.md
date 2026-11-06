@@ -1,5 +1,38 @@
 # Bundle Update Log
 
+## 2026-11-06 (PLM model lifecycle and Gemini fallback correction)
+* **Request**: ChatGPT conversation, monitoring report of 2026-11-05 and Jun's
+  2026-11-06 instruction "OKF修正お願い", recorded by Codex. The report
+  identified CASPER's provider-side replacement and MELCHIOR-1's stale
+  fallback description; this is a transcription of the request, not a new
+  human-verification event.
+* **Docs**: `system/plm-units/casper.md` distinguishes the configured
+  `deepseek-v4-flash` request ID from the provider-documented served version
+  `DeepSeek-V4.1-Flash-1017` and recommended request ID `deepseek-flash`.
+  [DeepSeek's notices](https://api-docs.deepseek.com/updates/) and
+  [model details](https://api-docs.deepseek.com/quick_start/pricing/) were
+  checked on 2026-11-06. Provider documentation says the old alias remains
+  accepted for temporary routing to its replacement; its final acceptance
+  deadline and MAGI's first affected
+  request are not established. The registry explains the request-ID/served-model
+  distinction without claiming a runtime model or cohort migration.
+* **Correction**: `system/plm-units/melchior-1.md` now records
+  `gemini-3.8-flash` for both the job's `GEMINI_MODEL` and the config fallback,
+  replacing the obsolete `gemini-2.5-flash` fallback description.
+* **References**: OKF base/main
+  `1ccb6f1d192157abf557fb27e4f66b2f240f27f8`; magi-core main
+  `e991ce1db9a0c5043c26d19e0c407da3f6f4420d`, `lib/config.js`, `src/llm.js`
+  and `.github/workflows/deploy.yml`; its runtime OKF pin remains
+  `8f77020e66d1bc84f2880a6f508eb2edd7b36b66`. The pinned bundle still has the
+  former descriptions; this documentation change does not advance that pin.
+* **Trust and scope**: the two revised unit concepts are `draft` with
+  `generated.by: process:codex`. Prior human verification is retained as
+  history, not extended to these revisions. Unit status, trading policy,
+  model requests, statistics/history, guards, tables and data boundaries
+  are unchanged. No live API probe, production verification or
+  deployment was performed. No Qwen retirement is inferred from unreadable
+  announcement details.
+
 ## 2026-11-04 (Mistral drift check: collaboration-rule sections)
 * **Jun instruction and explicit egress approval (ChatGPT conversation;
   [Codex-transcribed record](https://github.com/dogmaai/magi-knowledge/pull/206#issuecomment-6624671578)):**

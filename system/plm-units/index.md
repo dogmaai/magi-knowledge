@@ -4,6 +4,11 @@ The MAGI PLM units (the LLM roster). Each unit is a provider/model with a
 persona, a budget weight, and a lifecycle status. The authoritative runtime
 mapping is `getUnitName()` / `getLLMModel()` / `BUDGET_WEIGHTS` in
 `magi-core/lib/config.js`; this registry mirrors it for cross-agent reference.
+For hosted units, the Model column is the configured API request ID; a
+provider may serve a newer model behind an unchanged alias. See
+[CASPER](casper.md#provider-model-lifecycle) for the provider-documented
+retirement and replacement behind `deepseek-v4-flash`, checked 2026-11-06.
+That documentary update is `draft`, not a verified MAGI model migration.
 
 This whole tree is **cross-unit by definition** and therefore
 `lilith_safe: false`. The LILITH training pipeline must never read it.
