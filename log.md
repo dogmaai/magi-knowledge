@@ -1,5 +1,26 @@
 # Bundle Update Log
 
+## 2026-11-07 (MELCHIOR-1 / CASPER returned to `stable` pending Jun re-verification)
+* **Request (Jun, Devin session 2026-11-07)**: raising magi-core's runtime
+  OKF pin (magi-core#703) past #208 fails magi-core's
+  `okf-constitution-drift` test (`assertDeployedUnitsMatchOkf`): a deployed
+  `magi-core-*` job must resolve to exactly one `stable` PLM unit doc, and
+  #208 / #209 had left `system/plm-units/melchior-1.md`
+  (`magi-core-gemini`) and `system/plm-units/casper.md`
+  (`magi-core-deepseek`) as `draft`. Jun chose option A: re-verify the two
+  docs and return them to `stable` rather than relaxing the test or
+  bumping the pin only partway.
+* **Docs**: `melchior-1.md` and `casper.md` move from `draft` to `stable`;
+  body text is unchanged (the #208 model-lifecycle and #209 SHADOW
+  write-path revisions stand as written). The earlier `human:jun` entries
+  are kept as history and a `devin/cloud` entry is appended.
+* **Trust and scope**: `okf_lint` reports both files as ERROR until Jun
+  appends his own `verified: human:jun` entry for this revision; no human
+  verification is recorded here. No unit status, trade mode, model, budget
+  weight, guard, table or deployment change.
+* **References**: OKF main `cb093ba` (#211); target pin for magi-core#703
+  follows once this merges. magi-core pin `8f77020e66d1bc84f2880a6f508eb2edd7b36b66`.
+
 ## 2026-11-07 (Mistral PR review output shortened)
 * **Request (Jun, Claude session 2026-11-07)**: Mistral reviews had become
   too long. Jun chose option B — shorten the output format in both
