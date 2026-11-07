@@ -1,5 +1,27 @@
 # Bundle Update Log
 
+## 2026-11-07 (MELCHIOR-1 re-verified by Jun; back to `stable`)
+* **Review (Jun, Claude session 2026-11-07 14:51 JST)**: Jun reviewed the
+  two revisions made since the last `stable` version (`c411ce2`) — the
+  `gemini-3.8-flash` fallback correction (#208) and the SHADOW write-path
+  split (#209) — and approved them. `system/plm-units/melchior-1.md` returns
+  to `status: stable` with a new `verified` entry
+  (`human:jun`, 2026-11-07T05:51:00Z; the 2026-09-17 entry is kept) and
+  `stale_after` 2027-05-07.
+* **Evidence shown to Jun**: magi-core `4b350ea7d666df05f4d183019b0d6ffe5b9f185d`
+  — `lib/config.js` `getLLMModel('google')` fallback `gemini-3.8-flash`;
+  `deploy.yml` `GEMINI_MODEL=gemini-3.8-flash`, `TRADE_MODE=SHADOW`;
+  `src/llm.js` `log_analysis` → `thoughts`, SHADOW `place_order` →
+  `trades_shadow` + `thoughts_shadow`.
+* **Why now**: magi-core's `test:okf` requires each deployed job to map to a
+  `stable` unit doc. With MELCHIOR-1 in `draft`, the automated pin bump
+  (magi-core#698) failed from 2026-11-06, which also kept the
+  2026-11-07 Mistral output caps (#211) out of magi-core's pin. With this
+  change `test:okf` passes locally against the new revision.
+* **Scope**: lifecycle metadata and the revision note only — no change to
+  model, unit status, budget weight, job, guard, table or trading policy.
+  `system/plm-units/**` is a sensitive path; Jun is the reviewer.
+
 ## 2026-11-07 (Mistral PR review output shortened)
 * **Request (Jun, Claude session 2026-11-07)**: Mistral reviews had become
   too long. Jun chose option B — shorten the output format in both
