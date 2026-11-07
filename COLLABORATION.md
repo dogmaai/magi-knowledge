@@ -327,7 +327,7 @@ posted for the head) do not trigger the notice.
   footer names every doc and file it did not check. It does no general code
   review, and it posts a notice without calling Mistral when no OKF doc
   applies. The other repositories keep the general review for now.
-- **Output length (2026-11-07, Jun's decision):** in `magi-knowledge` and
+- **Output length (2026-11-07, Jun's decision; [magi-core#704](https://github.com/dogmaai/magi-core/pull/704)):** in `magi-knowledge` and
   `magi-core`, the Mistral prompt caps the review at the five most
   important findings (any further ones are reported only as a count), each
   in at most three lines with excerpts of at most 80 characters, and merges

@@ -13,7 +13,7 @@
   600–2,300 after (e.g. #702: two findings, 2,335 characters).
 * **Implementation**: `.github/workflows/auto-review.yml` system prompts in
   this repository (branch `ci/mistral-review-concise`) and in `magi-core`
-  (branch `ci/mistral-review-concise`, `32ff02769aedb33e5dd2bc8291d6d7e8d76caf41`):
+  ([magi-core#704](https://github.com/dogmaai/magi-core/pull/704), `32ff02769aedb33e5dd2bc8291d6d7e8d76caf41`):
   at most five findings with the rest as a count, three lines each,
   excerpts of at most 80 characters, same-cause findings merged;
   `magi-knowledge` drops nits and the summary / recommended-action
