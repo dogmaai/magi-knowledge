@@ -327,6 +327,16 @@ posted for the head) do not trigger the notice.
   footer names every doc and file it did not check. It does no general code
   review, and it posts a notice without calling Mistral when no OKF doc
   applies. The other repositories keep the general review for now.
+- **Output length (2026-11-07, Jun's decision; [magi-core#704](https://github.com/dogmaai/magi-core/pull/704)):** in `magi-knowledge` and
+  `magi-core`, the Mistral prompt caps the review at the five most
+  important findings (any further ones are reported only as a count), each
+  in at most three lines with excerpts of at most 80 characters, and merges
+  findings with the same cause. The `magi-knowledge` review no longer
+  reports nits or writes summary / recommended-action sections. These are
+  prompt instructions, not enforced truncation: `max_tokens` is unchanged,
+  because lowering it would make it likelier that reasoning tokens cut a
+  review short. The `magi-moni`,
+  `magi-moomoo` and `magi-price-tracker` prompts are unchanged.
 - **Section selection ([magi-core#702](https://github.com/dogmaai/magi-core/pull/702)):**
   in `magi-core` only, the Mistral OKF drift-check step additionally selects
   sections of the pinned `COLLABORATION.md` using the exhaustive table below.

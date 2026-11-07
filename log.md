@@ -1,5 +1,34 @@
 # Bundle Update Log
 
+## 2026-11-07 (Mistral PR review output shortened)
+* **Request (Jun, Claude session 2026-11-07)**: Mistral reviews had become
+  too long. Jun chose option B — shorten the output format in both
+  `magi-knowledge` and `magi-core` — over restricting `magi-knowledge`
+  reviews to `draft` docs (not adopted for now).
+* **Finding**: the length came from the prompts, not the input scope. The
+  `magi-knowledge` prompt asked for every nit plus summary and
+  recommended-action sections; the `magi-core` drift check asked to quote
+  both the OKF text and the diff with no count or length limit. Recent
+  `magi-core` reviews: 4,500–5,800 characters before magi-core#701,
+  600–2,335 after (e.g. #702: two findings, 2,335 characters).
+* **Implementation**: `.github/workflows/auto-review.yml` system prompts in
+  this repository (branch `ci/mistral-review-concise`) and in `magi-core`
+  ([magi-core#704](https://github.com/dogmaai/magi-core/pull/704), `32ff02769aedb33e5dd2bc8291d6d7e8d76caf41`):
+  at most five findings with the rest as a count, three lines each,
+  excerpts of at most 80 characters, same-cause findings merged;
+  `magi-knowledge` drops nits and the summary / recommended-action
+  sections. `max_tokens` (16000 / 24000) and the model are unchanged.
+* **Docs**: `COLLABORATION.md` "Automated PR review bots" records the caps.
+* **Scope**: prompt wording only — the same data goes to the same API
+  within the existing egress approval; reviews remain reference
+  information, not independent review. `magi-moni`, `magi-moomoo` and
+  `magi-price-tracker` are unchanged. No merge, deployment or production
+  operation. `.github/workflows/**` here is a sensitive path, so this
+  change needs a reviewer other than the implementer (or Jun).
+* **References**: OKF main `dca4ea13a67f0935f546b853a490387d7a767dc2`;
+  magi-core base `e991ce1db9a0c5043c26d19e0c407da3f6f4420d` (runtime OKF pin
+  `8f77020e66d1bc84f2880a6f508eb2edd7b36b66`, unchanged).
+
 ## 2026-11-07 (SHADOW write paths and `thoughts.trade_mode` corrected; shadow ledgers catalogued)
 * **Request (Jun, Claude session 2026-11-07)**: a review of 2026-11-06
   operations found MELCHIOR-1 (`TRADE_MODE=SHADOW`) writing its 11 analysis
