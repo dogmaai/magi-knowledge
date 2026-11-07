@@ -31,8 +31,8 @@
   history, not extended. No code, table, guard, unit status, trading policy,
   scheduler or deployment change. magi-core's runtime OKF pin
   (`8f77020e66d1bc84f2880a6f508eb2edd7b36b66`) is unchanged.
-* **References**: OKF base/main `6322d3bb71a200d388435e5b645f945155d38fb2`;
-  magi-core main `e991ce1db9a0c5043c26d19e0c407da3f6f4420d`.
+* **References**: drafted on OKF main `6322d3bb71a200d388435e5b645f945155d38fb2`,
+  rebased onto `191e363f8283af0fec03c66118336421f79d9766` (#207); magi-core main `e991ce1db9a0c5043c26d19e0c407da3f6f4420d`.
 
 ## 2026-11-07 (PROMPT.md refreshed for external LLMs; pin-first confirmed)
 * **Request (Jun, Devin session 2026-11-04)**: produce the latest MAGI
