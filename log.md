@@ -1,5 +1,30 @@
 # Bundle Update Log
 
+## 2026-11-07 (CASPER request ID moves to `deepseek-flash`)
+* **Decision (Jun, Claude session 2026-11-07)**: option A — switch CASPER from
+  the retired `deepseek-v4-flash` alias to `deepseek-flash`, together with
+  the magi-core#641 single-source fix. Cohort handling: rows from 2026-10-08
+  stay the recorded `(CASPER, deepseek-flash)` cohort; earlier NULL
+  `model_version` rows are an unknown-model cohort, not merged.
+* **Evidence**: DeepSeek model details re-read 2026-11-07 — both IDs served
+  by `DeepSeek-V4.1-Flash-1017`, no date-pinned ID, no routing deadline.
+  BigQuery `thoughts` (read-only, 2026-11-07): every CASPER decision row with
+  `model_version` populated (from 2026-10-08) reports `deepseek-flash`.
+  CASPER `trades` after 2026-09-10: 12 rows — too few for a performance
+  comparison.
+* **Implementation**: [magi-core#706](https://github.com/dogmaai/magi-core/pull/706)
+  (`5bcc6f3d0a30a9d21bed295e40ad397a86618901`) — `lib/config.js` deepseek →
+  `deepseek-flash`; `src/llm.js` resolves deepseek/qwen/kimi/ollama through
+  `getLLMModel()`; regression test. Effective only after Jun deploys
+  `magi-core-deepseek`.
+* **Docs**: `system/plm-units/casper.md` (model, configuration table,
+  provider-lifecycle and cohort notes) and `system/plm-units/index.md`
+  (CASPER row, intro). `casper.md` is `draft` until Jun re-verifies it.
+* **Scope**: request ID only; `unit_status`, budget weight, job, guards,
+  tables and trading policy unchanged. `model-cohorting.md` stays `draft`.
+* **References**: OKF main `437d1d68a7f0f157ff88180ba9be721025760f37`;
+  magi-core base `4b350ea7d666df05f4d183019b0d6ffe5b9f185d`.
+
 ## 2026-11-07 (MELCHIOR-1 and CASPER re-verified by Jun; back to `stable`)
 * **Review (Jun, Claude session 2026-11-07)**: Jun reviewed the revisions
   made since each doc's last `stable` version and approved them —
