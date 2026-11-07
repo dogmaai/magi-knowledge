@@ -1,5 +1,14 @@
 # Bundle Update Log
 
+## 2026-11-07 (PROMPT.md §1: revision pointer in the SSoT bullet)
+* **Request (Jun, Devin session 2026-11-07)**: wording for the first §1
+  bullet of the `PROMPT.md` full version.
+* **Docs**: that bullet now also states that the referenced revision is
+  decided by §2 (target-repo pin first, `main` when there is no pin). The
+  Consumer Preamble (6 lines) and §2 are unchanged.
+* **Scope**: documentation-only — no service, guard, table, scheduler or
+  boundary change.
+
 ## 2026-11-07 (CASPER request ID moves to `deepseek-flash`)
 * **Decision (Jun, Claude session 2026-11-07)**: option A — switch CASPER from
   the retired `deepseek-v4-flash` alias to `deepseek-flash`, together with

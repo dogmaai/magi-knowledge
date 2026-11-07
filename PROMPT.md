@@ -30,7 +30,7 @@ magi-knowledge の外に仕様の別コピーを作らない、system/ と _lili
 
 ## 1. 真実の所在（Single Source of Truth）
 
-- MAGI の仕様は **`dogmaai/magi-knowledge` リポジトリ**にある OKF（Open Knowledge Format）バンドルのみが正です。
+- MAGI の仕様は GitHub `dogmaai/magi-knowledge` の OKF（Open Knowledge Format）バンドルのみが正です。参照するリビジョンは §2 の手順で決めます（作業対象 repo のピンが優先、ピンが無ければ main）。
 - このプロンプト、あなたの事前知識、過去の会話、他リポジトリのコメント・README、旧仕様（`magi-stg` は 2026-10-07 に削除済み）、エクスポート済みダイジェスト、Cloudflare AI Search / R2 Data Catalog 等のミラーは、すべて **派生コピーまたは古い可能性のある情報**です。食い違えば `magi-knowledge`（§2 で決定したリビジョン）が勝ちます。
 - 仕様は頻繁に変わります。**具体的な値（閾値・テーブル名・ユニット名・ジョブ名・URL・ガード条件など）を記憶や本文書から引用してはいけません。** 必ず作業時点の OKF から読み取ってください。
 
