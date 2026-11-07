@@ -10,7 +10,7 @@
   recommended-action sections; the `magi-core` drift check asked to quote
   both the OKF text and the diff with no count or length limit. Recent
   `magi-core` reviews: 4,500–5,800 characters before magi-core#701,
-  600–2,300 after (e.g. #702: two findings, 2,335 characters).
+  600–2,335 after (e.g. #702: two findings, 2,335 characters).
 * **Implementation**: `.github/workflows/auto-review.yml` system prompts in
   this repository (branch `ci/mistral-review-concise`) and in `magi-core`
   ([magi-core#704](https://github.com/dogmaai/magi-core/pull/704), `32ff02769aedb33e5dd2bc8291d6d7e8d76caf41`):

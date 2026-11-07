@@ -333,8 +333,9 @@ posted for the head) do not trigger the notice.
   in at most three lines with excerpts of at most 80 characters, and merges
   findings with the same cause. The `magi-knowledge` review no longer
   reports nits or writes summary / recommended-action sections. These are
-  prompt instructions, not enforced truncation: `max_tokens` is unchanged
-  so reasoning tokens cannot cut a review short. The `magi-moni`,
+  prompt instructions, not enforced truncation: `max_tokens` is unchanged,
+  because lowering it would make it likelier that reasoning tokens cut a
+  review short. The `magi-moni`,
   `magi-moomoo` and `magi-price-tracker` prompts are unchanged.
 - **Section selection ([magi-core#702](https://github.com/dogmaai/magi-core/pull/702)):**
   in `magi-core` only, the Mistral OKF drift-check step additionally selects
