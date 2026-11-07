@@ -23,6 +23,8 @@ Two write-path conventions matter:
 * [trades-price-corrections](trades-price-corrections.md) - Pre-correction snapshots of quote-price fixes.
 * [trades-unverifiable](trades-unverifiable.md) - Rows that can never be broker-verified (Alpaca gone / >90d moomoo).
 * [thoughts](thoughts.md) - LLM reasoning log (one row per decision).
+* [trades-shadow](trades-shadow.md) - Virtual orders never sent to the broker (SHADOW `place_order`, `L6_OBSERVE`), mark-to-market evaluated (draft).
+* [thoughts-shadow](thoughts-shadow.md) - Reasoning rows paired 1:1 with `trades_shadow`; SHADOW units' analysis/HOLD rows stay in `thoughts` (draft).
 * [sessions](sessions.md) - Per-session run summary (equity, PnL).
 * [portfolio-snapshots](portfolio-snapshots.md) - Per-session-end portfolio snapshot (equity/cash/positions value); `daily_pnl`/`total_pnl_percent` are session deltas (documented naming drift).
 * [views](views.md) - `trades_active` / `thoughts_active` VIEW definitions.
@@ -120,7 +122,7 @@ per-table docs are pending work, not waived:
 `manual_focus_symbols`, `model_training_log`, `pattern_discovery_kpi`,
 `stale_phrases`, `thought_analysis_findings`,
 `thought_embeddings`, `thought_outcome_feedback`, `thoughts_for_ds`,
-`thoughts_shadow`, `thoughts_simulation`, `trades_for_ds`, `trades_shadow`,
+`thoughts_simulation`, `trades_for_ds`,
 `trades_simulation`, plus views
 `isabel_trade_analysis`, `market_research_view`, `symbol_change_rates`,
 `trade_results`.

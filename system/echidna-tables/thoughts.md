@@ -4,14 +4,20 @@ title: thoughts
 description: LLM reasoning log — one row per decision, with action, reasoning, and confidence.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=thoughts&page=table
 lilith_safe: false
-status: stable
-generated: { by: devin/cli, at: 2026-10-10T23:40:00Z }
+status: draft
+generated: { by: claude/opus-5-5, at: 2026-11-07T04:33:35Z }
 verified: [{ by: human:jun, at: 2026-10-03T03:25:59Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }]
 stale_after: 2027-04-18T08:44:00Z
 tags: [echidna, bigquery, thoughts, reasoning, core]
 dataset: magi_core
 table_type: BASE TABLE
 ---
+
+> Revision note (2026-11-07): the `trade_mode` value list was corrected to the
+> values observed in production and written by magi-core (see the column row
+> below). This revision is not yet human-verified, so the doc is `draft`
+> until Jun re-verifies it; the retained `verified` entries cover the earlier
+> revision.
 
 `thoughts` captures each unit's reasoning for a decision. The
 [`thoughts_active`](views.md) VIEW filters it; the LILITH `rejected`-example
@@ -56,7 +62,7 @@ which is the intended corpus signal.
 | session_id | STRING | FK → [sessions](sessions.md).session_id. |
 | timestamp | TIMESTAMP | Decision time (UTC). |
 | content | STRING | Raw model completion. |
-| trade_mode | STRING | `live` / `paper` / `simulation`; `BLOCKED` / `WARN_ONLY` on guard-block rows. |
+| trade_mode | STRING | The writing job's `TRADE_MODE`: `NORMAL` (live units) or `SHADOW` (analysis rows of SHADOW units such as [MELCHIOR-1](/system/plm-units/melchior-1.md#shadow-write-paths) — their order decisions go to [thoughts_shadow](thoughts-shadow.md) instead); `POSITION_GUARD` on position-guard close-decision rows; `BLOCKED` / `WARN_ONLY` on guard-block rows. Observed 2026-10-01→2026-11-06: `WARN_ONLY`, `NORMAL`, `SHADOW`, `BLOCKED`, `POSITION_GUARD` only — the formerly documented `live` / `paper` / `simulation` do not occur. [`thoughts_active`](views.md) keeps `NORMAL` only. |
 | llm_provider | STRING | Provider key; `'system'` on `AUTO_CLOSE` close-decision rows (added 2026-10-11, magi-core#609). |
 | unit_name | STRING | MAGI unit name. |
 | symbol | STRING | Ticker under consideration. |
@@ -81,6 +87,7 @@ which is the intended corpus signal.
 * `thought_id` ← [trades](trades.md).thought_id — primary key; subject to the
   attribution-integrity contract below.
 * `session_id` → [sessions](sessions.md).session_id
+* `thought_id` ← [trades_shadow](trades-shadow.md) / [thoughts_shadow](thoughts-shadow.md).thought_id — a SHADOW unit's order decision reuses the `thought_id` of its `SHADOW` analysis row here.
 * `thought_id` → `thought_quality_scores` (deprecated 2026-09-17).thought_id
 
 # Attribution integrity
@@ -112,5 +119,5 @@ WHERE action IN ('BUY','SELL') AND confidence > 0.7
 
 # Citations
 
-* Writer: `validateThoughtRow()` / `safeInsert('thoughts', ...)` in `magi-core/lib/bigquery.js`.
+* Writer: `validateThoughtRow()` / `safeInsert('thoughts', ...)` in `magi-core/lib/bigquery.js`; analysis rows from `log_analysis` in `magi-core/src/llm.js` (`trade_mode: getTradeMode()`), guard rows from `src/guard.js`, close-decision rows from `src/positionMgmt.js`.
 * Consumer (retired): `lilith-training/scripts/extract_hallucination_negatives.py` read `thoughts_active` (pipeline retired 2026-09; repo and jobs deleted 2026-10-07).

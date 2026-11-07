@@ -29,8 +29,10 @@ This whole tree is **cross-unit by definition** and therefore
 `qwen_NORMAL` (QWEN) and `kimi_NORMAL` (TYPHON) providers receive a
 `UNIT_WEIGHT_MULTIPLIERS` 1.5x boost, giving them an *effective* budget weight
 of `0.75` at runtime. MELCHIOR-1 is in `TRADE_MODE=SHADOW`: it continues
-generating decisions and recording to `trades_shadow` / `thoughts_shadow`,
-but does not submit live broker orders. CASPER was promoted back to LIVE on
+generating decisions but does not submit live broker orders. Its analysis
+rows go to `thoughts` with `trade_mode='SHADOW'`; only its `place_order`
+decisions go to `trades_shadow` / `thoughts_shadow` (see
+[SHADOW write paths](melchior-1.md#shadow-write-paths)). CASPER was promoted back to LIVE on
 2026-09-22.
 
 TIARA remains documented as the legacy VIX-only Ollama identity; see
