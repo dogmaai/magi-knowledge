@@ -15,11 +15,11 @@ GPT / Codex / Claude / Gemini / Antigravity など、毎回同じ前提を与え
 エージェント向けの唯一の指示文です。詳細な手順が必要な場合のみ下の完全版を渡します。
 
 ```text
-MAGI の仕様の正本は GitHub dogmaai/magi-knowledge（public）の OKF バンドルだけです。記憶・過去の会話・他 repo の README/コメント・旧仕様（magi-stg は削除済み）・export・ミラー（AI Search / R2）は派生物で、食い違えば magi-knowledge が勝ちます。
+MAGI の仕様の正本は GitHub dogmaai/magi-knowledge（public）の OKF バンドルだけです。記憶・過去の会話・他 repo の README/コメント・旧仕様（magi-stg は削除済み）・export・ミラー（AI Search / R2）は派生物で、食い違えば magi-knowledge（次の参照リビジョン）が勝ちます。
 参照リビジョンは、作業対象 repo に vendor/magi-knowledge のピンがあればそのコミット、無ければ main 最新（「ピン無し」と明記）を作業全体で使い、成果物にコミットハッシュを記録してください。repo を読めなければ推測せず、そのリビジョンから生成したダイジェスト（okf_export）の提供を依頼してください。
 着手前に対象 repo の AGENTS.md → magi-knowledge の index.md → AGENTS.md → README.md → COLLABORATION.md → log.md → 関連する system/ の概念文書を読みます。frontmatter で扱いを変えます: stable かつ human: 検証済み = 正典 / draft = 仮説として明示 / deprecated = 参照禁止（後継へ）/ stale_after 超過 = 再検証待ちと明記。ミラー検索では trust_tier=human-reviewed かつ status=stable を優先します。
-仕様（意図）と実装・デプロイ設定（実際）が食い違ったら、どちらも黙って直さず両方のリビジョンを添えてドリフトとして報告します。記述が無ければ「OKF 未定義」と明示し、ポリシー・トレーディング方針・リスク・モード切替・アーキテクチャの未解決事項は決めずに、具体的な選択肢を添えて Jun へエスカレーションします。
-トレードガード・発注・取引モード・リスク設定・Constitution・LILITH 境界に触れる変更（設定・スクリプト・仕様経由の変更を含む）は実装者以外（または Jun）の独立レビューが必須で、自動レビュー（Mistral / Claude / Gemini / Codex 等）は参考情報にすぎず承認にも human: 検証にもなりません。行われていない人間の検証を記録しないこと。
+仕様（意図）と実装・デプロイ設定（実際）が食い違ったら、どちらも黙って直さず両方のリビジョンを添えてドリフトとして報告します。記述が無ければ「OKF 未定義」と明示し、ポリシー・トレーディング方針・リスク設定・モード切替・アーキテクチャの未解決事項は決めずに、具体的な選択肢を添えて Jun へエスカレーションします。
+トレードガード・発注・取引モード・リスク設定・Constitution・LILITH データ境界に触れる変更（設定・スクリプト・仕様経由の変更を含む）は実装者以外（または Jun）の独立レビューが必須で、自動レビュー（Mistral / Claude / Gemini / Codex 等）は参考情報にすぎず承認にも human: 検証にもなりません。行われていない人間の検証を記録しないこと。
 magi-knowledge の外に仕様の別コピーを作らない、system/ と _lilith_safe/ の内容を混在させない、権限があってもデプロイ・IAM・スケジューラ・シークレット等の本番操作をしない、資格情報や攻撃に役立つ詳細（ホスト・ポート・認証情報の所在）を public repo やチャットに書かない、Jun の明示承認なしに新たな外部データ送信を行わないこと。
 ```
 
@@ -31,7 +31,7 @@ magi-knowledge の外に仕様の別コピーを作らない、system/ と _lili
 ## 1. 真実の所在（Single Source of Truth）
 
 - MAGI の仕様は **`dogmaai/magi-knowledge` リポジトリ**にある OKF（Open Knowledge Format）バンドルのみが正です。
-- このプロンプト、あなたの事前知識、過去の会話、他リポジトリのコメント・README、旧仕様（`magi-stg` は 2026-10-07 に削除済み）、エクスポート済みダイジェスト、Cloudflare AI Search / R2 Data Catalog 等のミラーは、すべて **派生コピーまたは古い可能性のある情報**です。食い違えば `magi-knowledge` が勝ちます。
+- このプロンプト、あなたの事前知識、過去の会話、他リポジトリのコメント・README、旧仕様（`magi-stg` は 2026-10-07 に削除済み）、エクスポート済みダイジェスト、Cloudflare AI Search / R2 Data Catalog 等のミラーは、すべて **派生コピーまたは古い可能性のある情報**です。食い違えば `magi-knowledge`（§2 で決定したリビジョン）が勝ちます。
 - 仕様は頻繁に変わります。**具体的な値（閾値・テーブル名・ユニット名・ジョブ名・URL・ガード条件など）を記憶や本文書から引用してはいけません。** 必ず作業時点の OKF から読み取ってください。
 
 ## 2. 参照リビジョンの決定
