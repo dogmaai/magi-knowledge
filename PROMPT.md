@@ -17,9 +17,9 @@ GPT / Codex / Claude / Gemini / Antigravity など、毎回同じ前提を与え
 ```text
 MAGI の仕様の正本は GitHub dogmaai/magi-knowledge（public）の OKF バンドルだけです。記憶・過去の会話・他 repo の README/コメント・旧仕様（magi-stg は削除済み）・export・ミラー（AI Search / R2）は派生物で、食い違えば magi-knowledge が勝ちます。
 参照リビジョンは、作業対象 repo に vendor/magi-knowledge のピンがあればそのコミット、無ければ main 最新（「ピン無し」と明記）を作業全体で使い、成果物にコミットハッシュを記録してください。repo を読めなければ推測せず、そのリビジョンから生成したダイジェスト（okf_export）の提供を依頼してください。
-着手前に 対象 repo の AGENTS.md → magi-knowledge の index.md → AGENTS.md → README.md → COLLABORATION.md → log.md → 関連する system/ の概念文書を読みます。frontmatter で扱いを変えます: stable かつ human: 検証済み = 正典 / draft = 仮説として明示 / deprecated = 参照禁止（後継へ）/ stale_after 超過 = 再検証待ちと明記。ミラー検索では trust_tier=human-reviewed かつ status=stable を優先します。
-仕様（意図）と実装・デプロイ設定（実際）が食い違ったら、どちらも黙って直さず両方のリビジョンを添えてドリフトとして報告します。記述が無ければ「OKF 未定義」と明示し、ポリシー・トレーディング方針・リスク・アーキテクチャの未解決事項は決めずに Jun へエスカレーションします。
-トレードガード・発注・取引モード・リスク設定・LILITH 境界の変更は実装者以外（または Jun）の独立レビューが必須で、自動レビュー（Mistral / Claude / Gemini / Codex 等）は参考情報にすぎず承認にも human: 検証にもなりません。行われていない人間の検証を記録しないこと。
+着手前に対象 repo の AGENTS.md → magi-knowledge の index.md → AGENTS.md → README.md → COLLABORATION.md → log.md → 関連する system/ の概念文書を読みます。frontmatter で扱いを変えます: stable かつ human: 検証済み = 正典 / draft = 仮説として明示 / deprecated = 参照禁止（後継へ）/ stale_after 超過 = 再検証待ちと明記。ミラー検索では trust_tier=human-reviewed かつ status=stable を優先します。
+仕様（意図）と実装・デプロイ設定（実際）が食い違ったら、どちらも黙って直さず両方のリビジョンを添えてドリフトとして報告します。記述が無ければ「OKF 未定義」と明示し、ポリシー・トレーディング方針・リスク・モード切替・アーキテクチャの未解決事項は決めずに、具体的な選択肢を添えて Jun へエスカレーションします。
+トレードガード・発注・取引モード・リスク設定・Constitution・LILITH 境界に触れる変更（設定・スクリプト・仕様経由の変更を含む）は実装者以外（または Jun）の独立レビューが必須で、自動レビュー（Mistral / Claude / Gemini / Codex 等）は参考情報にすぎず承認にも human: 検証にもなりません。行われていない人間の検証を記録しないこと。
 magi-knowledge の外に仕様の別コピーを作らない、system/ と _lilith_safe/ の内容を混在させない、権限があってもデプロイ・IAM・スケジューラ・シークレット等の本番操作をしない、資格情報や攻撃に役立つ詳細（ホスト・ポート・認証情報の所在）を public repo やチャットに書かない、Jun の明示承認なしに新たな外部データ送信を行わないこと。
 ```
 
@@ -36,8 +36,10 @@ magi-knowledge の外に仕様の別コピーを作らない、system/ と _lili
 
 ## 2. 参照リビジョンの決定
 
-1. 作業対象リポジトリの `AGENTS.md` を読み、そのリポジトリ固有の指示に従う。
+1. 作業対象リポジトリの `AGENTS.md` を読み、そのリポジトリ固有の指示に従う。対象 repo の `AGENTS.md` は手順・ピン機構を定めるが、仕様内容で OKF と食い違う場合は OKF（決定したリビジョン）が勝ち、矛盾として Jun に報告する。
 2. 対象リポジトリに `vendor/magi-knowledge` のピン（gitlink など、そのリポジトリが文書化しているピン機構）があれば、**そのコミット**を作業全体で使う。より新しい・手元にあるという理由で `main` やミラー・記憶に置き換えない。
+   - ピンが `main` より古いことを理由に、勝手に `main` へ切り替えない。
+   - ピン以降の `main` で作業対象に関係する変更が `log.md` にあれば、ピンのコミットと `main` のコミットの両方を示してドリフト（ピンの遅れ）として報告する。
 3. ピンが無いリポジトリ（または特定 repo に属さない作業）では `magi-knowledge` の `main` 最新コミットを使い、「ピン無し」と明記する。
 4. `AGENTS.md` がピンを要求しているのに見つからない・解決できない・到達できない場合は、推測せず止まって報告する。
 5. 実装側のコミットと、選んだ `magi-knowledge` のコミットの **両方**を記録する。
