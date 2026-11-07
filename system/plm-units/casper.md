@@ -3,10 +3,10 @@ type: PLM Unit
 title: CASPER
 description: Aggressive momentum hunter — acts decisively on directional signals.
 lilith_safe: false
-status: draft
+status: stable
 generated: { by: process:codex, at: 2026-11-06T10:19:40Z }
-verified: { by: human:jun, at: 2026-09-22T01:45:00Z }
-stale_after: 2027-02-23T23:14:38Z
+verified: [{ by: human:jun, at: 2026-09-22T01:45:00Z }, { by: human:jun, at: 2026-11-07T06:28:00Z }]
+stale_after: 2027-05-07T06:28:00Z
 tags: [plm, deepseek, momentum]
 provider: deepseek
 model: deepseek-v4-flash
@@ -17,9 +17,10 @@ cloud_run_job: magi-core-deepseek
 
 # Overview
 
-> Revision note (2026-11-06): this documentary update is not yet human-verified.
-> The retained `verified` entry covers the earlier revision; `unit_status`
-> remains `active`.
+> Revision note (2026-11-06): Jun reviewed this documentary update on
+> 2026-11-07 (Claude session) and restored `stable`. It records provider
+> documentation only; the configured request ID, cohort and `unit_status`
+> (`active`) are unchanged.
 
 CASPER is the **aggressive momentum hunter**: "Your edge is catching strong
 directional moves early. You ACT on signals. Hesitation = missed profit. You are

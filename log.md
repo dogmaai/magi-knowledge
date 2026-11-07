@@ -1,5 +1,38 @@
 # Bundle Update Log
 
+## 2026-11-07 (MELCHIOR-1 and CASPER re-verified by Jun; back to `stable`)
+* **Review (Jun, Claude session 2026-11-07)**: Jun reviewed the revisions
+  made since each doc's last `stable` version and approved them —
+  MELCHIOR-1 (since `c411ce2`: the `gemini-3.8-flash` fallback correction in
+  #208 and the SHADOW write-path split in #209) at 14:51 JST, and CASPER
+  (since `2a0359e`: the DeepSeek provider-lifecycle record in #208) at
+  15:28 JST. Both return to `status: stable` with a new `human:jun`
+  `verified` entry (2026-11-07T05:51:00Z / 06:28:00Z; earlier entries kept)
+  and `stale_after` 2027-05-07.
+* **Evidence shown to Jun**: magi-core `4b350ea7d666df05f4d183019b0d6ffe5b9f185d`
+  — `lib/config.js` `getLLMModel` (`google` fallback `gemini-3.8-flash`;
+  `deepseek` `deepseek-v4-flash`), `src/llm.js` (`deepseek-v4-flash`;
+  `log_analysis` → `thoughts`, SHADOW `place_order` → `trades_shadow` +
+  `thoughts_shadow`), `deploy.yml` (`GEMINI_MODEL=gemini-3.8-flash`,
+  `TRADE_MODE=SHADOW`); DeepSeek updates page re-read 2026-11-07 (V4 Flash
+  retired 2026-09-10, legacy ID temporarily routed to V4.1 Flash,
+  replacement ID `deepseek-flash`, no routing deadline stated).
+* **Why now**: magi-core's `test:okf` requires each deployed job to map to a
+  `stable` unit doc. With both units in `draft` the automated pin bump
+  (magi-core#698) failed from 2026-11-06, which also kept the Mistral
+  output caps (#211) out of magi-core's pin. `test:okf` passes against this
+  revision (see PR).
+* **Not decided here**: CASPER is a LIVE unit calling a retired DeepSeek
+  alias. Whether to switch the request ID to `deepseek-flash` and how to
+  treat the cohort remain Jun's open decision; this approval covers the
+  record's accuracy only.
+* **Supersedes**: Devin's branch `devin/1794030682-plm-restore-stable`
+  (`50d1470`, no PR), which restored `stable` with only `devin/cloud`
+  verifiers; Jun chose this branch (option A).
+* **Scope**: lifecycle metadata and revision notes only — no change to
+  model, unit status, budget weight, job, guard, table or trading policy.
+  `system/plm-units/**` is a sensitive path; Jun is the reviewer.
+
 ## 2026-11-07 (Mistral PR review output shortened)
 * **Request (Jun, Claude session 2026-11-07)**: Mistral reviews had become
   too long. Jun chose option B — shorten the output format in both
