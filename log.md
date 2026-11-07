@@ -12,8 +12,12 @@
   bumping the pin only partway.
 * **Docs**: `melchior-1.md` and `casper.md` move from `draft` to `stable`;
   body text is unchanged (the #208 model-lifecycle and #209 SHADOW
-  write-path revisions stand as written). The earlier `human:jun` entries
-  are kept as history and a `devin/cloud` entry is appended.
+  write-path revisions stand as written) apart from a 2026-11-07 line in
+  each revision note recording the pending status change. `generated`
+  keeps the original authors (`claude/opus-5-5`, `process:codex`) because
+  `generated` tracks the last content change, and `verified` is left as
+  the earlier `human:jun` entry — no machine entry is added, since Devin
+  did not verify the #208 / #209 content.
 * **Trust and scope**: `okf_lint` reports both files as ERROR until Jun
   appends his own `verified: human:jun` entry for this revision; no human
   verification is recorded here. No unit status, trade mode, model, budget

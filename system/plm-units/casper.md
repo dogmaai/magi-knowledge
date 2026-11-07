@@ -4,8 +4,8 @@ title: CASPER
 description: Aggressive momentum hunter — acts decisively on directional signals.
 lilith_safe: false
 status: stable
-generated: { by: devin/cloud, at: 2026-11-07T05:51:22Z }
-verified: [{ by: human:jun, at: 2026-09-22T01:45:00Z }, { by: devin/cloud, at: 2026-11-07T05:51:22Z }]
+generated: { by: process:codex, at: 2026-11-06T10:19:40Z }
+verified: { by: human:jun, at: 2026-09-22T01:45:00Z }
 stale_after: 2027-02-23T23:14:38Z
 tags: [plm, deepseek, momentum]
 provider: deepseek
@@ -20,6 +20,9 @@ cloud_run_job: magi-core-deepseek
 > Revision note (2026-11-06): this documentary update is not yet human-verified.
 > The retained `verified` entry covers the earlier revision; `unit_status`
 > remains `active`.
+> 2026-11-07 — `status` set back to `stable` pending Jun's re-verification
+> of this update; until a `human:jun` entry dated at or after
+> `generated.at` is added, this doc is not canonical (`okf_lint` ERROR).
 
 CASPER is the **aggressive momentum hunter**: "Your edge is catching strong
 directional moves early. You ACT on signals. Hesitation = missed profit. You are

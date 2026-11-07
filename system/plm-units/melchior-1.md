@@ -4,8 +4,8 @@ title: MELCHIOR-1
 description: Systematic multi-factor analyst; runs HERMES intelligence collection.
 lilith_safe: false
 status: stable
-generated: { by: devin/cloud, at: 2026-11-07T05:51:22Z }
-verified: [{ by: human:jun, at: 2026-09-17T17:36:54Z }, { by: devin/cloud, at: 2026-11-07T05:51:22Z }]
+generated: { by: claude/opus-5-5, at: 2026-11-07T04:33:35Z }
+verified: { by: human:jun, at: 2026-09-17T17:36:54Z }
 stale_after: 2027-03-17T17:36:54Z
 tags: [plm, shadow, google, gemini, hermes]
 provider: google
@@ -21,6 +21,9 @@ cloud_run_job: magi-core-gemini
 > SHADOW write paths split into analysis vs. order rows (see *Trade mode*
 > below). Neither revision is human-verified yet. The retained `verified`
 > entry covers the earlier revision; `unit_status` remains `shadow`.
+> 2026-11-07 — `status` set back to `stable` pending Jun's re-verification
+> of both revisions; until a `human:jun` entry dated at or after
+> `generated.at` is added, this doc is not canonical (`okf_lint` ERROR).
 
 MELCHIOR-1 is a **systematic multi-factor analyst** — "your edge is thoroughness
 and precision." It is the unit that triggers **HERMES intelligence collection**
