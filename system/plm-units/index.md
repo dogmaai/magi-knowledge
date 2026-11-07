@@ -6,9 +6,8 @@ mapping is `getUnitName()` / `getLLMModel()` / `BUDGET_WEIGHTS` in
 `magi-core/lib/config.js`; this registry mirrors it for cross-agent reference.
 For hosted units, the Model column is the configured API request ID; a
 provider may serve a newer model behind an unchanged alias. See
-[CASPER](casper.md#provider-model-lifecycle) for the provider-documented
-retirement and replacement behind `deepseek-v4-flash`, checked 2026-11-06.
-That documentary update is `draft`, not a verified MAGI model migration.
+[CASPER](casper.md#provider-model-lifecycle) for the move from the retired
+`deepseek-v4-flash` alias to `deepseek-flash` (magi-core#706, 2026-11-07).
 
 This whole tree is **cross-unit by definition** and therefore
 `lilith_safe: false`. The LILITH training pipeline must never read it.
@@ -18,7 +17,7 @@ This whole tree is **cross-unit by definition** and therefore
 | Unit | Provider | Model | Budget (NORMAL) | Cloud Run job | Status | Persona |
 |---|---|---|---|---|---|---|
 | [MELCHIOR-1](melchior-1.md) | google | gemini-3.8-flash | 0.954 | `magi-core-gemini` | shadow (`TRADE_MODE=SHADOW`) | Systematic multi-factor analyst |
-| [CASPER](casper.md) | deepseek | deepseek-v4-flash | 0.999 | `magi-core-deepseek` | active | Aggressive momentum hunter |
+| [CASPER](casper.md) | deepseek | deepseek-flash | 0.999 | `magi-core-deepseek` | active | Aggressive momentum hunter |
 | [QWEN](qwen.md) | qwen | qwen-plus | 0.5 base / 0.75 effective | `magi-core-qwen` | active | Independent systematic reasoner |
 | [TYPHON](typhon.md) | kimi | kimi-k2.6 | 0.5 base / 0.75 effective | `magi-core-kimi` | active | Contrarian deep-value analyst |
 | [ADAM](adam.md) | ollama | qwen2.5:7b | 1.0 | `magi-core-adam` | active | Collaborative analyst |
