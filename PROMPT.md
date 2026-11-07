@@ -15,7 +15,7 @@ GPT / Codex / Claude / Gemini / Antigravity など、毎回同じ前提を与え
 エージェント向けの唯一の指示文です。詳細な手順が必要な場合のみ下の完全版を渡します。
 
 ```text
-MAGI の仕様の正本は GitHub dogmaai/magi-knowledge（public）の OKF バンドルだけです。記憶・過去の会話・他 repo の README/コメント・旧仕様（magi-stg は削除済み）・export・ミラー（AI Search / R2）は派生物で、食い違えば magi-knowledge（次の参照リビジョン）が勝ちます。
+MAGI の仕様の正本は GitHub dogmaai/magi-knowledge（public）の OKF バンドルだけです。記憶・過去の会話・他 repo の README/コメント・旧仕様（magi-stg は削除済み）・export・ミラー（AI Search / R2）は派生物で、食い違えば magi-knowledge（次行の手順で決める参照リビジョン）が勝ちます。
 参照リビジョンは、作業対象 repo に vendor/magi-knowledge のピンがあればそのコミット、無ければ main 最新（「ピン無し」と明記）を作業全体で使い、成果物にコミットハッシュを記録してください。repo を読めなければ推測せず、そのリビジョンから生成したダイジェスト（okf_export）の提供を依頼してください。
 着手前に対象 repo の AGENTS.md → magi-knowledge の index.md → AGENTS.md → README.md → COLLABORATION.md → log.md → 関連する system/ の概念文書を読みます。frontmatter で扱いを変えます: stable かつ human: 検証済み = 正典 / draft = 仮説として明示 / deprecated = 参照禁止（後継へ）/ stale_after 超過 = 再検証待ちと明記。ミラー検索では trust_tier=human-reviewed かつ status=stable を優先します。
 仕様（意図）と実装・デプロイ設定（実際）が食い違ったら、どちらも黙って直さず両方のリビジョンを添えてドリフトとして報告します。記述が無ければ「OKF 未定義」と明示し、ポリシー・トレーディング方針・リスク設定・モード切替・アーキテクチャの未解決事項は決めずに、具体的な選択肢を添えて Jun へエスカレーションします。
@@ -36,7 +36,7 @@ magi-knowledge の外に仕様の別コピーを作らない、system/ と _lili
 
 ## 2. 参照リビジョンの決定
 
-1. 作業対象リポジトリの `AGENTS.md` を読み、そのリポジトリ固有の指示に従う。対象 repo の `AGENTS.md` は手順・ピン機構を定めるが、仕様内容で OKF と食い違う場合は OKF（決定したリビジョン）が勝ち、矛盾として Jun に報告する。
+1. 作業対象リポジトリの `AGENTS.md` を読み、そのリポジトリ固有の指示に従う。対象 repo の `AGENTS.md` は手順・ピン機構を定めるが、仕様内容で OKF と食い違う場合は OKF（本節で決定するリビジョン）が勝ち、矛盾として Jun に報告する。
 2. 対象リポジトリに `vendor/magi-knowledge` のピン（gitlink など、そのリポジトリが文書化しているピン機構）があれば、**そのコミット**を作業全体で使う。より新しい・手元にあるという理由で `main` やミラー・記憶に置き換えない。
    - ピンが `main` より古いことを理由に、勝手に `main` へ切り替えない。
    - ピン以降の `main` で作業対象に関係する変更が `log.md` にあれば、ピンのコミットと `main` のコミットの両方を示してドリフト（ピンの遅れ）として報告する。
