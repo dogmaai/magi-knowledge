@@ -1,5 +1,39 @@
 # Bundle Update Log
 
+## 2026-11-07 (SHADOW write paths and `thoughts.trade_mode` corrected; shadow ledgers catalogued)
+* **Request (Jun, Claude session 2026-11-07)**: a review of 2026-11-06
+  operations found MELCHIOR-1 (`TRADE_MODE=SHADOW`) writing its 11 analysis
+  rows to `thoughts`, not `thoughts_shadow` as the registry said. Jun chose
+  option A: keep the implementation and correct the bundle.
+* **Finding**: magi-core `e991ce1db9a0c5043c26d19e0c407da3f6f4420d`
+  `src/llm.js` writes `log_analysis` rows (including `HOLD`) to `thoughts`
+  with `trade_mode=getTradeMode()`; only SHADOW `place_order` decisions and
+  `L6_OBSERVE` candidates go to `trades_shadow` + `thoughts_shadow`, sharing
+  the analysis row's `thought_id`. Production agrees (full-table read
+  2026-11-07): 2,743 `SHADOW` rows in `thoughts` since 2026-08-24 (CASPER
+  2,261 until 2026-09-21, MELCHIOR-1 482); every shadow-ledger row since
+  2026-09-01 joins to a `thoughts` row. `thoughts_active` keeps `trade_mode = 'NORMAL'`
+  only, so live-performance reads already exclude SHADOW rows.
+* **Docs**: `system/plm-units/melchior-1.md` gains a *SHADOW write paths*
+  section; `system/plm-units/index.md` wording follows it.
+  `system/echidna-tables/thoughts.md` gains a *trade_mode values* table from
+  a full-table read (`NORMAL`, `SHADOW`, `POSITION_GUARD`, `BLOCKED`,
+  `WARN_ONLY`, historical `SCALPING`, 3 NULL rows) and states the
+  `trade_mode` of `AUTO_CLOSE` rows; the former `live` / `paper` /
+  `simulation` list occurs in no row of the table. New concept docs
+  `system/echidna-tables/trades-shadow.md` and `thoughts-shadow.md` (live DDL
+  read 2026-11-07) remove both tables from the uncatalogued-table backlog in
+  `system/echidna-tables/index.md`, whose write-path conventions now name the
+  shadow ledger pair.
+* **Trust and scope**: all changed or new concepts are `draft` with
+  `generated.by: claude/opus-5-5`. `thoughts.md` moves from `stable` to
+  `draft` until Jun re-verifies it; its earlier `verified` entries are kept as
+  history, not extended. No code, table, guard, unit status, trading policy,
+  scheduler or deployment change. magi-core's runtime OKF pin
+  (`8f77020e66d1bc84f2880a6f508eb2edd7b36b66`) is unchanged.
+* **References**: drafted on OKF main `6322d3bb71a200d388435e5b645f945155d38fb2`,
+  rebased onto `191e363f8283af0fec03c66118336421f79d9766` (#207); magi-core main `e991ce1db9a0c5043c26d19e0c407da3f6f4420d`.
+
 ## 2026-11-07 (PROMPT.md refreshed for external LLMs; pin-first confirmed)
 * **Request (Jun, Devin session 2026-11-04)**: produce the latest MAGI
   instruction for other LLMs. **Jun confirmed pin-first revision selection
