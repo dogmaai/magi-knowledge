@@ -40,7 +40,9 @@ Two further producers journal non-LLM decision rows (magi-core#609):
   `confidence=0` (a system decision carries no model confidence — 0 is
   honest, not fabricated), `concerns='AUTO_CLOSE'`, and the same
   `decision_id` passed to the order dispatch — journaled before the
-  broker call.
+  broker call. Their `trade_mode` is the caller's: `POSITION_GUARD` when
+  `position-guard.mjs` (the `magi-position-guard` job) closes, otherwise the
+  trade session's `TRADE_MODE` (`NORMAL` in production).
 - LLM calls that fail after the retry loop (provider errors, exhausted
   429 retries) or return an unusable response (no
   `choices[0].message`) write `action='CALL_FAILED'` via
@@ -62,7 +64,7 @@ which is the intended corpus signal.
 | session_id | STRING | FK → [sessions](sessions.md).session_id. |
 | timestamp | TIMESTAMP | Decision time (UTC). |
 | content | STRING | Raw model completion. |
-| trade_mode | STRING | The writing job's `TRADE_MODE`: `NORMAL` (live units) or `SHADOW` (analysis rows of SHADOW units such as [MELCHIOR-1](/system/plm-units/melchior-1.md#shadow-write-paths) — their order decisions go to [thoughts_shadow](thoughts-shadow.md) instead); `POSITION_GUARD` on position-guard close-decision rows; `BLOCKED` / `WARN_ONLY` on guard-block rows. Observed 2026-10-01→2026-11-06: `WARN_ONLY`, `NORMAL`, `SHADOW`, `BLOCKED`, `POSITION_GUARD` only — the formerly documented `live` / `paper` / `simulation` do not occur. [`thoughts_active`](views.md) keeps `NORMAL` only. |
+| trade_mode | STRING | The writing job's `TRADE_MODE` — see [trade_mode values](#trade_mode-values). |
 | llm_provider | STRING | Provider key; `'system'` on `AUTO_CLOSE` close-decision rows (added 2026-10-11, magi-core#609). |
 | unit_name | STRING | MAGI unit name. |
 | symbol | STRING | Ticker under consideration. |
@@ -81,6 +83,22 @@ which is the intended corpus signal.
 | ariel_context_used | BOOL | Whether ARIEL market context was injected. |
 | feedback_injected | BOOL | A/B holdout flag: TRUE = feedback injected, FALSE = HOLDOUT arm, NULL = no assignment (added earlier; see `alter_thoughts_add_feedback_injected.sql`). |
 | model_version | STRING | Served-model identifier at decision time (e.g. `gemini-3.8-flash`, `ministral-3:8b-ctx32k`); also written on guard-block rows. Cohort key per [model-cohorting](/system/constitution/model-cohorting.md): `cohort = (unit_name, model_version)`. NULL for rows predating the column (added 2026-10-03, magi-core#544). |
+
+# trade_mode values
+
+Full-table read, 2026-11-07 (magi-core `e991ce1db9a0c5043c26d19e0c407da3f6f4420d`):
+
+| Value | Written by | Notes |
+|---|---|---|
+| `NORMAL` | analysis rows of live units; `AUTO_CLOSE` rows from a trade session | The only value [`thoughts_active`](views.md) keeps. |
+| `SHADOW` | analysis rows (`log_analysis`, incl. `HOLD`) of `TRADE_MODE=SHADOW` units | Their `place_order` decisions go to [trades_shadow](trades-shadow.md) / [thoughts_shadow](thoughts-shadow.md), not here. See [MELCHIOR-1 SHADOW write paths](/system/plm-units/melchior-1.md#shadow-write-paths). Since 2026-08-24 (CASPER until 2026-09-21, MELCHIOR-1 since). |
+| `POSITION_GUARD` | `AUTO_CLOSE` rows from the `magi-position-guard` job | Since 2026-10-12. |
+| `BLOCKED` / `WARN_ONLY` | guard-block rows (`src/guard.js` `logGuardBlock`) | |
+| `SCALPING` | retired scalping jobs | Historical only (2026-01-28 → 2026-02-11). |
+| NULL | — | 3 legacy rows (2026-02-18). |
+
+The formerly documented `live` / `paper` / `simulation` occur in no row of
+the table.
 
 # Joins
 

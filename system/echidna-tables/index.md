@@ -8,10 +8,14 @@ noted; the remaining code-derived schemas were live-verified via `bq show`
 on 2026-10-06) — the per-doc frontmatter and schema notes are authoritative
 over this blanket statement.
 
-Two write-path conventions matter:
+Three write-path conventions matter:
 
 * **Live tables**: `trades` and `thoughts` are the base tables written by the
   trade loop (`lib/bigquery.js` → `safeInsert` / `batchInsert`).
+* **Shadow ledgers**: `trades_shadow` / `thoughts_shadow` hold virtual orders
+  that were recorded instead of sent to the broker (`lib/shadow-trade.js`);
+  SHADOW units' analysis rows still go to `thoughts`. See
+  [trades-shadow](trades-shadow.md).
 * **`_active` views**: `trades_active` and `thoughts_active` are VIEWs over the
   base tables (current/active filter). Most read paths — including
   ISABEL stats and the LILITH training extracts — query the views.

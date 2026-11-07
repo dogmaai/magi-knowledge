@@ -9,19 +9,22 @@
   `src/llm.js` writes `log_analysis` rows (including `HOLD`) to `thoughts`
   with `trade_mode=getTradeMode()`; only SHADOW `place_order` decisions and
   `L6_OBSERVE` candidates go to `trades_shadow` + `thoughts_shadow`, sharing
-  the analysis row's `thought_id`. Production agrees: since 2026-10-02,
-  288 `SHADOW` rows in `thoughts`; every shadow-ledger row since 2026-09-01
-  joins to a `thoughts` row. `thoughts_active` keeps `trade_mode = 'NORMAL'`
+  the analysis row's `thought_id`. Production agrees (full-table read
+  2026-11-07): 2,743 `SHADOW` rows in `thoughts` since 2026-08-24 (CASPER
+  2,261 until 2026-09-21, MELCHIOR-1 482); every shadow-ledger row since
+  2026-09-01 joins to a `thoughts` row. `thoughts_active` keeps `trade_mode = 'NORMAL'`
   only, so live-performance reads already exclude SHADOW rows.
 * **Docs**: `system/plm-units/melchior-1.md` gains a *SHADOW write paths*
   section; `system/plm-units/index.md` wording follows it.
-  `system/echidna-tables/thoughts.md` `trade_mode` now lists the values
-  observed 2026-10-01→2026-11-06 (`WARN_ONLY`, `NORMAL`, `SHADOW`, `BLOCKED`,
-  `POSITION_GUARD`); the former `live` / `paper` / `simulation` list matched
-  no production row. New concept docs
+  `system/echidna-tables/thoughts.md` gains a *trade_mode values* table from
+  a full-table read (`NORMAL`, `SHADOW`, `POSITION_GUARD`, `BLOCKED`,
+  `WARN_ONLY`, historical `SCALPING`, 3 NULL rows) and states the
+  `trade_mode` of `AUTO_CLOSE` rows; the former `live` / `paper` /
+  `simulation` list occurs in no row of the table. New concept docs
   `system/echidna-tables/trades-shadow.md` and `thoughts-shadow.md` (live DDL
   read 2026-11-07) remove both tables from the uncatalogued-table backlog in
-  `system/echidna-tables/index.md`.
+  `system/echidna-tables/index.md`, whose write-path conventions now name the
+  shadow ledger pair.
 * **Trust and scope**: all changed or new concepts are `draft` with
   `generated.by: claude/opus-5-5`. `thoughts.md` moves from `stable` to
   `draft` until Jun re-verifies it; its earlier `verified` entries are kept as
