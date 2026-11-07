@@ -5,7 +5,7 @@ description: Aggressive momentum hunter — acts decisively on directional signa
 lilith_safe: false
 status: stable
 generated: { by: devin/cloud, at: 2026-11-07T09:16:00Z }
-verified: [{ by: human:jun, at: 2026-09-22T01:45:00Z }, { by: human:jun, at: 2026-11-07T06:28:00Z }, { by: devin/cloud, at: 2026-11-07T09:16:00Z }, { by: human:jun, at: 2026-11-07T09:16:00Z }]
+verified: [{ by: human:jun, at: 2026-09-22T01:45:00Z }, { by: human:jun, at: 2026-11-07T06:28:00Z }, { by: human:jun, at: 2026-11-07T09:16:00Z }]
 stale_after: 2027-05-07T09:16:00Z
 tags: [plm, deepseek, momentum]
 provider: deepseek
