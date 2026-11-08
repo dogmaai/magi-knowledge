@@ -37,6 +37,9 @@ rest of this draft has been updated to match them.
    to its Discord destination and confirms the watchdog's Discord path. These
    checks are mandatory acceptance criteria, not optional smoke tests. No
    secondary out-of-band alert channel is added (option B was not chosen).
+   Jun accepts the consequence: if Discord delivery later fails (for example a
+   revoked webhook), the failure is visible only in Cloud Logging until
+   someone looks.
 4. **Clean up the Telegram code and configuration.** Removal changes are
    prepared as follow-up PRs to the companion implementation PRs
    ([magi-core#710](https://github.com/dogmaai/magi-core/pull/710),
@@ -178,8 +181,10 @@ Jun must review this safety/availability trade-off before enabling operations.
    maintenance window; do not toggle trading controls merely to test deployment.
    Validate a simulated order/approval only with explicit approval and a mocked
    or safely isolated broker. Verify failure of approvals storage blocks orders.
-6. Create a private notification webhook and securely bind it to each producer.
-   Enable Discord transport in stages, preserving category mutes. Verify a critical
+6. Create the private notification webhook secret (`DISCORD_WEBHOOK_URL`). The
+   switch itself is the cleanup PRs' deployment, one repository at a time
+   (magi-core jobs, then magi-moni); each deployment moves its producers to
+   Discord and removes their Telegram path together. Preserve category mutes. Verify a critical
    alert, down/recovery path, scheduler report failure, cooldown and long report.
    Avoid duplicate production alerts during acceptance.
    **Mandatory (option A, Jun 2026-11-08):** a live delivery test of every
