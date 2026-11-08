@@ -154,9 +154,10 @@ Jun must review this safety/availability trade-off before enabling operations.
   Monitoring cooldown/deduplication behavior must remain unchanged.
 - Migrate shared JavaScript callers, watchdog, direct Python Optuna senders,
   daily/weekly reports, bridge down/recovery alerts and host alerts.
-- Core deployment selects only the chosen transport's secret bindings through
-  the GitHub `NOTIFICATION_TRANSPORT` repository variable. Jun provisions the
-  selected secret before deploying. MAGI moni uses `--update-env-vars` so future
+- In the companion PR, core deployment selects the transport's secret bindings
+  through the GitHub `NOTIFICATION_TRANSPORT` variable. The cleanup PR removes
+  that variable and binds only `DISCORD_WEBHOOK_URL`; deploying it is the switch.
+  Jun provisions the secret before deploying. MAGI moni uses `--update-env-vars` so future
   deployments retain Jun's Discord configuration instead of erasing it.
 
 # Cutover gates (Jun-operated)

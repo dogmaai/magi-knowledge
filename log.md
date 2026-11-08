@@ -12,8 +12,10 @@
   (draft). The secrets ledger is not edited until the Discord secrets exist
   and the Telegram ones are retired.
 * **Jun's direction**: migrate OpenClaw, AKA-1 and MAGI notifications to Discord,
-  with separate OpenClaw and MAGI Bot applications; retire Telegram only after
-  replacement verification.
+  with separate OpenClaw and MAGI Bot applications. (Its "retire Telegram only
+  after replacement verification" ordering is superseded by the later decisions
+  above: the switch and the Telegram removal are one deployment per repository,
+  verified by the mandatory option-A tests right after it.)
 * **Plan**: `system/services/discord-migration.md` records signature/owner checks,
   immutable single-use human approval, preserved L0/order gates, notification
   contracts, live acceptance, rollback and physical teardown inventory.
