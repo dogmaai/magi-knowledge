@@ -97,8 +97,9 @@ Jun must review this safety/availability trade-off before enabling operations.
    L0 command authorization, and notification failure handling. Run unit tests,
    static checks and OKF gates. Keep Telegram rollback code/credentials for now.
 2. Create the separate MAGI application. Configure its public key, application ID,
-   owner user ID, guild and private channel IDs. Store its Bot token securely only
-   for command registration; do not reuse the OpenClaw token. Run registration
+   owner user ID, guild and private channel IDs. Store `MAGI_DISCORD_BOT_TOKEN`
+   securely only for command registration; never overwrite or reuse OpenClaw's
+   `DISCORD_BOT_TOKEN`. Run registration
    dry-run first; the explicit `--apply` replaces only the MAGI guild commands.
 3. Jun deploys the service, sets Interactions Endpoint URL to `/webhook/discord`,
    and verifies Discord's signed PING challenge. Ensure commands are visible only
@@ -127,6 +128,9 @@ Jun must review this safety/availability trade-off before enabling operations.
    ingestion and registration (`TELEGRAM_ENABLED=false` for moni), change remaining
    cron destinations, then remove old runtime bindings. Keep retirement tracking
    open until Jun confirms the physical deletions and observation window is complete.
+   The legacy webhook must reject missing token/chat/secret configuration even
+   before its explicit disable flag is set, preventing an unauthenticated rollback
+   route after credentials are unbound.
 
 # Retirement inventory and rollback
 
