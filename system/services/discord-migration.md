@@ -18,12 +18,38 @@ The existing stable service/guard/table concepts remain the baseline until the
 replacement is accepted. Production deployment, IAM, Scheduler and secret changes
 are Jun's operation, not authorized by this document.
 
-Implementation references: magi-core base
-`84ab0a0f4c3111d04d234a0da490541f8e9675db` (OKF pin
-`437d1d68a7f0f157ff88180ba9be721025760f37`); magi-moni base
-`2ec39dcda90641bc250e51b0108a96b4d36a5f31` (no pin, task reference
-`4035ac393d30a1135e48f64a7f2636ee1d6ba105`). This documentation change starts
-from OKF `b118744`; no consumer pin is silently advanced.
+## Revisions referenced
+
+| Revision | Role |
+|---|---|
+| `b118744a0765a0b03c63ecb7adf56791e0960715` | `magi-knowledge` main when this documentation branch was created and re-checked; base of this change. |
+| `437d1d68a7f0f157ff88180ba9be721025760f37` | magi-core's existing `vendor/magi-knowledge` pin. It is older than `b118744` and is **not** advanced by this change. |
+| `4035ac393d30a1135e48f64a7f2636ee1d6ba105` | magi-knowledge main at task start; task-fixed reference for magi-moni, which has no pin. |
+| magi-core `84ab0a0f4c3111d04d234a0da490541f8e9675db` | Inspected pre-change implementation (Telegram-only notifications). |
+| magi-moni `2ec39dcda90641bc250e51b0108a96b4d36a5f31` | Inspected pre-change implementation (Telegram AKA-1, `confirmed=true` drift). |
+
+Between these three OKF revisions, the relevant stable service/guard/table
+concepts are identical except `system/services/magi-core.md`, which gained
+unrelated content in `b118744`.
+
+## Implementation states
+
+Statements in this document belong to one of three states. Only state A was
+inspected; nothing in states B or C is deployed or live-verified.
+
+| State | Revisions | Behavior |
+|---|---|---|
+| **A. Inspected pre-change code** | core `84ab0a0`, moni `2ec39dc` | Telegram for all channels. Contrary to the stable [order approvals](../echidna-tables/order-approvals.md) Notes, moni `lib/tools.js` issues an approval token on model `confirmed=true` (drift). Which revision production runs was not verified. |
+| **B. Proposed** | [magi-core#708](https://github.com/dogmaai/magi-core/pull/708), [magi-moni#58](https://github.com/dogmaai/magi-moni/pull/58) (draft, unmerged) | The Discord behavior below. Unit-tested and independently reviewed only. |
+| **C. Rollback** | Same revisions as B | `NOTIFICATION_TRANSPORT=telegram` and the retained Telegram webhook. Model-proposed mutations return `confirmation_required`; legacy Telegram `/kill` and `/resume` remain human-typed commands authenticated by the webhook secret and chat ID. |
+
+Reverting moni to state A is **not** a sanctioned rollback because it
+reinstates the `confirmed=true` drift; it requires Jun's explicit decision.
+Because the Telegram account was deleted, state C delivery may be unavailable
+and must be live-checked before being relied upon.
+
+Everything in the following sections up to the cutover gates describes
+**state B**, unless marked otherwise.
 
 # Channel separation
 
@@ -47,8 +73,8 @@ configuration rejects access. Discord PING receives a signed-request-validated
 PONG. No Discord application token or interaction token is exposed to the LLM.
 
 `/ask` preserves AKA-1 read-only tools. Model-generated `confirmed=true` and
-natural-language assent are not authorization, including on the rollback
-Telegram model path. Mutations are proposed with an immutable parameter snapshot
+natural-language assent are not authorization, including on the retained
+Telegram model path in state C (unlike state A). Mutations are proposed with an immutable parameter snapshot
 and an ephemeral confirm/cancel button. Confirmation is bound to the authenticated
 actor, guild, channel, exact operation/parameters, random nonce and 60-second TTL;
 it is removed before execution. The backend passes a single-use, parameter-bound
@@ -142,7 +168,7 @@ Jun must review this safety/availability trade-off before enabling operations.
 |---|---|---|
 | OpenClaw Telegram channel | Keep until Discord conversation/cron verified | Disable, remove token binding/config and all Telegram announce targets |
 | TIALA cron/LaunchAgents | Inspect live inventory; keep unrelated memory jobs | Retire only verified Telegram-specific producers; retain memory/runtime |
-| moni webhook/setup | Keep rollback route; model mutations fail closed | Set disabled flag, delete external webhook, then remove routes/Telegram send code |
+| moni webhook/setup | Keep rollback route; in states B/C model mutations fail closed (state A drift until #58 deploys) | Set disabled flag, delete external webhook, then remove routes/Telegram send code |
 | moni reports | Select one transport; retain rollback secret | Remove Telegram environment bindings after Discord report checks |
 | core JavaScript/Python | Transport selector; preserve mutes/failure semantics | Remove Telegram sender branch and compatibility names in a follow-up |
 | bridge/host monitor jobs | Jun enables Discord binding one job at a time | Remove old Bot/chat secret bindings and verify recovery alerts |
@@ -150,8 +176,9 @@ Jun must review this safety/availability trade-off before enabling operations.
 | AKA-1 order gate / L0 / tables | Keep fail-closed semantics and schemas | Keep; these are not retirement targets |
 | OKF / consumer pins | Link the staged plan; do not assert live cutover | Record live evidence, update service/guard/table channel wording, then advance pins explicitly |
 
-Before retirement, rollback selects Telegram explicitly and restores the previous
-bindings/configuration through Jun, not silent fallback. The deleted Telegram
+Before retirement, rollback means state C: Jun explicitly selects Telegram and
+restores its bindings/configuration on the state-B revisions, never silent
+fallback and never a revert to state A without Jun's decision. The deleted Telegram
 account may make rollback delivery unavailable: do not claim an old transport
 is usable without a live check. Keep the authenticated OpenClaw browser interface
 as a recovery path. A failed Discord rollout pauses retirement; it never triggers

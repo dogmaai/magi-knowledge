@@ -61,12 +61,12 @@ set and policy engine above, and TIALA control via OpenClaw.
 * Tech: Node.js, Express, Cloud Run, BigQuery, Pub/Sub, Gemini, Telegram,
   Terraform.
 
-## Staged Discord migration (live acceptance pending)
+## Staged Discord migration pointer (unverified)
 
-Jun selected separate OpenClaw and MAGI Discord applications. See the
-[migration plan](discord-migration.md) for the proposed authentication/approval
-boundary, transport selection, live acceptance and Telegram retirement gates.
-This note does not assert a deployed cutover or authorize secret deletion.
-The existing service/guard/table behavior above remains the baseline until
-Jun verifies the replacement; draft host/memory inventories still require live
-re-verification. No BigQuery schema or LILITH data boundary changes are proposed.
+Navigation pointer added 2026-11-08 by devin/web. This section is **outside this concept's existing `verified` records and
+has not been verified by human:jun**. It does not modify the verified content
+above, which remains the baseline until Jun verifies a replacement.
+Proposed, not deployed, Discord behavior and the acceptance, rollback and
+Telegram retirement gates are in the draft [migration plan](discord-migration.md).
+It asserts no cutover and authorizes no secret deletion, schema change or
+LILITH boundary change.

@@ -7,11 +7,17 @@
 * **Plan**: `system/services/discord-migration.md` records signature/owner checks,
   immutable single-use human approval, preserved L0/order gates, notification
   contracts, live acceptance, rollback and physical teardown inventory.
-* **Drift**: magi-moni base `2ec39dc` treats model `confirmed=true` as order approval,
-  contrary to the stable order-approvals concept. The companion implementation
-  requires an authenticated Discord confirmation instead. Independent review is
-  required. No live cutover, deployment, credential deletion or consumer-pin
-  advancement has been performed; the migration document remains draft.
+* **Drift**: magi-moni `2ec39dcda90641bc250e51b0108a96b4d36a5f31` `lib/tools.js`
+  (`akaTool_moomooPlaceOrder`) issues an approval token on model `confirmed=true`,
+  contrary to the stable order-approvals Notes (specification unchanged). Proposed
+  correction: magi-moni#58 (draft, unmerged); notifications: magi-core#708.
+  Independent implementation review completed; Jun's decision is still required.
+* **Verification scope**: pointer sections appended to stable concepts are marked
+  unverified and are outside their existing `verified` records; no verification
+  metadata was added. The plan separates inspected code (A), proposed code (B)
+  and rollback on the proposed code (C). No live cutover, deployment, credential
+  deletion or consumer-pin advancement (core pin `437d1d6`, base `b118744`) has
+  been performed; the migration document remains draft.
 
 ## 2026-11-08 (OpenAI provider credential boundary)
 * **Review finding**: magi-core#707 identified that the pinned OKF did not

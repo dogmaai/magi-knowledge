@@ -85,12 +85,11 @@ latest `alerted='down'` row to decide whether to send Telegram (shared
 * The monitor exits 0 even when `overall=down` — the alert is the
   deliverable; a failing job and a failing host must stay distinguishable.
 
-## Staged Discord migration (live acceptance pending)
+## Staged Discord migration pointer (unverified)
 
-Jun selected separate OpenClaw and MAGI Discord applications. See the
-[migration plan](../services/discord-migration.md) for the proposed authentication/approval
-boundary, transport selection, live acceptance and Telegram retirement gates.
-This note does not assert a deployed cutover or authorize secret deletion.
-The existing service/guard/table behavior above remains the baseline until
-Jun verifies the replacement; draft host/memory inventories still require live
-re-verification. No BigQuery schema or LILITH data boundary changes are proposed.
+Navigation pointer added 2026-11-08 by devin/web. This concept is draft and this pointer is likewise **not human-verified**;
+its inventory still requires live re-verification before retirement work.
+Proposed, not deployed, Discord behavior and the acceptance, rollback and
+Telegram retirement gates are in the draft [migration plan](../services/discord-migration.md).
+It asserts no cutover and authorizes no secret deletion, schema change or
+LILITH boundary change.

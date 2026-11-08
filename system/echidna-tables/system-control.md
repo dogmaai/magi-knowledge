@@ -41,12 +41,12 @@ HALTED. Schema live-verified via `bq show` on 2026-09-16.
     failures), `RUNNING` (confirmed `false`), `UNKNOWN` (read failure →
     reduce-only, fail-closed for non-reducing orders).
 
-## Staged Discord migration (live acceptance pending)
+## Staged Discord migration pointer (unverified)
 
-Jun selected separate OpenClaw and MAGI Discord applications. See the
-[migration plan](../services/discord-migration.md) for the proposed authentication/approval
-boundary, transport selection, live acceptance and Telegram retirement gates.
-This note does not assert a deployed cutover or authorize secret deletion.
-The existing service/guard/table behavior above remains the baseline until
-Jun verifies the replacement; draft host/memory inventories still require live
-re-verification. No BigQuery schema or LILITH data boundary changes are proposed.
+Navigation pointer added 2026-11-08 by devin/web. This section is **outside this concept's existing `verified` records and
+has not been verified by human:jun**. It does not modify the verified content
+above, which remains the baseline until Jun verifies a replacement.
+Proposed, not deployed, Discord behavior and the acceptance, rollback and
+Telegram retirement gates are in the draft [migration plan](../services/discord-migration.md).
+It asserts no cutover and authorizes no secret deletion, schema change or
+LILITH boundary change.
