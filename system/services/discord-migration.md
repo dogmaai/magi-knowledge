@@ -35,7 +35,9 @@ this draft; where an older sentence below conflicts, this section wins.
    checks are mandatory acceptance criteria, not optional smoke tests. No
    secondary out-of-band alert channel is added (option B was not chosen).
 4. **Clean up the Telegram code and configuration.** Removal changes are
-   prepared as follow-up PRs to the companion implementation PRs. Because
+   prepared as follow-up PRs to the companion implementation PRs
+   ([magi-core#710](https://github.com/dogmaai/magi-core/pull/710),
+   [magi-moni#59](https://github.com/dogmaai/magi-moni/pull/59)). Because
    they leave no Telegram path, they deploy only after Jun has provisioned
    the Discord secrets (gates 2 and 6 below), and the option-A tests run
    immediately after that deployment.
