@@ -4,8 +4,8 @@ title: magi-core
 description: The MAGI trading engine — trade loop, LLM orchestration, and guard layers.
 lilith_safe: false
 status: stable
-generated: { by: devin/cloud, at: 2026-10-31T13:49:23Z }
-verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-06T08:31:20Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }, { by: devin/cloud, at: 2026-10-27T01:09:00Z }, { by: human:jun, at: 2026-10-31T14:00:11Z }]
+generated: { by: devin/cloud, at: 2026-11-08T03:22:49Z }
+verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-06T08:31:20Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }, { by: devin/cloud, at: 2026-10-27T01:09:00Z }, { by: human:jun, at: 2026-10-31T14:00:11Z }, { by: devin/cloud, at: 2026-11-08T03:22:49Z }]
 stale_after: 2027-04-30T14:00:11Z
 tags: [service, magi-core, core, trading]
 repo: dogmaai/magi-core
@@ -31,6 +31,16 @@ and writes the core ECHIDNA tables.
 | `lib/config.js` | Unit/model mapping + budget weights. |
 | `lib/bigquery.js` | ECHIDNA writers (`safeInsert`, validators). |
 | `lib/constitution.js` | Constitution prompt builder. |
+
+# OpenAI provider credential
+
+[PROMETHEUS](/system/plm-units/prometheus.md) uses the OpenAI API key injected
+as `OPENAI_API_KEY` from Secret Manager into the `magi-core-openai` job. The
+shared `lib/secrets.js` export is the credential boundary: it trims surrounding
+whitespace, treats a missing or whitespace-only value as absent, and preserves
+characters inside the trimmed value. OpenAI request callers (`src/llm.js`,
+`health-monitor.js`, and `off-hours-chat.mjs`) consume this shared export
+rather than reading `process.env.OPENAI_API_KEY` directly.
 
 # HERMES intelligence stack
 
