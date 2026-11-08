@@ -4,7 +4,7 @@ title: Telegram to Discord staged migration
 description: Cutover, acceptance, rollback and retirement gates for OpenClaw and MAGI communications.
 lilith_safe: false
 status: draft
-generated: { by: devin/web, at: 2026-11-08T00:00:00Z }
+generated: { by: claude/cloud, at: 2026-11-08T12:45:00Z }
 tags: [discord, telegram, migration, operations, aka-1]
 ---
 
@@ -17,6 +17,32 @@ are **not yet verified**. This draft does not claim a production cutover.
 The existing stable service/guard/table concepts remain the baseline until the
 replacement is accepted. Production deployment, IAM, Scheduler and secret changes
 are Jun's operation, not authorized by this document.
+
+## Jun's decisions (2026-11-08, Claude session)
+
+Jun decided the following in a Claude session on 2026-11-08 (JST). They
+supersede the Telegram-rollback and parallel-operation wording elsewhere in
+this draft; where an older sentence below conflicts, this section wins.
+
+1. **Retire every Telegram route.** OpenClaw conversations and cron
+   announcements, AKA-1 (magi-moni) and all MAGI notifications move to
+   Discord. Telegram is removed, not kept as a fallback.
+2. **No parallel operation.** Telegram and Discord are never both active,
+   including during acceptance. State C (Telegram rollback) is **retired**.
+3. **Mitigation for the lost rollback: option A.** Before the cutover is
+   considered complete, Jun runs a live delivery test of **every** producer
+   to its Discord destination and confirms the watchdog's Discord path. These
+   checks are mandatory acceptance criteria, not optional smoke tests. No
+   secondary out-of-band alert channel is added (option B was not chosen).
+4. **Clean up the Telegram code and configuration.** Removal changes are
+   prepared as follow-up PRs to the companion implementation PRs. Because
+   they leave no Telegram path, they deploy only after Jun has provisioned
+   the Discord secrets (gates 2 and 6 below), and the option-A tests run
+   immediately after that deployment.
+
+Open, not decided here: whether magi-moni is pinned to one Cloud Run
+instance or given a shared approval store (see the process-local trade-off
+below).
 
 ## Revisions referenced
 
@@ -41,12 +67,12 @@ inspected; nothing in states B or C is deployed or live-verified.
 |---|---|---|
 | **A. Inspected pre-change code** | core `84ab0a0`, moni `2ec39dc` | Telegram for all channels. Contrary to the stable [order approvals](../echidna-tables/order-approvals.md) Notes, moni `lib/tools.js` issues an approval token on model `confirmed=true` (drift). Which revision production runs was not verified. |
 | **B. Proposed** | [magi-core#708](https://github.com/dogmaai/magi-core/pull/708), [magi-moni#58](https://github.com/dogmaai/magi-moni/pull/58) (draft, unmerged) | The Discord behavior below. Unit-tested and independently reviewed only. |
-| **C. Rollback** | Same revisions as B | `NOTIFICATION_TRANSPORT=telegram` and the retained Telegram webhook. Model-proposed mutations return `confirmation_required`; legacy Telegram `/kill` and `/resume` remain human-typed commands authenticated by the webhook secret and chat ID. |
+| **C. Rollback (retired 2026-11-08)** | Same revisions as B | Formerly `NOTIFICATION_TRANSPORT=telegram` and the retained Telegram webhook. Retired by Jun's decision above: no Telegram rollback and no parallel operation. Kept only to explain the companion PRs' code until the cleanup PRs remove it. |
 
 Reverting moni to state A is **not** a sanctioned rollback because it
 reinstates the `confirmed=true` drift; it requires Jun's explicit decision.
-Because the Telegram account was deleted, state C delivery may be unavailable
-and must be live-checked before being relied upon.
+The Telegram account was deleted and state C is retired, so there is no
+Telegram rollback path.
 
 Everything in the following sections up to the cutover gates describes
 **state B**, unless marked otherwise.
@@ -104,8 +130,10 @@ Jun must review this safety/availability trade-off before enabling operations.
 
 # Notification contract
 
-- `NOTIFICATION_TRANSPORT=telegram|discord`; unset preserves Telegram during
-  migration. Invalid/missing Discord configuration must not fall back to Telegram.
+- Companion PRs: `NOTIFICATION_TRANSPORT=telegram|discord`; unset preserves
+  Telegram. Cleanup PRs remove the selector and the Telegram branch, leaving
+  Discord as the only transport. Invalid/missing Discord configuration never
+  falls back to another channel; it fails and is logged.
 - `DISCORD_WEBHOOK_URL` is a Secret Manager binding. Restrict destinations to
   HTTPS `discord.com/api/webhooks/<id>/<token>`; never log the URL or API token.
 - Use `allowed_mentions: {parse: []}` and split messages within 2,000 UTF-16 units
@@ -125,7 +153,8 @@ Jun must review this safety/availability trade-off before enabling operations.
 
 1. Review linked implementation PRs and independent review of approval issuance,
    L0 command authorization, and notification failure handling. Run unit tests,
-   static checks and OKF gates. Keep Telegram rollback code/credentials for now.
+   static checks and OKF gates. Telegram rollback is retired (Jun 2026-11-08);
+   the Telegram removal PRs deploy only after step 2 and step 6 secrets exist.
 2. Create the separate MAGI application. Configure its public key, application ID,
    owner user ID, guild and private channel IDs. Store `MAGI_DISCORD_BOT_TOKEN`
    securely only for command registration; never overwrite or reuse OpenClaw's
@@ -146,6 +175,11 @@ Jun must review this safety/availability trade-off before enabling operations.
    Enable Discord transport in stages, preserving category mutes. Verify a critical
    alert, down/recovery path, scheduler report failure, cooldown and long report.
    Avoid duplicate production alerts during acceptance.
+   **Mandatory (option A, Jun 2026-11-08):** a live delivery test of every
+   producer to its Discord destination, plus the watchdog's Discord path, passes
+   before the cutover is declared complete. Record the date and producer list in
+   `log.md`. There is no Telegram fallback, so a failed producer is fixed on
+   Discord before proceeding.
 7. Approve the OpenClaw operator device in Settings → Devices, inspect configuration,
    channel/plugin support, current agent/workspace and models. Resolve the observed
    unresolved model identifiers with Jun before changing models. Configure Jun-only
@@ -153,11 +187,14 @@ Jun must review this safety/availability trade-off before enabling operations.
    memory recall and a scheduled announcement against the preserved workspace.
 8. Enumerate **live** OpenClaw cron destinations and TIALA LaunchAgents. The existing
    `aka-memory` and `tiala-host` draft descriptions are hypotheses, not proof of live
-   Telegram producers. Export a redacted rollback configuration; never commit keys.
+   Telegram producers. Never commit keys.
 9. Only after every producer passes acceptance, disable Telegram channel/webhook
    ingestion and registration (`TELEGRAM_ENABLED=false` for moni), change remaining
    cron destinations, then remove old runtime bindings. Keep retirement tracking
    open until Jun confirms the physical deletions and observation window is complete.
+   With Jun's 2026-11-08 cleanup decision, the cleanup PRs remove the Telegram
+   routes and send code from the repositories; the external Telegram webhook,
+   Bot configuration and Secret Manager entries remain Jun's physical deletions.
    The legacy webhook must reject missing token/chat/secret configuration even
    before its explicit disable flag is set, preventing an unauthenticated rollback
    route after credentials are unbound.
@@ -168,20 +205,19 @@ Jun must review this safety/availability trade-off before enabling operations.
 |---|---|---|
 | OpenClaw Telegram channel | Keep until Discord conversation/cron verified | Disable, remove token binding/config and all Telegram announce targets |
 | TIALA cron/LaunchAgents | Inspect live inventory; keep unrelated memory jobs | Retire only verified Telegram-specific producers; retain memory/runtime |
-| moni webhook/setup | Keep rollback route; in states B/C model mutations fail closed (state A drift until #58 deploys) | Set disabled flag, delete external webhook, then remove routes/Telegram send code |
-| moni reports | Select one transport; retain rollback secret | Remove Telegram environment bindings after Discord report checks |
-| core JavaScript/Python | Transport selector; preserve mutes/failure semantics | Remove Telegram sender branch and compatibility names in a follow-up |
+| moni webhook/setup | No rollback route (state C retired); model mutations fail closed (state A drift until #58 deploys) | Cleanup PR removes routes and Telegram send code; Jun deletes the external webhook |
+| moni reports | Discord only once the cleanup PR deploys | Remove Telegram environment bindings after Discord report checks |
+| core JavaScript/Python | Cleanup PR makes Discord the only transport; preserve mutes/failure semantics | Rename remaining Telegram-named modules/identifiers in a later follow-up |
 | bridge/host monitor jobs | Jun enables Discord binding one job at a time | Remove old Bot/chat secret bindings and verify recovery alerts |
-| Secret Manager | Keep old versions for agreed rollback interval | Jun retires/revokes Telegram secrets only after last consumer is gone |
+| Secret Manager | No rollback interval (no Telegram rollback) | Jun retires/revokes Telegram secrets once no deployed revision binds them |
 | AKA-1 order gate / L0 / tables | Keep fail-closed semantics and schemas | Keep; these are not retirement targets |
 | OKF / consumer pins | Link the staged plan; do not assert live cutover | Record live evidence, update service/guard/table channel wording, then advance pins explicitly |
 
-Before retirement, rollback means state C: Jun explicitly selects Telegram and
-restores its bindings/configuration on the state-B revisions, never silent
-fallback and never a revert to state A without Jun's decision. The deleted Telegram
-account may make rollback delivery unavailable: do not claim an old transport
-is usable without a live check. Keep the authenticated OpenClaw browser interface
-as a recovery path. A failed Discord rollout pauses retirement; it never triggers
+There is no Telegram rollback (state C retired, Jun 2026-11-08). A failed
+Discord rollout is fixed forward on Discord, never by restoring Telegram and
+never by reverting moni to state A without Jun's decision. The option-A live
+delivery tests are the safeguard. Keep the authenticated OpenClaw browser
+interface as a recovery path. A failed Discord rollout pauses retirement; it never triggers
 automatic trading actions, new Bot creation, or secret deletion.
 
 # Sources

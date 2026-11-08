@@ -1,6 +1,16 @@
 # Bundle Update Log
 
 ## 2026-11-08 (Telegram to Discord staged migration)
+* **Jun's decisions (2026-11-08, Claude session)**: retire every Telegram
+  route; Discord is the only channel; no parallel operation, so state C
+  (Telegram rollback) is retired. To offset the lost rollback Jun chose
+  option A: a live delivery test of every producer plus the watchdog's
+  Discord path is a mandatory acceptance gate (no secondary alert channel).
+  Jun asked for the Telegram code and configuration to be cleaned up; the
+  removal PRs follow the companion PRs and deploy only after the Discord
+  secrets exist. Recorded in `system/services/discord-migration.md`
+  (draft). The secrets ledger is not edited until the Discord secrets exist
+  and the Telegram ones are retired.
 * **Jun's direction**: migrate OpenClaw, AKA-1 and MAGI notifications to Discord,
   with separate OpenClaw and MAGI Bot applications; retire Telegram only after
   replacement verification.
