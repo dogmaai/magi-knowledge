@@ -41,9 +41,11 @@ rest of this draft has been updated to match them.
    revoked webhook), the failure is visible only in Cloud Logging until
    someone looks.
 4. **Clean up the Telegram code and configuration.** Removal changes are
-   prepared as follow-up PRs to the companion implementation PRs
+   prepared as PRs stacked on the companion implementation PRs
    ([magi-core#710](https://github.com/dogmaai/magi-core/pull/710),
-   [magi-moni#59](https://github.com/dogmaai/magi-moni/pull/59)). Because
+   [magi-moni#59](https://github.com/dogmaai/magi-moni/pull/59)) and are merged
+   into the companion branches first, so each repository reaches `main` (and
+   deploys) once, already Telegram-free. Because
    they leave no Telegram path, they deploy only after Jun has provisioned
    the Discord secrets (gates 2 and 6 below), and the option-A tests run
    immediately after that deployment.
@@ -171,7 +173,10 @@ Jun must review this safety/availability trade-off before enabling operations.
    securely only for command registration; never overwrite or reuse OpenClaw's
    `DISCORD_BOT_TOKEN`. Run registration
    dry-run first; the explicit `--apply` replaces only the MAGI guild commands.
-3. Jun deploys the service, sets Interactions Endpoint URL to `/webhook/discord`,
+3. Jun deploys magi-moni with the cleanup PR already folded into the companion
+   PR (magi-moni#59 merged into #58's branch, then #58 to `main`), so the Discord
+   endpoint goes live in the same deployment that removes the Telegram webhook.
+   Then Jun sets Interactions Endpoint URL to `/webhook/discord`
    and verifies Discord's signed PING challenge. Ensure commands are visible only
    as intended. Verify the channel is actually private in Discord permissions;
    an endpoint allowlist alone does not make a public channel private.
