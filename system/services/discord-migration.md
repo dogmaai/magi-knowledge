@@ -21,9 +21,8 @@ are Jun's operation, not authorized by this document.
 ## Jun's decisions (2026-11-08, Claude session)
 
 Jun decided the following in a Claude session on 2026-11-08 (JST), after the
-Devin session above chose Discord; these are separate, later decisions. They
-supersede the Telegram-rollback and parallel-operation wording elsewhere in
-this draft; where an older sentence below conflicts, this section wins.
+Devin session above chose Discord; these are separate, later decisions. The
+rest of this draft has been updated to match them.
 
 1. **Retire every Telegram route.** OpenClaw conversations and cron
    announcements, AKA-1 (magi-moni) and all MAGI notifications move to
@@ -107,8 +106,8 @@ configuration rejects access. Discord PING receives a signed-request-validated
 PONG. No Discord application token or interaction token is exposed to the LLM.
 
 `/ask` preserves AKA-1 read-only tools. Model-generated `confirmed=true` and
-natural-language assent are not authorization, including on the retained
-Telegram model path in state C (unlike state A). Mutations are proposed with an immutable parameter snapshot
+natural-language assent are not authorization, including on the companion
+PRs' Telegram model path (unlike state A); that path is removed by the cleanup PRs. Mutations are proposed with an immutable parameter snapshot
 and an ephemeral confirm/cancel button. Confirmation is bound to the authenticated
 actor, guild, channel, exact operation/parameters, random nonce and 60-second TTL;
 it is removed before execution. The backend passes a single-use, parameter-bound
@@ -196,24 +195,20 @@ Jun must review this safety/availability trade-off before enabling operations.
 8. Enumerate **live** OpenClaw cron destinations and TIALA LaunchAgents. The existing
    `aka-memory` and `tiala-host` draft descriptions are hypotheses, not proof of live
    Telegram producers. Never commit keys.
-9. Only after every producer passes acceptance, disable Telegram channel/webhook
-   ingestion and registration (`TELEGRAM_ENABLED=false` for moni), change remaining
-   cron destinations, then remove old runtime bindings. Keep retirement tracking
-   open until Jun confirms the physical deletions and observation window is complete.
-   With Jun's 2026-11-08 cleanup decision, the cleanup PRs remove the Telegram
-   routes and send code from the repositories; the external Telegram webhook,
-   Bot configuration and Secret Manager entries remain Jun's physical deletions.
-   The legacy webhook must reject missing token/chat/secret configuration even
-   before its explicit disable flag is set, preventing an unauthenticated rollback
-   route after credentials are unbound.
+9. After every producer passes the option-A tests, Jun removes what the
+   repositories cannot: the external Telegram webhook and Bot configuration,
+   remaining OpenClaw/TIALA Telegram destinations, Cloud Run Telegram env and
+   secret bindings, and finally the Secret Manager entries. The cleanup PRs
+   have already removed the Telegram routes and send code. Keep retirement
+   tracking open until Jun confirms these physical deletions.
 
 # Retirement inventory and rollback
 
 | Surface | Before acceptance | After Jun confirms acceptance |
 |---|---|---|
-| OpenClaw Telegram channel | Keep until Discord conversation/cron verified | Disable, remove token binding/config and all Telegram announce targets |
+| OpenClaw Telegram channel | Switch to Discord in one step once the Discord channel is configured (no parallel) | Remove token binding/config and all Telegram announce targets |
 | TIALA cron/LaunchAgents | Inspect live inventory; keep unrelated memory jobs | Retire only verified Telegram-specific producers; retain memory/runtime |
-| moni webhook/setup | No rollback route (state C retired). Until #58 deploys, state A drift applies (model `confirmed=true` issues approvals, fail-open); after it, model mutations fail closed | Cleanup PR removes routes and Telegram send code; Jun deletes the external webhook |
+| moni webhook/setup | No rollback route (state C retired). The inspected state A code has the `confirmed=true` drift (fail-open); which revision production runs is not verified. With #58 deployed, model mutations fail closed | Cleanup PR removes routes and Telegram send code; Jun deletes the external webhook |
 | moni reports | Discord only once the cleanup PR deploys | Remove Telegram environment bindings after Discord report checks |
 | core JavaScript/Python | Cleanup PR makes Discord the only transport; preserve mutes/failure semantics | Rename remaining Telegram-named modules/identifiers in a later follow-up |
 | bridge/host monitor jobs | Jun enables Discord binding one job at a time | Remove old Bot/chat secret bindings and verify recovery alerts |
