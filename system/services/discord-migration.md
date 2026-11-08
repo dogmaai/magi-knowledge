@@ -20,15 +20,19 @@ are Jun's operation, not authorized by this document.
 
 ## Jun's decisions (2026-11-08, Claude session)
 
-Jun decided the following in a Claude session on 2026-11-08 (JST). They
+Jun decided the following in a Claude session on 2026-11-08 (JST), after the
+Devin session above chose Discord; these are separate, later decisions. They
 supersede the Telegram-rollback and parallel-operation wording elsewhere in
 this draft; where an older sentence below conflicts, this section wins.
 
 1. **Retire every Telegram route.** OpenClaw conversations and cron
    announcements, AKA-1 (magi-moni) and all MAGI notifications move to
    Discord. Telegram is removed, not kept as a fallback.
-2. **No parallel operation.** Telegram and Discord are never both active,
-   including during acceptance. State C (Telegram rollback) is **retired**.
+2. **No parallel operation.** No producer or command path ever delivers to
+   or accepts from both Telegram and Discord, including during acceptance:
+   each producer switches to Discord in the same deployment that removes its
+   Telegram path (the cleanup PRs), so "staged" in gate 6 means producer by
+   producer, never duplicated. State C (Telegram rollback) is **retired**.
 3. **Mitigation for the lost rollback: option A.** Before the cutover is
    considered complete, Jun runs a live delivery test of **every** producer
    to its Discord destination and confirms the watchdog's Discord path. These
@@ -73,8 +77,10 @@ inspected; nothing in states B or C is deployed or live-verified.
 
 Reverting moni to state A is **not** a sanctioned rollback because it
 reinstates the `confirmed=true` drift; it requires Jun's explicit decision.
-The Telegram account was deleted and state C is retired, so there is no
-Telegram rollback path.
+State C is retired by Jun's decision, so there is no Telegram rollback path.
+(The Devin session reported the Telegram account as deleted; that is not
+verified here, and the external webhook, Bot configuration and secrets remain
+Jun's pending physical deletions.)
 
 Everything in the following sections up to the cutover gates describes
 **state B**, unless marked otherwise.
@@ -207,7 +213,7 @@ Jun must review this safety/availability trade-off before enabling operations.
 |---|---|---|
 | OpenClaw Telegram channel | Keep until Discord conversation/cron verified | Disable, remove token binding/config and all Telegram announce targets |
 | TIALA cron/LaunchAgents | Inspect live inventory; keep unrelated memory jobs | Retire only verified Telegram-specific producers; retain memory/runtime |
-| moni webhook/setup | No rollback route (state C retired); model mutations fail closed (state A drift until #58 deploys) | Cleanup PR removes routes and Telegram send code; Jun deletes the external webhook |
+| moni webhook/setup | No rollback route (state C retired). Until #58 deploys, state A drift applies (model `confirmed=true` issues approvals, fail-open); after it, model mutations fail closed | Cleanup PR removes routes and Telegram send code; Jun deletes the external webhook |
 | moni reports | Discord only once the cleanup PR deploys | Remove Telegram environment bindings after Discord report checks |
 | core JavaScript/Python | Cleanup PR makes Discord the only transport; preserve mutes/failure semantics | Rename remaining Telegram-named modules/identifiers in a later follow-up |
 | bridge/host monitor jobs | Jun enables Discord binding one job at a time | Remove old Bot/chat secret bindings and verify recovery alerts |
