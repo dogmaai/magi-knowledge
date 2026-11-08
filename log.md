@@ -1,5 +1,22 @@
 # Bundle Update Log
 
+## 2026-11-08 (OpenAI provider credential boundary)
+* **Review finding**: magi-core#707 identified that the pinned OKF did not
+  specify how the OpenAI runtime key is normalized before use.
+* **Docs**: `system/services/magi-core.md` now records that the shared
+  `OPENAI_API_KEY` export trims surrounding whitespace, treats missing or
+  whitespace-only values as absent, and preserves interior characters.
+* **Review follow-up**: the key-module index now lists `lib/secrets.js` as the
+  shared environment-backed API-key boundary, including `OPENAI_API_KEY`
+  normalization.
+* **Callers**: `src/llm.js`, `health-monitor.js`, and `off-hours-chat.mjs`
+  consume the shared export rather than reading the raw environment variable.
+* **Scope**: credential formatting only; provider/model selection, guards,
+  order execution, trading mode, tables, and data boundaries are unchanged.
+* **References**: magi-core base `84ab0a0f4c3111d04d234a0da490541f8e9675db`
+  (knowledge pin `437d1d68a7f0f157ff88180ba9be721025760f37`); implementation
+  PR #707 head `4ab19a34c86844e4ab7e0da40f8eb06fb711da87`.
+
 ## 2026-11-07 (PROMPT.md §1: revision pointer in the SSoT bullet)
 * **Request (Jun, Devin session 2026-11-07)**: wording for the first §1
   bullet of the `PROMPT.md` full version.
