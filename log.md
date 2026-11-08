@@ -7,7 +7,8 @@
   `OPENAI_API_KEY` export trims surrounding whitespace, treats missing or
   whitespace-only values as absent, and preserves interior characters.
 * **Review follow-up**: the key-module index now lists `lib/secrets.js` as the
-  shared provider-secret boundary.
+  shared environment-backed API-key boundary, including `OPENAI_API_KEY`
+  normalization.
 * **Callers**: `src/llm.js`, `health-monitor.js`, and `off-hours-chat.mjs`
   consume the shared export rather than reading the raw environment variable.
 * **Scope**: credential formatting only; provider/model selection, guards,
