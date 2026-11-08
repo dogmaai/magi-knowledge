@@ -77,7 +77,7 @@ inspected; nothing in states B or C is deployed or live-verified.
 |---|---|---|
 | **A. Inspected pre-change code** | core `84ab0a0`, moni `2ec39dc` | Telegram for all channels. Contrary to the stable [order approvals](../echidna-tables/order-approvals.md) Notes, moni `lib/tools.js` issues an approval token on model `confirmed=true` (drift). Which revision production runs was not verified. |
 | **B. Proposed** | [magi-core#708](https://github.com/dogmaai/magi-core/pull/708), [magi-moni#58](https://github.com/dogmaai/magi-moni/pull/58) (draft, unmerged) | The Discord behavior below. Unit-tested and independently reviewed only. |
-| **C. Rollback (retired 2026-11-08)** | Same revisions as B | Formerly `NOTIFICATION_TRANSPORT=telegram` and the retained Telegram webhook. Retired by Jun's decision above: no Telegram rollback and no parallel operation. Kept only to explain the companion PRs' code until the cleanup PRs remove it. |
+| **C. Rollback (retired 2026-11-08)** | Same revisions as B | Formerly `NOTIFICATION_TRANSPORT=telegram` and the retained Telegram webhook. Retired by Jun's decision above: no Telegram rollback and no parallel operation. This code exists only on the companion branches and never reaches `main`: the cleanup PRs are folded in before merge. |
 
 Reverting moni to state A is **not** a sanctioned rollback because it
 reinstates the `confirmed=true` drift; it requires Jun's explicit decision.
@@ -158,7 +158,8 @@ Jun must review this safety/availability trade-off before enabling operations.
   daily/weekly reports, bridge down/recovery alerts and host alerts.
 - In the companion PR, core deployment selects the transport's secret bindings
   through the GitHub `NOTIFICATION_TRANSPORT` variable. The cleanup PR removes
-  that variable and binds only `DISCORD_WEBHOOK_URL`; deploying it is the switch.
+  that variable and binds only `DISCORD_WEBHOOK_URL`; the single `main` deployment
+  of the companion PR with the cleanup folded in is the switch.
   Jun provisions the secret before deploying. MAGI moni uses `--update-env-vars` so future
   deployments retain Jun's Discord configuration instead of erasing it.
 
