@@ -54,3 +54,13 @@ Jun 2026-10-06).
   not accepted as authorization.
 * Gate behavior when this table is unreachable is fail-closed for
   non-reducing orders.
+
+## Staged Discord migration (live acceptance pending)
+
+Jun selected separate OpenClaw and MAGI Discord applications. See the
+[migration plan](../services/discord-migration.md) for the proposed authentication/approval
+boundary, transport selection, live acceptance and Telegram retirement gates.
+This note does not assert a deployed cutover or authorize secret deletion.
+The existing service/guard/table behavior above remains the baseline until
+Jun verifies the replacement; draft host/memory inventories still require live
+re-verification. No BigQuery schema or LILITH data boundary changes are proposed.

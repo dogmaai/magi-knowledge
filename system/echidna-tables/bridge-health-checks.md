@@ -77,3 +77,13 @@ latest `alerted='down'` row to decide whether to send Telegram.
 * The monitor exits 0 even when `overall=down` — the alert is the deliverable;
   a failing job and a failing bridge must stay distinguishable.
 * Companion hardening: `MOOMOO_ACC_ID` startup validation (magi-moomoo#88).
+
+## Staged Discord migration (live acceptance pending)
+
+Jun selected separate OpenClaw and MAGI Discord applications. See the
+[migration plan](../services/discord-migration.md) for the proposed authentication/approval
+boundary, transport selection, live acceptance and Telegram retirement gates.
+This note does not assert a deployed cutover or authorize secret deletion.
+The existing service/guard/table behavior above remains the baseline until
+Jun verifies the replacement; draft host/memory inventories still require live
+re-verification. No BigQuery schema or LILITH data boundary changes are proposed.

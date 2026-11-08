@@ -1,5 +1,18 @@
 # Bundle Update Log
 
+## 2026-11-08 (Telegram to Discord staged migration)
+* **Jun's direction**: migrate OpenClaw, AKA-1 and MAGI notifications to Discord,
+  with separate OpenClaw and MAGI Bot applications; retire Telegram only after
+  replacement verification.
+* **Plan**: `system/services/discord-migration.md` records signature/owner checks,
+  immutable single-use human approval, preserved L0/order gates, notification
+  contracts, live acceptance, rollback and physical teardown inventory.
+* **Drift**: magi-moni base `2ec39dc` treats model `confirmed=true` as order approval,
+  contrary to the stable order-approvals concept. The companion implementation
+  requires an authenticated Discord confirmation instead. Independent review is
+  required. No live cutover, deployment, credential deletion or consumer-pin
+  advancement has been performed; the migration document remains draft.
+
 ## 2026-11-08 (OpenAI provider credential boundary)
 * **Review finding**: magi-core#707 identified that the pinned OKF did not
   specify how the OpenAI runtime key is normalized before use.
