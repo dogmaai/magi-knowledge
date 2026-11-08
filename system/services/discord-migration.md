@@ -65,7 +65,11 @@ guard logic and LILITH boundaries are unchanged.
 
 Pending confirmations are intentionally **process-local**, not durable storage.
 Work and proposals start only after Discord accepts the one-shot interaction
-callback. Duplicate delivery/uncertain ACK acceptance does no work. Concurrent
+callback. Duplicate delivery/uncertain ACK acceptance does no work.
+The HTTP request remains open until command execution and followup delivery
+finish, including after headers are flushed; work must not depend on Cloud Run
+CPU after the response ends. `/report` calls the existing daily report generator.
+Concurrent
 button presses consume the local pending entry once. Restart, deployment, expiry
 or routing the click to another instance fails closed. A replacement operation
 must be requested explicitly after checking actual state; never auto-retry a
