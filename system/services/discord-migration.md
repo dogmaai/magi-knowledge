@@ -61,6 +61,9 @@ Further decisions (Jun, 2026-11-09, Claude session):
 7. **OpenClaw's Telegram channel is retired too** (decision 1 covers it): it
    switches to Discord in one step, with no parallel period.
 
+A magi-moni reply produced outside a Discord interaction is dropped, never
+sent to the notification webhook, so operator-only content cannot leak there.
+
 ## Revisions referenced
 
 | Revision | Role |
@@ -161,7 +164,9 @@ Jun must review this safety/availability trade-off before enabling operations.
   without splitting surrogate pairs. Preserve escaped data when removing the
   Telegram formatting subset. Treat any rejected/timed-out chunk as failure.
 - Core categories and default suppression remain unchanged.
-  `NOTIFICATION_MUTED_CATEGORIES` overrides `TELEGRAM_MUTED_CATEGORIES`.
+  `NOTIFICATION_MUTED_CATEGORIES` is the only mute setting (default `TRADE,OPS`);
+  the cleanup PRs remove `TELEGRAM_MUTED_CATEGORIES` and move its production
+  values to the new name.
   Monitoring cooldown/deduplication behavior must remain unchanged.
 - Migrate shared JavaScript callers, watchdog, direct Python Optuna senders,
   daily/weekly reports, bridge down/recovery alerts and host alerts.
