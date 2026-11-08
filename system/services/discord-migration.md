@@ -47,7 +47,7 @@ rest of this draft has been updated to match them.
    into the companion branches first, so each repository reaches `main` (and
    deploys) once, already Telegram-free. Because
    they leave no Telegram path, they deploy only after Jun has provisioned
-   the Discord secrets (gates 2 and 6 below), and the option-A tests run
+   the Discord secrets (gate 2 below), and the option-A tests run
    immediately after that deployment.
 
 Open, not decided here: whether magi-moni is pinned to one Cloud Run
@@ -167,12 +167,14 @@ Jun must review this safety/availability trade-off before enabling operations.
 1. Review linked implementation PRs and independent review of approval issuance,
    L0 command authorization, and notification failure handling. Run unit tests,
    static checks and OKF gates. Telegram rollback is retired (Jun 2026-11-08);
-   the Telegram removal PRs deploy only after step 2 and step 6 secrets exist.
+   the Telegram removal PRs deploy only after the step 2 secrets exist.
 2. Create the separate MAGI application. Configure its public key, application ID,
    owner user ID, guild and private channel IDs. Store `MAGI_DISCORD_BOT_TOKEN`
    securely only for command registration; never overwrite or reuse OpenClaw's
    `DISCORD_BOT_TOKEN`. Run registration
    dry-run first; the explicit `--apply` replaces only the MAGI guild commands.
+   Also create the private notification webhook secret `DISCORD_WEBHOOK_URL` now:
+   no repository may deploy Telegram-free code before it exists.
 3. Jun deploys magi-moni with the cleanup PR already folded into the companion
    PR (magi-moni#59 merged into #58's branch, then #58 to `main`), so the Discord
    endpoint goes live in the same deployment that removes the Telegram webhook.
@@ -187,9 +189,9 @@ Jun must review this safety/availability trade-off before enabling operations.
    maintenance window; do not toggle trading controls merely to test deployment.
    Validate a simulated order/approval only with explicit approval and a mocked
    or safely isolated broker. Verify failure of approvals storage blocks orders.
-6. Create the private notification webhook secret (`DISCORD_WEBHOOK_URL`). The
+6. Using the `DISCORD_WEBHOOK_URL` secret from step 2, the
    switch itself is the cleanup PRs' deployment, one repository at a time
-   (magi-core jobs, then magi-moni); each deployment moves its producers to
+   (magi-moni at step 3; magi-core here, magi-core#708 with #710 folded in); each deployment moves its producers to
    Discord and removes their Telegram path together. Preserve category mutes. Verify a critical
    alert, down/recovery path, scheduler report failure, cooldown and long report.
    Avoid duplicate production alerts during acceptance.
