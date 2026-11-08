@@ -158,3 +158,12 @@ Memory content is operator context, not training data: this doc and the memory
 it describes are `lilith_safe: false` and never flow into LILITH. The GCS bucket
 is not an [ECHIDNA](/system/echidna-tables/) source — nothing reads it back into
 BigQuery; it exists purely so AKA's memory survives a host loss.
+
+## Staged Discord migration pointer (unverified)
+
+Navigation pointer added 2026-11-08 by devin/web. This concept is draft and this pointer is likewise **not human-verified**;
+its inventory still requires live re-verification before retirement work.
+Proposed, not deployed, Discord behavior and the acceptance, rollback and
+Telegram retirement gates are in the draft [migration plan](discord-migration.md).
+It asserts no cutover and authorizes no secret deletion, schema change or
+LILITH boundary change.

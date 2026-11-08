@@ -220,3 +220,12 @@ Tier 2 (requires re-issuing real tokens — **human approval before any step**):
 * `dogmaai/magi-knowledge` `.agents/skills/syncing-spec-to-r2-data-catalog/SKILL.md`
   and `.agents/skills/configuring-cloudflare-ai-search/SKILL.md` — Cloudflare
   token operations.
+
+## Staged Discord migration pointer (unverified)
+
+Navigation pointer added 2026-11-08 by devin/web. This concept is draft and this pointer is likewise **not human-verified**;
+its inventory still requires live re-verification before retirement work.
+Proposed, not deployed, Discord behavior and the acceptance, rollback and
+Telegram retirement gates are in the draft [migration plan](discord-migration.md).
+It asserts no cutover and authorizes no secret deletion, schema change or
+LILITH boundary change.

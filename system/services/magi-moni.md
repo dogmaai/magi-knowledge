@@ -60,3 +60,13 @@ set and policy engine above, and TIALA control via OpenClaw.
   AKA-1, which reads ECHIDNA, it holds `MEMORY.md` and `memory/*.md`.
 * Tech: Node.js, Express, Cloud Run, BigQuery, Pub/Sub, Gemini, Telegram,
   Terraform.
+
+## Staged Discord migration pointer (unverified)
+
+Navigation pointer added 2026-11-08 by devin/web. This section is **outside this concept's existing `verified` records and
+has not been verified by human:jun**. It does not modify the verified content
+above, which remains the baseline until Jun verifies a replacement.
+Proposed, not deployed, Discord behavior and the acceptance, rollback and
+Telegram retirement gates are in the draft [migration plan](discord-migration.md).
+It asserts no cutover and authorizes no secret deletion, schema change or
+LILITH boundary change.

@@ -77,3 +77,13 @@ latest `alerted='down'` row to decide whether to send Telegram.
 * The monitor exits 0 even when `overall=down` — the alert is the deliverable;
   a failing job and a failing bridge must stay distinguishable.
 * Companion hardening: `MOOMOO_ACC_ID` startup validation (magi-moomoo#88).
+
+## Staged Discord migration pointer (unverified)
+
+Navigation pointer added 2026-11-08 by devin/web. This section is **outside this concept's existing `verified` records and
+has not been verified by human:jun**. It does not modify the verified content
+above, which remains the baseline until Jun verifies a replacement.
+Proposed, not deployed, Discord behavior and the acceptance, rollback and
+Telegram retirement gates are in the draft [migration plan](../services/discord-migration.md).
+It asserts no cutover and authorizes no secret deletion, schema change or
+LILITH boundary change.

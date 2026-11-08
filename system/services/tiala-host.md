@@ -185,3 +185,12 @@ GCP-Alerts-email receiver today (magi-core#669).
 
 Host ops inventory — no trading path, no LILITH relevance;
 `lilith_safe: false` and never flows into `_lilith_safe/`.
+
+## Staged Discord migration pointer (unverified)
+
+Navigation pointer added 2026-11-08 by devin/web. This concept is draft and this pointer is likewise **not human-verified**;
+its inventory still requires live re-verification before retirement work.
+Proposed, not deployed, Discord behavior and the acceptance, rollback and
+Telegram retirement gates are in the draft [migration plan](discord-migration.md).
+It asserts no cutover and authorizes no secret deletion, schema change or
+LILITH boundary change.

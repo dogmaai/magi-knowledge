@@ -84,3 +84,12 @@ latest `alerted='down'` row to decide whether to send Telegram (shared
   stack's notification routing only has the GCP-Alerts-email receiver.
 * The monitor exits 0 even when `overall=down` — the alert is the
   deliverable; a failing job and a failing host must stay distinguishable.
+
+## Staged Discord migration pointer (unverified)
+
+Navigation pointer added 2026-11-08 by devin/web. This concept is draft and this pointer is likewise **not human-verified**;
+its inventory still requires live re-verification before retirement work.
+Proposed, not deployed, Discord behavior and the acceptance, rollback and
+Telegram retirement gates are in the draft [migration plan](../services/discord-migration.md).
+It asserts no cutover and authorizes no secret deletion, schema change or
+LILITH boundary change.
