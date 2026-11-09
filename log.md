@@ -1,5 +1,23 @@
 # Bundle Update Log
 
+## 2026-11-09 (Kimi K3.1 Pro added to kimi-api-reference skill)
+* **Enhancement**: [kimi-api-reference](/.agents/skills/kimi-api-reference/SKILL.md)
+  gains a "Model: Kimi K3.1 Pro" section summarised from the official
+  quickstart (https://platform.kimi.ai/docs/guide/kimi-k3-1-pro-quickstart,
+  fetched 2026-11-09): model IDs `kimi-k3.1-pro` / `kimi-k3.1-pro-highspeed`,
+  top-up access gate, always-on thinking with `reasoning_effort`
+  (`low`/`high`/`max`), fixed sampling parameters to omit, full assistant
+  message round-trip, vision / structured output / partial / tool calling /
+  dynamic tool loading / context-caching TTL / Formula official tools.
+* **Risk noted (not decided)**: the Kimi pricing page says K2 series models are
+  closed to new users from 2026-10-31 and planned for retirement by end of
+  December 2026. [TYPHON](/system/plm-units/typhon.md) is defined on
+  `kimi-k2.6`; any model change for TYPHON is Jun's decision and is not made
+  here.
+* **Scope**: Devin reference skill only — no `system/` concept, unit, guard,
+  table, scheduler, trading or LILITH boundary change. Base
+  `edb23afca93ddba9fb486351c35d462b8d73c12f`.
+
 ## 2026-11-09 (OpenClaw Gateway outage, runtime and paired devices on TIALA)
 * **Incident (2026-11-08 17:20–17:29 JST)**: `openclaw.khaos.company` returned
   Cloudflare 502. The OpenClaw macOS app wrote `gateway.mode=remote` (config
