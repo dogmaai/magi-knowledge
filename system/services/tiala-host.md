@@ -1,10 +1,10 @@
 ---
 type: Service
 title: TIALA host (Mac mini) — launchd job inventory
-description: The always-on TIALA Mac mini's launchd job inventory after the 2026-10-22 cleanup — active bridge/Ollama/OpenClaw/observability agents, OpenClaw cron jobs, the jobs disabled that day, the netdata log fix, and open security/maintenance items.
+description: The always-on TIALA Mac mini's launchd job inventory after the 2026-10-22 cleanup — active bridge/Ollama/OpenClaw/observability agents, OpenClaw cron jobs, the jobs disabled that day, the netdata log fix, the 2026-11-08 OpenClaw Gateway outage, OpenClaw paired devices, and open security/maintenance items.
 lilith_safe: false
 status: draft
-generated: { by: claude/cloud, at: 2026-10-27T07:55:00Z }
+generated: { by: claude/cloud, at: 2026-11-09T06:55:00Z }
 stale_after: 2027-01-22T09:30:00Z
 tags: [service, infra, tiala, launchd, ollama, openclaw, netdata, tailscale]
 repo: infra (TIALA Mac mini M4)
@@ -53,7 +53,7 @@ program paths are host-local and intentionally not recorded here.
 | `local.ollama-proxy` | RunAtLoad | The local Host-rewrite proxy in front of Ollama — **no auth**; never in the tunnel path | [cloudflare](cloudflare.md) |
 | `local.ollama-env` | at login | `launchctl setenv OLLAMA_CONTEXT_LENGTH 65536` — host tuning | — |
 | `local.tailscale-funnel` | — | **Disabled 2026-10-23** (unauthenticated publication remediated — see [cloudflare](cloudflare.md); details in magi-core#659) | [cloudflare](cloudflare.md), [aka-memory](aka-memory.md) |
-| `ai.openclaw.gateway` | RunAtLoad | OpenClaw Gateway v2026.6.1 (env wrapper under the OpenClaw service-env dir), running on Homebrew `node@22` — **22.23.4 since 2026-10-27** (Oct 2026 Node.js security release; was 22.22.0). Models (Jun 2026-10-27): primary `google/gemini-3.8-flash`, fallback `google/gemini-3.5-flash-lite` — replaced primary `sakana/fugu` (Sakana retired) and fallback `google/gemini-2.5-flash` (2.5 series being shut down); the `sakana` provider block is removed from `openclaw.json` and the agent `models.json` | [aka-memory](aka-memory.md), [cloudflare](cloudflare.md) |
+| `ai.openclaw.gateway` | RunAtLoad | OpenClaw Gateway, port 18789, `bind=lan`, config `openclaw.json` in the OpenClaw state dir. **As of 2026-11-09** (observed on host): the OpenClaw CLI reports **v2026.11.1** (`4ffdd20`; was v2026.6.1 on 2026-11-08) and the service command is Homebrew **`node`** (unversioned formula; the CLI resolved it to 26.12.1) with `--max-old-space-size=8192` — the explicit `node@22` path is gone (node@22 22.23.4 is still installed but unused by the Gateway). The version of the running Gateway process itself was not queried separately. History: `node@22` 22.23.4 from 2026-10-27 (was 22.22.0). `gateway.mode` must stay `local` — see *Incident 2026-11-08* below. Models (Jun 2026-10-27; not re-verified on 2026-11-09): primary `google/gemini-3.8-flash`, fallback `google/gemini-3.5-flash-lite` — replaced primary `sakana/fugu` (Sakana retired) and fallback `google/gemini-2.5-flash` (2.5 series being shut down); the `sakana` provider block is removed from `openclaw.json` and the agent `models.json` | [aka-memory](aka-memory.md), [cloudflare](cloudflare.md) |
 | `com.openclaw.gcs-memory-sync` | daily 21:00 JST | AKA memory backup → `gs://screen-share-459802-memory`; last run 2026-10-21 21:00:11 JST ok (86 objects) | [aka-memory](aka-memory.md) |
 | `com.openclaw.memory-sync` | daily 22:30 JST | AKA memory backup → SSD + Drive. **Known problem**: launchd rsync to the external SSD fails `Operation not permitted` (macOS TCC); ends `status=1` — see [aka-memory](aka-memory.md) | [aka-memory](aka-memory.md) |
 | `local.ttyd` | RunAtLoad | The web terminal — **loopback-only since 2026-10-23** (Jun changed the bind; verified on host) and published tailnet-only via an intentional `tailscale serve` entry (not Funnel). basic-auth credential still embedded in the LaunchAgent — see open items | [aka-memory](aka-memory.md) |
@@ -151,7 +151,59 @@ Telegram ALERT delivery for the same two conditions comes from the
 [tiala_host_checks](/system/echidna-tables/tiala-host-checks.md)) — Grafana routing itself only has the
 GCP-Alerts-email receiver today (magi-core#669).
 
+# Incident 2026-11-08 — OpenClaw Gateway down (`openclaw.khaos.company` 502)
+
+Observed on the host by Jun with Claude (2026-11-08 / 11-09); root cause
+traced by a local CLI agent from the config audit log. Read-only
+investigation except the one recovery write noted below.
+
+| Time (JST) | Event |
+|---|---|
+| 17:20:25 | `gateway.mode` written `local` → `remote`. Config audit: `event=config.write`, `source=macos-openclaw-config-file`, writer = the OpenClaw macOS app (`/Applications/OpenClaw.app`), no device id (direct file write, not a WS/RPC client), `suspicious=[]`. |
+| 17:20:26 | Gateway hot-reload detected the change (`meta.lastTouchedVersion, meta.lastTouchedAt, gateway.mode`) → SIGUSR1 → full process restart. |
+| 17:20:29 → 17:29 | Every launchd restart (~10.6 s apart) exited **78** with `Gateway start blocked: set gateway.mode=local (current: remote) or pass --allow-unconfigured.` Port 18789 not listening. `openclaw config validate` still reported the file valid (the value, not the schema, blocks start). |
+| from 17:21:37 | `magi-openclaw` cloudflared stayed healthy and logged `dial tcp [::1]:18789: connect: connection refused` → Cloudflare 502 for `/` and `/health`. |
+| 17:29:03 | Recovery (Jun-approved): `openclaw config set gateway.mode local` — the value in the `.bak` copy. No other config, channel, cron, model or LaunchAgent change. Gateway came back; local and public `/health` → `{"ok":true,"status":"live"}` HTTP 200. |
+
+Notes:
+
+* **Probable trigger (not proven)**: the macOS app's connection screen
+  offers *Remote connection* (gateway token, SSH tunnel / Direct ws/wss);
+  choosing Remote on TIALA — where the Gateway runs locally — writes
+  `gateway.mode=remote`. Two Gateway SIGTERMs at 17:19:31 / 17:19:44 and
+  the app's Sparkle updater were active just before; what made the app
+  write the value is not recorded in the Gateway logs. Rule: on TIALA the
+  app stays on the local Gateway; Remote is only for a different client
+  machine.
+* **No paired device was involved**: the three Devin Discord devices were
+  approved 20–39 min after the write; a Devin connection at 17:15 had been
+  rejected as not-paired. Devin's own operation log for 17:10–17:30 shows
+  no config write.
+* **Diagnostics gap**: the LaunchAgent sends stderr to `/dev/null`, so the
+  start-blocked message never reached a log file; it was only visible by
+  running the service command once in the foreground.
+
+# OpenClaw paired devices (2026-11-09)
+
+After the incident, `openclaw devices list` (Device IDs shortened here):
+`Devin Discord migration` (`32fa40a9…`, operator — read/write/admin,
+approved by Jun 2026-11-08 17:42 JST; this is the operator device of
+[discord-migration](discord-migration.md) step 7), `JunのMac mini`
+(`2c37b6ea…`, node), `cli` (`06d7b04c…`, operator incl. approvals /
+pairing / talk.secrets, since 2026-07-30). Two further operator devices
+named `Devin Discord config write` (approved by Jun 17:57 / 17:59 JST on
+2026-11-08) were removed by Jun with `openclaw devices remove` on
+2026-11-09. Never use `openclaw devices clear` (drops every pairing).
+
 # Open items (NEEDS_JUN_DECISION)
+
+* **OpenClaw Gateway stderr discarded**: `ai.openclaw.gateway` has
+  `StandardErrorPath=/dev/null` — start-up failures (such as the
+  2026-11-08 `gateway.mode` block) leave no log. Redirect to a file
+  (LaunchAgent change — Jun's).
+* **`magi-openclaw` cloudflared outdated**: 2026-11-08 warning
+  `version 2026.10.3 is outdated … 2026.10.7`. Not related to the
+  incident.
 
 * **Tailscale Funnel Ollama exposure — remediated 2026-10-23** by
   disabling the Tailscale Funnel publication (LaunchAgent archived); the

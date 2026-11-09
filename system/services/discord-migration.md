@@ -220,6 +220,12 @@ Jun must review this safety/availability trade-off before enabling operations.
    unresolved model identifiers with Jun before changing models. Configure Jun-only
    Discord access through the approved device. Verify a conversation, agent identity,
    memory recall and a scheduled announcement against the preserved workspace.
+   *Status 2026-11-09:* the operator device `Devin Discord migration` is paired
+   (approved by Jun 2026-11-08 17:42 JST); two extra `Devin Discord config write`
+   devices were removed by Jun on 2026-11-09. The remaining checks in this step
+   are not yet recorded. A Discord send test from the `aka` Bot via the Discord
+   API (not through OpenClaw) reached Jun on 2026-11-08; it proves only the send
+   path. Details and the 2026-11-08 Gateway outage: [tiala-host](tiala-host.md).
 8. Enumerate **live** OpenClaw cron destinations and TIALA LaunchAgents. The existing
    `aka-memory` and `tiala-host` draft descriptions are hypotheses, not proof of live
    Telegram producers. Never commit keys.
