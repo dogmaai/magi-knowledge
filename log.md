@@ -1,5 +1,33 @@
 # Bundle Update Log
 
+## 2026-11-09 (OpenClaw Gateway outage, runtime and paired devices on TIALA)
+* **Incident (2026-11-08 17:20–17:29 JST)**: `openclaw.khaos.company` returned
+  Cloudflare 502. The OpenClaw macOS app wrote `gateway.mode=remote` (config
+  audit `source=macos-openclaw-config-file`); the Gateway then refused to start
+  (`Gateway start blocked: set gateway.mode=local (current: remote)`, exit 78
+  in a launchd loop) while the `magi-openclaw` tunnel stayed up. Recovered with
+  Jun's approval by `openclaw config set gateway.mode local` only. Recorded in
+  `system/services/tiala-host.md` (draft) with the timeline, the probable
+  trigger (app Remote connection screen — not proven) and the stderr gap.
+* **Drift corrected (observed on host 2026-11-09)**: the `ai.openclaw.gateway`
+  row said v2026.6.1 on `node@22`; the CLI now reports v2026.11.1 and the
+  service command uses the unversioned Homebrew `node` formula (the CLI
+  resolved it to 26.12.1; the running Gateway process's Node and OpenClaw
+  versions were not queried separately) with `--max-old-space-size=8192`.
+  Models were not re-verified.
+* **Devices**: operator device `Devin Discord migration` paired (Jun,
+  2026-11-08); two `Devin Discord config write` devices removed by Jun on
+  2026-11-09. Status line added to `discord-migration.md` step 7 (draft).
+* **Open items added**: Gateway LaunchAgent stderr goes to `/dev/null`;
+  `magi-openclaw` cloudflared 2026.10.3 flagged outdated; Gateway on the
+  unversioned `node` formula (pin target is Jun's decision — `node@22` fails
+  OpenClaw v2026.11.1's runtime admission).
+* **Public-repo rule**: Gateway listener port / bind details are not recorded
+  here (COLLABORATION.md writing rules); host-private details belong in magi-core#662.
+* **Scope**: host-ops records only — no service, guard, table, scheduler,
+  trading or LILITH boundary change; both concepts stay `draft`, no
+  `verified` entry added. Base `11c412ef5730a0832316befdece50e6beed74b29`.
+
 ## 2026-11-09 (Discord migration follow-up decisions)
 * **Jun's decisions (Claude session)**: magi-moni runs with
   `--max-instances 1` so process-local pending approvals are not routed to
