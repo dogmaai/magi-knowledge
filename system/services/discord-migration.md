@@ -50,9 +50,19 @@ rest of this draft has been updated to match them.
    the Discord secrets (gate 2 below), and the option-A tests run
    immediately after that deployment.
 
-Open, not decided here: whether magi-moni is pinned to one Cloud Run
-instance or given a shared approval store (see the process-local trade-off
-below).
+Further decisions (Jun, 2026-11-09, Claude session):
+
+5. **magi-moni runs as a single Cloud Run instance** (`--max-instances 1`) so
+   pending approvals stay process-local without a shared store. A deployment
+   or restart still drops pending approvals (fail closed); request again.
+6. **`scripts/operate-tiala.js` becomes read-only** (status and screenshot).
+   Its restart, command and GUI operations are removed; TIALA mutations go
+   only through Discord with Jun's confirmation button.
+7. **OpenClaw's Telegram channel is retired too** (decision 1 covers it): it
+   switches to Discord in one step, with no parallel period.
+
+A magi-moni reply produced outside a Discord interaction is dropped, never
+sent to the notification webhook, so operator-only content cannot leak there.
 
 ## Revisions referenced
 
@@ -135,7 +145,9 @@ finish, including after headers are flushed; work must not depend on Cloud Run
 CPU after the response ends. `/report` calls the existing daily report generator.
 Concurrent
 button presses consume the local pending entry once. Restart, deployment, expiry
-or routing the click to another instance fails closed. A replacement operation
+or routing the click to another instance fails closed; decision 5 pins
+magi-moni to one instance so routing elsewhere does not occur in normal
+operation. A replacement operation
 must be requested explicitly after checking actual state; never auto-retry a
 mutation after an uncertain result. This is not broker exactly-once execution.
 Jun must review this safety/availability trade-off before enabling operations.
@@ -152,7 +164,9 @@ Jun must review this safety/availability trade-off before enabling operations.
   without splitting surrogate pairs. Preserve escaped data when removing the
   Telegram formatting subset. Treat any rejected/timed-out chunk as failure.
 - Core categories and default suppression remain unchanged.
-  `NOTIFICATION_MUTED_CATEGORIES` overrides `TELEGRAM_MUTED_CATEGORIES`.
+  `NOTIFICATION_MUTED_CATEGORIES` is the only mute setting (default `TRADE,OPS`);
+  the cleanup PRs remove `TELEGRAM_MUTED_CATEGORIES` and move its production
+  values to the new name.
   Monitoring cooldown/deduplication behavior must remain unchanged.
 - Migrate shared JavaScript callers, watchdog, direct Python Optuna senders,
   daily/weekly reports, bridge down/recovery alerts and host alerts.

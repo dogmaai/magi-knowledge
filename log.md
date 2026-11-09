@@ -1,5 +1,14 @@
 # Bundle Update Log
 
+## 2026-11-09 (Discord migration follow-up decisions)
+* **Jun's decisions (Claude session)**: magi-moni runs with
+  `--max-instances 1` so process-local pending approvals are not routed to
+  another instance; `magi-moni/scripts/operate-tiala.js` keeps only status and
+  screenshot (mutating operations removed); OpenClaw's Telegram channel is
+  retired with the rest (no parallel period). Recorded in
+  `system/services/discord-migration.md` (draft). Implementation lands in
+  magi-moni#58/#59; not yet deployed.
+
 ## 2026-11-08 (Telegram to Discord staged migration)
 * **Jun's decisions (2026-11-08, Claude session)**: retire every Telegram
   route; Discord is the only channel; no parallel operation, so state C
