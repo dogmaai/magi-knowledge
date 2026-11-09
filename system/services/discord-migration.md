@@ -4,7 +4,7 @@ title: Telegram to Discord staged migration
 description: Cutover, acceptance, rollback and retirement gates for OpenClaw and MAGI communications.
 lilith_safe: false
 status: draft
-generated: { by: claude/cloud, at: 2026-11-08T12:45:00Z }
+generated: { by: claude/cloud, at: 2026-11-09T07:25:00Z }
 tags: [discord, telegram, migration, operations, aka-1]
 ---
 

@@ -11,13 +11,19 @@
   trigger (app Remote connection screen — not proven) and the stderr gap.
 * **Drift corrected (observed on host 2026-11-09)**: the `ai.openclaw.gateway`
   row said v2026.6.1 on `node@22`; the CLI now reports v2026.11.1 and the
-  service runs on Homebrew `node` (26.12.1) with `--max-old-space-size=8192`.
+  service command uses the unversioned Homebrew `node` formula (the CLI
+  resolved it to 26.12.1; the running Gateway process's Node and OpenClaw
+  versions were not queried separately) with `--max-old-space-size=8192`.
   Models were not re-verified.
 * **Devices**: operator device `Devin Discord migration` paired (Jun,
   2026-11-08); two `Devin Discord config write` devices removed by Jun on
   2026-11-09. Status line added to `discord-migration.md` step 7 (draft).
 * **Open items added**: Gateway LaunchAgent stderr goes to `/dev/null`;
-  `magi-openclaw` cloudflared 2026.10.3 flagged outdated.
+  `magi-openclaw` cloudflared 2026.10.3 flagged outdated; Gateway on the
+  unversioned `node` formula (pin target is Jun's decision — `node@22` fails
+  OpenClaw v2026.11.1's runtime admission).
+* **Public-repo rule**: Gateway listener port / bind details are not recorded
+  here (COLLABORATION.md writing rules); host-private details belong in magi-core#662.
 * **Scope**: host-ops records only — no service, guard, table, scheduler,
   trading or LILITH boundary change; both concepts stay `draft`, no
   `verified` entry added. Base `11c412ef5730a0832316befdece50e6beed74b29`.

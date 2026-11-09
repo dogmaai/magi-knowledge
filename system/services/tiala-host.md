@@ -53,7 +53,7 @@ program paths are host-local and intentionally not recorded here.
 | `local.ollama-proxy` | RunAtLoad | The local Host-rewrite proxy in front of Ollama — **no auth**; never in the tunnel path | [cloudflare](cloudflare.md) |
 | `local.ollama-env` | at login | `launchctl setenv OLLAMA_CONTEXT_LENGTH 65536` — host tuning | — |
 | `local.tailscale-funnel` | — | **Disabled 2026-10-23** (unauthenticated publication remediated — see [cloudflare](cloudflare.md); details in magi-core#659) | [cloudflare](cloudflare.md), [aka-memory](aka-memory.md) |
-| `ai.openclaw.gateway` | RunAtLoad | OpenClaw Gateway, port 18789, `bind=lan`, config `openclaw.json` in the OpenClaw state dir. **As of 2026-11-09** (observed on host): the OpenClaw CLI reports **v2026.11.1** (`4ffdd20`; was v2026.6.1 on 2026-11-08) and the service command is Homebrew **`node`** (unversioned formula; the CLI resolved it to 26.12.1) with `--max-old-space-size=8192` — the explicit `node@22` path is gone (node@22 22.23.4 is still installed but unused by the Gateway). The version of the running Gateway process itself was not queried separately. History: `node@22` 22.23.4 from 2026-10-27 (was 22.22.0). `gateway.mode` must stay `local` — see *Incident 2026-11-08* below. Models (Jun 2026-10-27; not re-verified on 2026-11-09): primary `google/gemini-3.8-flash`, fallback `google/gemini-3.5-flash-lite` — replaced primary `sakana/fugu` (Sakana retired) and fallback `google/gemini-2.5-flash` (2.5 series being shut down); the `sakana` provider block is removed from `openclaw.json` and the agent `models.json` | [aka-memory](aka-memory.md), [cloudflare](cloudflare.md) |
+| `ai.openclaw.gateway` | RunAtLoad | OpenClaw Gateway (listener port/bind omitted under the public-repo writing rules; host-private details belong in magi-core#662), config `openclaw.json` in the OpenClaw state dir. **As of 2026-11-09** (observed on host): the OpenClaw CLI reports **v2026.11.1** (`4ffdd20`; was v2026.6.1 on 2026-11-08) and the service command is Homebrew **`node`** (unversioned formula; the CLI resolved it to 26.12.1) with `--max-old-space-size=8192` — the explicit `node@22` path is gone (node@22 22.23.4 is still installed but unused by the Gateway). The version of the running Gateway process itself was not queried separately. History: `node@22` 22.23.4 from 2026-10-27 (was 22.22.0). `gateway.mode` must stay `local` — see *Incident 2026-11-08* below. Models (Jun 2026-10-27; not re-verified on 2026-11-09): primary `google/gemini-3.8-flash`, fallback `google/gemini-3.5-flash-lite` — replaced primary `sakana/fugu` (Sakana retired) and fallback `google/gemini-2.5-flash` (2.5 series being shut down); the `sakana` provider block is removed from `openclaw.json` and the agent `models.json` | [aka-memory](aka-memory.md), [cloudflare](cloudflare.md) |
 | `com.openclaw.gcs-memory-sync` | daily 21:00 JST | AKA memory backup → `gs://screen-share-459802-memory`; last run 2026-10-21 21:00:11 JST ok (86 objects) | [aka-memory](aka-memory.md) |
 | `com.openclaw.memory-sync` | daily 22:30 JST | AKA memory backup → SSD + Drive. **Known problem**: launchd rsync to the external SSD fails `Operation not permitted` (macOS TCC); ends `status=1` — see [aka-memory](aka-memory.md) | [aka-memory](aka-memory.md) |
 | `local.ttyd` | RunAtLoad | The web terminal — **loopback-only since 2026-10-23** (Jun changed the bind; verified on host) and published tailnet-only via an intentional `tailscale serve` entry (not Funnel). basic-auth credential still embedded in the LaunchAgent — see open items | [aka-memory](aka-memory.md) |
@@ -161,8 +161,8 @@ investigation except the one recovery write noted below.
 |---|---|
 | 17:20:25 | `gateway.mode` written `local` → `remote`. Config audit: `event=config.write`, `source=macos-openclaw-config-file`, writer = the OpenClaw macOS app (`/Applications/OpenClaw.app`), no device id (direct file write, not a WS/RPC client), `suspicious=[]`. |
 | 17:20:26 | Gateway hot-reload detected the change (`meta.lastTouchedVersion, meta.lastTouchedAt, gateway.mode`) → SIGUSR1 → full process restart. |
-| 17:20:29 → 17:29 | Every launchd restart (~10.6 s apart) exited **78** with `Gateway start blocked: set gateway.mode=local (current: remote) or pass --allow-unconfigured.` Port 18789 not listening. `openclaw config validate` still reported the file valid (the value, not the schema, blocks start). |
-| from 17:21:37 | `magi-openclaw` cloudflared stayed healthy and logged `dial tcp [::1]:18789: connect: connection refused` → Cloudflare 502 for `/` and `/health`. |
+| 17:20:29 → 17:29 | Every launchd restart (~10.6 s apart) exited **78** with `Gateway start blocked: set gateway.mode=local (current: remote) or pass --allow-unconfigured.` Gateway port not listening. `openclaw config validate` still reported the file valid (the value, not the schema, blocks start). |
+| from 17:21:37 | `magi-openclaw` cloudflared stayed healthy and logged `dial tcp <origin>: connect: connection refused` (origin = the local Gateway) → Cloudflare 502 for `/` and `/health`. |
 | 17:29:03 | Recovery (Jun-approved): `openclaw config set gateway.mode local` — the value in the `.bak` copy. No other config, channel, cron, model or LaunchAgent change. Gateway came back; local and public `/health` → `{"ok":true,"status":"live"}` HTTP 200. |
 
 Notes:
@@ -204,6 +204,13 @@ named `Devin Discord config write` (approved by Jun 17:57 / 17:59 JST on
 * **`magi-openclaw` cloudflared outdated**: 2026-11-08 warning
   `version 2026.10.3 is outdated … 2026.10.7`. Not related to the
   incident.
+* **Gateway on an unversioned Node formula**: since the 2026-11-09
+  observation the service command uses Homebrew `node` (not a versioned
+  formula), so a routine `brew upgrade` can change the Gateway's Node major
+  version. Pinning back to `node@22` is not an option as-is: the OpenClaw
+  v2026.11.1 CLI rejected `node@22` (`current Node failed runtime
+  admission`) and retried on `node`. Whether to pin a newer versioned
+  formula, and which, is Jun's decision.
 
 * **Tailscale Funnel Ollama exposure — remediated 2026-10-23** by
   disabling the Tailscale Funnel publication (LaunchAgent archived); the
