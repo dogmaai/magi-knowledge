@@ -82,9 +82,12 @@ applied for now"); the notification does not propose a cohort split.
 
 **Open items (Jun):**
 
-* Grant the job's runtime service account `run.jobs.list` /
-  `run.services.list` (e.g. `roles/run.viewer`) — without it the monitor
-  falls back to `config.js` defaults.
+* Cloud Run listing permission: no grant needed — the default compute
+  service account already holds `roles/run.developer`, which covers
+  `run.jobs.list` / `run.services.list` (checked by Jun 2026-11-09). That the
+  job actually runs as that account (no `--service-account` in deploy.yml)
+  is to be confirmed on the first execution. Without listing permission the
+  monitor falls back to `config.js` defaults.
 * Apply the DDL; merge order relative to magi-core#708/#710 (notification).
 * Coverage outside this GCP project/region is not reached: magi-moni
   (AKA-1) only if deployed in the listed region, OpenClaw models on TIALA,

@@ -16,9 +16,11 @@
   (base `84ab0a0f4c3111d04d234a0da490541f8e9675db`, knowledge pin
   `437d1d68a7f0f157ff88180ba9be721025760f37`) — `model-lifecycle-monitor.js`,
   `lib/model-lifecycle.js`, tests, `sql/create_llm_lifecycle_checks.sql`, and
-  a deploy.yml job + daily scheduler. Not merged, not deployed; DDL, IAM
-  (`run.jobs.list` / `run.services.list` for the runtime SA) and deployment
-  are Jun's.
+  a deploy.yml job + daily scheduler. Not merged, not deployed; DDL and
+  deployment are Jun's. No IAM grant needed: Jun checked on 2026-11-09 that
+  the default compute service account already holds `roles/run.developer`
+  (covers Cloud Run job/service listing); the job's actual runtime account
+  is confirmed on first execution.
 * **Finding (announcement check, 2026-11-09)**: Moonshot's official Kimi
   API pricing page says K2-series models are unavailable to newly
   registered users from 2026-10-31 and that all K2-series models are
