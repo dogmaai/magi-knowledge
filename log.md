@@ -1,5 +1,45 @@
 # Bundle Update Log
 
+## 2026-11-09 (Model lifecycle monitor proposed; Kimi K2 retirement notice)
+* **Request (Jun, Claude session 2026-11-09)**: build early detection of
+  external LLM model deprecation. Jun's choices: catalog check **plus**
+  announcement-page scan; results in a **new table**; notify through the
+  Discord path (`sendNotification`, magi-core#708/#710); design and code in
+  parallel.
+* **Docs (draft, unverified)**: `system/services/magi-model-health-check.md`
+  gains a *Lifecycle monitor (proposal)* section; new
+  `system/echidna-tables/llm-lifecycle-checks.md` (design only — table not
+  created); `system/echidna-tables/index.md` lists it. No `verified` entry
+  added. `llm_config` is proposal-only: the monitor never writes it and
+  never switches a unit's model.
+* **Implementation draft**: magi-core branch `feat/model-lifecycle-monitor`
+  (base `84ab0a0f4c3111d04d234a0da490541f8e9675db`, knowledge pin
+  `437d1d68a7f0f157ff88180ba9be721025760f37`) — `model-lifecycle-monitor.js`,
+  `lib/model-lifecycle.js`, tests, `sql/create_llm_lifecycle_checks.sql`, and
+  a deploy.yml job + daily scheduler. Not merged, not deployed; DDL and
+  deployment are Jun's. No IAM grant needed: Jun checked on 2026-11-09 that
+  the default compute service account already holds `roles/run.developer`
+  (covers Cloud Run job/service listing); the job's actual runtime account
+  is confirmed on first execution.
+* **Finding (announcement check, 2026-11-09)**: Moonshot's official Kimi
+  API pricing page says K2-series models are unavailable to newly
+  registered users from 2026-10-31 and that all K2-series models are
+  planned to retire by the end of December 2026; no successor is named.
+  TYPHON's request ID `kimi-k2.6` is a K2-series model (the notice names the
+  series, not `kimi-k2.6` itself). Successor choice and timing are Jun's
+  decision; `typhon.md` and `llm_config` are unchanged.
+* **Drift observed (not resolved here)**:
+  * `system/plm-units/index.md` still says a model change on an active unit
+    is a cohort boundary, while `system/constitution/model-cohorting.md`
+    (draft) carries Jun's 2026-11-07 "not applied for now". Which wording
+    `index.md` should carry is Jun's call.
+  * `system/services/magi-core.md` describes `OPENAI_API_KEY` normalization
+    in `lib/secrets.js`; magi-core main `84ab0a0` still exports the raw
+    value (magi-core#707 not merged at that revision).
+* **Scope**: documentation proposal only — no guard, trading path, table,
+  scheduler or LILITH boundary change is live. Base
+  `edb23afca93ddba9fb486351c35d462b8d73c12f`.
+
 ## 2026-11-09 (OpenClaw Gateway outage, runtime and paired devices on TIALA)
 * **Incident (2026-11-08 17:20–17:29 JST)**: `openclaw.khaos.company` returned
   Cloudflare 502. The OpenClaw macOS app wrote `gateway.mode=remote` (config

@@ -58,6 +58,7 @@ Three write-path conventions matter:
 * [system-control](system-control.md) - Global emergency kill-switch state read by L0 and the magi-moomoo order gate.
 * [order-intents](order-intents.md) - Append-only order-intent journal; broker-response-loss recovery via remark-embedded intent ids (R10).
 * [bridge-health-checks](bridge-health-checks.md) - Broker-path liveness log + alert dedupe state for the magi-bridge-monitor job (draft).
+* [llm-lifecycle-checks](llm-lifecycle-checks.md) - Proposed model lifecycle monitor log + notification dedupe state (catalog checks, deprecation-announcement mentions, llm_config proposals) for the magi-model-lifecycle-monitor job (draft — design only, table not created).
 * [tiala-host-checks](tiala-host-checks.md) - TIALA host-metrics liveness log + alert dedupe state for the magi-tiala-host-monitor job (draft — DDL applied by Jun 2026-10-26; job + scheduler deployed 2026-10-26 14:00Z, magi-core `979283f`; first run verified 14:15Z, overall=ok).
 * [data-freshness-expectations](data-freshness-expectations.md) - Proposed staleness thresholds for probe- and session-driven tables (draft proposal).
 * [broker-position-snapshots](broker-position-snapshots.md) - Proposed per-symbol positions snapshot written by the bridge-monitor probe (design only — table not created).
