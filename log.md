@@ -1,5 +1,22 @@
 # Bundle Update Log
 
+## 2026-11-09 (Kimi K3.1 Pro offline analyzer replaces Gemini analyzer / DAPHNE Gemini; SEKHMET causal role reassigned)
+* **Decision (Jun, 2026-11-09)**: a single Kimi K3.1 Pro job `magi-kimi-analyzer`
+  (`kimi-k3.1-pro`, `reasoning_effort=high`, weekdays 22:00 ET) takes over
+  `magi-gemini-analyzer` (generic pattern analysis), DAPHNE's Gemini why-lost
+  narrative / hint rewrites, and the LLM causal-analysis role left unassigned
+  by SEKHMET's retirement. Gemini analyzer and the old DAPHNE job are stopped
+  immediately; comparison uses the existing `gemini-3.8-flash` rows in
+  `gemini_pattern_analysis` / `daphne_loss_analysis` (`model` columns).
+  PLM unit models (TYPHON `kimi-k2.6`, MELCHIOR-1) are unchanged.
+* **Updated**: `system/plm-units/index.md` (causal-analysis ownership),
+  `system/plm-units/melchior-1.md`, `system/services/magi-core.md`,
+  `system/echidna-tables/gemini-pattern-analysis.md`,
+  `system/echidna-tables/daphne-feedback.md`. No table/schema change.
+* **Implementation**: dogmaai/magi-core branch `devin/1794219285-kimi-analyzer`
+  (commit `7a4550375487a3eccdeabd6adec0828cefd35235`). Not deployed; deploy and
+  Kimi account recharge are Jun's. Base OKF `edb23afca93ddba9fb486351c35d462b8d73c12f`.
+
 ## 2026-11-09 (OpenClaw Gateway outage, runtime and paired devices on TIALA)
 * **Incident (2026-11-08 17:20–17:29 JST)**: `openclaw.khaos.company` returned
   Cloudflare 502. The OpenClaw macOS app wrote `gateway.mode=remote` (config

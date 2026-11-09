@@ -13,13 +13,13 @@ dataset: magi_core
 table_type: BASE TABLE
 ---
 
-Output of `magi-daphne-analyzer` (`daphne-analyzer.js`, daily 22:00 ET
+Output of the DAPHNE stage of `magi-kimi-analyzer` (`kimi-analyzer.js`, daily 22:00 ET
 post-close). LOSE trades from the last 90 days are classified into the **LP
 taxonomy in BigQuery SQL** (`REGEXP_CONTAINS`), aggregated per provider, and
 flagged causal / non-causal from the **static `IS_CAUSAL` map** in the job — this
 is rule-based classification, *not* LLM causal inference. LLM causal reasoning
 was assigned to the retired SEKHMET analyzer (deprecated 2026-09-17) and is
-currently unassigned. Gemini via **AI Studio** is used only
+moved to the same job's pattern + causal stage (Jun, 2026-11-09). Kimi K3.1 Pro (`kimi-k3.1-pro`) replaced Gemini and is used only
 to write the why-lost narrative and to rewrite ineffective hints.
 
 **Backend correction (2026-10-29):** the implementation already uses AI Studio;
@@ -52,5 +52,5 @@ implementation or its deployment. The schema and SQL classification are unchange
 
 # Citations
 
-* Producer: `magi-core/daphne-analyzer.js`, `magi-core/lib/daphne-effectiveness.js`.
+* Producer: `magi-core/kimi-analyzer.js`, `magi-core/lib/kimi-analysis.js`, `magi-core/lib/daphne-effectiveness.js` (formerly `magi-daphne-analyzer` / Gemini, retired 2026-11-09).
 * DDL: `magi-core/sql/create_daphne_loss_analysis.sql`, `sql/create_daphne_hint_effectiveness.sql`.

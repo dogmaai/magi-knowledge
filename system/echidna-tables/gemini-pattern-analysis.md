@@ -40,6 +40,10 @@ See [causal analysis ownership](/system/plm-units/index.md#causal-analysis-owner
 
 # Citations
 
-* Producer: `magi-core/jobs/gemini-analyzer/index.js` — Cloud Run job
-  `magi-gemini-analyzer`, Cloud Scheduler `magi-gemini-analyzer-daily`
-  (`0 14 * * 1-5` UTC), AI Studio `gemini-3.8-flash`.
+* Producer (Jun, 2026-11-09): `magi-core/kimi-analyzer.js` pattern + causal stage —
+  Cloud Run job `magi-kimi-analyzer`, Cloud Scheduler `magi-kimi-analyzer-daily`
+  (`0 22 * * 1-5` America/New_York), Kimi `kimi-k3.1-pro` (`reasoning_effort=high`).
+  Rows carry `model_version = kimi-k3.1-pro`; earlier rows (`gemini-3.8-flash`) came
+  from the retired `magi-gemini-analyzer` and are kept for Gemini-vs-Kimi comparison.
+  The table name keeps its historical `gemini_` prefix; `full_analysis` now also
+  contains the time-ordered causal section formerly owned by SEKHMET.

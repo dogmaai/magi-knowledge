@@ -79,7 +79,7 @@ through `thoughts_active` (`trade_mode = 'NORMAL'`).
   `HERMES_GEMINI_MODEL` → `pre_trade_intelligence`); the primary collector is the
   hourly `magi-hermes-refresh` job. See
   [HERMES intelligence stack](/system/services/magi-core.md#hermes-intelligence-stack).
-* Gemini also powers the batch [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md) report (`magi-gemini-analyzer`, Cloud Scheduler `magi-gemini-analyzer-daily`, `0 14 * * 1-5` UTC, AI Studio `gemini-3.8-flash`) — generic WIN/LOSE pattern extraction, not causal analysis.
+* The batch [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md) report moved from Gemini (`magi-gemini-analyzer`, retired) to Kimi K3.1 Pro `magi-kimi-analyzer` (Jun, 2026-11-09); MELCHIOR-1's live trading model is unchanged.
 
 # Trading history & performance
 

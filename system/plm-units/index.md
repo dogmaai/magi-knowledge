@@ -69,9 +69,9 @@ Role boundaries, so the analyzers are not confused with each other:
 
 | Owner | Model / method | Analysis type | Output |
 |---|---|---|---|
-| ~~SEKHMET~~ (`magi-fugu-analyzer`, retired 2026-09-17) | Sakana `fugu-ultra`, `reasoning_effort=high` | ~~**Causal analysis** — sequential/time-ordered causal outcome reasoning~~ — role retired; no LLM causal owner at present | `fugu_sequential_patterns` (deprecated) |
-| [MELCHIOR-1](melchior-1.md) (`magi-gemini-analyzer`) | Gemini (`gemini-3.8-flash`, AI Studio) | **Generic pattern analysis / logical & quantitative analysis** — WIN/LOSE reasoning tendencies. *Not* the causal-analysis owner | [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md) |
-| DAPHNE (`magi-daphne-analyzer`) | BigQuery SQL `REGEXP_CONTAINS` + static `IS_CAUSAL` map (Gemini used only for why-lost narrative / hint rewrites) | **Static causal classification** — LOSE trades into the LP taxonomy, causal vs non-causal by rule | [daphne-feedback](/system/echidna-tables/daphne-feedback.md) |
+| ~~SEKHMET~~ (`magi-fugu-analyzer`, retired 2026-09-17) | Sakana `fugu-ultra`, `reasoning_effort=high` | ~~**Causal analysis** — sequential/time-ordered causal outcome reasoning~~ — role retired; reassigned to `magi-kimi-analyzer` (Jun, 2026-11-09) | `fugu_sequential_patterns` (deprecated) |
+| `magi-kimi-analyzer` pattern + causal stage (Jun, 2026-11-09; replaces `magi-gemini-analyzer`) | Kimi `kimi-k3.1-pro`, `reasoning_effort=high` | **Generic pattern analysis** — WIN/LOSE reasoning tendencies — **and LLM causal analysis** — time-ordered streak / regime-transition reading (former SEKHMET role) | [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md) |
+| DAPHNE (`magi-kimi-analyzer` DAPHNE stage; replaces `magi-daphne-analyzer`) | BigQuery SQL `REGEXP_CONTAINS` + static `IS_CAUSAL` map (Kimi K3.1 Pro used only for why-lost narrative / hint rewrites) | **Static causal classification** — LOSE trades into the LP taxonomy, causal vs non-causal by rule | [daphne-feedback](/system/echidna-tables/daphne-feedback.md) |
 
 # Deprecated units
 
@@ -80,7 +80,7 @@ Role boundaries, so the analyzers are not confused with each other:
 | [ANIMA](anima.md) | groq | DEPRECATED (#157) | [TYPHON](typhon.md) |
 | [ORACLE](oracle.md) | together | DEPRECATED (#139) | — |
 | [ZEROEL](zeroel.md) | xai | RETIRED (cost) | — |
-| SEKHMET | sakana | RETIRED 2026-09-17 (offline analyzer produced no output for 16d; Meta Verifier first run failed, 0 rows) | — (LLM causal analysis unassigned) |
+| SEKHMET | sakana | RETIRED 2026-09-17 (offline analyzer produced no output for 16d; Meta Verifier first run failed, 0 rows) | `magi-kimi-analyzer` (LLM causal analysis, 2026-11-09) |
 | [LILITH](lilith.md) | lilith | RETIRED (inference backend decommissioned) | — |
 | [SOPHIA-5](sophia-5.md) | mistral | RETIRED 2026-09-22 (hosted Mistral slot moved to local BOREAS; provider defaults + surge primary moved to QWEN) | [BOREAS](boreas.md) |
 
