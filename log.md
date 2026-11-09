@@ -16,6 +16,16 @@
 * **Implementation**: dogmaai/magi-core branch `devin/1794219285-kimi-analyzer`
   (commit `7a4550375487a3eccdeabd6adec0828cefd35235`). Not deployed; deploy and
   Kimi account recharge are Jun's. Base OKF `edb23afca93ddba9fb486351c35d462b8d73c12f`.
+* **Review follow-up (Claude, 2026-11-09)**: producer changes are marked
+  effective on merge + deploy of magi-core#713; `gemini-pattern-analysis.md`
+  body/description/model_version aligned with the Kimi producer (stable doc,
+  awaits Jun's re-verification); `daphne-feedback.md` notes Kimi-rewritten
+  hints are prompt-injected and the quota fallback (fix `7aec697` on the
+  magi-core branch); `gemini-ai-studio.md` consumer list and
+  `magi-model-health-check.md` coverage updated. Supersedes the proposal
+  in magi-knowledge#220. `gemini-pattern-analysis.md` and `melchior-1.md`
+  are demoted `stable` → `draft` because their content changed after Jun's
+  last verification; Jun's re-verification restores `stable`.
 
 ## 2026-11-09 (OpenClaw Gateway outage, runtime and paired devices on TIALA)
 * **Incident (2026-11-08 17:20–17:29 JST)**: `openclaw.khaos.company` returned

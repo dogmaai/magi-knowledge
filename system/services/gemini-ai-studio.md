@@ -4,7 +4,7 @@ title: Gemini AI Studio API Policy
 description: AI Studio-only Gemini generation for MAGI research and analysis, with explicit API-key authentication.
 lilith_safe: false
 status: draft
-generated: { by: codex/cloud, at: 2026-10-29T12:02:14Z }
+generated: { by: claude/opus-5-5, at: 2026-11-09T10:50:00Z }
 stale_after: 2027-04-29T12:02:14Z
 tags: [service, gemini, ai-studio, hermes, daphne, analysis]
 repo: dogmaai/magi-core
@@ -62,7 +62,10 @@ implementation base; removing those paths implements Jun's new instruction.
 
 * `magi-core/lib/gemini-api.js` — shared AI Studio connection settings.
 * `magi-core/src/hermes.js` — macro grounding and news analysis.
-* `magi-core/daphne-analyzer.js` — loss narrative and hint generation.
-* `magi-core/jobs/gemini-analyzer/` — pattern analysis and bounded retries.
+* ~~`magi-core/daphne-analyzer.js` — loss narrative and hint generation.~~
+  Moved to Kimi K3.1 Pro (`kimi-analyzer.js`, magi-core#713, Jun 2026-11-09).
+* ~~`magi-core/jobs/gemini-analyzer/` — pattern analysis and bounded retries.~~
+  Removed in magi-core#713; historical rows stay in
+  [Gemini pattern analysis](/system/echidna-tables/gemini-pattern-analysis.md).
 * [magi-core](magi-core.md),
   [Gemini pattern analysis](/system/echidna-tables/gemini-pattern-analysis.md).
