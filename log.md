@@ -1,5 +1,22 @@
 # Bundle Update Log
 
+## 2026-11-09 (Proposal: Kimi K3.1 Pro outcome analyzer replacing magi-gemini-analyzer)
+* **Jun's decision (Claude session)**: consolidate offline LLM trade-outcome
+  analysis into one Kimi K3.1 Pro analyzer that takes over MELCHIOR-1's
+  generic WIN/LOSE pattern role (`magi-gemini-analyzer`) and the LLM causal
+  role vacant since SEKHMET's retirement. TYPHON (live voter, `kimi-k2.6`)
+  is unchanged; DAPHNE keeps the only prompt-hint path.
+* **Docs**: new `system/services/magi-outcome-analyzer.md` (draft, proposal
+  only — provisional job/table names, schema, SEKHMET-derived fail-loud and
+  freshness guardrails, cutover plan, open decisions); planned-change note in
+  `system/plm-units/index.md` causal-analysis ownership; row in
+  `system/services/index.md`. Stable MELCHIOR-1 / gemini-pattern-analysis
+  docs are untouched until cutover.
+* **Not verified**: magi-core was unreadable from the session (private repo),
+  so the current gemini-analyzer code, Kimi secret name and model ids were
+  not checked against implementation. No GCP change. Base
+  `edb23afca93ddba9fb486351c35d462b8d73c12f`.
+
 ## 2026-11-09 (OpenClaw Gateway outage, runtime and paired devices on TIALA)
 * **Incident (2026-11-08 17:20–17:29 JST)**: `openclaw.khaos.company` returned
   Cloudflare 502. The OpenClaw macOS app wrote `gateway.mode=remote` (config

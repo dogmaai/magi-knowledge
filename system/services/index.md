@@ -18,6 +18,7 @@ callers don't hard-code endpoints.
 | [aka-memory](aka-memory.md) | dogmaai/magi-moni | AKA long-term memory on TIALA + daily GCS backup. |
 | [magi-deep-research](magi-deep-research.md) | Devin Automation + `magi-core/scripts/upload-deep-research.mjs` (`dogmaai/magi-deep-research` repo deleted 2026-10-07) | Weekday daily Deep Research brief via Devin Automation. |
 | [magi-model-health-check](magi-model-health-check.md) | `dogmaai/magi-core` (`magi-llm-health-monitor` Cloud Run job, `health-monitor.js` — no standalone repo) | Periodic provider/model health checks. |
+| [magi-outcome-analyzer](magi-outcome-analyzer.md) | `dogmaai/magi-core` (proposed Cloud Run job — **not implemented**) | PROPOSED (Jun 2026-11-09): single Kimi K3.1 Pro trade-outcome analyzer merging generic WIN/LOSE patterns and causal analysis; replaces `magi-gemini-analyzer` at cutover. |
 
 # Retired
 

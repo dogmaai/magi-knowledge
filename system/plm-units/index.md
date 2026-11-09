@@ -67,6 +67,12 @@ None currently — the SEKHMET offline analyzer was retired on 2026-09-17 (see
 
 Role boundaries, so the analyzers are not confused with each other:
 
+> **Planned change (Jun 2026-11-09, not implemented):** the generic pattern
+> role below and the vacant LLM causal role are to be merged into one Kimi
+> K3.1 Pro analyzer — see the draft
+> [magi-outcome-analyzer](/system/services/magi-outcome-analyzer.md). Until
+> cutover, the table below describes current state.
+
 | Owner | Model / method | Analysis type | Output |
 |---|---|---|---|
 | ~~SEKHMET~~ (`magi-fugu-analyzer`, retired 2026-09-17) | Sakana `fugu-ultra`, `reasoning_effort=high` | ~~**Causal analysis** — sequential/time-ordered causal outcome reasoning~~ — role retired; no LLM causal owner at present | `fugu_sequential_patterns` (deprecated) |
