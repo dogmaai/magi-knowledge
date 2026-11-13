@@ -1,5 +1,17 @@
 # Bundle Update Log
 
+## 2026-11-13 (HERMES presentation experiment pointer)
+* **Pointer**: `system/services/magi-core.md` gains an unverified
+  "HERMES presentation experiment pointer" section for
+  dogmaai/magi-core#720 (merged as `0589455`; deployment not yet confirmed): a per-session `v2` / `legacy` / `off`
+  split of the `[HERMES:BRAVE]` prompt block, controlled by
+  `HERMES_VARIANT_WEIGHTS`. The pointer stays **outside the existing
+  `verified` records**; the verified HERMES stack text is the baseline until
+  Jun re-verifies it.
+* **Scope**: documentation only; no `verified` entry added, no status change,
+  no schema/guard/trading/LILITH change, consumer pins not advanced. Base
+  `d06bb9761172384f17f043d9717f80e51bd5466b`.
+
 ## 2026-11-13 (Kimi analyzer documentation review follow-up)
 * **Gemini policy scope**: `system/services/gemini-ai-studio.md` now labels
   the old analyzer consumers, failure behavior and model selectors as the
@@ -19,7 +31,6 @@
   (no pin); implementation magi-core `5e31e197a41d266a1f20955ed34e21e942a12ac2`
   (OKF pin `437d1d68a7f0f157ff88180ba9be721025760f37`). Documentation only;
   no deployment, PLM model, guard, table/schema or LILITH boundary change.
-
 ## 2026-11-13 (Discord cutover reflected in concepts)
 * **Docs**: `system/services/discord-migration.md` (draft) gains a
   "Live status (2026-11-13)" section — state B deployed, gate-by-gate status
