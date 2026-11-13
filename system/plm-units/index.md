@@ -67,6 +67,12 @@ None currently — the SEKHMET offline analyzer was retired on 2026-09-17 (see
 
 Role boundaries, so the analyzers are not confused with each other:
 
+The Kimi ownership below records Jun's 2026-11-09 assignment decision. The
+replacement becomes operational only on Jun-approved merge + deploy of
+[magi-core#713](https://github.com/dogmaai/magi-core/pull/713). Until that
+cutover, the LLM causal-analysis role remains without an active owner;
+the Gemini pattern analyzer and DAPHNE retain their pre-cutover roles.
+
 | Owner | Model / method | Analysis type | Output |
 |---|---|---|---|
 | ~~SEKHMET~~ (`magi-fugu-analyzer`, retired 2026-09-17) | Sakana `fugu-ultra`, `reasoning_effort=high` | ~~**Causal analysis** — sequential/time-ordered causal outcome reasoning~~ — role retired; reassigned to `magi-kimi-analyzer` (Jun, 2026-11-09) | `fugu_sequential_patterns` (deprecated) |
@@ -80,7 +86,7 @@ Role boundaries, so the analyzers are not confused with each other:
 | [ANIMA](anima.md) | groq | DEPRECATED (#157) | [TYPHON](typhon.md) |
 | [ORACLE](oracle.md) | together | DEPRECATED (#139) | — |
 | [ZEROEL](zeroel.md) | xai | RETIRED (cost) | — |
-| SEKHMET | sakana | RETIRED 2026-09-17 (offline analyzer produced no output for 16d; Meta Verifier first run failed, 0 rows) | `magi-kimi-analyzer` (LLM causal analysis, 2026-11-09) |
+| SEKHMET | sakana | RETIRED 2026-09-17 (offline analyzer produced no output for 16d; Meta Verifier first run failed, 0 rows) | `magi-kimi-analyzer` (LLM causal analysis, assigned 2026-11-09; effective on magi-core#713 merge + deploy) |
 | [LILITH](lilith.md) | lilith | RETIRED (inference backend decommissioned) | — |
 | [SOPHIA-5](sophia-5.md) | mistral | RETIRED 2026-09-22 (hosted Mistral slot moved to local BOREAS; provider defaults + surge primary moved to QWEN) | [BOREAS](boreas.md) |
 

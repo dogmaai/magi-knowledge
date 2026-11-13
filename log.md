@@ -1,6 +1,11 @@
 # Bundle Update Log
 
 ## 2026-11-13 (Kimi analyzer documentation review follow-up)
+* **Causal ownership**: MELCHIOR-1's overview and the PLM registry now separate
+  Jun's Kimi assignment decision from operation after magi-core#713 merge +
+  deploy. MELCHIOR-1 is not the causal owner; the pre-cutover LLM vacancy is
+  historical context, not a denial of the planned Kimi assignment. Its PLM
+  model and SHADOW behavior are unchanged.
 * **Verification scope**: `system/services/magi-core.md` is now `draft`, with
   `generated` refreshed and historical human verification retained. Its Kimi
   job row is explicitly a planned replacement effective only on Jun-approved
