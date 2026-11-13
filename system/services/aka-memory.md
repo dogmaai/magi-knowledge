@@ -167,3 +167,28 @@ its inventory still requires live re-verification before retirement work.
 own notifications and AKA-1 moved to Discord on 2026-11-12/13 and MAGI's
 Telegram secrets are deleted; see the [migration plan's live status](discord-migration.md#live-status-2026-11-13).
 OpenClaw's Telegram channel and the TIALA producers described here are gates 7–8 and are **still open**, so this concept's Telegram wording for OpenClaw remains the current state until those gates pass. This pointer authorizes no configuration change or deletion.
+
+## Status 2026-11-13 (unverified)
+
+Recorded by claude/cloud from a read-only TIALA check on 2026-11-13: the
+`save-daily-chat-log`, `daily-memory-update` and `546ad7e7` crons have been
+disabled since 2026-11-08 after failing daily from about 2026-10-27 (the
+scheduled model is not allowed by the agent's model policy). The latest chat
+log is from 2026-10-26, so the daily memory pipeline described above is
+currently **not running**; restoring it is part of gate 7 in
+[discord-migration](discord-migration.md). Later the same day (Jun-approved)
+the model policy and cron bindings were fixed, the crons now report to Jun's
+Discord DM, and the backup cron `546ad7e7` passed a manual run and was
+re-enabled; the chat-log and memory-update crons are verified at their
+scheduled times. **Chat-log pipeline broken by OpenClaw 2026.11.1**: since
+the 2026-11-08 upgrade OpenClaw stores session transcripts in its agent
+SQLite database instead of per-session JSONL files, so
+`save_chat_log_runner.py` finds no sessions and writes empty stubs (a
+backfill attempt for 2026-10-27 – 11-12 produced only stubs, which Jun had
+deleted). `save-daily-chat-log` and `daily-memory-update` were disabled
+again pending a runner change (the latter has no input without chat logs);
+the backup cron stays enabled. For 2026-10-27 – 11-07 the archived session
+files hold only three conversational messages (11-03, 11-04), so the gap
+reflects little activity rather than lost transcripts. OpenClaw's Memory Dreaming job, which would rewrite
+`MEMORY.md` from a scheduled turn, was disabled. Details:
+[tiala-host](tiala-host.md#changes-2026-11-13-jun-approved-tiala-claude-cli).
