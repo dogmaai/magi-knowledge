@@ -8,8 +8,12 @@
   2026-11-12 17:08 JST (close code 4004, invalid token). Most likely `aka`'s
   bot token was reset during the 2026-11-12 MAGI Ops correction, while `aka`
   was still the only application — an agent-guided step. This explains the
-  unanswered `aka` `/help`. Recovery (new `aka` token in OpenClaw, Discord
-  owner allowlist) is gate 7 and Jun's operation.
+  unanswered `aka` `/help`. Recovered the same morning (Jun-approved,
+  TIALA CLI): Jun re-issued `aka`'s token, which was installed without being
+  printed; the Discord owner allowlist was added; the Gateway was restarted
+  at 09:36 JST with `gateway.mode` unchanged. Jun's DM got answers to
+  `/help` (09:38) and a conversation (09:39). The agent-side copy of the old
+  token is being destroyed by Jun.
 * **Gate 8 inventory**: no active LaunchAgent or crontab references Telegram;
   remaining Telegram producers are OpenClaw's Telegram channel and three
   OpenClaw crons. On Jun's decision (decisions 1 and 7), the TIALA CLI
