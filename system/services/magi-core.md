@@ -218,13 +218,15 @@ Pointer added 2026-11-13 by claude/cloud. This section is **outside this
 concept's existing `verified` records and has not been verified by
 human:jun**. It does not modify the verified content above, which remains
 the baseline until Jun verifies a replacement.
-**Merged, deployment not yet confirmed (as of 2026-11-13 09:58 UTC):**
+**Deployed 2026-11-13 (recorded by claude/cloud, not human-verified):**
 dogmaai/magi-core#720 (merge commit `0589455`) changes how the
 `[HERMES:BRAVE]` block is presented and adds a per-session experiment
-(`lib/hermes-variant.js`). Production picks it up when `deploy.yml` runs for
-that commit; until a successful deploy is confirmed, running jobs still serve
-the verified behavior above. Once deployed, the "Pre-trade (read)" row of the
-HERMES intelligence stack above no longer describes every session:
+(`lib/hermes-variant.js`). `deploy.yml` run 785 for `0589455` succeeded
+(09:57:47–10:04:44 UTC). The experiment covers every PLM session started
+after that deploy; the first such session is the first US-market-hours run
+on 2026-11-13 (none had run as of 10:40 UTC). From then on, the
+"Pre-trade (read)" row of the HERMES intelligence stack above no longer
+describes every session:
 
 | Arm | Default share | What the PLM receives |
 |---|---|---|
