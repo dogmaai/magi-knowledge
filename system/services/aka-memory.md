@@ -159,11 +159,11 @@ it describes are `lilith_safe: false` and never flow into LILITH. The GCS bucket
 is not an [ECHIDNA](/system/echidna-tables/) source — nothing reads it back into
 BigQuery; it exists purely so AKA's memory survives a host loss.
 
-## Staged Discord migration pointer (unverified)
+## Discord migration pointer (unverified)
 
 Navigation pointer added 2026-11-08 by devin/web. This concept is draft and this pointer is likewise **not human-verified**;
 its inventory still requires live re-verification before retirement work.
-Proposed, not deployed, Discord behavior and the acceptance, rollback and
-Telegram retirement gates are in the draft [migration plan](discord-migration.md).
-It asserts no cutover and authorizes no secret deletion, schema change or
-LILITH boundary change.
+**Status 2026-11-13 (recorded by claude/cloud, not human-verified):** MAGI's
+own notifications and AKA-1 moved to Discord on 2026-11-12/13 and MAGI's
+Telegram secrets are deleted; see the [migration plan's live status](discord-migration.md#live-status-2026-11-13).
+OpenClaw's Telegram channel and the TIALA producers described here are gates 7–8 and are **still open**, so this concept's Telegram wording for OpenClaw remains the current state until those gates pass. This pointer authorizes no configuration change or deletion.

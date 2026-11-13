@@ -174,8 +174,8 @@ Tier 1 (this ledger, no token re-issue):
   verified via GitHub code search across dogmaai on 2026-10-23; **all
   versions disabled 2026-10-23** (reversible) — destroy after a soak,
   tracked in magi-core#659.
-  `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` stay (magi-core `deploy.yml`
-  and magi-moni still consume them).
+  `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` were **deleted 2026-11-13**
+  (Discord cutover; no Cloud Run service or job bound them any more).
 * Retire `MAGI_KNOWLEDGE_TOKEN` — `magi-knowledge` is public since
   2026-10-23, so the PAT is no longer needed to clone it. The companion
   magi-core PR merged (magi-core#661) leaving `secrets.MAGI_KNOWLEDGE_TOKEN
@@ -221,11 +221,14 @@ Tier 2 (requires re-issuing real tokens — **human approval before any step**):
   and `.agents/skills/configuring-cloudflare-ai-search/SKILL.md` — Cloudflare
   token operations.
 
-## Staged Discord migration pointer (unverified)
+## Discord migration pointer (unverified)
 
 Navigation pointer added 2026-11-08 by devin/web. This concept is draft and this pointer is likewise **not human-verified**;
 its inventory still requires live re-verification before retirement work.
-Proposed, not deployed, Discord behavior and the acceptance, rollback and
-Telegram retirement gates are in the draft [migration plan](discord-migration.md).
-It asserts no cutover and authorizes no secret deletion, schema change or
-LILITH boundary change.
+**Status 2026-11-13 (recorded by claude/cloud, not human-verified):** the
+Discord implementation is deployed (magi-core `208e3c5`, magi-moni `4fc17bb`,
+2026-11-12) and MAGI's Telegram routes, bindings and secrets are retired; see
+the [migration plan's live status](discord-migration.md#live-status-2026-11-13) and
+[log.md](../../log.md). The Telegram secrets were deleted on 2026-11-13 after no Cloud Run service or job bound them. Until Jun re-verifies this concept, its Telegram
+wording describes the pre-cutover baseline, not current behavior. This pointer
+authorizes no schema, guard, trading-mode or LILITH boundary change.

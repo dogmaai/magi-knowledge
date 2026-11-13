@@ -1,5 +1,31 @@
 # Bundle Update Log
 
+## 2026-11-13 (Discord cutover reflected in concepts)
+* **Docs**: `system/services/discord-migration.md` (draft) gains a
+  "Live status (2026-11-13)" section — state B deployed, gate-by-gate status
+  (gates 1–3 and 6 done, 4 partial, 5 and 7–8 open, 9 done on the MAGI side),
+  the `aka`/MAGI Ops configuration correction and the `magi-alert-webhook`
+  inventory gap — and its retirement inventory rows are updated.
+* **Pointers**: the migration pointer sections in `magi-core`, `magi-moni`,
+  `bridge-health-checks`, `tiala-host-checks`, `system-control`,
+  `order-approvals`, `l0-kill-switch`, `secrets-inventory`, `aka-memory` and
+  `tiala-host` now state the deployed Discord-only status instead of
+  "proposed, not deployed"; `order-intents`, `focus-symbols` and
+  `hermes-observability` gain the same pointer. For stable concepts the
+  pointers stay **outside the existing `verified` records**: their Telegram
+  wording is the pre-cutover baseline until Jun re-verifies it. OpenClaw
+  concepts keep Telegram as current (gates 7–8 open).
+* **Drafts edited directly**: `magi-moomoo` (manual orders via the Discord
+  confirmation button), `l1-6-recon` (ALERT channel), `secrets-inventory`
+  (Telegram secrets deleted 2026-11-13; ledger edit — needs review by someone
+  other than the implementer).
+* **Drift closed pending Jun**: the `order-approvals` `confirmed=true` drift is
+  fixed by magi-moni#58 (deployed `4fc17bb`); the note stays until Jun
+  re-verifies.
+* **Scope**: documentation only; no `verified` entry added, no status change,
+  no schema/guard/trading/LILITH change, consumer pins not advanced. Base
+  `edb23afca93ddba9fb486351c35d462b8d73c12f` plus magi-knowledge#224.
+
 ## 2026-11-13 (Discord cutover deployed; option-A delivery tests; Telegram retired)
 * **Deploys (Jun-approved)**: magi-core#708 (Telegram removal from #710
   folded in) merged 2026-11-12 16:17 JST / 02:17 ET as `208e3c5`; every

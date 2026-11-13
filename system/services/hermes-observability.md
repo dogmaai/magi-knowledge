@@ -102,3 +102,10 @@ status values.
   operational tables.
 * `[HERMES:X_SEARCH]` (xAI) is not in use (cost decision, see
   [magi-core](magi-core.md)) — no panels cover it.
+
+## Discord migration pointer (unverified)
+
+Added 2026-11-13 by claude/cloud. This section is **outside this concept's
+existing `verified` records and has not been verified by human:jun**; the
+verified content above remains the baseline until Jun verifies a replacement.
+The job alert referred to above as Telegram is delivered to Discord since the 2026-11-12 cutover; the degraded rule is unchanged. See the [migration plan's live status](discord-migration.md#live-status-2026-11-13).

@@ -245,11 +245,11 @@ named `Devin Discord config write` (approved by Jun 17:57 / 17:59 JST on
 Host ops inventory — no trading path, no LILITH relevance;
 `lilith_safe: false` and never flows into `_lilith_safe/`.
 
-## Staged Discord migration pointer (unverified)
+## Discord migration pointer (unverified)
 
 Navigation pointer added 2026-11-08 by devin/web. This concept is draft and this pointer is likewise **not human-verified**;
 its inventory still requires live re-verification before retirement work.
-Proposed, not deployed, Discord behavior and the acceptance, rollback and
-Telegram retirement gates are in the draft [migration plan](discord-migration.md).
-It asserts no cutover and authorizes no secret deletion, schema change or
-LILITH boundary change.
+**Status 2026-11-13 (recorded by claude/cloud, not human-verified):** MAGI's
+own notifications and AKA-1 moved to Discord on 2026-11-12/13 and MAGI's
+Telegram secrets are deleted; see the [migration plan's live status](discord-migration.md#live-status-2026-11-13).
+OpenClaw's Telegram channel and the TIALA producers described here are gates 7–8 and are **still open**. Host down/disk alerts from `magi-tiala-host-monitor` now go to Discord. This pointer authorizes no configuration change or deletion.
