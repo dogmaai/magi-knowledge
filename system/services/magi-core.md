@@ -229,8 +229,10 @@ HERMES intelligence stack above no longer describes every session:
 | `legacy` | 33% | The verified behavior above (conviction tiering, tape bias / divergence). |
 | `off` | 33% | No `[HERMES:BRAVE]` block. The other HERMES sources are unaffected. |
 
-The arm is a salted SHA-256 hash of the session ID (independent of the
-feedback holdout) and is reproducible from `session_id` alone; no table or
+The arm is derived from the SHA-256 hash of `hermes-variant:<session_id>`.
+The prefix is a fixed, public constant (not a secret); it only keeps the
+assignment independent of the feedback holdout, which hashes the bare session
+ID. The arm is therefore reproducible from `session_id` alone; no table or
 column is added. `HERMES_VARIANT_WEIGHTS` overrides the split (`v2:100` ends
 the experiment). Background, metrics and decision rules live in magi-core
 `docs/research/2026-11-hermes-rescore/` (not human-verified). Collection
