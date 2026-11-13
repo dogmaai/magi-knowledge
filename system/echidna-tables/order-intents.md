@@ -134,3 +134,10 @@ NULL — expected, not a lineage break.
   depend on the same datastore as the rest of the pipeline.
 * `session_id` is still not consumed by the bridge for idempotency; the
   `intent_id` in the remark serves the dedup/reconciliation role.
+
+## Discord migration pointer (unverified)
+
+Added 2026-11-13 by claude/cloud. This section is **outside this concept's
+existing `verified` records and has not been verified by human:jun**; the
+verified content above remains the baseline until Jun verifies a replacement.
+`LOST` and `ORPHAN FILL` alerts described above as Telegram are delivered to Discord since the 2026-11-12 cutover. See the [migration plan's live status](../services/discord-migration.md#live-status-2026-11-13).
