@@ -5,7 +5,7 @@ description: DAPHNE loss-pattern (LP) classification of LOSE trades with a stati
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=daphne_feedback&page=table
 lilith_safe: false
 status: draft
-generated: { by: codex/cloud, at: 2026-10-29T12:02:14Z }
+generated: { by: claude/opus-5-5, at: 2026-11-09T10:50:00Z }
 verified: { by: human:jun, at: 2026-09-17T17:36:54Z }
 stale_after: 2027-03-17T17:36:54Z
 tags: [echidna, bigquery, daphne, causal, feedback]
@@ -13,16 +13,20 @@ dataset: magi_core
 table_type: BASE TABLE
 ---
 
-Output of `magi-daphne-analyzer` (`daphne-analyzer.js`, daily 22:00 ET
+Output of the DAPHNE stage of `magi-kimi-analyzer` (`kimi-analyzer.js`, daily 22:00 ET
 post-close). LOSE trades from the last 90 days are classified into the **LP
 taxonomy in BigQuery SQL** (`REGEXP_CONTAINS`), aggregated per provider, and
 flagged causal / non-causal from the **static `IS_CAUSAL` map** in the job — this
 is rule-based classification, *not* LLM causal inference. LLM causal reasoning
 was assigned to the retired SEKHMET analyzer (deprecated 2026-09-17) and is
-currently unassigned. Gemini via **AI Studio** is used only
-to write the why-lost narrative and to rewrite ineffective hints.
+moved to the same job's pattern + causal stage (Jun, 2026-11-09). Kimi K3.1 Pro (`kimi-k3.1-pro`) replaced Gemini and is used only
+to write the why-lost narrative and to rewrite ineffective hints
+(effective when magi-core#713 is merged and deployed). Rewritten hints land in
+`actionable_hint`, which is injected back into PLM prompts. If the Kimi quota
+is exhausted, the job still writes the SQL classification with static hints
+and exits non-zero.
 
-**Backend correction (2026-10-29):** the implementation already uses AI Studio;
+**Backend correction (2026-10-29, superseded by the Kimi switch above):** the implementation already uses AI Studio;
 the former Vertex wording was stale. Jun has also instructed that remaining
 Gemini generation paths use [AI Studio only](/system/services/gemini-ai-studio.md).
 This document is draft while that update is reviewed. The human verification
@@ -52,5 +56,5 @@ implementation or its deployment. The schema and SQL classification are unchange
 
 # Citations
 
-* Producer: `magi-core/daphne-analyzer.js`, `magi-core/lib/daphne-effectiveness.js`.
+* Producer: `magi-core/kimi-analyzer.js`, `magi-core/lib/kimi-analysis.js`, `magi-core/lib/daphne-effectiveness.js` (formerly `magi-daphne-analyzer` / Gemini, retired 2026-11-09).
 * DDL: `magi-core/sql/create_daphne_loss_analysis.sql`, `sql/create_daphne_hint_effectiveness.sql`.

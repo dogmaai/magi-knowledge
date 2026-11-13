@@ -3,8 +3,8 @@ type: PLM Unit
 title: MELCHIOR-1
 description: Systematic multi-factor analyst; runs HERMES intelligence collection.
 lilith_safe: false
-status: stable
-generated: { by: claude/opus-5-5, at: 2026-11-07T04:33:35Z }
+status: draft
+generated: { by: devin/cloud, at: 2026-11-13T00:33:08Z }
 verified: [{ by: human:jun, at: 2026-09-17T17:36:54Z }, { by: human:jun, at: 2026-11-07T05:51:00Z }]
 stale_after: 2027-05-07T05:51:00Z
 tags: [plm, shadow, google, gemini, hermes]
@@ -31,8 +31,12 @@ rather than submitted to the broker. Its analysis rows stay in `thoughts`
 (see [SHADOW write paths](#shadow-write-paths)).
 
 MELCHIOR-1 owns **logical / quantitative and generic pattern analysis**. It is
-**not** the causal-analysis owner — that role belonged to the retired SEKHMET
-analyzer (deprecated 2026-09-17) and is currently unassigned. See
+**not** the causal-analysis owner. That LLM role has had no active owner since
+SEKHMET retired on 2026-09-17. Jun assigned it to `magi-kimi-analyzer` on
+2026-11-09, effective only after
+[magi-core#713](https://github.com/dogmaai/magi-core/pull/713) is merged and
+deployed with Jun's approval; the assignment decision is not evidence that
+the new analyzer is running. See
 [causal analysis ownership](index.md#causal-analysis-ownership).
 
 # Configuration
@@ -79,7 +83,7 @@ through `thoughts_active` (`trade_mode = 'NORMAL'`).
   `HERMES_GEMINI_MODEL` → `pre_trade_intelligence`); the primary collector is the
   hourly `magi-hermes-refresh` job. See
   [HERMES intelligence stack](/system/services/magi-core.md#hermes-intelligence-stack).
-* Gemini also powers the batch [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md) report (`magi-gemini-analyzer`, Cloud Scheduler `magi-gemini-analyzer-daily`, `0 14 * * 1-5` UTC, AI Studio `gemini-3.8-flash`) — generic WIN/LOSE pattern extraction, not causal analysis.
+* The batch [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md) report will move from Gemini (`magi-gemini-analyzer`) to Kimi K3.1 Pro `magi-kimi-analyzer` on merge + deploy of magi-core#713 (Jun's decision, 2026-11-09). The old analyzer is retired at that cutover; MELCHIOR-1's PLM model is unchanged.
 
 # Trading history & performance
 

@@ -12,6 +12,26 @@
   no schema/guard/trading/LILITH change, consumer pins not advanced. Base
   `d06bb9761172384f17f043d9717f80e51bd5466b`.
 
+## 2026-11-13 (Kimi analyzer documentation review follow-up)
+* **Gemini policy scope**: `system/services/gemini-ai-studio.md` now labels
+  the old analyzer consumers, failure behavior and model selectors as the
+  pre-cutover baseline. DAPHNE/pattern analysis leave the AI Studio policy
+  only on magi-core#713 merge + deploy; Gemini PLM, HERMES and health probes
+  remain in scope. Citations no longer imply the migration has happened.
+* **Causal ownership**: MELCHIOR-1's overview and the PLM registry now separate
+  Jun's Kimi assignment decision from operation after magi-core#713 merge +
+  deploy. MELCHIOR-1 is not the causal owner; the pre-cutover LLM vacancy is
+  historical context, not a denial of the planned Kimi assignment. Its PLM
+  model and SHADOW behavior are unchanged.
+* **Verification scope**: `system/services/magi-core.md` is now `draft`, with
+  `generated` refreshed and historical human verification retained. Its Kimi
+  job row is explicitly a planned replacement effective only on Jun-approved
+  merge + deploy of magi-core#713, not a verified running configuration.
+  Reference: magi-knowledge main `d06bb9761172384f17f043d9717f80e51bd5466b`
+  (no pin); implementation magi-core `5e31e197a41d266a1f20955ed34e21e942a12ac2`
+  (OKF pin `437d1d68a7f0f157ff88180ba9be721025760f37`). Documentation only;
+  no deployment, PLM model, guard, table/schema or LILITH boundary change.
+
 ## 2026-11-13 (Discord cutover reflected in concepts)
 * **Docs**: `system/services/discord-migration.md` (draft) gains a
   "Live status (2026-11-13)" section — state B deployed, gate-by-gate status
@@ -112,6 +132,32 @@
   `208e3c5d8420859c9b77f8d8e42c8746f45b209a`; magi-moni
   `4fc17bbdeb02a421b235142bde890c050a0399ff`.
 
+## 2026-11-09 (Kimi K3.1 Pro offline analyzer replaces Gemini analyzer / DAPHNE Gemini; SEKHMET causal role reassigned)
+* **Decision (Jun, 2026-11-09)**: a single Kimi K3.1 Pro job `magi-kimi-analyzer`
+  (`kimi-k3.1-pro`, `reasoning_effort=high`, weekdays 22:00 ET) takes over
+  `magi-gemini-analyzer` (generic pattern analysis), DAPHNE's Gemini why-lost
+  narrative / hint rewrites, and the LLM causal-analysis role left unassigned
+  by SEKHMET's retirement. Gemini analyzer and the old DAPHNE job are stopped
+  immediately; comparison uses the existing `gemini-3.8-flash` rows in
+  `gemini_pattern_analysis` / `daphne_loss_analysis` (`model` columns).
+  PLM unit models (TYPHON `kimi-k2.6`, MELCHIOR-1) are unchanged.
+* **Updated**: `system/plm-units/index.md` (causal-analysis ownership),
+  `system/plm-units/melchior-1.md`, `system/services/magi-core.md`,
+  `system/echidna-tables/gemini-pattern-analysis.md`,
+  `system/echidna-tables/daphne-feedback.md`. No table/schema change.
+* **Implementation**: dogmaai/magi-core branch `devin/1794219285-kimi-analyzer`
+  (commit `7a4550375487a3eccdeabd6adec0828cefd35235`). Not deployed; deploy and
+  Kimi account recharge are Jun's. Base OKF `edb23afca93ddba9fb486351c35d462b8d73c12f`.
+* **Review follow-up (Claude, 2026-11-09)**: producer changes are marked
+  effective on merge + deploy of magi-core#713; `gemini-pattern-analysis.md`
+  body/description/model_version aligned with the Kimi producer (stable doc,
+  awaits Jun's re-verification); `daphne-feedback.md` notes Kimi-rewritten
+  hints are prompt-injected and the quota fallback (fix `7aec697` on the
+  magi-core branch); `gemini-ai-studio.md` consumer list and
+  `magi-model-health-check.md` coverage updated. Supersedes the proposal
+  in magi-knowledge#220. `gemini-pattern-analysis.md` and `melchior-1.md`
+  are demoted `stable` → `draft` because their content changed after Jun's
+  last verification; Jun's re-verification restores `stable`.
 ## 2026-11-09 (OpenClaw Gateway outage, runtime and paired devices on TIALA)
 * **Incident (2026-11-08 17:20–17:29 JST)**: `openclaw.khaos.company` returned
   Cloudflare 502. The OpenClaw macOS app wrote `gateway.mode=remote` (config
