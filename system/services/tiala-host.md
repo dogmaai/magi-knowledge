@@ -75,7 +75,7 @@ Not launchd — `openclaw cron list` (all status ok on 2026-10-22, matching
 |---|---|---|
 | `save-daily-chat-log` | 21:45 | Writes `memory/chat_logs/YYYY-MM-DD_chat.md` |
 | `daily-memory-update` | 22:00 | Appends durable facts to `memory/YYYY-MM-DD.md` |
-| `546ad7e7` | 23:00 (`0 14 * * *` UTC) | Runs `sync-memory-backup.sh` — the SSD leg **succeeds** under this context (TCC-granted), unlike the 22:30 launchd run |
+| `546ad7e7` | 23:00 (`0 14 * * *` UTC) | Runs `sync-memory-backup.sh` — the SSD leg **succeeds** under this context (TCC-granted), unlike the 22:30 launchd run. 2026-11-13: the grant is tied to the Gateway's node binary path, so the 2026-11-09 switch to Homebrew `node` 26.12.1 needed a new removable-volume grant (Jun approved it 10:01 JST); a `brew upgrade node` would require it again |
 
 # Disabled 2026-10-22
 
@@ -230,6 +230,33 @@ Recorded by claude/cloud from a read-only check run by the TIALA Claude CLI on
   `magi-ollama` tunnel connections; ADAM `524`s are long prompts whose first
   byte exceeds the edge timeout. Hypotheses only; remedies are Jun's (host)
   and an independently reviewed magi-core change (inference path).
+
+# Changes 2026-11-13 (Jun-approved, TIALA Claude CLI)
+
+Recorded by claude/cloud; not human-verified. Each step was backed up first.
+
+* **Model policy**: `agents.defaults.modelPolicy.allow` now lists
+  `google/gemini-3.8-flash` and `google/gemini-3.5-flash-lite` (the primary
+  and fallback, previously outside the allow list, which only gates scheduled
+  runs and `/model` selection), `anthropic/claude-sonnet-5-5` (target of the
+  `sonnet` alias), `anthropic/claude-haiku-4-5-20251001` and
+  `google/gemini-3.1-pro-preview`. `google/gemini-2.5-flash` and
+  `anthropic/claude-sonnet-5` were removed (no remaining use; the "2.5 series
+  being shut down" note above was not re-verified).
+* **OpenClaw cron**: `save-daily-chat-log`, `daily-memory-update` and
+  `546ad7e7` are bound to `google/gemini-3.8-flash` with an explicit inference
+  account (cron runs without a binding were rejected) and announce to Jun's
+  Discord DM instead of Telegram; `save-daily-chat-log` runs in an isolated
+  session. `546ad7e7` passed a manual run at 10:07 JST (SSD and Drive copies
+  verified by checksum, `status=0`, report delivered) and was re-enabled;
+  the other two are re-enabled only after Jun's go-ahead and are checked at
+  their scheduled times.
+* **Memory Dreaming disabled**: the `memory-core` plugin's dreaming job
+  (auto-created with OpenClaw 2026.11.1) rewrites `MEMORY.md` in its deep
+  phase, which [aka-memory](aka-memory.md) forbids for scheduled turns. It
+  had never succeeded (`MEMORY.md` untouched since 2026-09-10). Disabled with
+  `plugins.entries.memory-core.config.dreaming.enabled=false`, which removed
+  the managed job; it did not reappear after a plugin reload.
 
 # Open items (NEEDS_JUN_DECISION)
 
