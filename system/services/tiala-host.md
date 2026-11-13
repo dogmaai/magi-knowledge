@@ -209,8 +209,10 @@ Recorded by claude/cloud from a read-only check run by the TIALA Claude CLI on
   2026-11-13 09:28 JST (config hot reload; Gateway not restarted). OpenClaw
   therefore has no working chat channel until gate 7's Discord recovery; the
   authenticated browser interface remains the recovery path.
-* **Discord channel** (`aka` application): stopped since 2026-11-12 17:08 JST
-  on close code 4004 (invalid token); health checks skip restarting it. See
+* **Discord channel** (`aka` application): stopped from 2026-11-12 17:08 JST
+  on close code 4004 (invalid token) until Jun re-issued `aka`'s token; after
+  a Jun-approved Gateway restart at 2026-11-13 09:36 JST it is connected and
+  answered Jun's DM (`/help`, conversation). See
   [discord-migration](discord-migration.md) gates 7–8.
 * **OpenClaw cron**: `save-daily-chat-log`, `daily-memory-update` and
   `546ad7e7` (memory backup report) failed daily from about 2026-10-27
