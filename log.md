@@ -1,6 +1,11 @@
 # Bundle Update Log
 
 ## 2026-11-13 (Kimi analyzer documentation review follow-up)
+* **Gemini policy scope**: `system/services/gemini-ai-studio.md` now labels
+  the old analyzer consumers, failure behavior and model selectors as the
+  pre-cutover baseline. DAPHNE/pattern analysis leave the AI Studio policy
+  only on magi-core#713 merge + deploy; Gemini PLM, HERMES and health probes
+  remain in scope. Citations no longer imply the migration has happened.
 * **Causal ownership**: MELCHIOR-1's overview and the PLM registry now separate
   Jun's Kimi assignment decision from operation after magi-core#713 merge +
   deploy. MELCHIOR-1 is not the causal owner; the pre-cutover LLM vacancy is
