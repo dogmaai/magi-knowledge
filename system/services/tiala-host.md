@@ -205,6 +205,10 @@ Recorded by claude/cloud from a read-only check run by the TIALA Claude CLI on
   CLI v2026.11.1, `gateway.mode=local`. Its log now carries Gateway errors
   (the 4004 below), so the "stderr discarded" items here may be stale — the
   LaunchAgent's `StandardErrorPath` was not re-read; re-check before closing.
+* **Telegram channel**: disabled by the TIALA CLI on Jun's decision at
+  2026-11-13 09:28 JST (config hot reload; Gateway not restarted). OpenClaw
+  therefore has no working chat channel until gate 7's Discord recovery; the
+  authenticated browser interface remains the recovery path.
 * **Discord channel** (`aka` application): stopped since 2026-11-12 17:08 JST
   on close code 4004 (invalid token); health checks skip restarting it. See
   [discord-migration](discord-migration.md) gates 7–8.

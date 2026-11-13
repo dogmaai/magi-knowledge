@@ -12,8 +12,12 @@
   owner allowlist) is gate 7 and Jun's operation.
 * **Gate 8 inventory**: no active LaunchAgent or crontab references Telegram;
   remaining Telegram producers are OpenClaw's Telegram channel and three
-  OpenClaw crons. Jun decided on 2026-11-13 to disable OpenClaw's Telegram
-  channel first (decisions 1 and 7).
+  OpenClaw crons. On Jun's decision (decisions 1 and 7), the TIALA CLI
+  disabled OpenClaw's Telegram channel on 2026-11-13 09:28 JST
+  (`channels.telegram.enabled=false`, hot reload, no Gateway restart, config
+  backed up first); channel status `disabled, stopped`, no Telegram API
+  connection afterwards. The bot credential itself is kept until the three
+  crons are re-pointed (Jun's decision).
 * **Drift recorded** (`tiala-host`, `aka-memory`, `magi-model-health-check`,
   `discord-migration` — drafts): OpenClaw memory crons disabled since
   2026-11-08 after daily failures from about 2026-10-27 (model policy), so the
