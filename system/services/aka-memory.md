@@ -185,8 +185,10 @@ the 2026-11-08 upgrade OpenClaw stores session transcripts in its agent
 SQLite database instead of per-session JSONL files, so
 `save_chat_log_runner.py` finds no sessions and writes empty stubs (a
 backfill attempt for 2026-10-27 – 11-12 produced only stubs, which Jun had
-deleted). `save-daily-chat-log` was disabled again pending a runner change;
-transcripts for 2026-10-27 – 11-07 were not found in either store
-(unresolved). OpenClaw's Memory Dreaming job, which would rewrite
+deleted). `save-daily-chat-log` and `daily-memory-update` were disabled
+again pending a runner change (the latter has no input without chat logs);
+the backup cron stays enabled. For 2026-10-27 – 11-07 the archived session
+files hold only three conversational messages (11-03, 11-04), so the gap
+reflects little activity rather than lost transcripts. OpenClaw's Memory Dreaming job, which would rewrite
 `MEMORY.md` from a scheduled turn, was disabled. Details:
 [tiala-host](tiala-host.md#changes-2026-11-13-jun-approved-tiala-claude-cli).
