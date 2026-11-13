@@ -1,5 +1,30 @@
 # Bundle Update Log
 
+## 2026-11-13 (TIALA read-only check: OpenClaw Discord down, memory crons stopped)
+* **Source**: read-only check by the TIALA Claude CLI on 2026-11-13 against
+  magi-knowledge `edb23af` (no configuration change, restart or deletion);
+  recorded by claude/cloud. Not human-verified.
+* **`aka` on Discord**: OpenClaw's Discord channel has been stopped since
+  2026-11-12 17:08 JST (close code 4004, invalid token). Most likely `aka`'s
+  bot token was reset during the 2026-11-12 MAGI Ops correction, while `aka`
+  was still the only application — an agent-guided step. This explains the
+  unanswered `aka` `/help`. Recovery (new `aka` token in OpenClaw, Discord
+  owner allowlist) is gate 7 and Jun's operation.
+* **Gate 8 inventory**: no active LaunchAgent or crontab references Telegram;
+  remaining Telegram producers are OpenClaw's Telegram channel and three
+  OpenClaw crons. Jun decided on 2026-11-13 to disable OpenClaw's Telegram
+  channel first (decisions 1 and 7).
+* **Drift recorded** (`tiala-host`, `aka-memory`, `magi-model-health-check`,
+  `discord-migration` — drafts): OpenClaw memory crons disabled since
+  2026-11-08 after daily failures from about 2026-10-27 (model policy), so the
+  memory pipeline and the cron-run SSD/Drive backup are not running; netdata
+  exit -6 again; the health monitor now covers `ollama` through `llm_metrics`
+  failure streaks; Ollama 502/524 hypotheses.
+* **Correction**: magi-knowledge#224 said `aka`'s `/help` was "not
+  investigated"; the cause is now recorded above.
+* **Public-repo rule**: chat IDs, credential locations and ports are not
+  recorded here; host-private details go to magi-core#662.
+
 ## 2026-11-13 (Discord cutover reflected in concepts)
 * **Docs**: `system/services/discord-migration.md` (draft) gains a
   "Live status (2026-11-13)" section — state B deployed, gate-by-gate status
