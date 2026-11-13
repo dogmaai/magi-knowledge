@@ -211,3 +211,35 @@ the [migration plan's live status](discord-migration.md#live-status-2026-11-13) 
 [log.md](../../log.md). Every job notifies through the Discord notification webhook via `lib/telegram.js` (module name kept; rename is a follow-up); `TELEGRAM_*` bindings are replaced by `DISCORD_WEBHOOK_URL`. Mutes are unchanged (`NOTIFICATION_MUTED_CATEGORIES`). Until Jun re-verifies this concept, its Telegram
 wording describes the pre-cutover baseline, not current behavior. This pointer
 authorizes no schema, guard, trading-mode or LILITH boundary change.
+
+## HERMES presentation experiment pointer (unverified)
+
+Pointer added 2026-11-13 by claude/cloud. This section is **outside this
+concept's existing `verified` records and has not been verified by
+human:jun**. It does not modify the verified content above, which remains
+the baseline until Jun verifies a replacement.
+**Merged, deployment not yet confirmed (as of 2026-11-13 09:58 UTC):**
+dogmaai/magi-core#720 (merge commit `0589455`) changes how the
+`[HERMES:BRAVE]` block is presented and adds a per-session experiment
+(`lib/hermes-variant.js`). Production picks it up when `deploy.yml` runs for
+that commit; until a successful deploy is confirmed, running jobs still serve
+the verified behavior above. Once deployed, the "Pre-trade (read)" row of the
+HERMES intelligence stack above no longer describes every session:
+
+| Arm | Default share | What the PLM receives |
+|---|---|---|
+| `v2` | 34% | News as context: no score numbers, no conviction ordering or tape-divergence flag, plus a note that bullish coverage is not a buy reason. |
+| `legacy` | 33% | The verified behavior above (conviction tiering, tape bias / divergence). |
+| `off` | 33% | No `[HERMES:BRAVE]` block. The other HERMES sources are unaffected. |
+
+The arm is derived from the SHA-256 hash of `hermes-variant:<session_id>`.
+The prefix is a fixed, public constant (not a secret); it only keeps the
+assignment independent of the feedback holdout (the `feedback_injected` arm
+in [thoughts](/system/echidna-tables/thoughts.md); magi-core
+`lib/feedback-holdout.js`), which hashes the bare session ID. The arm is therefore reproducible from `session_id` alone; no table or
+column is added. `HERMES_VARIANT_WEIGHTS` overrides the split (`v2:100` ends
+the experiment). Background, metrics and decision rules live in magi-core
+`docs/research/2026-11-hermes-rescore/` at `0589455` (not human-verified). Collection
+(`magi-hermes-refresh`, [pre_trade_intelligence](/system/echidna-tables/pre-trade-intelligence.md))
+is unchanged. This pointer authorizes no schema, guard, trading-mode,
+Constitution or LILITH boundary change.

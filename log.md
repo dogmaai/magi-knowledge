@@ -1,5 +1,17 @@
 # Bundle Update Log
 
+## 2026-11-13 (HERMES presentation experiment pointer)
+* **Pointer**: `system/services/magi-core.md` gains an unverified
+  "HERMES presentation experiment pointer" section for
+  dogmaai/magi-core#720 (merged as `0589455`; deployment not yet confirmed): a per-session `v2` / `legacy` / `off`
+  split of the `[HERMES:BRAVE]` prompt block, controlled by
+  `HERMES_VARIANT_WEIGHTS`. The pointer stays **outside the existing
+  `verified` records**; the verified HERMES stack text is the baseline until
+  Jun re-verifies it.
+* **Scope**: documentation only; no `verified` entry added, no status change,
+  no schema/guard/trading/LILITH change, consumer pins not advanced. Base
+  `d06bb9761172384f17f043d9717f80e51bd5466b`.
+
 ## 2026-11-13 (Discord cutover reflected in concepts)
 * **Docs**: `system/services/discord-migration.md` (draft) gains a
   "Live status (2026-11-13)" section — state B deployed, gate-by-gate status
