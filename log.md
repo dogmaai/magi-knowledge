@@ -1,5 +1,15 @@
 # Bundle Update Log
 
+## 2026-11-13 (Kimi analyzer documentation review follow-up)
+* **Verification scope**: `system/services/magi-core.md` is now `draft`, with
+  `generated` refreshed and historical human verification retained. Its Kimi
+  job row is explicitly a planned replacement effective only on Jun-approved
+  merge + deploy of magi-core#713, not a verified running configuration.
+  Reference: magi-knowledge main `d06bb9761172384f17f043d9717f80e51bd5466b`
+  (no pin); implementation magi-core `5e31e197a41d266a1f20955ed34e21e942a12ac2`
+  (OKF pin `437d1d68a7f0f157ff88180ba9be721025760f37`). Documentation only;
+  no deployment, PLM model, guard, table/schema or LILITH boundary change.
+
 ## 2026-11-09 (Kimi K3.1 Pro offline analyzer replaces Gemini analyzer / DAPHNE Gemini; SEKHMET causal role reassigned)
 * **Decision (Jun, 2026-11-09)**: a single Kimi K3.1 Pro job `magi-kimi-analyzer`
   (`kimi-k3.1-pro`, `reasoning_effort=high`, weekdays 22:00 ET) takes over
