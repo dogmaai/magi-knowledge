@@ -31,6 +31,7 @@
   (no pin); implementation magi-core `5e31e197a41d266a1f20955ed34e21e942a12ac2`
   (OKF pin `437d1d68a7f0f157ff88180ba9be721025760f37`). Documentation only;
   no deployment, PLM model, guard, table/schema or LILITH boundary change.
+
 ## 2026-11-13 (Discord cutover reflected in concepts)
 * **Docs**: `system/services/discord-migration.md` (draft) gains a
   "Live status (2026-11-13)" section — state B deployed, gate-by-gate status
