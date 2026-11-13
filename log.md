@@ -38,9 +38,9 @@
   | `magi-llm-health-monitor` (scheduled) | 11-13 01:15 and 05:05 / 11-12 11:15 and 15:05 | Jun, log |
   | `magi-off-hours-chat` (scheduled) | 11-13 09:00 / 11-12 19:00 | Jun, log |
   | `magi-daily-report` (one-off test send) | 11-13 08:43 / 11-12 18:43 | Jun, log |
-  | `magi-watchdog` (one-off test send) | 11-13 08:43 / 11-12 18:43 | log; Jun: PENDING |
-  | `magi-bridge-monitor` (one-off test send) | 11-13 08:43 / 11-12 18:43 | log; Jun: PENDING |
-  | `magi-tiala-host-monitor` (one-off test send) | 11-13 08:44 / 11-12 18:44 | log; Jun: PENDING |
+  | `magi-watchdog` (one-off test send) | 11-13 08:43 / 11-12 18:43 | Jun, log |
+  | `magi-bridge-monitor` (one-off test send) | 11-13 08:43 / 11-12 18:43 | Jun, log |
+  | `magi-tiala-host-monitor` (one-off test send) | 11-13 08:44 / 11-12 18:44 | Jun, log |
 
   The four one-off test sends (Jun-approved, Jun-executed) ran each job's
   own image, secret binding and `lib/telegram.js` sender with a single
