@@ -199,12 +199,15 @@ Source: `magi-core/.github/workflows/deploy.yml` @ c36aa91. Scheduler and Job na
 [magi-moomoo](magi-moomoo.md) (broker), [magi-isabel](magi-isabel.md) (patterns),
 Cohere (embeddings).
 
-## Staged Discord migration pointer (unverified)
+## Discord migration pointer (unverified)
 
 Navigation pointer added 2026-11-08 by devin/web. This section is **outside this concept's existing `verified` records and
 has not been verified by human:jun**. It does not modify the verified content
 above, which remains the baseline until Jun verifies a replacement.
-Proposed, not deployed, Discord behavior and the acceptance, rollback and
-Telegram retirement gates are in the draft [migration plan](discord-migration.md).
-It asserts no cutover and authorizes no secret deletion, schema change or
-LILITH boundary change.
+**Status 2026-11-13 (recorded by claude/cloud, not human-verified):** the
+Discord implementation is deployed (magi-core `208e3c5`, magi-moni `4fc17bb`,
+2026-11-12) and MAGI's Telegram routes, bindings and secrets are retired; see
+the [migration plan's live status](discord-migration.md#live-status-2026-11-13) and
+[log.md](../../log.md). Every job notifies through the Discord notification webhook via `lib/telegram.js` (module name kept; rename is a follow-up); `TELEGRAM_*` bindings are replaced by `DISCORD_WEBHOOK_URL`. Mutes are unchanged (`NOTIFICATION_MUTED_CATEGORIES`). Until Jun re-verifies this concept, its Telegram
+wording describes the pre-cutover baseline, not current behavior. This pointer
+authorizes no schema, guard, trading-mode or LILITH boundary change.

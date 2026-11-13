@@ -85,11 +85,14 @@ latest `alerted='down'` row to decide whether to send Telegram (shared
 * The monitor exits 0 even when `overall=down` — the alert is the
   deliverable; a failing job and a failing host must stay distinguishable.
 
-## Staged Discord migration pointer (unverified)
+## Discord migration pointer (unverified)
 
 Navigation pointer added 2026-11-08 by devin/web. This concept is draft and this pointer is likewise **not human-verified**;
 its inventory still requires live re-verification before retirement work.
-Proposed, not deployed, Discord behavior and the acceptance, rollback and
-Telegram retirement gates are in the draft [migration plan](../services/discord-migration.md).
-It asserts no cutover and authorizes no secret deletion, schema change or
-LILITH boundary change.
+**Status 2026-11-13 (recorded by claude/cloud, not human-verified):** the
+Discord implementation is deployed (magi-core `208e3c5`, magi-moni `4fc17bb`,
+2026-11-12) and MAGI's Telegram routes, bindings and secrets are retired; see
+the [migration plan's live status](../services/discord-migration.md#live-status-2026-11-13) and
+[log.md](../../log.md). Down/recovery/unknown-streak `ALERT`s are delivered to Discord (job test send confirmed 2026-11-13; a real transition has not yet been observed). Until Jun re-verifies this concept, its Telegram
+wording describes the pre-cutover baseline, not current behavior. This pointer
+authorizes no schema, guard, trading-mode or LILITH boundary change.

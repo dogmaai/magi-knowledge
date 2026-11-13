@@ -61,12 +61,15 @@ set and policy engine above, and TIALA control via OpenClaw.
 * Tech: Node.js, Express, Cloud Run, BigQuery, Pub/Sub, Gemini, Telegram,
   Terraform.
 
-## Staged Discord migration pointer (unverified)
+## Discord migration pointer (unverified)
 
 Navigation pointer added 2026-11-08 by devin/web. This section is **outside this concept's existing `verified` records and
 has not been verified by human:jun**. It does not modify the verified content
 above, which remains the baseline until Jun verifies a replacement.
-Proposed, not deployed, Discord behavior and the acceptance, rollback and
-Telegram retirement gates are in the draft [migration plan](discord-migration.md).
-It asserts no cutover and authorizes no secret deletion, schema change or
-LILITH boundary change.
+**Status 2026-11-13 (recorded by claude/cloud, not human-verified):** the
+Discord implementation is deployed (magi-core `208e3c5`, magi-moni `4fc17bb`,
+2026-11-12) and MAGI's Telegram routes, bindings and secrets are retired; see
+the [migration plan's live status](discord-migration.md#live-status-2026-11-13) and
+[log.md](../../log.md). AKA-1 runs on the separate MAGI Ops Discord application (signed `/webhook/discord`, guild slash commands, actor-bound confirmation buttons, single instance); the Telegram handler and webhook are removed. The daily/weekly report endpoints post to the Discord webhook but currently have no scheduler caller. Until Jun re-verifies this concept, its Telegram
+wording describes the pre-cutover baseline, not current behavior. This pointer
+authorizes no schema, guard, trading-mode or LILITH boundary change.

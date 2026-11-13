@@ -86,7 +86,7 @@ server-side gate (`lib/order-gate.mjs`) before being forwarded to the bridge.
 6. `POST /trade/place_order` is never retried — a failed non-idempotent order
    must not be submitted twice.
 
-Manual/Telegram orders (magi-moni, `source='magi-moni'`) obtain tokens by
+Manual AKA-1 orders (magi-moni, `source='magi-moni'`; Discord confirmation button since 2026-11-12, formerly Telegram) obtain tokens by
 writing an `ISSUED` row after a confirmed user approval; the model cannot
 self-authorize.
 
