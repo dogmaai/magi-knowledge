@@ -226,7 +226,7 @@ HERMES intelligence stack above no longer describes every session:
 | Arm | Default share | What the PLM receives |
 |---|---|---|
 | `v2` | 34% | News as context: no score numbers, no conviction ordering or tape-divergence flag, plus a note that bullish coverage is not a buy reason. |
-| `legacy` | 33% | The verified behaviour above (conviction tiering, tape bias / divergence). |
+| `legacy` | 33% | The verified behavior above (conviction tiering, tape bias / divergence). |
 | `off` | 33% | No `[HERMES:BRAVE]` block. The other HERMES sources are unaffected. |
 
 The arm is a salted SHA-256 hash of the session ID (independent of the
