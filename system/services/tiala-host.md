@@ -252,7 +252,14 @@ Recorded by claude/cloud; not human-verified. Each step was backed up first.
   the other two are re-enabled only after Jun's go-ahead and are checked at
   their scheduled times. Update: `save-daily-chat-log` was disabled again
   the same morning because its runner cannot read OpenClaw 2026.11.1's SQLite
-  transcript store (see [aka-memory](aka-memory.md)).
+  transcript store (see [aka-memory](aka-memory.md)); `daily-memory-update`
+  was disabled with it.
+* **`aka` Discord actions minimized** (10:19 JST): `channels.discord.actions`
+  enables only the `messages` and `reactions` groups (channel/category,
+  thread, pin, search, role, moderation, event and upload-of-emoji/sticker
+  actions disabled); Jun's DM still answered afterwards. `upload-file`,
+  `read`, `broadcast` and `emoji-list` remain because they belong to those
+  groups.
 * **Memory Dreaming disabled**: the `memory-core` plugin's dreaming job
   (auto-created with OpenClaw 2026.11.1) rewrites `MEMORY.md` in its deep
   phase, which [aka-memory](aka-memory.md) forbids for scheduled turns. It
