@@ -1,5 +1,79 @@
 # Bundle Update Log
 
+## 2026-11-13 (Discord cutover deployed; option-A delivery tests; Telegram retired)
+* **Deploys (Jun-approved)**: magi-core#708 (Telegram removal from #710
+  folded in) merged 2026-11-12 16:17 JST / 02:17 ET as `208e3c5`; every
+  `deploy.yml` job succeeded and no core job binds a Telegram secret.
+  magi-moni#58 (#59 folded in, plus a deploy fix that binds the Discord
+  notification webhook on every deploy) merged as `4fc17bb`; Cloud Run deploy
+  succeeded with `--max-instances 1` (decision 5) confirmed on the service.
+* **Configuration drift found and corrected (2026-11-12/13)**: magi-moni's
+  Discord application ID and public key had been set to OpenClaw's `aka`
+  application, so the first Interactions Endpoint save (16:59 JST) pointed
+  `aka`'s interactions at magi-moni, and the command-registration token was
+  `aka`'s bot token. `register-discord-commands.js` refused to overwrite `aka`
+  (its guard worked); no `aka` interaction reached magi-moni in that window.
+  Jun cleared `aka`'s Interactions Endpoint URL (OpenClaw back on the
+  Gateway), created the separate **MAGI Ops** application (gate 2), replaced
+  the registration token with MAGI Ops' bot token (the `aka` token version
+  disabled) and pointed magi-moni at MAGI Ops. The owner check also held a
+  Discord username instead of the numeric user ID and rejected Jun's
+  commands (fail closed, 403); Jun corrected it.
+* **Gate 3 (2026-11-12 17:41 JST / 03:41 ET)**: MAGI Ops Interactions
+  Endpoint verified against magi-moni (signed PING accepted, invalid
+  signature rejected); 11 guild commands registered with default member
+  permissions `0`. MAGI Ops was granted view access to the private
+  operations channel. `/help` answered on 2026-11-13 08:39 JST / 2026-11-12
+  18:39 ET. `/status`, `/kill` and `/resume` were not exercised (gate 5
+  remains open).
+* **Gate 6, option A (mandatory live delivery)**: Discord-only delivery
+  verified per producer. "Jun" = message seen in Discord by Jun; "log" =
+  `Notification sent` in Cloud Logging.
+
+  | Producer | Time (JST / ET) | Evidence |
+  |---|---|---|
+  | PLM session start/end (`magi-core-boreas`) | 11-12 23:30 / 11-12 09:30 | Jun, log |
+  | PLM session start/end (`magi-core-qwen`) | 11-13 05:55–05:59 / 11-12 15:55–15:59 | Jun, log |
+  | `magi-surge-detector` (scheduled, REVIEW) | 11-13 05:35 / 11-12 15:35 | Jun, log |
+  | `magi-llm-health-monitor` (scheduled) | 11-13 01:15 and 05:05 / 11-12 11:15 and 15:05 | Jun, log |
+  | `magi-off-hours-chat` (scheduled) | 11-13 09:00 / 11-12 19:00 | Jun, log |
+  | `magi-daily-report` (one-off test send) | 11-13 08:43 / 11-12 18:43 | Jun, log |
+  | `magi-watchdog` (one-off test send) | 11-13 08:43 / 11-12 18:43 | Jun, log |
+  | `magi-bridge-monitor` (one-off test send) | 11-13 08:43 / 11-12 18:43 | Jun, log |
+  | `magi-tiala-host-monitor` (one-off test send) | 11-13 08:44 / 11-12 18:44 | Jun, log |
+
+  The four one-off test sends (Jun-approved, Jun-executed) ran each job's
+  own image, secret binding and `lib/telegram.js` sender with a single
+  `[TEST] <job> Discord path (option A)` message in category `ALERT`; the
+  job's normal work did not run and nothing wrote to BigQuery, orders or
+  trading controls. They were needed because watchdog, bridge and host
+  monitors only send on anomalies and the daily report's `RESULT` category
+  is muted (unchanged from the Telegram era: suppressed on 11-09 to 11-11 as
+  well), so scheduled runs would not exercise the path.
+* **Not a live producer**: magi-moni's daily/weekly report endpoints have no
+  scheduler caller and received no requests in the last 30 days (pre-existing;
+  Jun decision 2026-11-13: record and exclude from option A; recreating a
+  schedule is a separate task).
+* **Telegram retirement (step 9, Jun-executed 2026-11-13 JST)**: Telegram
+  webhook already deleted (`deleteWebhook` reported so); Telegram secret
+  bindings removed from magi-moni and from magi-thought-scorer (a stale
+  binding its code does not use); the Telegram secrets deleted. Inventory gap:
+  `magi-alert-webhook` (a Cloud Monitoring alert relay to Telegram deployed
+  from source outside the repositories) was not in this plan's inventory; it
+  had not delivered for at least 30 days. Jun chose to retire it (service
+  deleted). Choosing a new destination for those Cloud Monitoring alerts is a
+  separate follow-up.
+* **Still open**: gate 5 (`/kill`, `/resume` in a maintenance window), gates
+  7–8 (OpenClaw on Discord; `aka`'s own `/help` did not respond on 11-13,
+  not investigated here), the Cloud Monitoring alert destination, renaming
+  Telegram-named modules, and updating `discord-migration.md` /
+  service concepts with this live evidence. The migration concept stays
+  `draft`; no `verified` entry added.
+* **References**: OKF `edb23afca93ddba9fb486351c35d462b8d73c12f`
+  (`system/services/discord-migration.md` draft, `log.md`); magi-core
+  `208e3c5d8420859c9b77f8d8e42c8746f45b209a`; magi-moni
+  `4fc17bbdeb02a421b235142bde890c050a0399ff`.
+
 ## 2026-11-09 (OpenClaw Gateway outage, runtime and paired devices on TIALA)
 * **Incident (2026-11-08 17:20–17:29 JST)**: `openclaw.khaos.company` returned
   Cloudflare 502. The OpenClaw macOS app wrote `gateway.mode=remote` (config
