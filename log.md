@@ -2,8 +2,8 @@
 
 ## 2026-11-13 (HERMES presentation experiment pointer)
 * **Pointer**: `system/services/magi-core.md` gains an unverified
-  "HERMES presentation experiment pointer" section for the proposed
-  dogmaai/magi-core#720 (not deployed): a per-session `v2` / `legacy` / `off`
+  "HERMES presentation experiment pointer" section for
+  dogmaai/magi-core#720 (merged as `0589455`; deployment not yet confirmed): a per-session `v2` / `legacy` / `off`
   split of the `[HERMES:BRAVE]` prompt block, controlled by
   `HERMES_VARIANT_WEIGHTS`. The pointer stays **outside the existing
   `verified` records**; the verified HERMES stack text is the baseline until

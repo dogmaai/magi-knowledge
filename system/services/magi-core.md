@@ -218,9 +218,12 @@ Pointer added 2026-11-13 by claude/cloud. This section is **outside this
 concept's existing `verified` records and has not been verified by
 human:jun**. It does not modify the verified content above, which remains
 the baseline until Jun verifies a replacement.
-**Proposed, not deployed (as of 2026-11-13):** dogmaai/magi-core#720 changes
-how the `[HERMES:BRAVE]` block is presented and adds a per-session experiment
-(`lib/hermes-variant.js`). If it is merged, the "Pre-trade (read)" row of the
+**Merged, deployment not yet confirmed (as of 2026-11-13 09:58 UTC):**
+dogmaai/magi-core#720 (merge commit `0589455`) changes how the
+`[HERMES:BRAVE]` block is presented and adds a per-session experiment
+(`lib/hermes-variant.js`). Production picks it up when `deploy.yml` runs for
+that commit; until a successful deploy is confirmed, running jobs still serve
+the verified behavior above. Once deployed, the "Pre-trade (read)" row of the
 HERMES intelligence stack above no longer describes every session:
 
 | Arm | Default share | What the PLM receives |
@@ -231,11 +234,12 @@ HERMES intelligence stack above no longer describes every session:
 
 The arm is derived from the SHA-256 hash of `hermes-variant:<session_id>`.
 The prefix is a fixed, public constant (not a secret); it only keeps the
-assignment independent of the feedback holdout, which hashes the bare session
-ID. The arm is therefore reproducible from `session_id` alone; no table or
+assignment independent of the feedback holdout (the `feedback_injected` arm
+in [thoughts](/system/echidna-tables/thoughts.md); magi-core
+`lib/feedback-holdout.js`), which hashes the bare session ID. The arm is therefore reproducible from `session_id` alone; no table or
 column is added. `HERMES_VARIANT_WEIGHTS` overrides the split (`v2:100` ends
 the experiment). Background, metrics and decision rules live in magi-core
-`docs/research/2026-11-hermes-rescore/` (not human-verified). Collection
+`docs/research/2026-11-hermes-rescore/` at `0589455` (not human-verified). Collection
 (`magi-hermes-refresh`, [pre_trade_intelligence](/system/echidna-tables/pre-trade-intelligence.md))
 is unchanged. This pointer authorizes no schema, guard, trading-mode,
 Constitution or LILITH boundary change.
