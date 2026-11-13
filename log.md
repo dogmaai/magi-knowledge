@@ -35,7 +35,8 @@
   | PLM session start/end (`magi-core-boreas`) | 11-12 23:30 / 11-12 09:30 | Jun, log |
   | PLM session start/end (`magi-core-qwen`) | 11-13 05:55–05:59 / 11-12 15:55–15:59 | Jun, log |
   | `magi-surge-detector` (scheduled, REVIEW) | 11-13 05:35 / 11-12 15:35 | Jun, log |
-  | `magi-llm-health-monitor` (scheduled) | 11-13 01:15 and 05:05 / 11-12 11:15 and 15:05 | log; Jun: PENDING |
+  | `magi-llm-health-monitor` (scheduled) | 11-13 01:15 and 05:05 / 11-12 11:15 and 15:05 | Jun, log |
+  | `magi-off-hours-chat` (scheduled) | 11-13 09:00 / 11-12 19:00 | Jun, log |
   | `magi-daily-report` (one-off test send) | 11-13 08:43 / 11-12 18:43 | Jun, log |
   | `magi-watchdog` (one-off test send) | 11-13 08:43 / 11-12 18:43 | log; Jun: PENDING |
   | `magi-bridge-monitor` (one-off test send) | 11-13 08:43 / 11-12 18:43 | log; Jun: PENDING |
