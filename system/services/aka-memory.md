@@ -176,4 +176,10 @@ disabled since 2026-11-08 after failing daily from about 2026-10-27 (the
 scheduled model is not allowed by the agent's model policy). The latest chat
 log is from 2026-10-26, so the daily memory pipeline described above is
 currently **not running**; restoring it is part of gate 7 in
-[discord-migration](discord-migration.md) (model IDs are Jun's decision).
+[discord-migration](discord-migration.md). Later the same day (Jun-approved)
+the model policy and cron bindings were fixed, the crons now report to Jun's
+Discord DM, and the backup cron `546ad7e7` passed a manual run and was
+re-enabled; the chat-log and memory-update crons are verified at their
+scheduled times. OpenClaw's Memory Dreaming job, which would rewrite
+`MEMORY.md` from a scheduled turn, was disabled. Details:
+[tiala-host](tiala-host.md#changes-2026-11-13-jun-approved-tiala-claude-cli).

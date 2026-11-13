@@ -28,6 +28,13 @@
   memory pipeline and the cron-run SSD/Drive backup are not running; netdata
   exit -6 again; the health monitor now covers `ollama` through `llm_metrics`
   failure streaks; Ollama 502/524 hypotheses.
+* **Same-day changes (Jun-approved, TIALA CLI)**: OpenClaw model allow list
+  aligned with the primary/fallback (`gemini-2.5-flash`, `claude-sonnet-5`
+  removed); the three memory crons bound to an explicit model and inference
+  account and re-pointed from Telegram to Jun's Discord DM; backup cron
+  `546ad7e7` passed a manual run and was re-enabled; Memory Dreaming (would
+  rewrite `MEMORY.md`) disabled at the plugin level. The removable-volume
+  permission had to be re-granted because the Gateway's node binary changed.
 * **Correction**: magi-knowledge#224 said `aka`'s `/help` was "not
   investigated"; the cause is now recorded above.
 * **Public-repo rule**: chat IDs, credential locations and ports are not
