@@ -167,3 +167,13 @@ its inventory still requires live re-verification before retirement work.
 own notifications and AKA-1 moved to Discord on 2026-11-12/13 and MAGI's
 Telegram secrets are deleted; see the [migration plan's live status](discord-migration.md#live-status-2026-11-13).
 OpenClaw's Telegram channel and the TIALA producers described here are gates 7–8 and are **still open**, so this concept's Telegram wording for OpenClaw remains the current state until those gates pass. This pointer authorizes no configuration change or deletion.
+
+## Status 2026-11-13 (unverified)
+
+Recorded by claude/cloud from a read-only TIALA check on 2026-11-13: the
+`save-daily-chat-log`, `daily-memory-update` and `546ad7e7` crons have been
+disabled since 2026-11-08 after failing daily from about 2026-10-27 (the
+scheduled model is not allowed by the agent's model policy). The latest chat
+log is from 2026-10-26, so the daily memory pipeline described above is
+currently **not running**; restoring it is part of gate 7 in
+[discord-migration](discord-migration.md) (model IDs are Jun's decision).

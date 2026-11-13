@@ -67,8 +67,9 @@ current consumers are ADAM/BOREAS via the authenticated
 
 # OpenClaw cron jobs
 
-Not launchd — `openclaw cron list` (all status ok, matching
-[aka-memory](aka-memory.md)):
+Not launchd — `openclaw cron list` (all status ok on 2026-10-22, matching
+[aka-memory](aka-memory.md); **2026-11-13: all three disabled with errors**, see
+[status 2026-11-13](#status-2026-11-13-read-only-check)):
 
 | Cron | Schedule (JST) | Role |
 |---|---|---|
@@ -194,6 +195,35 @@ pairing / talk.secrets, since 2026-07-30). Two further operator devices
 named `Devin Discord config write` (approved by Jun 17:57 / 17:59 JST on
 2026-11-08) were removed by Jun with `openclaw devices remove` on
 2026-11-09. Never use `openclaw devices clear` (drops every pairing).
+
+# Status 2026-11-13 (read-only check)
+
+Recorded by claude/cloud from a read-only check run by the TIALA Claude CLI on
+2026-11-13 (no configuration, restart or deletion). Not human-verified.
+
+* **OpenClaw Gateway**: running continuously since 2026-11-08 18:21 JST;
+  CLI v2026.11.1, `gateway.mode=local`. Its log now carries Gateway errors
+  (the 4004 below), so the "stderr discarded" items here may be stale — the
+  LaunchAgent's `StandardErrorPath` was not re-read; re-check before closing.
+* **Discord channel** (`aka` application): stopped since 2026-11-12 17:08 JST
+  on close code 4004 (invalid token); health checks skip restarting it. See
+  [discord-migration](discord-migration.md) gates 7–8.
+* **OpenClaw cron**: `save-daily-chat-log`, `daily-memory-update` and
+  `546ad7e7` (memory backup report) failed daily from about 2026-10-27
+  (scheduled model not allowed by the agent model policy) and have been
+  disabled since 2026-11-08. Consequences: the chat-log/memory writers have
+  not run since about 2026-10-26, and the cron-run SSD/Drive backup leg has
+  not run since 2026-11-08 (the launchd GCS leg is separate). Model IDs are a
+  gate-7 decision for Jun.
+* **netdata**: `launchctl list` shows last exit status -6 again (possible
+  recurrence of the 2026-10-22 issue; not investigated).
+* **macOS OpenClaw app**: v2026.3.28 fails to connect every 30 s with a
+  protocol mismatch against the v2026.11.1 Gateway (app update pending).
+* **Ollama / tunnel**: BOREAS `502`s coincide with model cold loads (keep-alive
+  5 min, swap nearly full on the 16 GB host) and simultaneous drops of all
+  `magi-ollama` tunnel connections; ADAM `524`s are long prompts whose first
+  byte exceeds the edge timeout. Hypotheses only; remedies are Jun's (host)
+  and an independently reviewed magi-core change (inference path).
 
 # Open items (NEEDS_JUN_DECISION)
 
