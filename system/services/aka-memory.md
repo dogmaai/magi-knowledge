@@ -180,6 +180,13 @@ currently **not running**; restoring it is part of gate 7 in
 the model policy and cron bindings were fixed, the crons now report to Jun's
 Discord DM, and the backup cron `546ad7e7` passed a manual run and was
 re-enabled; the chat-log and memory-update crons are verified at their
-scheduled times. OpenClaw's Memory Dreaming job, which would rewrite
+scheduled times. **Chat-log pipeline broken by OpenClaw 2026.11.1**: since
+the 2026-11-08 upgrade OpenClaw stores session transcripts in its agent
+SQLite database instead of per-session JSONL files, so
+`save_chat_log_runner.py` finds no sessions and writes empty stubs (a
+backfill attempt for 2026-10-27 – 11-12 produced only stubs, which Jun had
+deleted). `save-daily-chat-log` was disabled again pending a runner change;
+transcripts for 2026-10-27 – 11-07 were not found in either store
+(unresolved). OpenClaw's Memory Dreaming job, which would rewrite
 `MEMORY.md` from a scheduled turn, was disabled. Details:
 [tiala-host](tiala-host.md#changes-2026-11-13-jun-approved-tiala-claude-cli).

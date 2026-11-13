@@ -250,7 +250,9 @@ Recorded by claude/cloud; not human-verified. Each step was backed up first.
   session. `546ad7e7` passed a manual run at 10:07 JST (SSD and Drive copies
   verified by checksum, `status=0`, report delivered) and was re-enabled;
   the other two are re-enabled only after Jun's go-ahead and are checked at
-  their scheduled times.
+  their scheduled times. Update: `save-daily-chat-log` was disabled again
+  the same morning because its runner cannot read OpenClaw 2026.11.1's SQLite
+  transcript store (see [aka-memory](aka-memory.md)).
 * **Memory Dreaming disabled**: the `memory-core` plugin's dreaming job
   (auto-created with OpenClaw 2026.11.1) rewrites `MEMORY.md` in its deep
   phase, which [aka-memory](aka-memory.md) forbids for scheduled turns. It
