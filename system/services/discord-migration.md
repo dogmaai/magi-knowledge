@@ -75,7 +75,9 @@ not human-verified):
    configured; nobody had noticed for a week.
 9. **The OpenClaw Gateway's public URL stays closed** (trusted proxies not
    configured). Reopening it requires a separate decision with access
-   controls in front.
+   controls in front. Done the same day: the `magi-openclaw` tunnel,
+   its DNS record and its LaunchAgent were retired (see
+   [tiala-host](tiala-host.md)).
 
 A magi-moni reply produced outside a Discord interaction is dropped, never
 sent to the notification webhook, so operator-only content cannot leak there.

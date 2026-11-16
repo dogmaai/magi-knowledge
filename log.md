@@ -1,5 +1,17 @@
 # Bundle Update Log
 
+## 2026-11-16 (OpenClaw public tunnel retired)
+* **Jun-approved, executed by Jun (Cloudflare) and the TIALA CLI**: the
+  `magi-openclaw` Named Tunnel (`openclaw.khaos.company`) is retired — DNS
+  record and tunnel deleted in Cloudflare, LaunchAgent
+  `com.magi.openclaw.cloudflared` booted out and moved aside, its credential
+  files moved out of the cloudflared directory, the tunnel token secret
+  disabled. The `magi-ollama` and `magi-bridge` tunnels were verified
+  unaffected (same processes, same public status). Restoring the hostname
+  would require a new tunnel.
+* **Docs**: `tiala-host.md`, `cloudflare.md` (draft) and
+  `discord-migration.md` decision 9 updated. No `verified` entry.
+
 ## 2026-11-16 (magi-moni stops operating TIALA; OpenClaw public URL stays closed)
 * **Jun's decisions (Claude session)**: magi-moni does not need TIALA access —
   AKA-1's TIALA / OpenClaw Gateway tools and `scripts/operate-tiala.js` are
