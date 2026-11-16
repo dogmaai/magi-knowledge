@@ -1,5 +1,20 @@
 # Bundle Update Log
 
+## 2026-11-16 (magi-moni stops operating TIALA; OpenClaw public URL stays closed)
+* **Jun's decisions (Claude session)**: magi-moni does not need TIALA access —
+  AKA-1's TIALA / OpenClaw Gateway tools and `scripts/operate-tiala.js` are
+  removed in magi-moni#60 (supersedes migration decision 6); the OpenClaw
+  Gateway's public URL stays closed. Recorded in
+  `system/services/discord-migration.md` decisions 8–9 (draft) and the
+  `magi-moni` pointer (unverified).
+* **Finding (TIALA CLI, read-only)**: since OpenClaw 2026.11.1 (2026-11-08)
+  the Gateway rejects tunnelled requests before authentication unless trusted
+  proxies are configured, so magi-moni's TIALA tools and the public browser
+  interface had been unusable for a week. The migration plan's "browser
+  interface as recovery path" is corrected accordingly.
+* **Scope**: no guard, table, trading-mode or LILITH change; no `verified`
+  entry. Base `f741ddc`.
+
 ## 2026-11-13 (TIALA read-only check: OpenClaw Discord down, memory crons stopped)
 * **Source**: read-only check by the TIALA Claude CLI on 2026-11-13 against
   magi-knowledge `edb23af` (no configuration change, restart or deletion);
