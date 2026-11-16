@@ -1,5 +1,19 @@
 # Bundle Update Log
 
+## 2026-11-16 (AKA-1 symbol analysis read surface)
+* **Approved plan, documented by devin/cloud**: new draft
+  `system/echidna-tables/llm-analysis.md` catalogs the existing regional
+  `magi_analytics.llm_analysis` table and the companion magi-moni
+  `get_symbol_analysis` read contract. Live schema/partition/cluster/location
+  metadata checked on 2026-11-16; writer inspected at magi-core `0589455`.
+  This is not a deployment record or human verification.
+* **Boundaries**: all analysis modes are labeled; prediction grades are not
+  trading P&L. No physical schema, IAM, deploy, guard, trading-mode or LILITH
+  change. HERMES/ISABEL expansion remains follow-up work.
+* **Unresolved pre-existing drift**: price-tracker outcome casing/value list
+  and active-view column coverage are recorded, not silently corrected.
+  Fixed task reference `173d0f6`; documentation branch base `baea072`.
+
 ## 2026-11-16 (secrets ledger: OpenClaw Gateway token and ttyd)
 * **`secrets-inventory.md`** (draft, ledger): `OPENCLAW_GATEWAY_TOKEN` has no
   remote consumer since 2026-11-16 (tunnel retired, magi-moni binding and
