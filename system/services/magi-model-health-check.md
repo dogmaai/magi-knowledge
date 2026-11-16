@@ -23,7 +23,12 @@ The implementation is the `magi-llm-health-monitor` Cloud Run job in
 review): the monitor probes the five hosted LLM providers only (google,
 deepseek, qwen, kimi, openai — `PROVIDERS` in `health-monitor.js`); the Ollama
 units (ADAM/BOREAS on TIALA), the HERMES Gemini model, and the Cohere
-models are not covered. The `llm_health_checks` output table exists in
+models are not covered by the synthetic probes. Update (observed 2026-11-13,
+magi-core `4b57047`, not human-verified): the job also scans `llm_metrics` for
+per-provider failure streaks of the real call path (`checkMetricsStreaks`,
+`lib/llm-metrics-streak.js`; alert at 3 consecutive failures, then every 20),
+which covers `ollama`; it delivered two `ollama` streak alerts to Discord on
+2026-11-13. The `llm_health_checks` output table exists in
 `magi_core` but remains uncatalogued (see the drift backlog in
 [echidna-tables/index.md](/system/echidna-tables/index.md)).
 
