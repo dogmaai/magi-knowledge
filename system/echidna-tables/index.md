@@ -1,4 +1,4 @@
-# ECHIDNA — `magi_core` data catalog
+# ECHIDNA — data catalog
 
 ECHIDNA is MAGI's BigQuery data warehouse: project `screen-share-459802`,
 dataset `magi_core`, location `US`. The core-table schemas were pulled live
@@ -7,6 +7,11 @@ per-document provenance (live `bq show` captures dated 2026-09-16 where
 noted; the remaining code-derived schemas were live-verified via `bq show`
 on 2026-10-06) — the per-doc frontmatter and schema notes are authoritative
 over this blanket statement.
+
+Regional exception: [llm-analysis](llm-analysis.md) documents the existing
+`magi_analytics.llm_analysis` table in **asia-northeast1** (draft, live metadata
+captured 2026-11-16). It is not in `magi_core` and must be queried separately
+from US tables.
 
 Three write-path conventions matter:
 
@@ -35,6 +40,7 @@ Three write-path conventions matter:
 
 # Intelligence & analysis
 
+* [llm-analysis](llm-analysis.md) - Regional cross-unit symbol analyses and retrospective price grades; AKA-1 read contract (draft).
 * [market-research](market-research.md) - HERMES/ARIEL research cache.
 * [pre-trade-intelligence](pre-trade-intelligence.md) - HERMES:BRAVE per-symbol Brave/Gemini sentiment + key events.
 * [moomoo-snapshots](moomoo-snapshots.md) - HERMES:MOOMOO broker real-time market snapshots.

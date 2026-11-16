@@ -57,7 +57,7 @@ position-reducing orders always pass.
   Each divergent symbol is journaled as a `thoughts` row
   (`action='WARN_ONLY'`, `concerns='L1.6.RECON'`, reasoning `Ledger/broker
   divergence: SYM ledger net=… vs broker=… [KIND]`), with an aggregated
-  Telegram ALERT after 4 consecutive ~15-min runs and every 24 thereafter.
+  notification `ALERT` (Discord since 2026-11-12, formerly Telegram) after 4 consecutive ~15-min runs and every 24 thereafter.
 * **Gate** (`magi-core/src/llm.js`, after the L0 kill switch, before JEV and
   the shadow short circuit): while the verdict is not `consistent`, an order
   that does not verifiably reduce exposure is rejected (`blocked_by:

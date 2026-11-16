@@ -1,5 +1,221 @@
 # Bundle Update Log
 
+## 2026-11-16 (AKA-1 symbol analysis read surface)
+* **Approved plan, documented by devin/cloud**: new draft
+  `system/echidna-tables/llm-analysis.md` catalogs the existing regional
+  `magi_analytics.llm_analysis` table and the companion magi-moni
+  `get_symbol_analysis` read contract. Live schema/partition/cluster/location
+  metadata checked on 2026-11-16; writer inspected at magi-core `0589455`.
+  This is not a deployment record or human verification.
+* **Boundaries**: all analysis modes are labeled; prediction grades are not
+  trading P&L. No physical schema, IAM, deploy, guard, trading-mode or LILITH
+  change. HERMES/ISABEL expansion remains follow-up work.
+* **Unresolved pre-existing drift**: price-tracker outcome casing/value list
+  and active-view column coverage are recorded, not silently corrected.
+  Fixed task reference `173d0f6`; documentation branch base `baea072`.
+
+## 2026-11-16 (secrets ledger: OpenClaw Gateway token and ttyd)
+* **`secrets-inventory.md`** (draft, ledger): `OPENCLAW_GATEWAY_TOKEN` has no
+  remote consumer since 2026-11-16 (tunnel retired, magi-moni binding and
+  code removed); Secret Manager v3 created when the value was replaced on
+  TIALA, v1/v2 disabled, secret slated for deletion. ttyd credential row:
+  ttyd stopped, LaunchAgent disabled. Ledger edit — needs review by someone
+  other than the implementer (COLLABORATION.md). Base `173d0f6`.
+## 2026-11-16 (OKF gap fixes after the Discord cutover)
+* **`discord-migration.md`** (draft): gates 7–8 and the retirement inventory
+  updated — OpenClaw's Telegram channel configuration removed and bot token
+  revoked (2026-11-13), OpenClaw DMs isolated per sender
+  (`session.dmScope=per-channel-peer`, 2026-11-16), `aka` Discord actions
+  limited to messages/reactions, memory crons re-pointed to Discord (two
+  paused pending a runner fix). No Telegram producer remains on TIALA.
+* **`cloudflare.md`** (draft): the `openclaw.khaos.company` auth row marked
+  retired.
+* **`tiala-host.md`** (draft): ttyd stopped 2026-11-16 (LaunchAgent
+  disabled); its credential open item superseded; the 22:30 launchd backup
+  is covered by the 23:00 OpenClaw cron (retirement pending Jun).
+* **Not in this change**: the secrets ledger (separate PR, independent
+  review) and stable concepts' wording (needs Jun's re-verification).
+  Recorded by claude/cloud; not human-verified. Base `173d0f6`.
+
+## 2026-11-16 (OpenClaw public tunnel retired)
+* **Jun-approved, executed by Jun (Cloudflare) and the TIALA CLI**: the
+  `magi-openclaw` Named Tunnel (`openclaw.khaos.company`) is retired — DNS
+  record and tunnel deleted in Cloudflare, LaunchAgent
+  `com.magi.openclaw.cloudflared` booted out and moved aside, its credential
+  files moved out of the cloudflared directory, the tunnel token secret
+  disabled. The `magi-ollama` and `magi-bridge` tunnels were verified
+  unaffected (same processes, same public status). Restoring the hostname
+  would require a new tunnel.
+* **Docs**: `tiala-host.md`, `cloudflare.md` (draft) and
+  `discord-migration.md` decision 9 updated. No `verified` entry.
+
+## 2026-11-16 (magi-moni stops operating TIALA; OpenClaw public URL stays closed)
+* **Jun's decisions (Claude session)**: magi-moni does not need TIALA access —
+  AKA-1's TIALA / OpenClaw Gateway tools and `scripts/operate-tiala.js` are
+  removed in magi-moni#60 (supersedes migration decision 6); the OpenClaw
+  Gateway's public URL stays closed. Recorded in
+  `system/services/discord-migration.md` decisions 8–9 (draft) and the
+  `magi-moni` pointer (unverified).
+* **Finding (TIALA CLI, read-only)**: since OpenClaw 2026.11.1 (2026-11-08)
+  the Gateway rejects tunnelled requests before authentication unless trusted
+  proxies are configured, so magi-moni's TIALA tools and the public browser
+  interface had been unusable for a week. The migration plan's "browser
+  interface as recovery path" is corrected accordingly.
+* **Scope**: no guard, table, trading-mode or LILITH change; no `verified`
+  entry. Base `f741ddc`.
+
+## 2026-11-13 (TIALA read-only check: OpenClaw Discord down, memory crons stopped)
+* **Source**: read-only check by the TIALA Claude CLI on 2026-11-13 against
+  magi-knowledge `edb23af` (no configuration change, restart or deletion);
+  recorded by claude/cloud. Not human-verified.
+* **`aka` on Discord**: OpenClaw's Discord channel has been stopped since
+  2026-11-12 17:08 JST (close code 4004, invalid token). Most likely `aka`'s
+  bot token was reset during the 2026-11-12 MAGI Ops correction, while `aka`
+  was still the only application — an agent-guided step. This explains the
+  unanswered `aka` `/help`. Recovered the same morning (Jun-approved,
+  TIALA CLI): Jun re-issued `aka`'s token, which was installed without being
+  printed; the Discord owner allowlist was added; the Gateway was restarted
+  at 09:36 JST with `gateway.mode` unchanged. Jun's DM got answers to
+  `/help` (09:38) and a conversation (09:39). The agent-side copy of the old
+  token is being destroyed by Jun.
+* **Gate 8 inventory**: no active LaunchAgent or crontab references Telegram;
+  remaining Telegram producers are OpenClaw's Telegram channel and three
+  OpenClaw crons. On Jun's decision (decisions 1 and 7), the TIALA CLI
+  disabled OpenClaw's Telegram channel on 2026-11-13 09:28 JST
+  (`channels.telegram.enabled=false`, hot reload, no Gateway restart, config
+  backed up first); channel status `disabled, stopped`, no Telegram API
+  connection afterwards. The bot credential itself is kept until the three
+  crons are re-pointed (Jun's decision).
+* **Drift recorded** (`tiala-host`, `aka-memory`, `magi-model-health-check`,
+  `discord-migration` — drafts): OpenClaw memory crons disabled since
+  2026-11-08 after daily failures from about 2026-10-27 (model policy), so the
+  memory pipeline and the cron-run SSD/Drive backup are not running; netdata
+  exit -6 again; the health monitor now covers `ollama` through `llm_metrics`
+  failure streaks; Ollama 502/524 hypotheses.
+* **Same-day changes (Jun-approved, TIALA CLI)**: OpenClaw model allow list
+  aligned with the primary/fallback (`gemini-2.5-flash`, `claude-sonnet-5`
+  removed); the three memory crons bound to an explicit model and inference
+  account and re-pointed from Telegram to Jun's Discord DM; backup cron
+  `546ad7e7` passed a manual run and was re-enabled; Memory Dreaming (would
+  rewrite `MEMORY.md`) disabled at the plugin level. The removable-volume
+  permission had to be re-granted because the Gateway's node binary changed.
+* **Correction**: magi-knowledge#224 said `aka`'s `/help` was "not
+  investigated"; the cause is now recorded above.
+* **Public-repo rule**: chat IDs, credential locations and ports are not
+  recorded here; host-private details go to magi-core#662.
+## 2026-11-13 (HERMES presentation experiment pointer)
+* **Pointer**: `system/services/magi-core.md` gains an unverified
+  "HERMES presentation experiment pointer" section for
+  dogmaai/magi-core#720 (merged as `0589455`; deployment not yet confirmed): a per-session `v2` / `legacy` / `off`
+  split of the `[HERMES:BRAVE]` prompt block, controlled by
+  `HERMES_VARIANT_WEIGHTS`. The pointer stays **outside the existing
+  `verified` records**; the verified HERMES stack text is the baseline until
+  Jun re-verifies it.
+* **Scope**: documentation only; no `verified` entry added, no status change,
+  no schema/guard/trading/LILITH change, consumer pins not advanced. Base
+  `d06bb9761172384f17f043d9717f80e51bd5466b`.
+
+## 2026-11-13 (Discord cutover reflected in concepts)
+* **Docs**: `system/services/discord-migration.md` (draft) gains a
+  "Live status (2026-11-13)" section — state B deployed, gate-by-gate status
+  (gates 1–3 and 6 done, 4 partial, 5 and 7–8 open, 9 done on the MAGI side),
+  the `aka`/MAGI Ops configuration correction and the `magi-alert-webhook`
+  inventory gap — and its retirement inventory rows are updated.
+* **Pointers**: the migration pointer sections in `magi-core`, `magi-moni`,
+  `bridge-health-checks`, `tiala-host-checks`, `system-control`,
+  `order-approvals`, `l0-kill-switch`, `secrets-inventory`, `aka-memory` and
+  `tiala-host` now state the deployed Discord-only status instead of
+  "proposed, not deployed"; `order-intents`, `focus-symbols` and
+  `hermes-observability` gain the same pointer. For stable concepts the
+  pointers stay **outside the existing `verified` records**: their Telegram
+  wording is the pre-cutover baseline until Jun re-verifies it. OpenClaw
+  concepts keep Telegram as current (gates 7–8 open).
+* **Drafts edited directly**: `magi-moomoo` (manual orders via the Discord
+  confirmation button), `l1-6-recon` (ALERT channel), `secrets-inventory`
+  (Telegram secrets deleted 2026-11-13; ledger edit — needs review by someone
+  other than the implementer).
+* **Drift closed pending Jun**: the `order-approvals` `confirmed=true` drift is
+  fixed by magi-moni#58 (deployed `4fc17bb`); the note stays until Jun
+  re-verifies.
+* **Scope**: documentation only; no `verified` entry added, no status change,
+  no schema/guard/trading/LILITH change, consumer pins not advanced. Base
+  `edb23afca93ddba9fb486351c35d462b8d73c12f` plus magi-knowledge#224.
+
+## 2026-11-13 (Discord cutover deployed; option-A delivery tests; Telegram retired)
+* **Deploys (Jun-approved)**: magi-core#708 (Telegram removal from #710
+  folded in) merged 2026-11-12 16:17 JST / 02:17 ET as `208e3c5`; every
+  `deploy.yml` job succeeded and no core job binds a Telegram secret.
+  magi-moni#58 (#59 folded in, plus a deploy fix that binds the Discord
+  notification webhook on every deploy) merged as `4fc17bb`; Cloud Run deploy
+  succeeded with `--max-instances 1` (decision 5) confirmed on the service.
+* **Configuration drift found and corrected (2026-11-12/13)**: magi-moni's
+  Discord application ID and public key had been set to OpenClaw's `aka`
+  application, so the first Interactions Endpoint save (16:59 JST) pointed
+  `aka`'s interactions at magi-moni, and the command-registration token was
+  `aka`'s bot token. `register-discord-commands.js` refused to overwrite `aka`
+  (its guard worked); no `aka` interaction reached magi-moni in that window.
+  Jun cleared `aka`'s Interactions Endpoint URL (OpenClaw back on the
+  Gateway), created the separate **MAGI Ops** application (gate 2), replaced
+  the registration token with MAGI Ops' bot token (the `aka` token version
+  disabled) and pointed magi-moni at MAGI Ops. The owner check also held a
+  Discord username instead of the numeric user ID and rejected Jun's
+  commands (fail closed, 403); Jun corrected it.
+* **Gate 3 (2026-11-12 17:41 JST / 03:41 ET)**: MAGI Ops Interactions
+  Endpoint verified against magi-moni (signed PING accepted, invalid
+  signature rejected); 11 guild commands registered with default member
+  permissions `0`. MAGI Ops was granted view access to the private
+  operations channel. `/help` answered on 2026-11-13 08:39 JST / 2026-11-12
+  18:39 ET. `/status`, `/kill` and `/resume` were not exercised (gate 5
+  remains open).
+* **Gate 6, option A (mandatory live delivery)**: Discord-only delivery
+  verified per producer. "Jun" = message seen in Discord by Jun; "log" =
+  `Notification sent` in Cloud Logging.
+
+  | Producer | Time (JST / ET) | Evidence |
+  |---|---|---|
+  | PLM session start/end (`magi-core-boreas`) | 11-12 23:30 / 11-12 09:30 | Jun, log |
+  | PLM session start/end (`magi-core-qwen`) | 11-13 05:55–05:59 / 11-12 15:55–15:59 | Jun, log |
+  | `magi-surge-detector` (scheduled, REVIEW) | 11-13 05:35 / 11-12 15:35 | Jun, log |
+  | `magi-llm-health-monitor` (scheduled) | 11-13 01:15 and 05:05 / 11-12 11:15 and 15:05 | Jun, log |
+  | `magi-off-hours-chat` (scheduled) | 11-13 09:00 / 11-12 19:00 | Jun, log |
+  | `magi-daily-report` (one-off test send) | 11-13 08:43 / 11-12 18:43 | Jun, log |
+  | `magi-watchdog` (one-off test send) | 11-13 08:43 / 11-12 18:43 | Jun, log |
+  | `magi-bridge-monitor` (one-off test send) | 11-13 08:43 / 11-12 18:43 | Jun, log |
+  | `magi-tiala-host-monitor` (one-off test send) | 11-13 08:44 / 11-12 18:44 | Jun, log |
+
+  The four one-off test sends (Jun-approved, Jun-executed) ran each job's
+  own image, secret binding and `lib/telegram.js` sender with a single
+  `[TEST] <job> Discord path (option A)` message in category `ALERT`; the
+  job's normal work did not run and nothing wrote to BigQuery, orders or
+  trading controls. They were needed because watchdog, bridge and host
+  monitors only send on anomalies and the daily report's `RESULT` category
+  is muted (unchanged from the Telegram era: suppressed on 11-09 to 11-11 as
+  well), so scheduled runs would not exercise the path.
+* **Not a live producer**: magi-moni's daily/weekly report endpoints have no
+  scheduler caller and received no requests in the last 30 days (pre-existing;
+  Jun decision 2026-11-13: record and exclude from option A; recreating a
+  schedule is a separate task).
+* **Telegram retirement (step 9, Jun-executed 2026-11-13 JST)**: Telegram
+  webhook already deleted (`deleteWebhook` reported so); Telegram secret
+  bindings removed from magi-moni and from magi-thought-scorer (a stale
+  binding its code does not use); the Telegram secrets deleted. Inventory gap:
+  `magi-alert-webhook` (a Cloud Monitoring alert relay to Telegram deployed
+  from source outside the repositories) was not in this plan's inventory; it
+  had not delivered for at least 30 days. Jun chose to retire it (service
+  deleted). Choosing a new destination for those Cloud Monitoring alerts is a
+  separate follow-up.
+* **Still open**: gate 5 (`/kill`, `/resume` in a maintenance window), gates
+  7–8 (OpenClaw on Discord; `aka`'s own `/help` did not respond on 11-13,
+  not investigated here), the Cloud Monitoring alert destination, renaming
+  Telegram-named modules, and updating `discord-migration.md` /
+  service concepts with this live evidence. The migration concept stays
+  `draft`; no `verified` entry added.
+* **References**: OKF `edb23afca93ddba9fb486351c35d462b8d73c12f`
+  (`system/services/discord-migration.md` draft, `log.md`); magi-core
+  `208e3c5d8420859c9b77f8d8e42c8746f45b209a`; magi-moni
+  `4fc17bbdeb02a421b235142bde890c050a0399ff`.
+
+
 ## 2026-11-09 (Proposal: Kimi K3.1 Pro outcome analyzer replacing magi-gemini-analyzer)
 * **Jun's decision (Claude session)**: consolidate offline LLM trade-outcome
   analysis into one Kimi K3.1 Pro analyzer that takes over MELCHIOR-1's
