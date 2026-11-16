@@ -55,21 +55,26 @@ Jun 2026-10-06).
 * Gate behavior when this table is unreachable is fail-closed for
   non-reducing orders.
 
-## Staged Discord migration pointer (unverified)
+## Discord migration pointer (unverified)
 
 Navigation pointer added 2026-11-08 by devin/web. This section is **outside this concept's existing `verified` records and
 has not been verified by human:jun**. It does not modify the verified content
 above, which remains the baseline until Jun verifies a replacement.
-Proposed, not deployed, Discord behavior and the acceptance, rollback and
-Telegram retirement gates are in the draft [migration plan](../services/discord-migration.md).
-It asserts no cutover and authorizes no secret deletion, schema change or
-LILITH boundary change.
+**Status 2026-11-13 (recorded by claude/cloud, not human-verified):** the
+Discord implementation is deployed (magi-core `208e3c5`, magi-moni `4fc17bb`,
+2026-11-12) and MAGI's Telegram routes, bindings and secrets are retired; see
+the [migration plan's live status](../services/discord-migration.md#live-status-2026-11-13) and
+[log.md](../../log.md). Operator approval is a Discord confirmation button bound to Jun's user ID, guild, channel and the exact parameters; a live order approval has not been exercised. Until Jun re-verifies this concept, its Telegram
+wording describes the pre-cutover baseline, not current behavior. This pointer
+authorizes no schema, guard, trading-mode or LILITH boundary change.
 
 Known implementation drift (reported 2026-11-08, not resolved here): the Notes
 above are the verified specification. magi-moni
 `2ec39dcda90641bc250e51b0108a96b4d36a5f31` `lib/tools.js`
 (`akaTool_moomooPlaceOrder`) issues an approval token when the model passes
 `confirmed=true`, contrary to the Notes. Which revision production runs was
-not verified. The proposed correction is
-[magi-moni#58](https://github.com/dogmaai/magi-moni/pull/58) (draft, not
-merged or deployed).
+not verified. The correction,
+[magi-moni#58](https://github.com/dogmaai/magi-moni/pull/58), was merged and
+deployed on 2026-11-12 (`4fc17bb`): a model `confirmed=true` no longer issues a
+token (unit-tested; not exercised live). Jun's re-verification closes this
+drift note.

@@ -50,3 +50,10 @@ default. Partitioned by `date`.
 * Readers: `src/hermes.js` (`queryDailyFocusSymbols`), the
   `magi-hermes-intelligence` Grafana dashboard (coverage panel + `$symbol`
   template variable).
+
+## Discord migration pointer (unverified)
+
+Added 2026-11-13 by claude/cloud. This section is **outside this concept's
+existing `verified` records and has not been verified by human:jun**; the
+verified content above remains the baseline until Jun verifies a replacement.
+Manual additions described above as coming from the Telegram bot now come from AKA-1 on Discord (confirmation button) since the 2026-11-12 cutover. See the [migration plan's live status](../services/discord-migration.md#live-status-2026-11-13).
