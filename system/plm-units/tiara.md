@@ -3,8 +3,8 @@ type: PLM Unit
 title: TIARA
 description: Legacy self-hosted Ollama identity using qwen3.5:9b.
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-09-25T00:00:00Z }
+status: draft
+generated: { by: devin/cli, at: 2026-11-16T11:30:00Z }
 verified: [{ by: human:jun, at: 2026-08-27T23:15:42Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-04-04T05:36:00Z
 tags: [plm, legacy, ollama, self-hosted]
@@ -26,8 +26,9 @@ deployment using `LLM_PROVIDER=ollama` without a `UNIT_NAME` override was
 `magi-vix-oracle` (`MODE=VIX_ONLY`); that job was retired and replaced by
 deterministic aggregation inside `magi-isabel-cache` (see
 [ORACLE](oracle.md#oracle-vix-specialist-retired-2026-09-25)). The remaining
-Ollama deployments set explicit models — [ADAM](adam.md) uses `qwen2.5:7b` and
-[BOREAS](boreas.md) uses `ministral-3:8b-ctx32k` — so `qwen3.5:9b` is no longer
+Ollama deployments set explicit models — [BOREAS](boreas.md) uses
+`ministral-3:8b-ctx32k` ([ADAM](adam.md) used `qwen2.5:7b` until its
+2026-11-16 retirement) — so `qwen3.5:9b` is no longer
 deployed anywhere; it survives only as the `OLLAMA_MODEL` fallback default in
 `lib/config.js`.
 
@@ -41,8 +42,9 @@ deployed anywhere; it survives only as the `OLLAMA_MODEL` fallback default in
 
 # Relationships
 
-* The Ollama provider path is shared by legacy TIARA, [ADAM](adam.md) and
-  [BOREAS](boreas.md).
+* The Ollama provider path is shared by legacy TIARA and
+  [BOREAS](boreas.md); [ADAM](adam.md) shared it until its 2026-11-16
+  retirement.
 * [QWEN](qwen.md) is the DashScope provider, not the Ollama identity.
 * The unit name is resolved from `UNIT_NAME` through `getUnitName()`.
 * [LILITH](lilith.md) is the fine-tuned `lilith` provider served from

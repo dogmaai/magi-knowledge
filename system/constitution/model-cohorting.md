@@ -4,7 +4,7 @@ title: "MODEL COHORTING"
 description: Cohort-reset rule — a model change makes a unit a statistically new entity. Evaluation aggregates are keyed by (unit_name, model_version) and do not carry across the boundary. Documentation-level policy; NOT part of the runtime prompt tree.
 lilith_safe: false
 status: draft
-generated: { by: devin/cloud, at: 2026-11-07T09:16:00Z }
+generated: { by: devin/cli, at: 2026-11-16T11:30:00Z }
 stale_after: 2027-04-02T15:10:00Z
 tags: [constitution, cohort, model-version, evaluation, isabel, probation, draft]
 version: "0.1"
@@ -118,8 +118,9 @@ is not settled here.
 Today no cohort separation exists:
 
 * Statistical keys are `llm_provider`-level — coarser than `unit_name`.
-  ADAM and BOREAS share provider `ollama`, so provider-keyed ISABEL/L4 state
-  already conflates two distinct units before any model change is considered.
+  ADAM (retired 2026-11-16) and BOREAS shared provider `ollama`, so
+  provider-keyed ISABEL/L4 state already conflated two distinct units
+  before any model change is considered.
 * [thoughts](/system/echidna-tables/thoughts.md) has no model column;
   [sessions](/system/echidna-tables/sessions.md).`llm_model` records the
   *configured* model only. Until magi-core Issue #544 lands, cohorts can be

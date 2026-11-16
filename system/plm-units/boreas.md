@@ -3,8 +3,8 @@ type: PLM Unit
 title: BOREAS
 description: Local Mistral-family Ollama unit (ministral-3:8b-ctx32k) on TIALA, entering live NORMAL trading per Jun's 2026-09-22 decision.
 lilith_safe: false
-status: stable
-generated: { by: claude/cloud, at: 2026-10-31T07:23:42Z }
+status: draft
+generated: { by: devin/cli, at: 2026-11-16T11:30:00Z }
 verified: [{ by: human:jun, at: 2026-10-02T00:00:00Z }, { by: human:jun, at: 2026-10-27T05:15:00Z }, { by: human:jun, at: 2026-10-31T07:25:42Z }]
 stale_after: 2027-04-30T07:25:42Z
 tags: [plm, ollama, self-hosted, mistral, ministral, proposed]
@@ -36,20 +36,22 @@ On 2026-10-02 Jun approved replacing it with `ministral-3:8b` (6.0 GB),
 rebuilt locally as `ministral-3:8b-ctx32k` with `PARAMETER num_ctx 32768`
 (KV cache ~4.5 GB; ~3k tok/s prompt eval observed). The weights live on
 TIALA's external SSD at `/Volumes/Extention_SSD/ollama-models/` (the
-`~/.ollama/models` symlink target), shared with `qwen2.5:7b` (ADAM). The
+`~/.ollama/models` symlink target), shared with `qwen2.5:7b` (the retired
+[ADAM](adam.md) model — removal via `ollama rm` on TIALA is pending Jun as
+of 2026-11-16). The
 plain `ministral-3:8b` tag stays installed as the Modelfile base of
 `ministral-3:8b-ctx32k`; the two tags share the same weight blob.
 
-Like [ADAM](adam.md), BOREAS uses the `ollama` provider path with an explicit
+Like the retired [ADAM](adam.md), BOREAS uses the `ollama` provider path with an explicit
 `UNIT_NAME=BOREAS` override, so the session prompt resolves to the shared
 `[BOREAS IDENTITY - COLLABORATIVE ANALYST]` block in
 `magi-core/src/session.js`. Jun decided on 2026-09-22 to onboard it directly
 in `TRADE_MODE=NORMAL` (live order submission via `BROKER=moomoo`), skipping
 the SHADOW onboarding convention used by [CASPER](casper.md) and
-[MELCHIOR-1](melchior-1.md). Because the `ollama` provider is shared, BOREAS
-and ADAM each draw the full `ollama_NORMAL` budget weight per session — the
-combined ollama-provider capital allocation is therefore 2× the single-unit
-share until Optuna re-optimizes the weights.
+[MELCHIOR-1](melchior-1.md). Until ADAM's retirement on 2026-11-16 the
+`ollama` provider was shared, so BOREAS and ADAM each drew the full
+`ollama_NORMAL` budget weight per session (2× combined); BOREAS is now the
+sole active unit drawing `ollama_NORMAL`.
 
 Note the naming: the `mistral` *provider* is [SOPHIA-5](sophia-5.md) (the
 Mistral API). BOREAS is a Mistral-*family open weight* served by the `ollama`
@@ -70,25 +72,31 @@ provider, not the Mistral API.
 | Memory / timeout / retries | `512Mi` / `15m` / `0` |
 
 The `:45` minute keeps the standard 14/16/18/20 UTC weekday cadence without
-colliding with the other PLM minute slots (`:15` ADAM, `:30` SOPHIA-5, `:40`
-TYPHON, `:50` PROMETHEUS, `:54` CASPER, `:55` QWEN) and leaves a 30-minute
-gap after ADAM's `:15` runs — relevant because ADAM and BOREAS share TIALA's
-single GPU: `qwen2.5:7b` (~4.7 GB) + `ministral-3:8b` (6.0 GB) weights alone
-already total ~10.7 GB against the ~10.7 GB Metal budget, and BOREAS's
-~4.5 GB KV cache at `num_ctx 32768` pushes the combined footprint to ~15 GB.
-The two models cannot stay resident together, so simultaneous runs still pay
-a model-reload penalty.
+colliding with the other PLM minute slots (`:40` TYPHON, `:50` PROMETHEUS,
+`:54` CASPER, `:55` QWEN; ADAM's `:15` slot is free since its 2026-11-16
+retirement, and SOPHIA-5's `:30` since 2026-09-22). The `:45` slot was
+originally chosen also to leave a 30-minute gap after ADAM's `:15` runs —
+ADAM and BOREAS shared TIALA's single GPU, and `qwen2.5:7b` (~4.7 GB) +
+`ministral-3:8b` (6.0 GB) weights alone totalled ~10.7 GB against the
+~10.7 GB Metal budget, with BOREAS's ~4.5 GB KV cache at `num_ctx 32768`
+pushing the combined footprint to ~15 GB, so the two models could not stay
+resident together and simultaneous runs paid a model-reload penalty. With
+ADAM retired, BOREAS is the sole Ollama consumer: `ministral-3:8b-ctx32k`
+(6.0 GB + ~4.5 GB KV) alone fits the budget once `qwen2.5:7b` is removed
+(pending Jun's `ollama rm`), and a longer `OLLAMA_KEEP_ALIVE` to keep the
+model resident through trading hours is under consideration.
 
 # Relationships
 
-* The Ollama provider path is shared with [ADAM](adam.md) and legacy
-  [TIARA](tiara.md); BOREAS does not displace either — it is an additional
-  unit on the same provider/budget slot.
+* The Ollama provider path was shared with [ADAM](adam.md) until its
+  2026-11-16 retirement and is still nominally shared with legacy
+  [TIARA](tiara.md); BOREAS is now the sole active unit on the
+  `ollama` provider/budget slot.
 * BOREAS succeeds [SOPHIA-5](sophia-5.md): the hosted-Mistral unit was
   retired on 2026-09-22 because the Mistral-family slot moved to this
   self-hosted model. BOREAS also takes over as surge-detector
   `SECONDARY_JOB` (`magi-core-boreas`).
-* Inference reaches TIALA through the same `OLLAMA_BASE_URL` path as ADAM
+* Inference reaches TIALA through the `OLLAMA_BASE_URL` path ADAM also used
   (Cloudflare `magi-ollama` Named Tunnel; see
   [cloudflare](/system/services/cloudflare.md)). Sessions stream via SSE
   (`stream: true`) since magi-core#536 to stay under the tunnel's ~100 s

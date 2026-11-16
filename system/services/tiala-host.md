@@ -4,7 +4,7 @@ title: TIALA host (Mac mini) — launchd job inventory
 description: The always-on TIALA Mac mini's launchd job inventory after the 2026-10-22 cleanup — active bridge/Ollama/OpenClaw/observability agents, OpenClaw cron jobs, the jobs disabled that day, the netdata log fix, the 2026-11-08 OpenClaw Gateway outage, OpenClaw paired devices, and open security/maintenance items.
 lilith_safe: false
 status: draft
-generated: { by: claude/cloud, at: 2026-11-09T06:55:00Z }
+generated: { by: devin/cli, at: 2026-11-16T11:30:00Z }
 stale_after: 2027-01-22T09:30:00Z
 tags: [service, infra, tiala, launchd, ollama, openclaw, netdata, tailscale]
 repo: infra (TIALA Mac mini M4)
@@ -62,7 +62,11 @@ program paths are host-local and intentionally not recorded here.
 | `com.magi.alloy` | RunAtLoad + KeepAlive on crash | Grafana Alloy — `prometheus.exporter.unix` host metrics, remote-written to Hosted Metrics (stack `aka`); token + endpoint user live in a host-local env file, never in the repo. Templates in magi-moomoo `scripts/` (`alloy/config.alloy`, `start-alloy.sh`, `com.magi.alloy.plist`, `install-alloy-launchagent.sh`, `alloy/magi-alloy.newsyslog.conf`). Installed via `brew tap grafana/grafana` + `brew pin alloy`; running since 2026-10-26 — `job="tiala-host"` series confirmed live in `grafanacloud-aka-prom` | [secrets-inventory](secrets-inventory.md) |
 
 Ollama's historical consumer on this box was TIARA, which is **legacy**;
-current consumers are ADAM/BOREAS via the authenticated
+the current consumer is **BOREAS only** — [ADAM](/system/plm-units/adam.md)
+(Ollama `qwen2.5:7b`) was retired on 2026-11-16 (Jun's decision), and
+removing its model from the SSD (`ollama rm qwen2.5:7b`) plus a
+`OLLAMA_KEEP_ALIVE` review for BOREAS are pending Jun's execution
+(see *Open items*). Access stays via the authenticated
 `magi-ollama` Named Tunnel (see [aka-memory](aka-memory.md)).
 
 # OpenClaw cron jobs
@@ -269,6 +273,12 @@ Recorded by claude/cloud; not human-verified. Each step was backed up first.
 
 # Open items (NEEDS_JUN_DECISION)
 
+* **ADAM retired 2026-11-16** (Jun's decision; [adam.md](/system/plm-units/adam.md)):
+  pending on this host — `ollama rm qwen2.5:7b` (weights on the external SSD;
+  `ministral-3:8b-ctx32k` and its `ministral-3:8b` base tag stay), and a
+  `OLLAMA_KEEP_ALIVE` increase so BOREAS's model stays resident through
+  trading hours (currently 5 min; cold loads caused the 502s noted in
+  *Status 2026-11-13*). Both are Jun's to execute/approve.
 * **OpenClaw Gateway stderr discarded**: `ai.openclaw.gateway` has
   `StandardErrorPath=/dev/null` — start-up failures (such as the
   2026-11-08 `gateway.mode` block) leave no log. Redirect to a file

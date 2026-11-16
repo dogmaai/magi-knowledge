@@ -1,5 +1,42 @@
 # Bundle Update Log
 
+## 2026-11-16 (ADAM retired — Ollama roster consolidated to BOREAS)
+* **Jun's decision (2026-11-16), recorded by devin/cli — not human-verified**:
+  ADAM (`magi-core-adam`, Ollama `qwen2.5:7b` on TIALA) is retired. Reason:
+  79.5% success rate over the last 30 days, a 68 s median response time and
+  one trade; TIALA's 16 GB cannot keep `qwen2.5:7b` resident next to
+  BOREAS's `ministral-3:8b-ctx32k` and swap on the host is exhausted. The
+  `(ADAM, qwen2.5:7b)` cohort ends — BOREAS is now the sole active `ollama`
+  unit and the only consumer of `ollama_NORMAL`.
+* **Docs**: `system/plm-units/adam.md` → `unit_status: retired` and
+  `status: draft` (this also resolves the existing mismatch where the body
+  said the doc remained `draft` while frontmatter said `stable`);
+  `system/plm-units/index.md` moved ADAM from Active to the deprecated
+  table; `boreas.md`, `tiara.md` and `magi-moni.md` demoted `stable` →
+  `draft` because `okf_lint` fails a `stable` doc whose `generated.at`
+  postdates the last human `verified.at` — **the magi-core OKF drift test
+  then requires Jun's re-verification back to `stable` before the
+  `vendor/magi-knowledge` pin can be bumped** (a deployed `magi-core-boreas`
+  must resolve to exactly one `stable` doc). Consistency updates:
+  `tiala-host.md` (consumer list + open item for `ollama rm qwen2.5:7b` /
+  `OLLAMA_KEEP_ALIVE`), `cloudflare.md`, `aka-memory.md`, `magi-moni.md`,
+  `magi-model-health-check.md`, `secrets-inventory.md` (ledger
+  used-by — review by non-implementer required per COLLABORATION.md),
+  `trades.md` (L2/L3 enabled-window list drops ADAM per its own
+  "edit on any deploy-config change" rule), `tiara.md`,
+  `model-consolidation.md`, `model-cohorting.md`. No `verified` entries
+  added.
+* **Companion**: magi-core PR removes `Deploy magi-core-adam` and
+  `Setup Cloud Scheduler for ADAM` from `deploy.yml` (reason + Jun's
+  manual delete commands left as comments) and bumps the
+  `vendor/magi-knowledge` pin to this change's merge commit. The shared
+  Ollama path (`src/session.js`, `ollama_NORMAL` in `lib/config.js`) stays
+  for BOREAS; `sql/` LIVE listings keep ADAM for historical analysis.
+* **Pending Jun (not done by this change)**: `gcloud scheduler jobs
+  pause`/`delete magi-scheduler-adam`, `gcloud run jobs delete
+  magi-core-adam` (asia-northeast1), `ollama rm qwen2.5:7b` on TIALA, and
+  the `OLLAMA_KEEP_ALIVE` review. Base `9beef49`.
+
 ## 2026-11-16 (AKA-1 symbol analysis read surface)
 * **Approved plan, documented by devin/cloud**: new draft
   `system/echidna-tables/llm-analysis.md` catalogs the existing regional

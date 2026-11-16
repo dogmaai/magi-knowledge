@@ -4,7 +4,7 @@ title: magi-model-health-check
 description: Periodic provider/model health checks across the PLM roster.
 lilith_safe: false
 status: draft
-generated: { by: devin/cloud, at: 2026-10-22T01:19:45Z }
+generated: { by: devin/cli, at: 2026-11-16T11:30:00Z }
 verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
 stale_after: 2026-12-16T01:02:48Z
 tags: [service, health-check, providers, ops]
@@ -22,7 +22,7 @@ The implementation is the `magi-llm-health-monitor` Cloud Run job in
 `magi-model-health-check` repo exists). Coverage note (2026-10-20, Claude
 review): the monitor probes the five hosted LLM providers only (google,
 deepseek, qwen, kimi, openai — `PROVIDERS` in `health-monitor.js`); the Ollama
-units (ADAM/BOREAS on TIALA), the HERMES Gemini model, and the Cohere
+unit (BOREAS on TIALA; ADAM retired 2026-11-16), the HERMES Gemini model, and the Cohere
 models are not covered by the synthetic probes. Update (observed 2026-11-13,
 magi-core `4b57047`, not human-verified): the job also scans `llm_metrics` for
 per-provider failure streaks of the real call path (`checkMetricsStreaks`,

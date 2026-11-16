@@ -4,7 +4,7 @@ title: AKA memory (TIALA → GCS / SSD / Drive)
 description: AKA's long-term memory on TIALA, how it is written, and its daily backups to gs://screen-share-459802-memory, the external SSD and Google Drive.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-22T09:30:00Z }
+generated: { by: devin/cli, at: 2026-11-16T11:30:00Z }
 verified: { by: human:jun, at: 2026-08-28T11:31:18Z }
 stale_after: 2027-02-24T11:31:18Z
 tags: [service, aka, tiala, memory, backup, gcs, ssd, drive]
@@ -141,8 +141,8 @@ TIALA — Mac mini M4 (16 GB), 24/7, reachable over the tailnet (address in
 the private record, dogmaai/magi-core#662). Ollama serves raw on loopback; the `local.ollama-proxy`
 Host-rewrite proxy fronts it for local clients, and the `ollama-auth-proxy`
 enforces the Bearer token in front of the `magi-ollama` Named Tunnel (used
-by [ADAM](/system/plm-units/adam.md) and
-[BOREAS](/system/plm-units/boreas.md); [TIARA](/system/plm-units/tiara.md) is
+by [BOREAS](/system/plm-units/boreas.md); [ADAM](/system/plm-units/adam.md)
+retired 2026-11-16, [TIARA](/system/plm-units/tiara.md) is
 legacy). Also runs OpenD (the MooMoo gateway behind
 [magi-moomoo](magi-moomoo.md)), the ttyd web terminal and Netdata.
 Netdata's `apps.plugin` was disabled 2026-10-22 (it flooded `collector.log` to

@@ -4,7 +4,7 @@ title: Cloudflare (AI Search, R2 Data Catalog, Named Tunnel, AI Gateway)
 description: How MAGI uses Cloudflare — the magi-document AI Search mirror and okf.system Iceberg mirror of this spec on the magi-system bucket, the Named Tunnels exposing TIALA services, and the default AI Gateway behind AI Search.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-22T09:30:00Z }
+generated: { by: devin/cli, at: 2026-11-16T11:30:00Z }
 verified: [{ by: human:jun, at: 2026-09-03T09:04:15Z }, { by: devin/cli, at: 2026-09-16T07:25:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-04-04T05:36:00Z
 tags: [service, cloudflare, r2, ai-search, tunnel, ai-gateway]
@@ -76,7 +76,7 @@ live in `.agents/skills/` and are referenced below rather than duplicated.
 | Tunnel | Public hostname | Origin on TIALA | Consumer |
 |---|---|---|---|
 | `magi-bridge` | `bridge.khaos.company` (`service='opend-proxy'`) | Flask on loopback (port in the private record) | [magi-moomoo](magi-moomoo.md) proxy → magi-core — since 2026-09 the **fallback** leg of magi-moomoo's dual-route bridge path (private WireGuard route preferred; see magi-moomoo.md). Retirement planned after a private-route stability observation period. |
-| `magi-ollama` | `ollama.khaos.company` | Ollama REST API | [ADAM](/system/plm-units/adam.md) and [BOREAS](/system/plm-units/boreas.md) (legacy: [TIARA](/system/plm-units/tiara.md)) |
+| `magi-ollama` | `ollama.khaos.company` | Ollama REST API | [BOREAS](/system/plm-units/boreas.md) (retired 2026-11-16: [ADAM](/system/plm-units/adam.md); legacy: [TIARA](/system/plm-units/tiara.md)) |
 | `magi-openclaw` | `openclaw.khaos.company` | OpenClaw Gateway — **retired 2026-11-16** (tunnel and DNS record deleted; recorded by claude/cloud, not human-verified) | formerly AKA / [magi-moni](magi-moni.md), Devin |
 
 Tunnel names are verified via the Cloudflare Tunnel API (2026-10-03,

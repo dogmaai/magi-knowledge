@@ -3,8 +3,8 @@ type: Service
 title: magi-moni
 description: Monitoring + admin layer with the AKA-1 natural-language operator bot.
 lilith_safe: false
-status: stable
-generated: { by: devin/cli, at: 2026-10-06T08:00:00Z }
+status: draft
+generated: { by: devin/cli, at: 2026-11-16T11:30:00Z }
 verified: [{ by: human:jun, at: 2026-08-24T11:03:39Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-06T08:31:20Z }]
 stale_after: 2027-04-04T08:31:20Z
 tags: [service, monitoring, reporting, alerts, aka-1]
@@ -24,8 +24,9 @@ caller was removed (the provider entered magi-core `DEPRECATED_PROVIDERS` on
 `OLLAMA_MODEL=qwen3.5:9b`) was removed — `qwen3.5:9b` is no longer deployed
 on TIALA anyway (see log 2026-09-25). `GEMINI_MODEL` overrides the
 `gemini-3.8-flash` default, mirroring `magi-core/lib/config.js`. TIALA's
-Ollama service itself stays — it still serves the ADAM/BOREAS/TIARA PLM
-units via the `magi-ollama` Named Tunnel. Earlier revisions described AKA-1
+Ollama service itself stays — it serves the BOREAS PLM
+unit via the `magi-ollama` Named Tunnel (ADAM retired 2026-11-16; TIARA is
+legacy). Earlier revisions described AKA-1
 as "Claude/Gemini"; the implementation never used Claude.
 
 # Key modules

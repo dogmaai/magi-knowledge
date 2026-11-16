@@ -20,7 +20,6 @@ This whole tree is **cross-unit by definition** and therefore
 | [CASPER](casper.md) | deepseek | deepseek-flash | 0.999 | `magi-core-deepseek` | active | Aggressive momentum hunter |
 | [QWEN](qwen.md) | qwen | qwen-plus | 0.5 base / 0.75 effective | `magi-core-qwen` | active | Independent systematic reasoner |
 | [TYPHON](typhon.md) | kimi | kimi-k2.6 | 0.5 base / 0.75 effective | `magi-core-kimi` | active | Contrarian deep-value analyst |
-| [ADAM](adam.md) | ollama | qwen2.5:7b | 1.0 | `magi-core-adam` | active | Collaborative analyst |
 | [PROMETHEUS](prometheus.md) | openai | gpt-5.6-luna | 0.5 | `magi-core-openai` | active | Probability-calibrated strategist |
 | [BOREAS](boreas.md) | ollama | ministral-3:8b-ctx32k | 1.0 | `magi-core-boreas` | active | Collaborative analyst (local Mistral family on TIALA) |
 
@@ -83,6 +82,7 @@ Role boundaries, so the analyzers are not confused with each other:
 | SEKHMET | sakana | RETIRED 2026-09-17 (offline analyzer produced no output for 16d; Meta Verifier first run failed, 0 rows) | — (LLM causal analysis unassigned) |
 | [LILITH](lilith.md) | lilith | RETIRED (inference backend decommissioned) | — |
 | [SOPHIA-5](sophia-5.md) | mistral | RETIRED 2026-09-22 (hosted Mistral slot moved to local BOREAS; provider defaults + surge primary moved to QWEN) | [BOREAS](boreas.md) |
+| [ADAM](adam.md) | ollama | RETIRED 2026-11-16 (Jun's decision: 79.5% 30-day success rate, 68 s median response, 1 trade; TIALA's 16 GB cannot co-host `qwen2.5:7b` with BOREAS — swap exhausted) | — ([BOREAS](boreas.md) is now the sole active `ollama` unit) |
 
 `DEPRECATED_PROVIDERS = {together, groq, xai, sakana, lilith, mistral}` are excluded from
 budget-weight loading so they do not dilute active units' allocation. ZEROEL was
