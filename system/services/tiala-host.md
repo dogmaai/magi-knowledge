@@ -1,10 +1,10 @@
 ---
 type: Service
 title: TIALA host (Mac mini) — launchd job inventory
-description: The always-on TIALA Mac mini's launchd job inventory after the 2026-10-22 cleanup — active bridge/Ollama/OpenClaw/observability agents, OpenClaw cron jobs, the jobs disabled that day, the netdata log fix, and open security/maintenance items.
+description: The always-on TIALA Mac mini's launchd job inventory after the 2026-10-22 cleanup — active bridge/Ollama/OpenClaw/observability agents, OpenClaw cron jobs, the jobs disabled that day, the netdata log fix, the 2026-11-08 OpenClaw Gateway outage, OpenClaw paired devices, and open security/maintenance items.
 lilith_safe: false
 status: draft
-generated: { by: claude/cloud, at: 2026-10-27T07:55:00Z }
+generated: { by: claude/cloud, at: 2026-11-09T06:55:00Z }
 stale_after: 2027-01-22T09:30:00Z
 tags: [service, infra, tiala, launchd, ollama, openclaw, netdata, tailscale]
 repo: infra (TIALA Mac mini M4)
@@ -48,15 +48,15 @@ program paths are host-local and intentionally not recorded here.
 |---|---|---|---|
 | `com.magi.bridge` | RunAtLoad + KeepAlive watchdog | Watchdog for the moomoo bridge + `magi-bridge` cloudflared tunnel (`bridge.khaos.company`); sources an injected `MOOMOO_BRIDGE_AUTH_TOKEN` env file | [magi-moomoo](magi-moomoo.md), [cloudflare](cloudflare.md) §3 |
 | `com.magi.ollama.cloudflared` | RunAtLoad | Named Tunnel `magi-ollama` → `ollama.khaos.company` | [cloudflare](cloudflare.md) §3 |
-| `com.magi.openclaw.cloudflared` | RunAtLoad | Named Tunnel `magi-openclaw` → `openclaw.khaos.company` | [cloudflare](cloudflare.md) §3 |
+| `com.magi.openclaw.cloudflared` | RunAtLoad | Named Tunnel `magi-openclaw` → `openclaw.khaos.company`. **Retired 2026-11-16** (Jun): LaunchAgent booted out and moved to `LaunchAgents.disabled`; DNS record and tunnel deleted in Cloudflare; the tunnel token secret disabled. Restoring requires a new tunnel | [cloudflare](cloudflare.md) §3 |
 | `com.magi.ollama-auth-proxy` | RunAtLoad | Bearer-auth enforcement (`OLLAMA_AUTH_TOKEN` injected env file) in front of raw Ollama | [cloudflare](cloudflare.md), [secrets-inventory](secrets-inventory.md) |
 | `local.ollama-proxy` | RunAtLoad | The local Host-rewrite proxy in front of Ollama — **no auth**; never in the tunnel path | [cloudflare](cloudflare.md) |
 | `local.ollama-env` | at login | `launchctl setenv OLLAMA_CONTEXT_LENGTH 65536` — host tuning | — |
 | `local.tailscale-funnel` | — | **Disabled 2026-10-23** (unauthenticated publication remediated — see [cloudflare](cloudflare.md); details in magi-core#659) | [cloudflare](cloudflare.md), [aka-memory](aka-memory.md) |
-| `ai.openclaw.gateway` | RunAtLoad | OpenClaw Gateway v2026.6.1 (env wrapper under the OpenClaw service-env dir), running on Homebrew `node@22` — **22.23.4 since 2026-10-27** (Oct 2026 Node.js security release; was 22.22.0). Models (Jun 2026-10-27): primary `google/gemini-3.8-flash`, fallback `google/gemini-3.5-flash-lite` — replaced primary `sakana/fugu` (Sakana retired) and fallback `google/gemini-2.5-flash` (2.5 series being shut down); the `sakana` provider block is removed from `openclaw.json` and the agent `models.json` | [aka-memory](aka-memory.md), [cloudflare](cloudflare.md) |
+| `ai.openclaw.gateway` | RunAtLoad | OpenClaw Gateway (listener port/bind omitted under the public-repo writing rules; host-private details belong in magi-core#662), config `openclaw.json` in the OpenClaw state dir. **As of 2026-11-09** (observed on host): the OpenClaw CLI reports **v2026.11.1** (`4ffdd20`; `openclaw --version` returned v2026.6.1 `2e08f0f` on 2026-11-08 ~17:25 JST during the incident diagnosis) and the service command is Homebrew **`node`** (unversioned formula; the CLI resolved it to 26.12.1) with `--max-old-space-size=8192` — the explicit `node@22` path is gone (node@22 22.23.4 is still installed but unused by the Gateway). The version of the running Gateway process itself was not queried separately. History: `node@22` 22.23.4 from 2026-10-27 (was 22.22.0). `gateway.mode` must stay `local` — see *Incident 2026-11-08* below. Models (Jun 2026-10-27; not re-verified on 2026-11-09): primary `google/gemini-3.8-flash`, fallback `google/gemini-3.5-flash-lite` — replaced primary `sakana/fugu` (Sakana retired) and fallback `google/gemini-2.5-flash` (2.5 series being shut down); the `sakana` provider block is removed from `openclaw.json` and the agent `models.json` | [aka-memory](aka-memory.md), [cloudflare](cloudflare.md) |
 | `com.openclaw.gcs-memory-sync` | daily 21:00 JST | AKA memory backup → `gs://screen-share-459802-memory`; last run 2026-10-21 21:00:11 JST ok (86 objects) | [aka-memory](aka-memory.md) |
 | `com.openclaw.memory-sync` | daily 22:30 JST | AKA memory backup → SSD + Drive. **Known problem**: launchd rsync to the external SSD fails `Operation not permitted` (macOS TCC); ends `status=1` — see [aka-memory](aka-memory.md) | [aka-memory](aka-memory.md) |
-| `local.ttyd` | RunAtLoad | The web terminal — **loopback-only since 2026-10-23** (Jun changed the bind; verified on host) and published tailnet-only via an intentional `tailscale serve` entry (not Funnel). basic-auth credential still embedded in the LaunchAgent — see open items | [aka-memory](aka-memory.md) |
+| `local.ttyd` | RunAtLoad | The web terminal — **stopped 2026-11-16** (Jun-approved; booted out and moved to `LaunchAgents.disabled`, plist tightened to 600). Was loopback-only since 2026-10-23 and tailnet-only via `tailscale serve` | [aka-memory](aka-memory.md) |
 | `ai.devin.worker` | RunAtLoad | Devin worker (`--outpost=my-outpost`); log on host | — |
 | `homebrew.mxcl.netdata` | RunAtLoad | Host metrics — see Observability | — |
 | `com.magi.alloy` | RunAtLoad + KeepAlive on crash | Grafana Alloy — `prometheus.exporter.unix` host metrics, remote-written to Hosted Metrics (stack `aka`); token + endpoint user live in a host-local env file, never in the repo. Templates in magi-moomoo `scripts/` (`alloy/config.alloy`, `start-alloy.sh`, `com.magi.alloy.plist`, `install-alloy-launchagent.sh`, `alloy/magi-alloy.newsyslog.conf`). Installed via `brew tap grafana/grafana` + `brew pin alloy`; running since 2026-10-26 — `job="tiala-host"` series confirmed live in `grafanacloud-aka-prom` | [secrets-inventory](secrets-inventory.md) |
@@ -67,14 +67,15 @@ current consumers are ADAM/BOREAS via the authenticated
 
 # OpenClaw cron jobs
 
-Not launchd — `openclaw cron list` (all status ok, matching
-[aka-memory](aka-memory.md)):
+Not launchd — `openclaw cron list` (all status ok on 2026-10-22, matching
+[aka-memory](aka-memory.md); **2026-11-13: all three disabled with errors**, see
+[status 2026-11-13](#status-2026-11-13-read-only-check)):
 
 | Cron | Schedule (JST) | Role |
 |---|---|---|
 | `save-daily-chat-log` | 21:45 | Writes `memory/chat_logs/YYYY-MM-DD_chat.md` |
 | `daily-memory-update` | 22:00 | Appends durable facts to `memory/YYYY-MM-DD.md` |
-| `546ad7e7` | 23:00 (`0 14 * * *` UTC) | Runs `sync-memory-backup.sh` — the SSD leg **succeeds** under this context (TCC-granted), unlike the 22:30 launchd run |
+| `546ad7e7` | 23:00 (`0 14 * * *` UTC) | Runs `sync-memory-backup.sh` — the SSD leg **succeeds** under this context (TCC-granted), unlike the 22:30 launchd run. 2026-11-13: the grant is tied to the Gateway's node binary path, so the 2026-11-09 switch to Homebrew `node` 26.12.1 needed a new removable-volume grant (Jun approved it 10:01 JST); a `brew upgrade node` would require it again |
 
 # Disabled 2026-10-22
 
@@ -151,14 +152,146 @@ Telegram ALERT delivery for the same two conditions comes from the
 [tiala_host_checks](/system/echidna-tables/tiala-host-checks.md)) — Grafana routing itself only has the
 GCP-Alerts-email receiver today (magi-core#669).
 
+# Incident 2026-11-08 — OpenClaw Gateway down (`openclaw.khaos.company` 502)
+
+Observed on the host by Jun with Claude (2026-11-08 / 11-09); root cause
+traced by a local CLI agent from the config audit log. Read-only
+investigation except the one recovery write noted below.
+
+| Time (JST) | Event |
+|---|---|
+| 17:20:25 | `gateway.mode` written `local` → `remote`. Config audit: `event=config.write`, `source=macos-openclaw-config-file`, writer = the OpenClaw macOS app (`/Applications/OpenClaw.app`), no device id (direct file write, not a WS/RPC client), `suspicious=[]`. |
+| 17:20:26 | Gateway hot-reload detected the change (`meta.lastTouchedVersion, meta.lastTouchedAt, gateway.mode`) → SIGUSR1 → full process restart. |
+| 17:20:29 → 17:29 | Every launchd restart (~10.6 s apart) exited **78** with `Gateway start blocked: set gateway.mode=local (current: remote) or pass --allow-unconfigured.` Gateway port not listening. `openclaw config validate` still reported the file valid (the value, not the schema, blocks start). |
+| from 17:21:37 | `magi-openclaw` cloudflared stayed healthy and logged `dial tcp <origin>: connect: connection refused` (origin = the local Gateway) → Cloudflare 502 for `/` and `/health`. |
+| 17:29:03 | Recovery (Jun-approved): `openclaw config set gateway.mode local` — the value in the `.bak` copy. No other config, channel, cron, model or LaunchAgent change. Gateway came back; local and public `/health` → `{"ok":true,"status":"live"}` HTTP 200. |
+
+Notes:
+
+* **Probable trigger (not proven)**: the macOS app's connection screen
+  offers *Remote connection* (gateway token, SSH tunnel / Direct ws/wss);
+  choosing Remote on TIALA — where the Gateway runs locally — writes
+  `gateway.mode=remote`. Two Gateway SIGTERMs at 17:19:31 / 17:19:44 and
+  the app's Sparkle updater were active just before; what made the app
+  write the value is not recorded in the Gateway logs. Rule: on TIALA the
+  app stays on the local Gateway; Remote is only for a different client
+  machine.
+* **No paired device was involved**: the three Devin Discord devices were
+  approved 20–39 min after the write; a Devin connection at 17:15 had been
+  rejected as not-paired. Devin's own operation log for 17:10–17:30 shows
+  no config write.
+* **Diagnostics gap**: the LaunchAgent sends stderr to `/dev/null`, so the
+  start-blocked message never reached a log file; it was only visible by
+  running the service command once in the foreground.
+
+# OpenClaw paired devices (2026-11-09)
+
+After the incident, `openclaw devices list` (Device IDs shortened here):
+`Devin Discord migration` (`32fa40a9…`, operator — read/write/admin,
+approved by Jun 2026-11-08 17:42 JST; this is the operator device of
+[discord-migration](discord-migration.md) step 7), `JunのMac mini`
+(`2c37b6ea…`, node), `cli` (`06d7b04c…`, operator incl. approvals /
+pairing / talk.secrets, since 2026-07-30). Two further operator devices
+named `Devin Discord config write` (approved by Jun 17:57 / 17:59 JST on
+2026-11-08) were removed by Jun with `openclaw devices remove` on
+2026-11-09. Never use `openclaw devices clear` (drops every pairing).
+
+# Status 2026-11-13 (read-only check)
+
+Recorded by claude/cloud from a read-only check run by the TIALA Claude CLI on
+2026-11-13 (no configuration, restart or deletion). Not human-verified.
+
+* **OpenClaw Gateway**: running continuously since 2026-11-08 18:21 JST;
+  CLI v2026.11.1, `gateway.mode=local`. Its log now carries Gateway errors
+  (the 4004 below), so the "stderr discarded" items here may be stale — the
+  LaunchAgent's `StandardErrorPath` was not re-read; re-check before closing.
+* **Telegram channel**: disabled by the TIALA CLI on Jun's decision at
+  2026-11-13 09:28 JST (config hot reload; Gateway not restarted). OpenClaw
+  therefore has no working chat channel until gate 7's Discord recovery; the
+  authenticated browser interface remains the recovery path.
+* **Discord channel** (`aka` application): stopped from 2026-11-12 17:08 JST
+  on close code 4004 (invalid token) until Jun re-issued `aka`'s token; after
+  a Jun-approved Gateway restart at 2026-11-13 09:36 JST it is connected and
+  answered Jun's DM (`/help`, conversation). See
+  [discord-migration](discord-migration.md) gates 7–8.
+* **OpenClaw cron**: `save-daily-chat-log`, `daily-memory-update` and
+  `546ad7e7` (memory backup report) failed daily from about 2026-10-27
+  (scheduled model not allowed by the agent model policy) and have been
+  disabled since 2026-11-08. Consequences: the chat-log/memory writers have
+  not run since about 2026-10-26, and the cron-run SSD/Drive backup leg has
+  not run since 2026-11-08 (the launchd GCS leg is separate). Model IDs are a
+  gate-7 decision for Jun.
+* **netdata**: `launchctl list` shows last exit status -6 again (possible
+  recurrence of the 2026-10-22 issue; not investigated).
+* **macOS OpenClaw app**: v2026.3.28 fails to connect every 30 s with a
+  protocol mismatch against the v2026.11.1 Gateway (app update pending).
+* **Ollama / tunnel**: BOREAS `502`s coincide with model cold loads (keep-alive
+  5 min, swap nearly full on the 16 GB host) and simultaneous drops of all
+  `magi-ollama` tunnel connections; ADAM `524`s are long prompts whose first
+  byte exceeds the edge timeout. Hypotheses only; remedies are Jun's (host)
+  and an independently reviewed magi-core change (inference path).
+
+# Changes 2026-11-13 (Jun-approved, TIALA Claude CLI)
+
+Recorded by claude/cloud; not human-verified. Each step was backed up first.
+
+* **Model policy**: `agents.defaults.modelPolicy.allow` now lists
+  `google/gemini-3.8-flash` and `google/gemini-3.5-flash-lite` (the primary
+  and fallback, previously outside the allow list, which only gates scheduled
+  runs and `/model` selection), `anthropic/claude-sonnet-5-5` (target of the
+  `sonnet` alias), `anthropic/claude-haiku-4-5-20251001` and
+  `google/gemini-3.1-pro-preview`. `google/gemini-2.5-flash` and
+  `anthropic/claude-sonnet-5` were removed (no remaining use; the "2.5 series
+  being shut down" note above was not re-verified).
+* **OpenClaw cron**: `save-daily-chat-log`, `daily-memory-update` and
+  `546ad7e7` are bound to `google/gemini-3.8-flash` with an explicit inference
+  account (cron runs without a binding were rejected) and announce to Jun's
+  Discord DM instead of Telegram; `save-daily-chat-log` runs in an isolated
+  session. `546ad7e7` passed a manual run at 10:07 JST (SSD and Drive copies
+  verified by checksum, `status=0`, report delivered) and was re-enabled;
+  the other two are re-enabled only after Jun's go-ahead and are checked at
+  their scheduled times. Update: `save-daily-chat-log` was disabled again
+  the same morning because its runner cannot read OpenClaw 2026.11.1's SQLite
+  transcript store (see [aka-memory](aka-memory.md)); `daily-memory-update`
+  was disabled with it.
+* **`aka` Discord actions minimized** (10:19 JST): `channels.discord.actions`
+  enables only the `messages` and `reactions` groups (channel/category,
+  thread, pin, search, role, moderation, event and upload-of-emoji/sticker
+  actions disabled); Jun's DM still answered afterwards. `upload-file`,
+  `read`, `broadcast` and `emoji-list` remain because they belong to those
+  groups.
+* **Memory Dreaming disabled**: the `memory-core` plugin's dreaming job
+  (auto-created with OpenClaw 2026.11.1) rewrites `MEMORY.md` in its deep
+  phase, which [aka-memory](aka-memory.md) forbids for scheduled turns. It
+  had never succeeded (`MEMORY.md` untouched since 2026-09-10). Disabled with
+  `plugins.entries.memory-core.config.dreaming.enabled=false`, which removed
+  the managed job; it did not reappear after a plugin reload.
+
 # Open items (NEEDS_JUN_DECISION)
+
+* **OpenClaw Gateway stderr discarded**: `ai.openclaw.gateway` has
+  `StandardErrorPath=/dev/null` — start-up failures (such as the
+  2026-11-08 `gateway.mode` block) leave no log. Redirect to a file
+  (LaunchAgent change — Jun's).
+* **cloudflared outdated**: 2026-11-08 warning
+  `version 2026.10.3 is outdated … 2026.10.7` (2026.11.0 current on
+  2026-11-16); the `magi-openclaw` tunnel itself was retired on 2026-11-16.
+* **Gateway on an unversioned Node formula**: since the 2026-11-09
+  observation the service command uses Homebrew `node` (not a versioned
+  formula), so a routine `brew upgrade` can change the Gateway's Node major
+  version. Pinning back to `node@22` is not an option as-is: the OpenClaw
+  v2026.11.1 CLI rejected `node@22` (`current Node failed runtime
+  admission`) and retried on `node`. Whether to pin a newer versioned
+  formula, and which, is Jun's decision.
 
 * **Tailscale Funnel Ollama exposure — remediated 2026-10-23** by
   disabling the Tailscale Funnel publication (LaunchAgent archived); the
   authenticated Named Tunnel path is unaffected; operational details in
   dogmaai/magi-core#659. magi-core additionally hardens `OLLAMA_BASE_URL`
   fail-closed (see dogmaai/magi-core ollama-base-url fail-closed PR).
-* **22:30 JST `com.openclaw.memory-sync` TCC failure**: SSD leg fails
+* **22:30 JST `com.openclaw.memory-sync` TCC failure** (*2026-11-16: the
+  23:00 OpenClaw cron `546ad7e7` performs the same backup successfully and
+  reports to Jun's Discord DM; retiring this launchd job is pending Jun*): SSD leg fails
   `Operation not permitted` under launchd while the same script succeeds
   under OpenClaw cron at 23:00. Fix needs a GUI Full Disk Access grant —
   Jun-only.
@@ -166,7 +299,9 @@ GCP-Alerts-email receiver today (magi-core#669).
   launchd templates) keep accumulating in magi-moomoo — a repo whose
   scope is the broker bridge. Extracting a dedicated TIALA-infra
   repository is deferred but recorded as a Jun decision.
-* **ttyd credential in plist**: `local.ttyd` carries a basic-auth
+* **ttyd credential in plist** (*superseded 2026-11-16: ttyd stopped and
+  its LaunchAgent disabled; rotate the credential only if ttyd is ever
+  re-enabled*): `local.ttyd` carries a basic-auth
   `user:password` literal inside the LaunchAgent on TIALA; not in Secret
   Manager — a credential-location gap recorded in
   [secrets-inventory](secrets-inventory.md). Partially remediated
@@ -185,3 +320,12 @@ GCP-Alerts-email receiver today (magi-core#669).
 
 Host ops inventory — no trading path, no LILITH relevance;
 `lilith_safe: false` and never flows into `_lilith_safe/`.
+
+## Discord migration pointer (unverified)
+
+Navigation pointer added 2026-11-08 by devin/web. This concept is draft and this pointer is likewise **not human-verified**;
+its inventory still requires live re-verification before retirement work.
+**Status 2026-11-13 (recorded by claude/cloud, not human-verified):** MAGI's
+own notifications and AKA-1 moved to Discord on 2026-11-12/13 and MAGI's
+Telegram secrets are deleted; see the [migration plan's live status](discord-migration.md#live-status-2026-11-13).
+OpenClaw's Telegram channel and the TIALA producers described here are gates 7–8 and are **still open**. Host down/disk alerts from `magi-tiala-host-monitor` now go to Discord. This pointer authorizes no configuration change or deletion.

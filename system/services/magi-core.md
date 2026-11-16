@@ -4,9 +4,9 @@ title: magi-core
 description: The MAGI trading engine — trade loop, LLM orchestration, and guard layers.
 lilith_safe: false
 status: stable
-generated: { by: devin/cloud, at: 2026-10-31T13:49:23Z }
-verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-06T08:31:20Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }, { by: devin/cloud, at: 2026-10-27T01:09:00Z }, { by: human:jun, at: 2026-10-31T14:00:11Z }]
-stale_after: 2027-04-30T14:00:11Z
+generated: { by: devin/cloud, at: 2026-11-08T04:28:41Z }
+verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-06T08:31:20Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }, { by: devin/cloud, at: 2026-10-27T01:09:00Z }, { by: human:jun, at: 2026-10-31T14:00:11Z }, { by: devin/cloud, at: 2026-11-08T03:22:49Z }, { by: human:jun, at: 2026-11-08T03:50:45Z }, { by: devin/cloud, at: 2026-11-08T03:55:45Z }, { by: devin/cloud, at: 2026-11-08T04:28:41Z }, { by: human:jun, at: 2026-11-08T04:32:07Z }]
+stale_after: 2027-05-08T04:32:07Z
 tags: [service, magi-core, core, trading]
 repo: dogmaai/magi-core
 ---
@@ -29,8 +29,19 @@ and writes the core ECHIDNA tables.
 | `surge-detector.js` / `lib/surge.js` | Intraday surge/crash watcher (see [Surge detector](#surge-detector)). |
 | `lib/vix.js` | VIX regime detection (L6, hard gate) + deterministic daily VIX aggregation (`runVixAggregation`). |
 | `lib/config.js` | Unit/model mapping + budget weights. |
+| `lib/secrets.js` | Shared environment-backed API-key exports; normalizes `OPENAI_API_KEY`. |
 | `lib/bigquery.js` | ECHIDNA writers (`safeInsert`, validators). |
 | `lib/constitution.js` | Constitution prompt builder. |
+
+# OpenAI provider credential
+
+[PROMETHEUS](/system/plm-units/prometheus.md) uses the OpenAI API key injected
+as `OPENAI_API_KEY` from Secret Manager into the `magi-core-openai` job. The
+shared `lib/secrets.js` export is the credential boundary: it trims surrounding
+whitespace, treats a missing or whitespace-only value as absent, and preserves
+characters inside the trimmed value. OpenAI request callers (`src/llm.js`,
+`health-monitor.js`, and `off-hours-chat.mjs`) consume this shared export
+rather than reading `process.env.OPENAI_API_KEY` directly.
 
 # HERMES intelligence stack
 
@@ -187,3 +198,48 @@ Source: `magi-core/.github/workflows/deploy.yml` @ c36aa91. Scheduler and Job na
 
 [magi-moomoo](magi-moomoo.md) (broker), [magi-isabel](magi-isabel.md) (patterns),
 Cohere (embeddings).
+
+## Discord migration pointer (unverified)
+
+Navigation pointer added 2026-11-08 by devin/web. This section is **outside this concept's existing `verified` records and
+has not been verified by human:jun**. It does not modify the verified content
+above, which remains the baseline until Jun verifies a replacement.
+**Status 2026-11-13 (recorded by claude/cloud, not human-verified):** the
+Discord implementation is deployed (magi-core `208e3c5`, magi-moni `4fc17bb`,
+2026-11-12) and MAGI's Telegram routes, bindings and secrets are retired; see
+the [migration plan's live status](discord-migration.md#live-status-2026-11-13) and
+[log.md](../../log.md). Every job notifies through the Discord notification webhook via `lib/telegram.js` (module name kept; rename is a follow-up); `TELEGRAM_*` bindings are replaced by `DISCORD_WEBHOOK_URL`. Mutes are unchanged (`NOTIFICATION_MUTED_CATEGORIES`). Until Jun re-verifies this concept, its Telegram
+wording describes the pre-cutover baseline, not current behavior. This pointer
+authorizes no schema, guard, trading-mode or LILITH boundary change.
+
+## HERMES presentation experiment pointer (unverified)
+
+Pointer added 2026-11-13 by claude/cloud. This section is **outside this
+concept's existing `verified` records and has not been verified by
+human:jun**. It does not modify the verified content above, which remains
+the baseline until Jun verifies a replacement.
+**Merged, deployment not yet confirmed (as of 2026-11-13 09:58 UTC):**
+dogmaai/magi-core#720 (merge commit `0589455`) changes how the
+`[HERMES:BRAVE]` block is presented and adds a per-session experiment
+(`lib/hermes-variant.js`). Production picks it up when `deploy.yml` runs for
+that commit; until a successful deploy is confirmed, running jobs still serve
+the verified behavior above. Once deployed, the "Pre-trade (read)" row of the
+HERMES intelligence stack above no longer describes every session:
+
+| Arm | Default share | What the PLM receives |
+|---|---|---|
+| `v2` | 34% | News as context: no score numbers, no conviction ordering or tape-divergence flag, plus a note that bullish coverage is not a buy reason. |
+| `legacy` | 33% | The verified behavior above (conviction tiering, tape bias / divergence). |
+| `off` | 33% | No `[HERMES:BRAVE]` block. The other HERMES sources are unaffected. |
+
+The arm is derived from the SHA-256 hash of `hermes-variant:<session_id>`.
+The prefix is a fixed, public constant (not a secret); it only keeps the
+assignment independent of the feedback holdout (the `feedback_injected` arm
+in [thoughts](/system/echidna-tables/thoughts.md); magi-core
+`lib/feedback-holdout.js`), which hashes the bare session ID. The arm is therefore reproducible from `session_id` alone; no table or
+column is added. `HERMES_VARIANT_WEIGHTS` overrides the split (`v2:100` ends
+the experiment). Background, metrics and decision rules live in magi-core
+`docs/research/2026-11-hermes-rescore/` at `0589455` (not human-verified). Collection
+(`magi-hermes-refresh`, [pre_trade_intelligence](/system/echidna-tables/pre-trade-intelligence.md))
+is unchanged. This pointer authorizes no schema, guard, trading-mode,
+Constitution or LILITH boundary change.

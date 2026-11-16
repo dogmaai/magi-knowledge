@@ -1,4 +1,4 @@
-# ECHIDNA — `magi_core` data catalog
+# ECHIDNA — data catalog
 
 ECHIDNA is MAGI's BigQuery data warehouse: project `screen-share-459802`,
 dataset `magi_core`, location `US`. The core-table schemas were pulled live
@@ -8,10 +8,19 @@ noted; the remaining code-derived schemas were live-verified via `bq show`
 on 2026-10-06) — the per-doc frontmatter and schema notes are authoritative
 over this blanket statement.
 
-Two write-path conventions matter:
+Regional exception: [llm-analysis](llm-analysis.md) documents the existing
+`magi_analytics.llm_analysis` table in **asia-northeast1** (draft, live metadata
+captured 2026-11-16). It is not in `magi_core` and must be queried separately
+from US tables.
+
+Three write-path conventions matter:
 
 * **Live tables**: `trades` and `thoughts` are the base tables written by the
   trade loop (`lib/bigquery.js` → `safeInsert` / `batchInsert`).
+* **Shadow ledgers**: `trades_shadow` / `thoughts_shadow` hold virtual orders
+  that were recorded instead of sent to the broker (`lib/shadow-trade.js`);
+  SHADOW units' analysis rows still go to `thoughts`. See
+  [trades-shadow](trades-shadow.md).
 * **`_active` views**: `trades_active` and `thoughts_active` are VIEWs over the
   base tables (current/active filter). Most read paths — including
   ISABEL stats and the LILITH training extracts — query the views.
@@ -23,12 +32,15 @@ Two write-path conventions matter:
 * [trades-price-corrections](trades-price-corrections.md) - Pre-correction snapshots of quote-price fixes.
 * [trades-unverifiable](trades-unverifiable.md) - Rows that can never be broker-verified (Alpaca gone / >90d moomoo).
 * [thoughts](thoughts.md) - LLM reasoning log (one row per decision).
+* [trades-shadow](trades-shadow.md) - Virtual orders never sent to the broker (SHADOW `place_order`, `L6_OBSERVE`), mark-to-market evaluated (draft).
+* [thoughts-shadow](thoughts-shadow.md) - Reasoning rows paired 1:1 with `trades_shadow`; SHADOW units' analysis/HOLD rows stay in `thoughts` (draft).
 * [sessions](sessions.md) - Per-session run summary (equity, PnL).
 * [portfolio-snapshots](portfolio-snapshots.md) - Per-session-end portfolio snapshot (equity/cash/positions value); `daily_pnl`/`total_pnl_percent` are session deltas (documented naming drift).
 * [views](views.md) - `trades_active` / `thoughts_active` VIEW definitions.
 
 # Intelligence & analysis
 
+* [llm-analysis](llm-analysis.md) - Regional cross-unit symbol analyses and retrospective price grades; AKA-1 read contract (draft).
 * [market-research](market-research.md) - HERMES/ARIEL research cache.
 * [pre-trade-intelligence](pre-trade-intelligence.md) - HERMES:BRAVE per-symbol Brave/Gemini sentiment + key events.
 * [moomoo-snapshots](moomoo-snapshots.md) - HERMES:MOOMOO broker real-time market snapshots.
@@ -120,7 +132,7 @@ per-table docs are pending work, not waived:
 `manual_focus_symbols`, `model_training_log`, `pattern_discovery_kpi`,
 `stale_phrases`, `thought_analysis_findings`,
 `thought_embeddings`, `thought_outcome_feedback`, `thoughts_for_ds`,
-`thoughts_shadow`, `thoughts_simulation`, `trades_for_ds`, `trades_shadow`,
+`thoughts_simulation`, `trades_for_ds`,
 `trades_simulation`, plus views
 `isabel_trade_analysis`, `market_research_view`, `symbol_change_rates`,
 `trade_results`.

@@ -40,3 +40,16 @@ HALTED. Schema live-verified via `bq show` on 2026-09-16.
     orders including reducing ones, latched across subsequent read
     failures), `RUNNING` (confirmed `false`), `UNKNOWN` (read failure →
     reduce-only, fail-closed for non-reducing orders).
+
+## Discord migration pointer (unverified)
+
+Navigation pointer added 2026-11-08 by devin/web. This section is **outside this concept's existing `verified` records and
+has not been verified by human:jun**. It does not modify the verified content
+above, which remains the baseline until Jun verifies a replacement.
+**Status 2026-11-13 (recorded by claude/cloud, not human-verified):** the
+Discord implementation is deployed (magi-core `208e3c5`, magi-moni `4fc17bb`,
+2026-11-12) and MAGI's Telegram routes, bindings and secrets are retired; see
+the [migration plan's live status](../services/discord-migration.md#live-status-2026-11-13) and
+[log.md](../../log.md). `/kill` and `/resume` are MAGI Ops Discord slash commands (`/resume` requires the confirmation button); they have not yet been exercised live (gate 5). Until Jun re-verifies this concept, its Telegram
+wording describes the pre-cutover baseline, not current behavior. This pointer
+authorizes no schema, guard, trading-mode or LILITH boundary change.

@@ -4,6 +4,10 @@ The MAGI PLM units (the LLM roster). Each unit is a provider/model with a
 persona, a budget weight, and a lifecycle status. The authoritative runtime
 mapping is `getUnitName()` / `getLLMModel()` / `BUDGET_WEIGHTS` in
 `magi-core/lib/config.js`; this registry mirrors it for cross-agent reference.
+For hosted units, the Model column is the configured API request ID; a
+provider may serve a newer model behind an unchanged alias. See
+[CASPER](casper.md#provider-model-lifecycle) for the move from the retired
+`deepseek-v4-flash` alias to `deepseek-flash` (magi-core#706, 2026-11-07).
 
 This whole tree is **cross-unit by definition** and therefore
 `lilith_safe: false`. The LILITH training pipeline must never read it.
@@ -13,7 +17,7 @@ This whole tree is **cross-unit by definition** and therefore
 | Unit | Provider | Model | Budget (NORMAL) | Cloud Run job | Status | Persona |
 |---|---|---|---|---|---|---|
 | [MELCHIOR-1](melchior-1.md) | google | gemini-3.8-flash | 0.954 | `magi-core-gemini` | shadow (`TRADE_MODE=SHADOW`) | Systematic multi-factor analyst |
-| [CASPER](casper.md) | deepseek | deepseek-v4-flash | 0.999 | `magi-core-deepseek` | active | Aggressive momentum hunter |
+| [CASPER](casper.md) | deepseek | deepseek-flash | 0.999 | `magi-core-deepseek` | active | Aggressive momentum hunter |
 | [QWEN](qwen.md) | qwen | qwen-plus | 0.5 base / 0.75 effective | `magi-core-qwen` | active | Independent systematic reasoner |
 | [TYPHON](typhon.md) | kimi | kimi-k2.6 | 0.5 base / 0.75 effective | `magi-core-kimi` | active | Contrarian deep-value analyst |
 | [ADAM](adam.md) | ollama | qwen2.5:7b | 1.0 | `magi-core-adam` | active | Collaborative analyst |
@@ -24,8 +28,10 @@ This whole tree is **cross-unit by definition** and therefore
 `qwen_NORMAL` (QWEN) and `kimi_NORMAL` (TYPHON) providers receive a
 `UNIT_WEIGHT_MULTIPLIERS` 1.5x boost, giving them an *effective* budget weight
 of `0.75` at runtime. MELCHIOR-1 is in `TRADE_MODE=SHADOW`: it continues
-generating decisions and recording to `trades_shadow` / `thoughts_shadow`,
-but does not submit live broker orders. CASPER was promoted back to LIVE on
+generating decisions but does not submit live broker orders. Its analysis
+rows go to `thoughts` with `trade_mode='SHADOW'`; only its `place_order`
+decisions go to `trades_shadow` / `thoughts_shadow` (see
+[SHADOW write paths](melchior-1.md#shadow-write-paths)). CASPER was promoted back to LIVE on
 2026-09-22.
 
 TIARA remains documented as the legacy VIX-only Ollama identity; see

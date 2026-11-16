@@ -4,7 +4,7 @@ title: "MODEL COHORTING"
 description: Cohort-reset rule — a model change makes a unit a statistically new entity. Evaluation aggregates are keyed by (unit_name, model_version) and do not carry across the boundary. Documentation-level policy; NOT part of the runtime prompt tree.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-06T08:00:00Z }
+generated: { by: devin/cloud, at: 2026-11-07T09:16:00Z }
 stale_after: 2027-04-02T15:10:00Z
 tags: [constitution, cohort, model-version, evaluation, isabel, probation, draft]
 version: "0.1"
@@ -20,6 +20,14 @@ source: none — documentation-level policy, not emitted by buildSwingConstituti
 > **not** a section of `buildSwingConstitution()` and must not be injected into
 > PLM prompts. Origin: magi-knowledge Issue #99 (Fable review, item C) →
 > magi-core Issue #545.
+
+> **Not applied for now (Jun 2026-11-07).** A model change does **not** split
+> a cohort at present: units are evaluated continuously by `unit_name`.
+> Decided on CASPER's `deepseek-v4-flash` → `deepseek-flash` switch
+> ([magi-core#706](https://github.com/dogmaai/magi-core/pull/706),
+> [magi-knowledge#214](https://github.com/dogmaai/magi-knowledge/pull/214)
+> review; see [CASPER](/system/plm-units/casper.md#provider-model-lifecycle)).
+> The rule below remains a draft proposal and is not in force.
 
 ## Definition
 

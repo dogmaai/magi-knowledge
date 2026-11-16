@@ -1,0 +1,5 @@
+{
+  "name": "MAGI Knowledge OKF Workbench",
+  "description": "Authoritative Open Knowledge Format (OKF v0.2) specification explorer, conformance & LILITH contamination boundary linter, safe loader inspector, and Cloud R2 digest exporter for the MAGI system.",
+  "requestFramePermissions": []
+}

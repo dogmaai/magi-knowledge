@@ -77,3 +77,16 @@ latest `alerted='down'` row to decide whether to send Telegram.
 * The monitor exits 0 even when `overall=down` — the alert is the deliverable;
   a failing job and a failing bridge must stay distinguishable.
 * Companion hardening: `MOOMOO_ACC_ID` startup validation (magi-moomoo#88).
+
+## Discord migration pointer (unverified)
+
+Navigation pointer added 2026-11-08 by devin/web. This section is **outside this concept's existing `verified` records and
+has not been verified by human:jun**. It does not modify the verified content
+above, which remains the baseline until Jun verifies a replacement.
+**Status 2026-11-13 (recorded by claude/cloud, not human-verified):** the
+Discord implementation is deployed (magi-core `208e3c5`, magi-moni `4fc17bb`,
+2026-11-12) and MAGI's Telegram routes, bindings and secrets are retired; see
+the [migration plan's live status](../services/discord-migration.md#live-status-2026-11-13) and
+[log.md](../../log.md). Down/recovery `ALERT`s are delivered to Discord (job test send confirmed 2026-11-13; a real transition has not yet been observed). Until Jun re-verifies this concept, its Telegram
+wording describes the pre-cutover baseline, not current behavior. This pointer
+authorizes no schema, guard, trading-mode or LILITH boundary change.

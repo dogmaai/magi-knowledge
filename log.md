@@ -1,5 +1,555 @@
 # Bundle Update Log
 
+## 2026-11-16 (AKA-1 symbol analysis read surface)
+* **Approved plan, documented by devin/cloud**: new draft
+  `system/echidna-tables/llm-analysis.md` catalogs the existing regional
+  `magi_analytics.llm_analysis` table and the companion magi-moni
+  `get_symbol_analysis` read contract. Live schema/partition/cluster/location
+  metadata checked on 2026-11-16; writer inspected at magi-core `0589455`.
+  This is not a deployment record or human verification.
+* **Boundaries**: all analysis modes are labeled; prediction grades are not
+  trading P&L. No physical schema, IAM, deploy, guard, trading-mode or LILITH
+  change. HERMES/ISABEL expansion remains follow-up work.
+* **Unresolved pre-existing drift**: price-tracker outcome casing/value list
+  and active-view column coverage are recorded, not silently corrected.
+  Fixed task reference `173d0f6`; documentation branch base `baea072`.
+
+## 2026-11-16 (secrets ledger: OpenClaw Gateway token and ttyd)
+* **`secrets-inventory.md`** (draft, ledger): `OPENCLAW_GATEWAY_TOKEN` has no
+  remote consumer since 2026-11-16 (tunnel retired, magi-moni binding and
+  code removed); Secret Manager v3 created when the value was replaced on
+  TIALA, v1/v2 disabled, secret slated for deletion. ttyd credential row:
+  ttyd stopped, LaunchAgent disabled. Ledger edit — needs review by someone
+  other than the implementer (COLLABORATION.md). Base `173d0f6`.
+## 2026-11-16 (OKF gap fixes after the Discord cutover)
+* **`discord-migration.md`** (draft): gates 7–8 and the retirement inventory
+  updated — OpenClaw's Telegram channel configuration removed and bot token
+  revoked (2026-11-13), OpenClaw DMs isolated per sender
+  (`session.dmScope=per-channel-peer`, 2026-11-16), `aka` Discord actions
+  limited to messages/reactions, memory crons re-pointed to Discord (two
+  paused pending a runner fix). No Telegram producer remains on TIALA.
+* **`cloudflare.md`** (draft): the `openclaw.khaos.company` auth row marked
+  retired.
+* **`tiala-host.md`** (draft): ttyd stopped 2026-11-16 (LaunchAgent
+  disabled); its credential open item superseded; the 22:30 launchd backup
+  is covered by the 23:00 OpenClaw cron (retirement pending Jun).
+* **Not in this change**: the secrets ledger (separate PR, independent
+  review) and stable concepts' wording (needs Jun's re-verification).
+  Recorded by claude/cloud; not human-verified. Base `173d0f6`.
+
+## 2026-11-16 (OpenClaw public tunnel retired)
+* **Jun-approved, executed by Jun (Cloudflare) and the TIALA CLI**: the
+  `magi-openclaw` Named Tunnel (`openclaw.khaos.company`) is retired — DNS
+  record and tunnel deleted in Cloudflare, LaunchAgent
+  `com.magi.openclaw.cloudflared` booted out and moved aside, its credential
+  files moved out of the cloudflared directory, the tunnel token secret
+  disabled. The `magi-ollama` and `magi-bridge` tunnels were verified
+  unaffected (same processes, same public status). Restoring the hostname
+  would require a new tunnel.
+* **Docs**: `tiala-host.md`, `cloudflare.md` (draft) and
+  `discord-migration.md` decision 9 updated. No `verified` entry.
+
+## 2026-11-16 (magi-moni stops operating TIALA; OpenClaw public URL stays closed)
+* **Jun's decisions (Claude session)**: magi-moni does not need TIALA access —
+  AKA-1's TIALA / OpenClaw Gateway tools and `scripts/operate-tiala.js` are
+  removed in magi-moni#60 (supersedes migration decision 6); the OpenClaw
+  Gateway's public URL stays closed. Recorded in
+  `system/services/discord-migration.md` decisions 8–9 (draft) and the
+  `magi-moni` pointer (unverified).
+* **Finding (TIALA CLI, read-only)**: since OpenClaw 2026.11.1 (2026-11-08)
+  the Gateway rejects tunnelled requests before authentication unless trusted
+  proxies are configured, so magi-moni's TIALA tools and the public browser
+  interface had been unusable for a week. The migration plan's "browser
+  interface as recovery path" is corrected accordingly.
+* **Scope**: no guard, table, trading-mode or LILITH change; no `verified`
+  entry. Base `f741ddc`.
+
+## 2026-11-13 (TIALA read-only check: OpenClaw Discord down, memory crons stopped)
+* **Source**: read-only check by the TIALA Claude CLI on 2026-11-13 against
+  magi-knowledge `edb23af` (no configuration change, restart or deletion);
+  recorded by claude/cloud. Not human-verified.
+* **`aka` on Discord**: OpenClaw's Discord channel has been stopped since
+  2026-11-12 17:08 JST (close code 4004, invalid token). Most likely `aka`'s
+  bot token was reset during the 2026-11-12 MAGI Ops correction, while `aka`
+  was still the only application — an agent-guided step. This explains the
+  unanswered `aka` `/help`. Recovered the same morning (Jun-approved,
+  TIALA CLI): Jun re-issued `aka`'s token, which was installed without being
+  printed; the Discord owner allowlist was added; the Gateway was restarted
+  at 09:36 JST with `gateway.mode` unchanged. Jun's DM got answers to
+  `/help` (09:38) and a conversation (09:39). The agent-side copy of the old
+  token is being destroyed by Jun.
+* **Gate 8 inventory**: no active LaunchAgent or crontab references Telegram;
+  remaining Telegram producers are OpenClaw's Telegram channel and three
+  OpenClaw crons. On Jun's decision (decisions 1 and 7), the TIALA CLI
+  disabled OpenClaw's Telegram channel on 2026-11-13 09:28 JST
+  (`channels.telegram.enabled=false`, hot reload, no Gateway restart, config
+  backed up first); channel status `disabled, stopped`, no Telegram API
+  connection afterwards. The bot credential itself is kept until the three
+  crons are re-pointed (Jun's decision).
+* **Drift recorded** (`tiala-host`, `aka-memory`, `magi-model-health-check`,
+  `discord-migration` — drafts): OpenClaw memory crons disabled since
+  2026-11-08 after daily failures from about 2026-10-27 (model policy), so the
+  memory pipeline and the cron-run SSD/Drive backup are not running; netdata
+  exit -6 again; the health monitor now covers `ollama` through `llm_metrics`
+  failure streaks; Ollama 502/524 hypotheses.
+* **Same-day changes (Jun-approved, TIALA CLI)**: OpenClaw model allow list
+  aligned with the primary/fallback (`gemini-2.5-flash`, `claude-sonnet-5`
+  removed); the three memory crons bound to an explicit model and inference
+  account and re-pointed from Telegram to Jun's Discord DM; backup cron
+  `546ad7e7` passed a manual run and was re-enabled; Memory Dreaming (would
+  rewrite `MEMORY.md`) disabled at the plugin level. The removable-volume
+  permission had to be re-granted because the Gateway's node binary changed.
+* **Correction**: magi-knowledge#224 said `aka`'s `/help` was "not
+  investigated"; the cause is now recorded above.
+* **Public-repo rule**: chat IDs, credential locations and ports are not
+  recorded here; host-private details go to magi-core#662.
+## 2026-11-13 (HERMES presentation experiment pointer)
+* **Pointer**: `system/services/magi-core.md` gains an unverified
+  "HERMES presentation experiment pointer" section for
+  dogmaai/magi-core#720 (merged as `0589455`; deployment not yet confirmed): a per-session `v2` / `legacy` / `off`
+  split of the `[HERMES:BRAVE]` prompt block, controlled by
+  `HERMES_VARIANT_WEIGHTS`. The pointer stays **outside the existing
+  `verified` records**; the verified HERMES stack text is the baseline until
+  Jun re-verifies it.
+* **Scope**: documentation only; no `verified` entry added, no status change,
+  no schema/guard/trading/LILITH change, consumer pins not advanced. Base
+  `d06bb9761172384f17f043d9717f80e51bd5466b`.
+
+## 2026-11-13 (Discord cutover reflected in concepts)
+* **Docs**: `system/services/discord-migration.md` (draft) gains a
+  "Live status (2026-11-13)" section — state B deployed, gate-by-gate status
+  (gates 1–3 and 6 done, 4 partial, 5 and 7–8 open, 9 done on the MAGI side),
+  the `aka`/MAGI Ops configuration correction and the `magi-alert-webhook`
+  inventory gap — and its retirement inventory rows are updated.
+* **Pointers**: the migration pointer sections in `magi-core`, `magi-moni`,
+  `bridge-health-checks`, `tiala-host-checks`, `system-control`,
+  `order-approvals`, `l0-kill-switch`, `secrets-inventory`, `aka-memory` and
+  `tiala-host` now state the deployed Discord-only status instead of
+  "proposed, not deployed"; `order-intents`, `focus-symbols` and
+  `hermes-observability` gain the same pointer. For stable concepts the
+  pointers stay **outside the existing `verified` records**: their Telegram
+  wording is the pre-cutover baseline until Jun re-verifies it. OpenClaw
+  concepts keep Telegram as current (gates 7–8 open).
+* **Drafts edited directly**: `magi-moomoo` (manual orders via the Discord
+  confirmation button), `l1-6-recon` (ALERT channel), `secrets-inventory`
+  (Telegram secrets deleted 2026-11-13; ledger edit — needs review by someone
+  other than the implementer).
+* **Drift closed pending Jun**: the `order-approvals` `confirmed=true` drift is
+  fixed by magi-moni#58 (deployed `4fc17bb`); the note stays until Jun
+  re-verifies.
+* **Scope**: documentation only; no `verified` entry added, no status change,
+  no schema/guard/trading/LILITH change, consumer pins not advanced. Base
+  `edb23afca93ddba9fb486351c35d462b8d73c12f` plus magi-knowledge#224.
+
+## 2026-11-13 (Discord cutover deployed; option-A delivery tests; Telegram retired)
+* **Deploys (Jun-approved)**: magi-core#708 (Telegram removal from #710
+  folded in) merged 2026-11-12 16:17 JST / 02:17 ET as `208e3c5`; every
+  `deploy.yml` job succeeded and no core job binds a Telegram secret.
+  magi-moni#58 (#59 folded in, plus a deploy fix that binds the Discord
+  notification webhook on every deploy) merged as `4fc17bb`; Cloud Run deploy
+  succeeded with `--max-instances 1` (decision 5) confirmed on the service.
+* **Configuration drift found and corrected (2026-11-12/13)**: magi-moni's
+  Discord application ID and public key had been set to OpenClaw's `aka`
+  application, so the first Interactions Endpoint save (16:59 JST) pointed
+  `aka`'s interactions at magi-moni, and the command-registration token was
+  `aka`'s bot token. `register-discord-commands.js` refused to overwrite `aka`
+  (its guard worked); no `aka` interaction reached magi-moni in that window.
+  Jun cleared `aka`'s Interactions Endpoint URL (OpenClaw back on the
+  Gateway), created the separate **MAGI Ops** application (gate 2), replaced
+  the registration token with MAGI Ops' bot token (the `aka` token version
+  disabled) and pointed magi-moni at MAGI Ops. The owner check also held a
+  Discord username instead of the numeric user ID and rejected Jun's
+  commands (fail closed, 403); Jun corrected it.
+* **Gate 3 (2026-11-12 17:41 JST / 03:41 ET)**: MAGI Ops Interactions
+  Endpoint verified against magi-moni (signed PING accepted, invalid
+  signature rejected); 11 guild commands registered with default member
+  permissions `0`. MAGI Ops was granted view access to the private
+  operations channel. `/help` answered on 2026-11-13 08:39 JST / 2026-11-12
+  18:39 ET. `/status`, `/kill` and `/resume` were not exercised (gate 5
+  remains open).
+* **Gate 6, option A (mandatory live delivery)**: Discord-only delivery
+  verified per producer. "Jun" = message seen in Discord by Jun; "log" =
+  `Notification sent` in Cloud Logging.
+
+  | Producer | Time (JST / ET) | Evidence |
+  |---|---|---|
+  | PLM session start/end (`magi-core-boreas`) | 11-12 23:30 / 11-12 09:30 | Jun, log |
+  | PLM session start/end (`magi-core-qwen`) | 11-13 05:55–05:59 / 11-12 15:55–15:59 | Jun, log |
+  | `magi-surge-detector` (scheduled, REVIEW) | 11-13 05:35 / 11-12 15:35 | Jun, log |
+  | `magi-llm-health-monitor` (scheduled) | 11-13 01:15 and 05:05 / 11-12 11:15 and 15:05 | Jun, log |
+  | `magi-off-hours-chat` (scheduled) | 11-13 09:00 / 11-12 19:00 | Jun, log |
+  | `magi-daily-report` (one-off test send) | 11-13 08:43 / 11-12 18:43 | Jun, log |
+  | `magi-watchdog` (one-off test send) | 11-13 08:43 / 11-12 18:43 | Jun, log |
+  | `magi-bridge-monitor` (one-off test send) | 11-13 08:43 / 11-12 18:43 | Jun, log |
+  | `magi-tiala-host-monitor` (one-off test send) | 11-13 08:44 / 11-12 18:44 | Jun, log |
+
+  The four one-off test sends (Jun-approved, Jun-executed) ran each job's
+  own image, secret binding and `lib/telegram.js` sender with a single
+  `[TEST] <job> Discord path (option A)` message in category `ALERT`; the
+  job's normal work did not run and nothing wrote to BigQuery, orders or
+  trading controls. They were needed because watchdog, bridge and host
+  monitors only send on anomalies and the daily report's `RESULT` category
+  is muted (unchanged from the Telegram era: suppressed on 11-09 to 11-11 as
+  well), so scheduled runs would not exercise the path.
+* **Not a live producer**: magi-moni's daily/weekly report endpoints have no
+  scheduler caller and received no requests in the last 30 days (pre-existing;
+  Jun decision 2026-11-13: record and exclude from option A; recreating a
+  schedule is a separate task).
+* **Telegram retirement (step 9, Jun-executed 2026-11-13 JST)**: Telegram
+  webhook already deleted (`deleteWebhook` reported so); Telegram secret
+  bindings removed from magi-moni and from magi-thought-scorer (a stale
+  binding its code does not use); the Telegram secrets deleted. Inventory gap:
+  `magi-alert-webhook` (a Cloud Monitoring alert relay to Telegram deployed
+  from source outside the repositories) was not in this plan's inventory; it
+  had not delivered for at least 30 days. Jun chose to retire it (service
+  deleted). Choosing a new destination for those Cloud Monitoring alerts is a
+  separate follow-up.
+* **Still open**: gate 5 (`/kill`, `/resume` in a maintenance window), gates
+  7–8 (OpenClaw on Discord; `aka`'s own `/help` did not respond on 11-13,
+  not investigated here), the Cloud Monitoring alert destination, renaming
+  Telegram-named modules, and updating `discord-migration.md` /
+  service concepts with this live evidence. The migration concept stays
+  `draft`; no `verified` entry added.
+* **References**: OKF `edb23afca93ddba9fb486351c35d462b8d73c12f`
+  (`system/services/discord-migration.md` draft, `log.md`); magi-core
+  `208e3c5d8420859c9b77f8d8e42c8746f45b209a`; magi-moni
+  `4fc17bbdeb02a421b235142bde890c050a0399ff`.
+
+## 2026-11-09 (OpenClaw Gateway outage, runtime and paired devices on TIALA)
+* **Incident (2026-11-08 17:20–17:29 JST)**: `openclaw.khaos.company` returned
+  Cloudflare 502. The OpenClaw macOS app wrote `gateway.mode=remote` (config
+  audit `source=macos-openclaw-config-file`); the Gateway then refused to start
+  (`Gateway start blocked: set gateway.mode=local (current: remote)`, exit 78
+  in a launchd loop) while the `magi-openclaw` tunnel stayed up. Recovered with
+  Jun's approval by `openclaw config set gateway.mode local` only. Recorded in
+  `system/services/tiala-host.md` (draft) with the timeline, the probable
+  trigger (app Remote connection screen — not proven) and the stderr gap.
+* **Drift corrected (observed on host 2026-11-09)**: the `ai.openclaw.gateway`
+  row said v2026.6.1 on `node@22`; the CLI now reports v2026.11.1 and the
+  service command uses the unversioned Homebrew `node` formula (the CLI
+  resolved it to 26.12.1; the running Gateway process's Node and OpenClaw
+  versions were not queried separately) with `--max-old-space-size=8192`.
+  Models were not re-verified.
+* **Devices**: operator device `Devin Discord migration` paired (Jun,
+  2026-11-08); two `Devin Discord config write` devices removed by Jun on
+  2026-11-09. Status line added to `discord-migration.md` step 7 (draft).
+* **Open items added**: Gateway LaunchAgent stderr goes to `/dev/null`;
+  `magi-openclaw` cloudflared 2026.10.3 flagged outdated; Gateway on the
+  unversioned `node` formula (pin target is Jun's decision — `node@22` fails
+  OpenClaw v2026.11.1's runtime admission).
+* **Public-repo rule**: Gateway listener port / bind details are not recorded
+  here (COLLABORATION.md writing rules); host-private details belong in magi-core#662.
+* **Scope**: host-ops records only — no service, guard, table, scheduler,
+  trading or LILITH boundary change; both concepts stay `draft`, no
+  `verified` entry added. Base `11c412ef5730a0832316befdece50e6beed74b29`.
+
+## 2026-11-09 (Discord migration follow-up decisions)
+* **Jun's decisions (Claude session)**: magi-moni runs with
+  `--max-instances 1` so process-local pending approvals are not routed to
+  another instance; `magi-moni/scripts/operate-tiala.js` keeps only status and
+  screenshot (mutating operations removed); OpenClaw's Telegram channel is
+  retired with the rest (no parallel period). Recorded in
+  `system/services/discord-migration.md` (draft). Implementation lands in
+  magi-moni#58/#59; not yet deployed.
+
+## 2026-11-08 (Telegram to Discord staged migration)
+* **Jun's decisions (2026-11-08, Claude session)**: retire every Telegram
+  route; Discord is the only channel; no parallel operation, so state C
+  (Telegram rollback) is retired. To offset the lost rollback Jun chose
+  option A: a live delivery test of every producer plus the watchdog's
+  Discord path is a mandatory acceptance gate (no secondary alert channel).
+  Jun asked for the Telegram code and configuration to be cleaned up; the
+  removal PRs follow the companion PRs and deploy only after the Discord
+  secrets exist. Recorded in `system/services/discord-migration.md`
+  (draft). The secrets ledger is not edited until the Discord secrets exist
+  and the Telegram ones are retired.
+* **Jun's direction**: migrate OpenClaw, AKA-1 and MAGI notifications to Discord,
+  with separate OpenClaw and MAGI Bot applications. (Its "retire Telegram only
+  after replacement verification" ordering is superseded by the later decisions
+  above: the switch and the Telegram removal are one deployment per repository,
+  verified by the mandatory option-A tests right after it.)
+* **Plan**: `system/services/discord-migration.md` records signature/owner checks,
+  immutable single-use human approval, preserved L0/order gates, notification
+  contracts, live acceptance, rollback and physical teardown inventory.
+* **Drift**: magi-moni `2ec39dcda90641bc250e51b0108a96b4d36a5f31` `lib/tools.js`
+  (`akaTool_moomooPlaceOrder`) issues an approval token on model `confirmed=true`,
+  contrary to the stable order-approvals Notes (specification unchanged). Proposed
+  correction: magi-moni#58 (draft, unmerged); notifications: magi-core#708.
+  Independent implementation review completed; Jun's decision is still required.
+* **Verification scope**: pointer sections appended to stable concepts are marked
+  unverified and are outside their existing `verified` records; no verification
+  metadata was added. The plan separates inspected code (A), proposed code (B)
+  and rollback on the proposed code (C). No live cutover, deployment, credential
+  deletion or consumer-pin advancement (core pin `437d1d6`, base `b118744`) has
+  been performed; the migration document remains draft.
+
+## 2026-11-08 (OpenAI provider credential boundary)
+* **Review finding**: magi-core#707 identified that the pinned OKF did not
+  specify how the OpenAI runtime key is normalized before use.
+* **Docs**: `system/services/magi-core.md` now records that the shared
+  `OPENAI_API_KEY` export trims surrounding whitespace, treats missing or
+  whitespace-only values as absent, and preserves interior characters.
+* **Review follow-up**: the key-module index now lists `lib/secrets.js` as the
+  shared environment-backed API-key boundary, including `OPENAI_API_KEY`
+  normalization.
+* **Callers**: `src/llm.js`, `health-monitor.js`, and `off-hours-chat.mjs`
+  consume the shared export rather than reading the raw environment variable.
+* **Scope**: credential formatting only; provider/model selection, guards,
+  order execution, trading mode, tables, and data boundaries are unchanged.
+* **References**: magi-core base `84ab0a0f4c3111d04d234a0da490541f8e9675db`
+  (knowledge pin `437d1d68a7f0f157ff88180ba9be721025760f37`); implementation
+  PR #707 head `4ab19a34c86844e4ab7e0da40f8eb06fb711da87`.
+
+## 2026-11-07 (PROMPT.md §1: revision pointer in the SSoT bullet)
+* **Request (Jun, Devin session 2026-11-07)**: wording for the first §1
+  bullet of the `PROMPT.md` full version.
+* **Docs**: that bullet now also states that the referenced revision is
+  decided by §2 (target-repo pin first, `main` when there is no pin). The
+  Consumer Preamble (6 lines) and §2 are unchanged.
+* **Scope**: documentation-only — no service, guard, table, scheduler or
+  boundary change.
+
+## 2026-11-07 (CASPER request ID moves to `deepseek-flash`)
+* **Decision (Jun, Claude session 2026-11-07)**: option A — switch CASPER from
+  the retired `deepseek-v4-flash` alias to `deepseek-flash`, together with
+  the magi-core#641 single-source fix.
+* **Cohort policy (Jun, magi-knowledge#214 review 2026-11-07)**: model
+  changes do **not** split cohorts; CASPER is evaluated continuously by
+  `unit_name`. `system/constitution/model-cohorting.md` (draft) carries a
+  "not applied for now" note. This replaces the earlier cohort wording on
+  this branch (10/08 cohort + NULL unknown-model cohort).
+* **Evidence**: DeepSeek model details re-read 2026-11-07 — both IDs served
+  by `DeepSeek-V4.1-Flash-1017`, no date-pinned ID, no routing deadline.
+  BigQuery `thoughts` (read-only, 2026-11-07): every CASPER LLM decision row
+  with `model_version` populated reports `deepseek-flash`. 2026-10-08 is the
+  **start of recording**, not a switch date — `model_version` began for all
+  units on 2026-10-05 – 10-06 and CASPER has no rows 2026-10-04 – 10-07; when
+  the served name changed is unknown. The 34 `deepseek-v4-flash` rows
+  (2026-10-08 – 10-31) are all `action='WARN_ONLY'` guard rows filled with
+  the configured ID by `src/guard.js:49` (`getLastServedModel() ||
+  getLLMModel(provider)`), not LLM decisions.
+  CASPER `trades` after 2026-09-10: 12 rows — too few for a performance
+  comparison.
+* **Implementation**: [magi-core#706](https://github.com/dogmaai/magi-core/pull/706)
+  (`5bcc6f3d0a30a9d21bed295e40ad397a86618901`) — `lib/config.js` deepseek →
+  `deepseek-flash`; `src/llm.js` resolves deepseek/qwen/kimi/ollama through
+  `getLLMModel()`; regression test. Merged as `f811baa` (2026-11-07 16:05
+  JST); the same-day *Deploy to Cloud Run* run succeeded.
+* **Docs**: `system/plm-units/casper.md` (model, configuration table,
+  provider-lifecycle and cohort notes) and `system/plm-units/index.md`
+  (CASPER row, intro). `casper.md` stays `stable`: Jun approved this
+  revision in the #214 review (`verified` + `human:jun` 2026-11-07T09:16Z,
+  `stale_after` 2027-05-07) — keeping `stable` keeps magi-core `test:okf`
+  and the pin bump (magi-core#698 / #703) green.
+* **Scope**: request ID only; `unit_status`, budget weight, job, guards,
+  tables and trading policy unchanged. `model-cohorting.md` stays `draft`
+  (note added only).
+* **References**: OKF main `437d1d68a7f0f157ff88180ba9be721025760f37`;
+  magi-core base `4b350ea7d666df05f4d183019b0d6ffe5b9f185d`.
+
+## 2026-11-07 (MELCHIOR-1 and CASPER re-verified by Jun; back to `stable`)
+* **Review (Jun, Claude session 2026-11-07)**: Jun reviewed the revisions
+  made since each doc's last `stable` version and approved them —
+  MELCHIOR-1 (since `c411ce2`: the `gemini-3.8-flash` fallback correction in
+  #208 and the SHADOW write-path split in #209) at 14:51 JST, and CASPER
+  (since `2a0359e`: the DeepSeek provider-lifecycle record in #208) at
+  15:28 JST. Both return to `status: stable` with a new `human:jun`
+  `verified` entry (2026-11-07T05:51:00Z / 06:28:00Z; earlier entries kept)
+  and `stale_after` 2027-05-07.
+* **Evidence shown to Jun**: magi-core `4b350ea7d666df05f4d183019b0d6ffe5b9f185d`
+  — `lib/config.js` `getLLMModel` (`google` fallback `gemini-3.8-flash`;
+  `deepseek` `deepseek-v4-flash`), `src/llm.js` (`deepseek-v4-flash`;
+  `log_analysis` → `thoughts`, SHADOW `place_order` → `trades_shadow` +
+  `thoughts_shadow`), `deploy.yml` (`GEMINI_MODEL=gemini-3.8-flash`,
+  `TRADE_MODE=SHADOW`); DeepSeek updates page re-read 2026-11-07 (V4 Flash
+  retired 2026-09-10, legacy ID temporarily routed to V4.1 Flash,
+  replacement ID `deepseek-flash`, no routing deadline stated).
+* **Why now**: magi-core's `test:okf` requires each deployed job to map to a
+  `stable` unit doc. With both units in `draft` the automated pin bump
+  (magi-core#698) failed from 2026-11-06, which also kept the Mistral
+  output caps (#211) out of magi-core's pin. `test:okf` passes against this
+  revision (see PR).
+* **Not decided here**: CASPER is a LIVE unit calling a retired DeepSeek
+  alias. Whether to switch the request ID to `deepseek-flash` and how to
+  treat the cohort remain Jun's open decision; this approval covers the
+  record's accuracy only. **Resolved 2026-11-07** by magi-core#706
+  (`deepseek-flash`) and Jun's magi-knowledge#214 review (no cohort split
+  on model change) — see the entry above.
+* **Supersedes**: Devin's branch `devin/1794030682-plm-restore-stable`
+  (`50d1470`, no PR), which restored `stable` with only `devin/cloud`
+  verifiers; Jun chose this branch (option A).
+* **Scope**: lifecycle metadata and revision notes only — no change to
+  model, unit status, budget weight, job, guard, table or trading policy.
+  `system/plm-units/**` is a sensitive path; Jun is the reviewer.
+
+## 2026-11-07 (Mistral PR review output shortened)
+* **Request (Jun, Claude session 2026-11-07)**: Mistral reviews had become
+  too long. Jun chose option B — shorten the output format in both
+  `magi-knowledge` and `magi-core` — over restricting `magi-knowledge`
+  reviews to `draft` docs (not adopted for now).
+* **Finding**: the length came from the prompts, not the input scope. The
+  `magi-knowledge` prompt asked for every nit plus summary and
+  recommended-action sections; the `magi-core` drift check asked to quote
+  both the OKF text and the diff with no count or length limit. Recent
+  `magi-core` reviews: 4,500–5,800 characters before magi-core#701,
+  600–2,335 after (e.g. #702: two findings, 2,335 characters).
+* **Implementation**: `.github/workflows/auto-review.yml` system prompts in
+  this repository (branch `ci/mistral-review-concise`) and in `magi-core`
+  ([magi-core#704](https://github.com/dogmaai/magi-core/pull/704), `32ff02769aedb33e5dd2bc8291d6d7e8d76caf41`):
+  at most five findings with the rest as a count, three lines each,
+  excerpts of at most 80 characters, same-cause findings merged;
+  `magi-knowledge` drops nits and the summary / recommended-action
+  sections. `max_tokens` (16000 / 24000) and the model are unchanged.
+* **Docs**: `COLLABORATION.md` "Automated PR review bots" records the caps.
+* **Scope**: prompt wording only — the same data goes to the same API
+  within the existing egress approval; reviews remain reference
+  information, not independent review. `magi-moni`, `magi-moomoo` and
+  `magi-price-tracker` are unchanged. No merge, deployment or production
+  operation. `.github/workflows/**` here is a sensitive path, so this
+  change needs a reviewer other than the implementer (or Jun).
+* **References**: OKF main `dca4ea13a67f0935f546b853a490387d7a767dc2`;
+  magi-core base `e991ce1db9a0c5043c26d19e0c407da3f6f4420d` (runtime OKF pin
+  `8f77020e66d1bc84f2880a6f508eb2edd7b36b66`, unchanged).
+
+## 2026-11-07 (SHADOW write paths and `thoughts.trade_mode` corrected; shadow ledgers catalogued)
+* **Request (Jun, Claude session 2026-11-07)**: a review of 2026-11-06
+  operations found MELCHIOR-1 (`TRADE_MODE=SHADOW`) writing its 11 analysis
+  rows to `thoughts`, not `thoughts_shadow` as the registry said. Jun chose
+  option A: keep the implementation and correct the bundle.
+* **Finding**: magi-core `e991ce1db9a0c5043c26d19e0c407da3f6f4420d`
+  `src/llm.js` writes `log_analysis` rows (including `HOLD`) to `thoughts`
+  with `trade_mode=getTradeMode()`; only SHADOW `place_order` decisions and
+  `L6_OBSERVE` candidates go to `trades_shadow` + `thoughts_shadow`, sharing
+  the analysis row's `thought_id`. Production agrees (full-table read
+  2026-11-07): 2,743 `SHADOW` rows in `thoughts` since 2026-08-24 (CASPER
+  2,261 until 2026-09-21, MELCHIOR-1 482); every shadow-ledger row since
+  2026-09-01 joins to a `thoughts` row. `thoughts_active` keeps `trade_mode = 'NORMAL'`
+  only, so live-performance reads already exclude SHADOW rows.
+* **Docs**: `system/plm-units/melchior-1.md` gains a *SHADOW write paths*
+  section; `system/plm-units/index.md` wording follows it.
+  `system/echidna-tables/thoughts.md` gains a *trade_mode values* table from
+  a full-table read (`NORMAL`, `SHADOW`, `POSITION_GUARD`, `BLOCKED`,
+  `WARN_ONLY`, historical `SCALPING`, 3 NULL rows) and states the
+  `trade_mode` of `AUTO_CLOSE` rows; the former `live` / `paper` /
+  `simulation` list occurs in no row of the table. New concept docs
+  `system/echidna-tables/trades-shadow.md` and `thoughts-shadow.md` (live DDL
+  read 2026-11-07) remove both tables from the uncatalogued-table backlog in
+  `system/echidna-tables/index.md`, whose write-path conventions now name the
+  shadow ledger pair.
+* **Trust and scope**: all changed or new concepts are `draft` with
+  `generated.by: claude/opus-5-5`. `thoughts.md` moves from `stable` to
+  `draft` until Jun re-verifies it; its earlier `verified` entries are kept as
+  history, not extended. No code, table, guard, unit status, trading policy,
+  scheduler or deployment change. magi-core's runtime OKF pin
+  (`8f77020e66d1bc84f2880a6f508eb2edd7b36b66`) is unchanged.
+* **References**: drafted on OKF main `6322d3bb71a200d388435e5b645f945155d38fb2`,
+  rebased onto `191e363f8283af0fec03c66118336421f79d9766` (#207); magi-core main `e991ce1db9a0c5043c26d19e0c407da3f6f4420d`.
+
+## 2026-11-07 (PROMPT.md refreshed for external LLMs; pin-first confirmed)
+* **Request (Jun, Devin session 2026-11-04)**: produce the latest MAGI
+  instruction for other LLMs. **Jun confirmed pin-first revision selection
+  (option A) on 2026-11-07** ([#207](https://github.com/dogmaai/magi-knowledge/pull/207)).
+* **Docs**: `PROMPT.md` Consumer Preamble (still 6 lines, value-free) and
+  full version aligned with the current bundle rules:
+  revision selection follows the target repo's `vendor/magi-knowledge` pin
+  (`main` + "ピン無し" only when no pin exists), as in
+  `.agents/skills/consulting-magi-north-star`; a pin older than `main` is not
+  silently switched to `main`, and relevant post-pin `main` changes in
+  `log.md` are reported as pin-lag drift with both commits; on spec content
+  the OKF revision wins over a target repo's `AGENTS.md` and the conflict is
+  reported to Jun; `magi-stg` recorded as deleted; independent review for
+  sensitive changes (incl. Constitution and changes via config, scripts or
+  spec), automated reviews (Mistral / Claude / Gemini / Codex) as reference
+  only, no fabricated `human:` verification (`COLLABORATION.md`);
+  escalation covers mode switches and comes with concrete options;
+  public-repo writing rules, credential handling and the external-egress
+  approval rule added to the prohibitions; digest requests name
+  `scripts/okf_export.py`; PR format Summary / Key Changes / Verification.
+* **Scope**: documentation-only — no service, guard, table, scheduler or
+  boundary change.
+
+## 2026-11-06 (PLM model lifecycle and Gemini fallback correction)
+* **Request**: ChatGPT conversation, monitoring report of 2026-11-05 and Jun's
+  2026-11-06 instruction "OKF修正お願い", recorded by Codex. The report
+  identified CASPER's provider-side replacement and MELCHIOR-1's stale
+  fallback description; this is a transcription of the request, not a new
+  human-verification event.
+* **Docs**: `system/plm-units/casper.md` distinguishes the configured
+  `deepseek-v4-flash` request ID from the provider-documented served version
+  `DeepSeek-V4.1-Flash-1017` and recommended request ID `deepseek-flash`.
+  [DeepSeek's notices](https://api-docs.deepseek.com/updates/) and
+  [model details](https://api-docs.deepseek.com/quick_start/pricing/) were
+  checked on 2026-11-06. Provider documentation says the old alias remains
+  accepted for temporary routing to its replacement; its final acceptance
+  deadline and MAGI's first affected
+  request are not established. The registry explains the request-ID/served-model
+  distinction without claiming a runtime model or cohort migration.
+* **Correction**: `system/plm-units/melchior-1.md` now records
+  `gemini-3.8-flash` for both the job's `GEMINI_MODEL` and the config fallback,
+  replacing the obsolete `gemini-2.5-flash` fallback description.
+* **References**: OKF base/main
+  `1ccb6f1d192157abf557fb27e4f66b2f240f27f8`; magi-core main
+  `e991ce1db9a0c5043c26d19e0c407da3f6f4420d`, `lib/config.js`, `src/llm.js`
+  and `.github/workflows/deploy.yml`; its runtime OKF pin remains
+  `8f77020e66d1bc84f2880a6f508eb2edd7b36b66`. The pinned bundle still has the
+  former descriptions; this documentation change does not advance that pin.
+* **Trust and scope**: the two revised unit concepts are `draft` with
+  `generated.by: process:codex`. Prior human verification is retained as
+  history, not extended to these revisions. Unit status, trading policy,
+  model requests, statistics/history, guards, tables and data boundaries
+  are unchanged. No live API probe, production verification or
+  deployment was performed. No Qwen retirement is inferred from unreadable
+  announcement details.
+
+## 2026-11-04 (Mistral drift check: collaboration-rule sections)
+* **Jun instruction and explicit egress approval (ChatGPT conversation;
+  [Codex-transcribed record](https://github.com/dogmaai/magi-knowledge/pull/206#issuecomment-6624671578)):**
+  include selected `COLLABORATION.md` sections within the existing approved
+  limits in the `magi-core` Mistral OKF drift-check step only. Exact mapping
+  (paths relative to `magi-core`): `.github/workflows/auto-review.yml` and `scripts/okf-drift-context.cjs`
+  select "Automated PR review bots"; `.github/workflows/claude-review.yml` selects
+  "Claude PR review (magi-core)". No other path in `magi-core`, including
+  other scripts and workflows such as `deploy.yml`, selects these sections.
+* **Implementation ([magi-core#702](https://github.com/dogmaai/magi-core/pull/702))**
+  (`bfe475ca32804bfcbd4db70d95b23eef3c6051ec`): split on H2/H3
+  headings outside code blocks, prioritize/deduplicate sections, and share
+  the original document's 6,000-character budget across all selected sections.
+  Labels and truncation markers count against that budget. The OKF-excerpt
+  total remains 30,000 characters, independently of the unchanged 30,000-character
+  diff selection limit; these are not a combined API request-body limit.
+  Report attached, truncated, omitted and unavailable sections in the
+  deterministic coverage footer as `COLLABORATION.md#<heading>` using the
+  original heading text, preserving case and spaces, not a GitHub anchor slug.
+  Truncated sections also appear in the attached list.
+* **Rule label**: `status:none — workflow rule, no lifecycle metadata` for
+  collaboration sections; mismatches are normal drift. Other documents keep
+  their lifecycle labels. No lifecycle status or human verification is
+  invented for this workflow document.
+* **References**: latest OKF base `383a616553308fd69a48a86c449750b1dae94c4b`;
+  core base `f4abf8e59fda049805d4166837c164bd75f375f9`; core runtime pin remains
+  `8f77020e66d1bc84f2880a6f508eb2edd7b36b66`. The pin predates
+  [magi-knowledge#205](https://github.com/dogmaai/magi-knowledge/pull/205)'s
+  documentation of the [magi-core#701](https://github.com/dogmaai/magi-core/pull/701)
+  drift-only role; that difference is recorded, not silently fixed.
+* **Scope**: review-input selection and its documentation only. Mistral
+  remains reference information, not independent review. This work performs
+  no merges, deployments or production operations.
+
+## 2026-11-04 (magi-core Mistral review narrowed to an OKF drift check)
+* **Request (Jun, Claude session 2026-11-04)**: use Mistral in `magi-core` only
+  to check PRs against the OKF. General code review stays with Copilot, Gemini
+  and Codex.
+* **Docs**: `COLLABORATION.md` "Automated PR review bots" records the new role
+  (magi-core#701).
+* **Scope**: `magi-core` only. Results stay reference information and the
+  independent-review rule is unchanged. PR diffs and OKF excerpts still go to
+  the same external API within the existing separate limits (30,000 characters
+  for diff selection; 30,000 total for OKF excerpts, 6,000 per doc). Jun confirmed
+  that selecting docs by the identifiers in the
+  changed lines is within the approved "diff keywords". No service, guard,
+  table, scheduler or boundary change.
+
+
 ## 2026-11-02 (Daily market brief automation re-enabled, cloud-only prompt)
 * **Request (Jun, Devin session 2026-11-01)**: re-enable the weekday
   `MAGI 日次市場ブリーフ投入` automation after Jun's Mac (the previous
