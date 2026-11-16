@@ -223,8 +223,9 @@ dogmaai/magi-core#720 (merge commit `0589455`) changes how the
 `[HERMES:BRAVE]` block is presented and adds a per-session experiment
 (`lib/hermes-variant.js`). `deploy.yml` run 785 for `0589455` succeeded
 (09:57:47–10:04:44 UTC). The experiment covers every PLM session started
-after that deploy; the first such session is the first US-market-hours run
-on 2026-11-13 (none had run as of 10:40 UTC). From then on, the
+after that deploy. The first one started at 2026-11-13 14:30:41 UTC
+(`magi-core-qwen`, arm `legacy`); the logged arm matched the SQL
+recomputation for every session checked that day. From then on, the
 "Pre-trade (read)" row of the HERMES intelligence stack above no longer
 describes every session:
 

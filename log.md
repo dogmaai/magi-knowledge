@@ -108,11 +108,12 @@
 * **Pointer**: the "HERMES presentation experiment pointer" in
   `system/services/magi-core.md` now records that dogmaai/magi-core#720
   (`0589455`) is deployed (`deploy.yml` run 785, 09:57:47–10:04:44 UTC) and
-  that the experiment applies to PLM sessions started after that deploy.
+  that the experiment applies to PLM sessions started after that deploy; the
+  first one started at 14:30:41 UTC.
   The pointer stays **outside the existing `verified` records**.
 * **Scope**: documentation only; no `verified` entry added, no status change,
   no schema/guard/trading/LILITH change, consumer pins not advanced. Base
-  `f741ddc`.
+  `f741ddc4679dc2fec7f928240f790bcec512923e`.
 
 ## 2026-11-13 (HERMES presentation experiment pointer)
 * **Pointer**: `system/services/magi-core.md` gains an unverified
