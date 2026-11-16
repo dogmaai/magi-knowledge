@@ -1,5 +1,108 @@
 # Bundle Update Log
 
+## 2026-11-16 (AKA-1 symbol analysis read surface)
+* **Approved plan, documented by devin/cloud**: new draft
+  `system/echidna-tables/llm-analysis.md` catalogs the existing regional
+  `magi_analytics.llm_analysis` table and the companion magi-moni
+  `get_symbol_analysis` read contract. Live schema/partition/cluster/location
+  metadata checked on 2026-11-16; writer inspected at magi-core `0589455`.
+  This is not a deployment record or human verification.
+* **Boundaries**: all analysis modes are labeled; prediction grades are not
+  trading P&L. No physical schema, IAM, deploy, guard, trading-mode or LILITH
+  change. HERMES/ISABEL expansion remains follow-up work.
+* **Unresolved pre-existing drift**: price-tracker outcome casing/value list
+  and active-view column coverage are recorded, not silently corrected.
+  Fixed task reference `173d0f6`; documentation branch base `baea072`.
+
+## 2026-11-16 (secrets ledger: OpenClaw Gateway token and ttyd)
+* **`secrets-inventory.md`** (draft, ledger): `OPENCLAW_GATEWAY_TOKEN` has no
+  remote consumer since 2026-11-16 (tunnel retired, magi-moni binding and
+  code removed); Secret Manager v3 created when the value was replaced on
+  TIALA, v1/v2 disabled, secret slated for deletion. ttyd credential row:
+  ttyd stopped, LaunchAgent disabled. Ledger edit — needs review by someone
+  other than the implementer (COLLABORATION.md). Base `173d0f6`.
+## 2026-11-16 (OKF gap fixes after the Discord cutover)
+* **`discord-migration.md`** (draft): gates 7–8 and the retirement inventory
+  updated — OpenClaw's Telegram channel configuration removed and bot token
+  revoked (2026-11-13), OpenClaw DMs isolated per sender
+  (`session.dmScope=per-channel-peer`, 2026-11-16), `aka` Discord actions
+  limited to messages/reactions, memory crons re-pointed to Discord (two
+  paused pending a runner fix). No Telegram producer remains on TIALA.
+* **`cloudflare.md`** (draft): the `openclaw.khaos.company` auth row marked
+  retired.
+* **`tiala-host.md`** (draft): ttyd stopped 2026-11-16 (LaunchAgent
+  disabled); its credential open item superseded; the 22:30 launchd backup
+  is covered by the 23:00 OpenClaw cron (retirement pending Jun).
+* **Not in this change**: the secrets ledger (separate PR, independent
+  review) and stable concepts' wording (needs Jun's re-verification).
+  Recorded by claude/cloud; not human-verified. Base `173d0f6`.
+
+## 2026-11-16 (OpenClaw public tunnel retired)
+* **Jun-approved, executed by Jun (Cloudflare) and the TIALA CLI**: the
+  `magi-openclaw` Named Tunnel (`openclaw.khaos.company`) is retired — DNS
+  record and tunnel deleted in Cloudflare, LaunchAgent
+  `com.magi.openclaw.cloudflared` booted out and moved aside, its credential
+  files moved out of the cloudflared directory, the tunnel token secret
+  disabled. The `magi-ollama` and `magi-bridge` tunnels were verified
+  unaffected (same processes, same public status). Restoring the hostname
+  would require a new tunnel.
+* **Docs**: `tiala-host.md`, `cloudflare.md` (draft) and
+  `discord-migration.md` decision 9 updated. No `verified` entry.
+
+## 2026-11-16 (magi-moni stops operating TIALA; OpenClaw public URL stays closed)
+* **Jun's decisions (Claude session)**: magi-moni does not need TIALA access —
+  AKA-1's TIALA / OpenClaw Gateway tools and `scripts/operate-tiala.js` are
+  removed in magi-moni#60 (supersedes migration decision 6); the OpenClaw
+  Gateway's public URL stays closed. Recorded in
+  `system/services/discord-migration.md` decisions 8–9 (draft) and the
+  `magi-moni` pointer (unverified).
+* **Finding (TIALA CLI, read-only)**: since OpenClaw 2026.11.1 (2026-11-08)
+  the Gateway rejects tunnelled requests before authentication unless trusted
+  proxies are configured, so magi-moni's TIALA tools and the public browser
+  interface had been unusable for a week. The migration plan's "browser
+  interface as recovery path" is corrected accordingly.
+* **Scope**: no guard, table, trading-mode or LILITH change; no `verified`
+  entry. Base `f741ddc`.
+
+## 2026-11-13 (TIALA read-only check: OpenClaw Discord down, memory crons stopped)
+* **Source**: read-only check by the TIALA Claude CLI on 2026-11-13 against
+  magi-knowledge `edb23af` (no configuration change, restart or deletion);
+  recorded by claude/cloud. Not human-verified.
+* **`aka` on Discord**: OpenClaw's Discord channel has been stopped since
+  2026-11-12 17:08 JST (close code 4004, invalid token). Most likely `aka`'s
+  bot token was reset during the 2026-11-12 MAGI Ops correction, while `aka`
+  was still the only application — an agent-guided step. This explains the
+  unanswered `aka` `/help`. Recovered the same morning (Jun-approved,
+  TIALA CLI): Jun re-issued `aka`'s token, which was installed without being
+  printed; the Discord owner allowlist was added; the Gateway was restarted
+  at 09:36 JST with `gateway.mode` unchanged. Jun's DM got answers to
+  `/help` (09:38) and a conversation (09:39). The agent-side copy of the old
+  token is being destroyed by Jun.
+* **Gate 8 inventory**: no active LaunchAgent or crontab references Telegram;
+  remaining Telegram producers are OpenClaw's Telegram channel and three
+  OpenClaw crons. On Jun's decision (decisions 1 and 7), the TIALA CLI
+  disabled OpenClaw's Telegram channel on 2026-11-13 09:28 JST
+  (`channels.telegram.enabled=false`, hot reload, no Gateway restart, config
+  backed up first); channel status `disabled, stopped`, no Telegram API
+  connection afterwards. The bot credential itself is kept until the three
+  crons are re-pointed (Jun's decision).
+* **Drift recorded** (`tiala-host`, `aka-memory`, `magi-model-health-check`,
+  `discord-migration` — drafts): OpenClaw memory crons disabled since
+  2026-11-08 after daily failures from about 2026-10-27 (model policy), so the
+  memory pipeline and the cron-run SSD/Drive backup are not running; netdata
+  exit -6 again; the health monitor now covers `ollama` through `llm_metrics`
+  failure streaks; Ollama 502/524 hypotheses.
+* **Same-day changes (Jun-approved, TIALA CLI)**: OpenClaw model allow list
+  aligned with the primary/fallback (`gemini-2.5-flash`, `claude-sonnet-5`
+  removed); the three memory crons bound to an explicit model and inference
+  account and re-pointed from Telegram to Jun's Discord DM; backup cron
+  `546ad7e7` passed a manual run and was re-enabled; Memory Dreaming (would
+  rewrite `MEMORY.md`) disabled at the plugin level. The removable-volume
+  permission had to be re-granted because the Gateway's node binary changed.
+* **Correction**: magi-knowledge#224 said `aka`'s `/help` was "not
+  investigated"; the cause is now recorded above.
+* **Public-repo rule**: chat IDs, credential locations and ports are not
+  recorded here; host-private details go to magi-core#662.
 ## 2026-11-13 (HERMES presentation experiment pointer)
 * **Pointer**: `system/services/magi-core.md` gains an unverified
   "HERMES presentation experiment pointer" section for
