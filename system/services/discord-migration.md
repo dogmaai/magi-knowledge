@@ -63,6 +63,20 @@ Further decisions (Jun, 2026-11-09, Claude session):
 7. **OpenClaw's Telegram channel is retired too** (decision 1 covers it): it
    switches to Discord in one step, with no parallel period.
 
+Further decisions (Jun, 2026-11-16, Claude session; recorded by claude/cloud,
+not human-verified):
+
+8. **magi-moni no longer operates TIALA.** AKA-1's TIALA / OpenClaw Gateway
+   tools and `scripts/operate-tiala.js` are removed
+   ([magi-moni#60](https://github.com/dogmaai/magi-moni/pull/60), pending
+   merge and deploy). This supersedes decision 6. The path had already been
+   non-functional since OpenClaw 2026.11.1 (2026-11-08), whose Gateway rejects
+   tunnelled requests before authentication unless trusted proxies are
+   configured; nobody had noticed for a week.
+9. **The OpenClaw Gateway's public URL stays closed** (trusted proxies not
+   configured). Reopening it requires a separate decision with access
+   controls in front.
+
 A magi-moni reply produced outside a Discord interaction is dropped, never
 sent to the notification webhook, so operator-only content cannot leak there.
 
@@ -118,8 +132,8 @@ entry). Not human-verified as a concept change.
 | Gate 4 | Partly: `/help` answered for Jun in the operations channel. Rejection of other users/guilds/channels and button replay were not exercised live (unit-tested only). |
 | Gate 5 | **Open**: `/kill`, `/resume` not exercised. |
 | Gate 6 | **Passed** (option A): every live MAGI producer delivered to Discord, confirmed by Jun and Cloud Logging; anomaly-only and muted producers were exercised with one-off `[TEST]` sends from their own jobs. magi-moni's daily/weekly report endpoints have no scheduler caller (pre-existing) and are recorded as not live, by Jun's decision. |
-| Gates 7–8 | **Open** (OpenClaw on Discord, TIALA inventory). `aka`'s own `/help` did not respond on 2026-11-13; not investigated yet. |
-| Gate 9 | MAGI side done 2026-11-13: Telegram webhook already absent, Telegram secret bindings removed from every Cloud Run service and job, Telegram secrets deleted. OpenClaw/TIALA Telegram destinations remain (gates 7–8). |
+| Gates 7–8 | **Open**. Read-only TIALA check 2026-11-13 (TIALA Claude CLI): OpenClaw's Discord channel (the `aka` application) has been stopped since 2026-11-12 17:08 JST on gateway close code 4004 (invalid bot token) — most likely `aka`'s token was reset during the MAGI Ops correction, when `aka` was still the only application; this is why `aka`'s `/help` did not respond. No Discord inbound conversation has ever been processed by OpenClaw, and its owner allowlist has no Discord entry yet. Gate 8 inventory: no active LaunchAgent or crontab references Telegram; the remaining Telegram producers are OpenClaw's Telegram channel and three OpenClaw cron jobs (chat-log save, daily memory update, memory backup report), all three disabled since 2026-11-08 after repeated failures caused by unresolved model IDs (gate 7). **Progress 2026-11-13 (Jun-approved, TIALA CLI)**: OpenClaw's Telegram channel disabled 09:28 JST; `aka`'s bot token re-issued by Jun and installed, Discord owner allowlist added, Gateway restarted 09:36 JST (`gateway.mode` unchanged); Discord connected as `aka`, and in Jun's DM `/help` (09:38) and a conversation (09:39) were answered. Still open in gate 7: model IDs (memory crons), `aka`'s Discord permissions review, scheduled announcements to Discord. |
+| Gate 9 | MAGI side done 2026-11-13: Telegram webhook already absent, Telegram secret bindings removed from every Cloud Run service and job, Telegram secrets deleted. OpenClaw holds its own Telegram bot credential in its configuration, so OpenClaw/TIALA Telegram destinations remain (gates 7–8). |
 
 Inventory gap found during gate 9: `magi-alert-webhook`, a Cloud Monitoring
 alert relay to Telegram deployed from source outside the repositories, was not
@@ -282,8 +296,10 @@ Jun must review this safety/availability trade-off before enabling operations.
 There is no Telegram rollback (state C retired, Jun 2026-11-08). A failed
 Discord rollout is fixed forward on Discord, never by restoring Telegram and
 never by reverting moni to state A without Jun's decision. The option-A live
-delivery tests are the safeguard. Keep the authenticated OpenClaw browser
-interface as a recovery path. A failed Discord rollout pauses retirement; it never triggers
+delivery tests are the safeguard. The authenticated OpenClaw browser
+interface is **not** reachable through the public URL since OpenClaw
+2026.11.1 (decision 9); recovery paths are the Control UI on TIALA itself,
+`aka` on Discord and a local operator session on TIALA. A failed Discord rollout pauses retirement; it never triggers
 automatic trading actions, new Bot creation, or secret deletion.
 
 # Sources

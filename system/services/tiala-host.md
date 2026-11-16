@@ -67,14 +67,15 @@ current consumers are ADAM/BOREAS via the authenticated
 
 # OpenClaw cron jobs
 
-Not launchd — `openclaw cron list` (all status ok, matching
-[aka-memory](aka-memory.md)):
+Not launchd — `openclaw cron list` (all status ok on 2026-10-22, matching
+[aka-memory](aka-memory.md); **2026-11-13: all three disabled with errors**, see
+[status 2026-11-13](#status-2026-11-13-read-only-check)):
 
 | Cron | Schedule (JST) | Role |
 |---|---|---|
 | `save-daily-chat-log` | 21:45 | Writes `memory/chat_logs/YYYY-MM-DD_chat.md` |
 | `daily-memory-update` | 22:00 | Appends durable facts to `memory/YYYY-MM-DD.md` |
-| `546ad7e7` | 23:00 (`0 14 * * *` UTC) | Runs `sync-memory-backup.sh` — the SSD leg **succeeds** under this context (TCC-granted), unlike the 22:30 launchd run |
+| `546ad7e7` | 23:00 (`0 14 * * *` UTC) | Runs `sync-memory-backup.sh` — the SSD leg **succeeds** under this context (TCC-granted), unlike the 22:30 launchd run. 2026-11-13: the grant is tied to the Gateway's node binary path, so the 2026-11-09 switch to Homebrew `node` 26.12.1 needed a new removable-volume grant (Jun approved it 10:01 JST); a `brew upgrade node` would require it again |
 
 # Disabled 2026-10-22
 
@@ -194,6 +195,77 @@ pairing / talk.secrets, since 2026-07-30). Two further operator devices
 named `Devin Discord config write` (approved by Jun 17:57 / 17:59 JST on
 2026-11-08) were removed by Jun with `openclaw devices remove` on
 2026-11-09. Never use `openclaw devices clear` (drops every pairing).
+
+# Status 2026-11-13 (read-only check)
+
+Recorded by claude/cloud from a read-only check run by the TIALA Claude CLI on
+2026-11-13 (no configuration, restart or deletion). Not human-verified.
+
+* **OpenClaw Gateway**: running continuously since 2026-11-08 18:21 JST;
+  CLI v2026.11.1, `gateway.mode=local`. Its log now carries Gateway errors
+  (the 4004 below), so the "stderr discarded" items here may be stale — the
+  LaunchAgent's `StandardErrorPath` was not re-read; re-check before closing.
+* **Telegram channel**: disabled by the TIALA CLI on Jun's decision at
+  2026-11-13 09:28 JST (config hot reload; Gateway not restarted). OpenClaw
+  therefore has no working chat channel until gate 7's Discord recovery; the
+  authenticated browser interface remains the recovery path.
+* **Discord channel** (`aka` application): stopped from 2026-11-12 17:08 JST
+  on close code 4004 (invalid token) until Jun re-issued `aka`'s token; after
+  a Jun-approved Gateway restart at 2026-11-13 09:36 JST it is connected and
+  answered Jun's DM (`/help`, conversation). See
+  [discord-migration](discord-migration.md) gates 7–8.
+* **OpenClaw cron**: `save-daily-chat-log`, `daily-memory-update` and
+  `546ad7e7` (memory backup report) failed daily from about 2026-10-27
+  (scheduled model not allowed by the agent model policy) and have been
+  disabled since 2026-11-08. Consequences: the chat-log/memory writers have
+  not run since about 2026-10-26, and the cron-run SSD/Drive backup leg has
+  not run since 2026-11-08 (the launchd GCS leg is separate). Model IDs are a
+  gate-7 decision for Jun.
+* **netdata**: `launchctl list` shows last exit status -6 again (possible
+  recurrence of the 2026-10-22 issue; not investigated).
+* **macOS OpenClaw app**: v2026.3.28 fails to connect every 30 s with a
+  protocol mismatch against the v2026.11.1 Gateway (app update pending).
+* **Ollama / tunnel**: BOREAS `502`s coincide with model cold loads (keep-alive
+  5 min, swap nearly full on the 16 GB host) and simultaneous drops of all
+  `magi-ollama` tunnel connections; ADAM `524`s are long prompts whose first
+  byte exceeds the edge timeout. Hypotheses only; remedies are Jun's (host)
+  and an independently reviewed magi-core change (inference path).
+
+# Changes 2026-11-13 (Jun-approved, TIALA Claude CLI)
+
+Recorded by claude/cloud; not human-verified. Each step was backed up first.
+
+* **Model policy**: `agents.defaults.modelPolicy.allow` now lists
+  `google/gemini-3.8-flash` and `google/gemini-3.5-flash-lite` (the primary
+  and fallback, previously outside the allow list, which only gates scheduled
+  runs and `/model` selection), `anthropic/claude-sonnet-5-5` (target of the
+  `sonnet` alias), `anthropic/claude-haiku-4-5-20251001` and
+  `google/gemini-3.1-pro-preview`. `google/gemini-2.5-flash` and
+  `anthropic/claude-sonnet-5` were removed (no remaining use; the "2.5 series
+  being shut down" note above was not re-verified).
+* **OpenClaw cron**: `save-daily-chat-log`, `daily-memory-update` and
+  `546ad7e7` are bound to `google/gemini-3.8-flash` with an explicit inference
+  account (cron runs without a binding were rejected) and announce to Jun's
+  Discord DM instead of Telegram; `save-daily-chat-log` runs in an isolated
+  session. `546ad7e7` passed a manual run at 10:07 JST (SSD and Drive copies
+  verified by checksum, `status=0`, report delivered) and was re-enabled;
+  the other two are re-enabled only after Jun's go-ahead and are checked at
+  their scheduled times. Update: `save-daily-chat-log` was disabled again
+  the same morning because its runner cannot read OpenClaw 2026.11.1's SQLite
+  transcript store (see [aka-memory](aka-memory.md)); `daily-memory-update`
+  was disabled with it.
+* **`aka` Discord actions minimized** (10:19 JST): `channels.discord.actions`
+  enables only the `messages` and `reactions` groups (channel/category,
+  thread, pin, search, role, moderation, event and upload-of-emoji/sticker
+  actions disabled); Jun's DM still answered afterwards. `upload-file`,
+  `read`, `broadcast` and `emoji-list` remain because they belong to those
+  groups.
+* **Memory Dreaming disabled**: the `memory-core` plugin's dreaming job
+  (auto-created with OpenClaw 2026.11.1) rewrites `MEMORY.md` in its deep
+  phase, which [aka-memory](aka-memory.md) forbids for scheduled turns. It
+  had never succeeded (`MEMORY.md` untouched since 2026-09-10). Disabled with
+  `plugins.entries.memory-core.config.dreaming.enabled=false`, which removed
+  the managed job; it did not reappear after a plugin reload.
 
 # Open items (NEEDS_JUN_DECISION)
 
