@@ -1,5 +1,12 @@
 # Bundle Update Log
 
+## 2026-11-16 (secrets ledger: OpenClaw Gateway token and ttyd)
+* **`secrets-inventory.md`** (draft, ledger): `OPENCLAW_GATEWAY_TOKEN` has no
+  remote consumer since 2026-11-16 (tunnel retired, magi-moni binding and
+  code removed); Secret Manager v3 created when the value was replaced on
+  TIALA, v1/v2 disabled, secret slated for deletion. ttyd credential row:
+  ttyd stopped, LaunchAgent disabled. Ledger edit — needs review by someone
+  other than the implementer (COLLABORATION.md). Base `173d0f6`.
 ## 2026-11-16 (OKF gap fixes after the Discord cutover)
 * **`discord-migration.md`** (draft): gates 7–8 and the retirement inventory
   updated — OpenClaw's Telegram channel configuration removed and bot token
