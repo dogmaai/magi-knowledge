@@ -48,7 +48,7 @@ program paths are host-local and intentionally not recorded here.
 |---|---|---|---|
 | `com.magi.bridge` | RunAtLoad + KeepAlive watchdog | Watchdog for the moomoo bridge + `magi-bridge` cloudflared tunnel (`bridge.khaos.company`); sources an injected `MOOMOO_BRIDGE_AUTH_TOKEN` env file | [magi-moomoo](magi-moomoo.md), [cloudflare](cloudflare.md) §3 |
 | `com.magi.ollama.cloudflared` | RunAtLoad | Named Tunnel `magi-ollama` → `ollama.khaos.company` | [cloudflare](cloudflare.md) §3 |
-| `com.magi.openclaw.cloudflared` | RunAtLoad | Named Tunnel `magi-openclaw` → `openclaw.khaos.company` | [cloudflare](cloudflare.md) §3 |
+| `com.magi.openclaw.cloudflared` | RunAtLoad | Named Tunnel `magi-openclaw` → `openclaw.khaos.company`. **Retired 2026-11-16** (Jun): LaunchAgent booted out and moved to `LaunchAgents.disabled`; DNS record and tunnel deleted in Cloudflare; the tunnel token secret disabled. Restoring requires a new tunnel | [cloudflare](cloudflare.md) §3 |
 | `com.magi.ollama-auth-proxy` | RunAtLoad | Bearer-auth enforcement (`OLLAMA_AUTH_TOKEN` injected env file) in front of raw Ollama | [cloudflare](cloudflare.md), [secrets-inventory](secrets-inventory.md) |
 | `local.ollama-proxy` | RunAtLoad | The local Host-rewrite proxy in front of Ollama — **no auth**; never in the tunnel path | [cloudflare](cloudflare.md) |
 | `local.ollama-env` | at login | `launchctl setenv OLLAMA_CONTEXT_LENGTH 65536` — host tuning | — |
@@ -273,9 +273,9 @@ Recorded by claude/cloud; not human-verified. Each step was backed up first.
   `StandardErrorPath=/dev/null` — start-up failures (such as the
   2026-11-08 `gateway.mode` block) leave no log. Redirect to a file
   (LaunchAgent change — Jun's).
-* **`magi-openclaw` cloudflared outdated**: 2026-11-08 warning
-  `version 2026.10.3 is outdated … 2026.10.7`. Not related to the
-  incident.
+* **cloudflared outdated**: 2026-11-08 warning
+  `version 2026.10.3 is outdated … 2026.10.7` (2026.11.0 current on
+  2026-11-16); the `magi-openclaw` tunnel itself was retired on 2026-11-16.
 * **Gateway on an unversioned Node formula**: since the 2026-11-09
   observation the service command uses Homebrew `node` (not a versioned
   formula), so a routine `brew upgrade` can change the Gateway's Node major

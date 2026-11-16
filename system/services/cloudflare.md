@@ -77,7 +77,7 @@ live in `.agents/skills/` and are referenced below rather than duplicated.
 |---|---|---|---|
 | `magi-bridge` | `bridge.khaos.company` (`service='opend-proxy'`) | Flask on loopback (port in the private record) | [magi-moomoo](magi-moomoo.md) proxy → magi-core — since 2026-09 the **fallback** leg of magi-moomoo's dual-route bridge path (private WireGuard route preferred; see magi-moomoo.md). Retirement planned after a private-route stability observation period. |
 | `magi-ollama` | `ollama.khaos.company` | Ollama REST API | [ADAM](/system/plm-units/adam.md) and [BOREAS](/system/plm-units/boreas.md) (legacy: [TIARA](/system/plm-units/tiara.md)) |
-| `magi-openclaw` | `openclaw.khaos.company` | OpenClaw Gateway | AKA / [magi-moni](magi-moni.md), Devin |
+| `magi-openclaw` | `openclaw.khaos.company` | OpenClaw Gateway — **retired 2026-11-16** (tunnel and DNS record deleted; recorded by claude/cloud, not human-verified) | formerly AKA / [magi-moni](magi-moni.md), Devin |
 
 Tunnel names are verified via the Cloudflare Tunnel API (2026-10-03,
 `cfd_tunnel` list: `magi-bridge`/`magi-ollama`/`magi-openclaw`, all
