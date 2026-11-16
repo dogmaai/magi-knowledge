@@ -1,5 +1,21 @@
 # Bundle Update Log
 
+## 2026-11-16 (OKF gap fixes after the Discord cutover)
+* **`discord-migration.md`** (draft): gates 7–8 and the retirement inventory
+  updated — OpenClaw's Telegram channel configuration removed and bot token
+  revoked (2026-11-13), OpenClaw DMs isolated per sender
+  (`session.dmScope=per-channel-peer`, 2026-11-16), `aka` Discord actions
+  limited to messages/reactions, memory crons re-pointed to Discord (two
+  paused pending a runner fix). No Telegram producer remains on TIALA.
+* **`cloudflare.md`** (draft): the `openclaw.khaos.company` auth row marked
+  retired.
+* **`tiala-host.md`** (draft): ttyd stopped 2026-11-16 (LaunchAgent
+  disabled); its credential open item superseded; the 22:30 launchd backup
+  is covered by the 23:00 OpenClaw cron (retirement pending Jun).
+* **Not in this change**: the secrets ledger (separate PR, independent
+  review) and stable concepts' wording (needs Jun's re-verification).
+  Recorded by claude/cloud; not human-verified. Base `173d0f6`.
+
 ## 2026-11-16 (OpenClaw public tunnel retired)
 * **Jun-approved, executed by Jun (Cloudflare) and the TIALA CLI**: the
   `magi-openclaw` Named Tunnel (`openclaw.khaos.company`) is retired — DNS

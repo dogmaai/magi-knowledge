@@ -56,7 +56,7 @@ program paths are host-local and intentionally not recorded here.
 | `ai.openclaw.gateway` | RunAtLoad | OpenClaw Gateway (listener port/bind omitted under the public-repo writing rules; host-private details belong in magi-core#662), config `openclaw.json` in the OpenClaw state dir. **As of 2026-11-09** (observed on host): the OpenClaw CLI reports **v2026.11.1** (`4ffdd20`; `openclaw --version` returned v2026.6.1 `2e08f0f` on 2026-11-08 ~17:25 JST during the incident diagnosis) and the service command is Homebrew **`node`** (unversioned formula; the CLI resolved it to 26.12.1) with `--max-old-space-size=8192` — the explicit `node@22` path is gone (node@22 22.23.4 is still installed but unused by the Gateway). The version of the running Gateway process itself was not queried separately. History: `node@22` 22.23.4 from 2026-10-27 (was 22.22.0). `gateway.mode` must stay `local` — see *Incident 2026-11-08* below. Models (Jun 2026-10-27; not re-verified on 2026-11-09): primary `google/gemini-3.8-flash`, fallback `google/gemini-3.5-flash-lite` — replaced primary `sakana/fugu` (Sakana retired) and fallback `google/gemini-2.5-flash` (2.5 series being shut down); the `sakana` provider block is removed from `openclaw.json` and the agent `models.json` | [aka-memory](aka-memory.md), [cloudflare](cloudflare.md) |
 | `com.openclaw.gcs-memory-sync` | daily 21:00 JST | AKA memory backup → `gs://screen-share-459802-memory`; last run 2026-10-21 21:00:11 JST ok (86 objects) | [aka-memory](aka-memory.md) |
 | `com.openclaw.memory-sync` | daily 22:30 JST | AKA memory backup → SSD + Drive. **Known problem**: launchd rsync to the external SSD fails `Operation not permitted` (macOS TCC); ends `status=1` — see [aka-memory](aka-memory.md) | [aka-memory](aka-memory.md) |
-| `local.ttyd` | RunAtLoad | The web terminal — **loopback-only since 2026-10-23** (Jun changed the bind; verified on host) and published tailnet-only via an intentional `tailscale serve` entry (not Funnel). basic-auth credential still embedded in the LaunchAgent — see open items | [aka-memory](aka-memory.md) |
+| `local.ttyd` | RunAtLoad | The web terminal — **stopped 2026-11-16** (Jun-approved; booted out and moved to `LaunchAgents.disabled`, plist tightened to 600). Was loopback-only since 2026-10-23 and tailnet-only via `tailscale serve` | [aka-memory](aka-memory.md) |
 | `ai.devin.worker` | RunAtLoad | Devin worker (`--outpost=my-outpost`); log on host | — |
 | `homebrew.mxcl.netdata` | RunAtLoad | Host metrics — see Observability | — |
 | `com.magi.alloy` | RunAtLoad + KeepAlive on crash | Grafana Alloy — `prometheus.exporter.unix` host metrics, remote-written to Hosted Metrics (stack `aka`); token + endpoint user live in a host-local env file, never in the repo. Templates in magi-moomoo `scripts/` (`alloy/config.alloy`, `start-alloy.sh`, `com.magi.alloy.plist`, `install-alloy-launchagent.sh`, `alloy/magi-alloy.newsyslog.conf`). Installed via `brew tap grafana/grafana` + `brew pin alloy`; running since 2026-10-26 — `job="tiala-host"` series confirmed live in `grafanacloud-aka-prom` | [secrets-inventory](secrets-inventory.md) |
@@ -289,7 +289,9 @@ Recorded by claude/cloud; not human-verified. Each step was backed up first.
   authenticated Named Tunnel path is unaffected; operational details in
   dogmaai/magi-core#659. magi-core additionally hardens `OLLAMA_BASE_URL`
   fail-closed (see dogmaai/magi-core ollama-base-url fail-closed PR).
-* **22:30 JST `com.openclaw.memory-sync` TCC failure**: SSD leg fails
+* **22:30 JST `com.openclaw.memory-sync` TCC failure** (*2026-11-16: the
+  23:00 OpenClaw cron `546ad7e7` performs the same backup successfully and
+  reports to Jun's Discord DM; retiring this launchd job is pending Jun*): SSD leg fails
   `Operation not permitted` under launchd while the same script succeeds
   under OpenClaw cron at 23:00. Fix needs a GUI Full Disk Access grant —
   Jun-only.
@@ -297,7 +299,9 @@ Recorded by claude/cloud; not human-verified. Each step was backed up first.
   launchd templates) keep accumulating in magi-moomoo — a repo whose
   scope is the broker bridge. Extracting a dedicated TIALA-infra
   repository is deferred but recorded as a Jun decision.
-* **ttyd credential in plist**: `local.ttyd` carries a basic-auth
+* **ttyd credential in plist** (*superseded 2026-11-16: ttyd stopped and
+  its LaunchAgent disabled; rotate the credential only if ttyd is ever
+  re-enabled*): `local.ttyd` carries a basic-auth
   `user:password` literal inside the LaunchAgent on TIALA; not in Secret
   Manager — a credential-location gap recorded in
   [secrets-inventory](secrets-inventory.md). Partially remediated
