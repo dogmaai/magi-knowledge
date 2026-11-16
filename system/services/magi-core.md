@@ -3,8 +3,8 @@ type: Service
 title: magi-core
 description: The MAGI trading engine — trade loop, LLM orchestration, and guard layers.
 lilith_safe: false
-status: stable
-generated: { by: devin/cloud, at: 2026-11-08T04:28:41Z }
+status: draft
+generated: { by: devin/cloud, at: 2026-11-13T00:33:08Z }
 verified: [{ by: human:jun, at: 2026-09-07T00:10:05Z }, { by: devin/local, at: 2026-09-16T01:30:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-06T08:31:20Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }, { by: devin/cloud, at: 2026-10-27T01:09:00Z }, { by: human:jun, at: 2026-10-31T14:00:11Z }, { by: devin/cloud, at: 2026-11-08T03:22:49Z }, { by: human:jun, at: 2026-11-08T03:50:45Z }, { by: devin/cloud, at: 2026-11-08T03:55:45Z }, { by: devin/cloud, at: 2026-11-08T04:28:41Z }, { by: human:jun, at: 2026-11-08T04:32:07Z }]
 stale_after: 2027-05-08T04:32:07Z
 tags: [service, magi-core, core, trading]
@@ -138,14 +138,20 @@ manually (`gcloud scheduler jobs update http magi-surge-detector-scheduler`).
 
 # Offline analysis jobs
 
+The Kimi replacement below is a **draft, pending cutover** defined in
+[magi-core#713](https://github.com/dogmaai/magi-core/pull/713). It takes effect
+only after that PR is merged and deployed with Jun's approval; this
+documentation does not establish that it is running or that the old Gemini
+and DAPHNE jobs have stopped. The historical `verified` entries above do not
+verify this replacement; Jun must re-verify before restoring `stable`.
+
 Cloud Run jobs and their Cloud Scheduler wrappers (separate resources with
 separate names) as defined in `magi-core/.github/workflows/deploy.yml`:
 
 | Cloud Run Job | Scheduler | Schedule (TZ) | Role |
 |---|---|---|---|
 | `magi-fugu-analyzer` | `magi-fugu-analyzer-daily` | `30 23 * * 1,5` (America/New_York) | ~~SEKHMET~~ offline sequential / **causal** outcome analysis, Sakana `fugu-ultra` — retired 2026-09-17; no `fugu_sequential_patterns` row since 2026-09-01; job + scheduler deleted 2026-09-23, table dropped |
-| `magi-gemini-analyzer` | `magi-gemini-analyzer-daily` | `0 14 * * 1-5` (UTC) | Gemini **generic** WIN/LOSE pattern analysis (AI Studio `gemini-3.8-flash`); not causal analysis → [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md) |
-| `magi-daphne-analyzer` | `magi-daphne-analyzer-daily` | `0 22 * * 1-5` (America/New_York) | LP-taxonomy classification of LOSE trades in BigQuery SQL + static `IS_CAUSAL` flag → [daphne-feedback](/system/echidna-tables/daphne-feedback.md) |
+| `magi-kimi-analyzer` | `magi-kimi-analyzer-daily` | `0 22 * * 1-5` (America/New_York) | Kimi K3.1 Pro (`kimi-k3.1-pro`, `reasoning_effort=high`): DAPHNE LP classification in BigQuery SQL + static `IS_CAUSAL` flag with why-lost narrative / hint rewrites → [daphne-feedback](/system/echidna-tables/daphne-feedback.md); generic WIN/LOSE pattern analysis + time-ordered causal analysis (former SEKHMET) → [gemini-pattern-analysis](/system/echidna-tables/gemini-pattern-analysis.md). Replaces `magi-gemini-analyzer` and `magi-daphne-analyzer` (Jun, 2026-11-09). |
 | `magi-thought-outcome-analyzer` | `magi-thought-outcome-analyzer-daily` | `0 23 * * 1-5` (America/New_York) | Links thoughts to realized outcomes (formerly fed the retired 23:30 ET Fugu pass) |
 | `magi-thought-quality-ranker` | `magi-thought-quality-ranker` | `0 0 1,15 * *` (UTC) | ~~Semi-monthly thought quality ranking~~ (`SAKANA_MODEL=fugu-ultra`) — retired 2026-09-17 with the Sakana stack; wrote `fugu_thought_quality_scores` (no consumer); job + scheduler deleted 2026-09-23, tables dropped |
 | `magi-evaluator` | `magi-evaluator-daily` | `0 10 * * *` (Asia/Tokyo) | Trade outcome evaluation (daily) |

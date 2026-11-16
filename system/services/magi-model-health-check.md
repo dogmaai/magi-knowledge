@@ -4,7 +4,7 @@ title: magi-model-health-check
 description: Periodic provider/model health checks across the PLM roster.
 lilith_safe: false
 status: draft
-generated: { by: devin/cloud, at: 2026-10-22T01:19:45Z }
+generated: { by: claude/opus-5-5, at: 2026-11-09T10:50:00Z }
 verified: { by: human:jun, at: 2026-06-19T01:02:48Z }
 stale_after: 2026-12-16T01:02:48Z
 tags: [service, health-check, providers, ops]
@@ -28,7 +28,9 @@ magi-core `4b57047`, not human-verified): the job also scans `llm_metrics` for
 per-provider failure streaks of the real call path (`checkMetricsStreaks`,
 `lib/llm-metrics-streak.js`; alert at 3 consecutive failures, then every 20),
 which covers `ollama`; it delivered two `ollama` streak alerts to Discord on
-2026-11-13. The `llm_health_checks` output table exists in
+2026-11-13. The `kimi` probe targets the PLM model; the offline
+`magi-kimi-analyzer` model (`kimi-k3.1-pro`, magi-core#713) is not probed
+separately. The `llm_health_checks` output table exists in
 `magi_core` but remains uncatalogued (see the drift backlog in
 [echidna-tables/index.md](/system/echidna-tables/index.md)).
 
