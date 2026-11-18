@@ -12,12 +12,12 @@
   `status: draft` (this also resolves the existing mismatch where the body
   said the doc remained `draft` while frontmatter said `stable`);
   `system/plm-units/index.md` moved ADAM from Active to the deprecated
-  table; `boreas.md`, `tiara.md` and `magi-moni.md` demoted `stable` →
-  `draft` because `okf_lint` fails a `stable` doc whose `generated.at`
-  postdates the last human `verified.at` — **the magi-core OKF drift test
-  then requires Jun's re-verification back to `stable` before the
-  `vendor/magi-knowledge` pin can be bumped** (a deployed `magi-core-boreas`
-  must resolve to exactly one `stable` doc). Consistency updates:
+  table; `boreas.md`, `tiara.md` and `magi-moni.md` keep `status: stable` —
+  per Jun's direction their bodies are untouched (the verified baseline)
+  and the retirement deltas live in trailing "ADAM retirement pointer
+  (unverified)" sections (the devin/web 2026-11-08 pattern), so the
+  `vendor/magi-knowledge` pin can bump without waiting for re-verification;
+  Jun will consolidate the verified text later. Consistency updates:
   `tiala-host.md` (consumer list + open item for `ollama rm qwen2.5:7b` /
   `OLLAMA_KEEP_ALIVE`), `cloudflare.md`, `aka-memory.md`, `magi-moni.md`,
   `magi-model-health-check.md`, `secrets-inventory.md` (ledger

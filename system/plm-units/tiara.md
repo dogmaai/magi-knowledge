@@ -3,8 +3,8 @@ type: PLM Unit
 title: TIARA
 description: Legacy self-hosted Ollama identity using qwen3.5:9b.
 lilith_safe: false
-status: draft
-generated: { by: devin/cli, at: 2026-11-16T11:30:00Z }
+status: stable
+generated: { by: devin/cloud, at: 2026-09-25T00:00:00Z }
 verified: [{ by: human:jun, at: 2026-08-27T23:15:42Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-04-04T05:36:00Z
 tags: [plm, legacy, ollama, self-hosted]
@@ -26,9 +26,8 @@ deployment using `LLM_PROVIDER=ollama` without a `UNIT_NAME` override was
 `magi-vix-oracle` (`MODE=VIX_ONLY`); that job was retired and replaced by
 deterministic aggregation inside `magi-isabel-cache` (see
 [ORACLE](oracle.md#oracle-vix-specialist-retired-2026-09-25)). The remaining
-Ollama deployments set explicit models — [BOREAS](boreas.md) uses
-`ministral-3:8b-ctx32k` ([ADAM](adam.md) used `qwen2.5:7b` until its
-2026-11-16 retirement) — so `qwen3.5:9b` is no longer
+Ollama deployments set explicit models — [ADAM](adam.md) uses `qwen2.5:7b` and
+[BOREAS](boreas.md) uses `ministral-3:8b-ctx32k` — so `qwen3.5:9b` is no longer
 deployed anywhere; it survives only as the `OLLAMA_MODEL` fallback default in
 `lib/config.js`.
 
@@ -42,9 +41,8 @@ deployed anywhere; it survives only as the `OLLAMA_MODEL` fallback default in
 
 # Relationships
 
-* The Ollama provider path is shared by legacy TIARA and
-  [BOREAS](boreas.md); [ADAM](adam.md) shared it until its 2026-11-16
-  retirement.
+* The Ollama provider path is shared by legacy TIARA, [ADAM](adam.md) and
+  [BOREAS](boreas.md).
 * [QWEN](qwen.md) is the DashScope provider, not the Ollama identity.
 * The unit name is resolved from `UNIT_NAME` through `getUnitName()`.
 * [LILITH](lilith.md) is the fine-tuned `lilith` provider served from
@@ -58,3 +56,17 @@ Query [trades](/system/echidna-tables/trades.md) where `unit_name='TIARA'`.
 
 * `magi-core/lib/config.js` (`OLLAMA_MODEL`, `getUnitName`).
 * `magi-core/lib/vix.js` (VIX-only Ollama default, removed 2026-09-25).
+
+## ADAM retirement pointer (unverified)
+
+Pointer added 2026-11-16 by devin/cli. This section is **outside this
+concept's existing `verified` records and has not been verified by
+human:jun**. It does not modify the verified content above, which remains
+the baseline until Jun verifies a replacement.
+
+[ADAM](adam.md) (`qwen2.5:7b`) was retired on 2026-11-16 (Jun's decision);
+the "remaining Ollama deployments" named above now reduce to
+[BOREAS](boreas.md) (`ministral-3:8b-ctx32k`) alone, and the provider path
+is shared by legacy TIARA and BOREAS only. `qwen3.5:9b` remains
+undeployed. This pointer authorizes no schema, guard, trading-mode or
+LILITH boundary change.

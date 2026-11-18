@@ -3,8 +3,8 @@ type: Service
 title: magi-moni
 description: Monitoring + admin layer with the AKA-1 natural-language operator bot.
 lilith_safe: false
-status: draft
-generated: { by: devin/cli, at: 2026-11-16T11:30:00Z }
+status: stable
+generated: { by: devin/cli, at: 2026-10-06T08:00:00Z }
 verified: [{ by: human:jun, at: 2026-08-24T11:03:39Z }, { by: devin/local, at: 2026-09-17T00:29:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-06T08:31:20Z }]
 stale_after: 2027-04-04T08:31:20Z
 tags: [service, monitoring, reporting, alerts, aka-1]
@@ -24,9 +24,8 @@ caller was removed (the provider entered magi-core `DEPRECATED_PROVIDERS` on
 `OLLAMA_MODEL=qwen3.5:9b`) was removed — `qwen3.5:9b` is no longer deployed
 on TIALA anyway (see log 2026-09-25). `GEMINI_MODEL` overrides the
 `gemini-3.8-flash` default, mirroring `magi-core/lib/config.js`. TIALA's
-Ollama service itself stays — it serves the BOREAS PLM
-unit via the `magi-ollama` Named Tunnel (ADAM retired 2026-11-16; TIARA is
-legacy). Earlier revisions described AKA-1
+Ollama service itself stays — it still serves the ADAM/BOREAS/TIARA PLM
+units via the `magi-ollama` Named Tunnel. Earlier revisions described AKA-1
 as "Claude/Gemini"; the implementation never used Claude.
 
 # Key modules
@@ -74,3 +73,16 @@ the [migration plan's live status](discord-migration.md#live-status-2026-11-13) 
 [log.md](../../log.md). AKA-1 runs on the separate MAGI Ops Discord application (signed `/webhook/discord`, guild slash commands, actor-bound confirmation buttons, single instance); the Telegram handler and webhook are removed. The daily/weekly report endpoints post to the Discord webhook but currently have no scheduler caller. **Update 2026-11-16 (Jun's decision 8 in the migration plan):** the `lib/tiala.js` / `lib/openclaw.js` TIALA operations listed above are removed by [magi-moni#60](https://github.com/dogmaai/magi-moni/pull/60) (pending merge and deploy); they had returned 403 since OpenClaw 2026.11.1. Until Jun re-verifies this concept, its Telegram
 wording describes the pre-cutover baseline, not current behavior. This pointer
 authorizes no schema, guard, trading-mode or LILITH boundary change.
+
+## ADAM retirement pointer (unverified)
+
+Pointer added 2026-11-16 by devin/cli. This section is **outside this
+concept's existing `verified` records and has not been verified by
+human:jun**. It does not modify the verified content above, which remains
+the baseline until Jun verifies a replacement.
+
+The TIALA Ollama service's PLM consumer is now BOREAS alone —
+[ADAM](/system/plm-units/adam.md) retired 2026-11-16 (Jun's decision);
+TIARA is legacy. The `magi-ollama` Named Tunnel path is unchanged. This
+pointer authorizes no schema, guard, trading-mode or LILITH boundary
+change.
