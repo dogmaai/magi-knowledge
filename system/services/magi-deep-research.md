@@ -4,8 +4,8 @@ title: magi-deep-research
 description: Devin Automation that produces and uploads the weekday daily Deep Research market brief.
 lilith_safe: false
 status: draft
-generated: { by: devin/cloud, at: 2026-11-01T04:58:00Z }
-verified: [{ by: human:jun, at: 2026-08-31T07:57:23Z }, { by: human:jun, at: 2026-10-20T10:11:00Z }, { by: devin/cloud, at: 2026-11-01T04:58:00Z }]
+generated: { by: devin/cloud, at: 2026-11-02T09:18:00Z }
+verified: [{ by: human:jun, at: 2026-08-31T07:57:23Z }, { by: human:jun, at: 2026-10-20T10:11:00Z }, { by: devin/cloud, at: 2026-11-02T09:18:00Z }]
 stale_after: 2027-04-18T10:11:00Z
 tags: [service, deep-research, devin-automation, market-research, magi-core]
 repo: dogmaai/magi-core
@@ -27,12 +27,18 @@ the Devin Automation.
 
 # Current status
 
-**The automation is currently disabled** (verified 2026-11-01: it is present
-in the automations list but `enabled: false`). The last
-`DAILY_DEEP_RESEARCH` row in `magi_core.market_research` is dated
-2026-10-29 — no briefs have been produced since. Whether the pause is
-intentional is Jun's call; if it is, the schedule table below describes
-the intended cadence, not current behavior.
+**The automation is enabled** (re-enabled 2026-11-02 by Jun's request; next
+run 2026-11-03 07:00 UTC). The last `DAILY_DEEP_RESEARCH` row in
+`magi_core.market_research` is dated 2026-10-29 — the gap since is the
+intentional pause before this re-enable.
+
+On re-enable the prompt was rewritten so the whole task completes on the
+Devin VM: the brief now lives at `/home/ubuntu/brief-*.md` (the
+`/Users/junsuzuki` local-machine paths were removed because Jun's Mac is
+unavailable), the repo is `~/repos/magi-core`, and GCP auth uses the
+`GCP_SERVICE_ACCOUNT_KEY` env secret via `GOOGLE_APPLICATION_CREDENTIALS`
+with a `bq` CLI fallback. The brief format, Section 5 stripping, schedule,
+and `max_acu_limit=1` cap are unchanged.
 
 # Automation schedule
 
