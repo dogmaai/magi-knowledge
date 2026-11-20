@@ -4,7 +4,7 @@ title: "MODEL CONSOLIDATION"
 description: Evidence-based consolidation of the ensemble's trade-decision core toward 1-2 units. Documentation-level objective; NOT part of the runtime prompt tree.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-10-09T23:03:00Z }
+generated: { by: devin/cli, at: 2026-11-16T11:30:00Z }
 stale_after: 2027-03-25T11:15:00Z
 tags: [constitution, consolidation, ensemble, learning, draft]
 version: "0.8"
@@ -47,8 +47,9 @@ existing unit names:
 * ARC is **not** the retired [LILITH](/system/plm-units/lilith.md)
   (`lilith-v1.0-b2-prod`). No pipeline, weights, or data of the retired
   LILITH line are implied; the "not a LILITH revival" boundary below stands.
-* SIG is **not** the currently deployed [ADAM](/system/plm-units/adam.md)
-  (Ollama `qwen2.5:7b` collaborative analyst). Deployed ADAM is a provisional
+* SIG is **not** the retired [ADAM](/system/plm-units/adam.md)
+  (Ollama `qwen2.5:7b` collaborative analyst, retired 2026-11-16). Deployed
+  ADAM was a provisional
   swarm contributor bearing its own name; whether a slot ends up occupied by
   an improved/renamed existing unit or a new one is part of the
   evidence-based selection below.
@@ -304,8 +305,9 @@ owner: Devin.
   separately, so no slot↔name binding is recorded yet.
 * **Runtime plan** (Jun stated direction 2026-10-09 — a planning note,
   not an approved determination): both slots are planned to run as
-  local-LLM units on TIALA — the self-hosted Ollama host already used
-  by [ADAM](/system/plm-units/adam.md) and [BOREAS](/system/plm-units/boreas.md) —
+  local-LLM units on TIALA — the self-hosted Ollama host used
+  by [BOREAS](/system/plm-units/boreas.md) (and by [ADAM](/system/plm-units/adam.md)
+  until its 2026-11-16 retirement) —
   reached via the existing `magi-ollama` Cloudflare tunnel. The tunnel
   serves HTTP(S) only; its gRPC setting stays disabled because no
   tunnel origin speaks gRPC, and enabling it would widen the origin

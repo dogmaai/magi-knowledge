@@ -56,3 +56,17 @@ Query [trades](/system/echidna-tables/trades.md) where `unit_name='TIARA'`.
 
 * `magi-core/lib/config.js` (`OLLAMA_MODEL`, `getUnitName`).
 * `magi-core/lib/vix.js` (VIX-only Ollama default, removed 2026-09-25).
+
+## ADAM retirement pointer (unverified)
+
+Pointer added 2026-11-16 by devin/cli. This section is **outside this
+concept's existing `verified` records and has not been verified by
+human:jun**. It does not modify the verified content above, which remains
+the baseline until Jun verifies a replacement.
+
+[ADAM](adam.md) (`qwen2.5:7b`) was retired on 2026-11-16 (Jun's decision);
+the "remaining Ollama deployments" named above now reduce to
+[BOREAS](boreas.md) (`ministral-3:8b-ctx32k`) alone, and the provider path
+is shared by legacy TIARA and BOREAS only. `qwen3.5:9b` remains
+undeployed. This pointer authorizes no schema, guard, trading-mode or
+LILITH boundary change.

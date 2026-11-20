@@ -5,7 +5,7 @@ description: Primary trade log — entry/exit, PnL, and unit attribution for eve
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=trades&page=table
 lilith_safe: false
 status: draft
-generated: { by: claude/cloud, at: 2026-10-28T03:10:00Z }
+generated: { by: devin/cli, at: 2026-11-16T11:30:00Z }
 verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }]
 stale_after: 2027-04-18T08:44:00Z
 tags: [echidna, bigquery, trades, core]
@@ -86,8 +86,10 @@ falls inside that layer's enabled window for the row's `unit_name`.
   still-open rows where `result IS NULL`); the exclusion count and their
   hit count are reported in a separate reference aggregate.
 * Enablement is evaluated per layer at trade time. The current windows —
-  L2 and L3 on `TYPHON`, `CASPER`, `PROMETHEUS`, `QWEN`, `ADAM`, `BOREAS`,
-  enabled by magi-core#565 (deploy success 2026-10-03T03:45:17Z) — are
+  L2 and L3 on `TYPHON`, `CASPER`, `PROMETHEUS`, `QWEN`, `BOREAS`
+  (initially enabled on `ADAM` too by magi-core#565, deploy success
+  2026-10-03T03:45:17Z; ADAM's flags ended with its job's retirement on
+  2026-11-16) — are
   fixed in the canonical query and must be edited on any deploy-config
   change; they must not be extended to other units or periods without a
   matching `*_WARN_ONLY` flag change in `deploy.yml`. Per-layer rates use

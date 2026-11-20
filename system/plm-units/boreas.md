@@ -131,3 +131,23 @@ transient Ollama-endpoint HTTP 502/524 errors, not the ingress defect.
 * `magi-core/src/llm.js` (`readOllamaStream` SSE reader, magi-core#536).
 * `magi-core/.github/workflows/deploy.yml` (`magi-core-boreas`,
   `magi-scheduler-boreas`).
+
+## ADAM retirement pointer (unverified)
+
+Pointer added 2026-11-16 by devin/cli. This section is **outside this
+concept's existing `verified` records and has not been verified by
+human:jun**. It does not modify the verified content above, which remains
+the baseline until Jun verifies a replacement.
+
+[ADAM](adam.md) was retired on 2026-11-16 (Jun's decision; see
+[log.md](../../log.md)): BOREAS is now the sole active unit on the shared
+`ollama` provider path and the only consumer of `ollama_NORMAL` — the 2×
+combined allocation described above has ended. The `:45` slot's original
+rationale — a 30-minute gap after ADAM's `:15` runs because `qwen2.5:7b`
+and `ministral-3:8b` could not stay resident together on TIALA's GPU — is
+now historical; the slot itself is kept. `qwen2.5:7b` still shares the
+SSD model directory until Jun removes it (`ollama rm`), and Jun approved
+extending `OLLAMA_KEEP_ALIVE` to `3h` so the model stays resident across
+the 2-hour gaps between `:45` runs (applied on TIALA after the teardown
+tracked in dogmaai/magi-core#724). This pointer authorizes no schema,
+guard, trading-mode or LILITH boundary change.
