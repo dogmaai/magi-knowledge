@@ -146,8 +146,24 @@ QWEN 23W/17L, TYPHON 2W/6L, PROMETHEUS 1W/0L). CASPER and BOREAS (with ADAM,
 pairs — **not** a join defect (joined = trades). `llm_provider='system'` rows
 are `AUTO_CLOSE` events and never reach WIN/LOSE. The 43 unjoined rows are 36
 with `thought_id IS NULL` (28 `CONTAMINATED`, 8 `RECON_BASELINE`, 5
-`AUTO_CLOSE`/`CLOSE`/`CANCELLED`) and 7 orphans. Why most CASPER/BOREAS trades
-are unresolved (open vs `FLAT` vs other) has not been checked yet.
+`AUTO_CLOSE`/`CLOSE`/`CANCELLED`) and 7 orphans. Result breakdown per unit (raw `trades`, 90 days, same day):
+
+| result | BOREAS | CASPER | QWEN | TYPHON |
+|---|---|---|---|---|
+| WIN / LOSE | 1 / 0 | 1 / 0 | 23 / 17 | 2 / 6 |
+| FLAT | 4 | 1 | 23 | 2 |
+| HOLD / null | 0 | 0 | 13 | 1 |
+| CANCELLED | 1 | 0 | 7 | 0 |
+| CONTAMINATED | 5 | 3 | 64 | 23 |
+| close events (CLOSE / AUTO_CLOSE / ORPHAN_CLOSE) | 8 | 9 | 40 | 4 |
+
+So CASPER and BOREAS are absent because they had very few genuine filled
+entries (CASPER: 2 terminal entries in 90 days), not because outcomes are
+pending. `FLAT` is a large share of terminal outcomes (QWEN 23 FLAT vs 40
+WIN/LOSE) and is invisible to this feedback by design. The high
+`CONTAMINATED` share (TYPHON 23/38, QWEN 64/187) is a `trades` lineage
+matter, excluded here by the positive `result` match; its cause and time
+distribution are not analysed in this doc.
 
 # Citations
 
