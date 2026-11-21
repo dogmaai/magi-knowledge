@@ -164,8 +164,8 @@ human-verified):
 
 **BOREAS `CALL_FAILED` streak (under investigation)**: the failure rate
 rose from ~20% (2026-11-02 → 2026-11-06) to 40–60% from 2026-11-09. In
-the 7-day window 2026-11-12 → 2026-11-20 (the last session at the time
-of writing), 48 of BOREAS's 56 sessions ended all-`CALL_FAILED`
+the 7 days to 2026-11-21 (sessions on the five trading days
+2026-11-16 → 2026-11-20), 48 of BOREAS's 56 sessions ended all-`CALL_FAILED`
 (47 × HTTP 502, 1 × 524). The session count is above the scheduled
 4 runs per weekday because surge-detector also starts `magi-core-boreas`
 as its `SECONDARY_JOB` (see Relationships). Every session
