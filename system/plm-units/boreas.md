@@ -145,9 +145,39 @@ the baseline until Jun verifies a replacement.
 combined allocation described above has ended. The `:45` slot's original
 rationale — a 30-minute gap after ADAM's `:15` runs because `qwen2.5:7b`
 and `ministral-3:8b` could not stay resident together on TIALA's GPU — is
-now historical; the slot itself is kept. `qwen2.5:7b` still shares the
-SSD model directory until Jun removes it (`ollama rm`), and Jun approved
-extending `OLLAMA_KEEP_ALIVE` to `3h` so the model stays resident across
-the 2-hour gaps between `:45` runs (applied on TIALA after the teardown
-tracked in dogmaai/magi-core#724). This pointer authorizes no schema,
+now historical; the slot itself is kept. Jun approved extending
+`OLLAMA_KEEP_ALIVE` to `3h` so the model stays resident across the
+2-hour gaps between `:45` runs. This pointer authorizes no schema,
 guard, trading-mode or LILITH boundary change.
+
+Status as of 2026-11-21 (claude/cloud, from dogmaai/magi-core#724; not
+human-verified):
+
+* `OLLAMA_KEEP_ALIVE=3h` is **not yet applied** on TIALA — Ollama still
+  runs with the ~5 min default. It is the last open item of #724 and is
+  Jun's to execute.
+* `qwen2.5:7b` was removed from TIALA on 2026-11-21 (Jun, `ollama rm`).
+* `magi-scheduler-adam` kept firing after the 2026-11-16 retirement
+  decision (the last `magi-core-adam` execution was 2026-11-19 20:15 UTC)
+  until it was paused on 2026-11-20 and then deleted. `llm_metrics` records
+  `qwen2.5:7b` calls on the shared GPU on 2026-11-16, 2026-11-17 and
+  2026-11-18 (last at 2026-11-18 18:19 UTC). None are recorded for the
+  2026-11-19 execution, so whether ADAM loaded the model that day is
+  unknown.
+
+**BOREAS `CALL_FAILED` streak (under investigation)**: the failure rate
+rose from ~20% (2026-11-02 → 2026-11-06) to 40–60% from 2026-11-09. In
+the 7 days to 2026-11-21 (sessions on the five trading days
+2026-11-16 → 2026-11-20), 48 of BOREAS's 56 sessions ended all-`CALL_FAILED`
+(47 × HTTP 502, 1 × 524). The session count is above the scheduled
+4 runs per weekday because surge-detector also starts `magi-core-boreas`
+as its `SECONDARY_JOB` (see Relationships). Across the whole streak
+(not only that window), every session failed on 2026-11-13 (5 sessions), 2026-11-16 (13), 2026-11-18 (8) and
+2026-11-19 (11). The 502 is the Cloudflare edge
+`Bad gateway` page (not an Ollama JSON error) and arrives ~12–13 s after
+the request. The `qwen2.5:7b` calls on the same tunnel succeeded on
+2026-11-16 and 2026-11-17, failures concentrate on cold-model calls, and host swap (Grafana
+`job="tiala-host"` node metrics) rose to ~8.5–9.7 GB from 2026-11-15 to 2026-11-16 onward. The working hypothesis is a
+failed `ministral-3:8b-ctx32k` load under memory pressure. **The host-side
+Ollama logs have not been checked, so the cause is unconfirmed.** Detail
+and the next-step criteria are in dogmaai/magi-core#724.
