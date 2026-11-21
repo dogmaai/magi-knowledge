@@ -1,5 +1,21 @@
 # Bundle Update Log
 
+## 2026-11-21 (BOREAS keep-alive status corrected; CALL_FAILED streak recorded)
+* **Recorded by claude/cloud — not human-verified**: the unverified *ADAM
+  retirement pointer* in `system/plm-units/boreas.md` read as if
+  `OLLAMA_KEEP_ALIVE=3h` had already been applied on TIALA. Per
+  dogmaai/magi-core#724 it has **not** been applied (still the ~5 min
+  default; the last open item, Jun's to execute). The pointer now says so,
+  and also records that `qwen2.5:7b` was removed on 2026-11-21 and that
+  `magi-scheduler-adam` kept firing until 2026-11-20 (last execution
+  2026-11-19 20:15 UTC).
+* **Investigation pointer**: 48 of BOREAS's 56 sessions in the 7 days to
+  2026-11-20 ended all-`CALL_FAILED` (47 × Cloudflare-edge HTTP 502 ~12–13 s
+  after the request, 1 × 524). The hypothesis is a failed model load under
+  TIALA memory pressure. It is unconfirmed until the host Ollama logs are
+  checked; detail is in magi-core#724. The verified body, frontmatter and `status: stable` are
+  unchanged; no `verified` entries added.
+
 ## 2026-11-21 (TIALA disk cleanup recorded)
 * **Recorded by claude/cloud — not human-verified**: `tiala-host.md` gains
   a *Disk cleanup 2026-11-21* section. Root free space 34 GiB → 67 GiB of
