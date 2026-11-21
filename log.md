@@ -1,5 +1,38 @@
 # Bundle Update Log
 
+## 2026-11-21 (BOREAS `OLLAMA_KEEP_ALIVE=3h` applied; 502 cause corrected after host check)
+* **Recorded by devin/cli — not human-verified**: `OLLAMA_KEEP_ALIVE=3h`
+  was applied on TIALA via the `local.ollama-env` LaunchAgent (the same
+  `launchctl setenv` method as the existing context-length variable);
+  Ollama was restarted during the weekend gap and `ollama ps` confirmed
+  a ~3h model hold (dogmaai/magi-core#724). The "keep-alive not yet
+  applied" lines in [boreas](system/plm-units/boreas.md) and
+  [tiala-host](system/services/tiala-host.md) now read as applied, and
+  the ADAM-retirement host follow-ups in tiala-host's *Open items* are
+  marked done.
+* **Cause update**: the earlier "failed model load under memory
+  pressure" hypothesis for the BOREAS `CALL_FAILED` streak was refuted
+  on the host — `ministral-3:8b-ctx32k` loads succeed and the origin
+  returns 200; the edge 502 comes from all `magi-ollama` tunnel
+  connections dying mid-request during cold-load system stalls
+  (evidence and log excerpts in magi-core#724). The verified body,
+  frontmatter and `status` are unchanged; no `verified` entries added.
+* **Tunnel transport change — recorded by devin/cli, not
+  human-verified**: the `magi-ollama` Named Tunnel was switched from
+  QUIC to HTTP/2 (`protocol: http2` in the host-local tunnel config)
+  and cloudflared updated 2026.10.3 → 2026.11.1 on 2026-11-21,
+  Jun-approved, as a mitigation for the mid-request UDP-path drops.
+  Recorded in [tiala-host](system/services/tiala-host.md) (*Ollama /
+  tunnel* bullet).
+* **New LaunchAgent — recorded by devin/cli, not human-verified**:
+  `local.ollama-warmup` fires a loopback ping to
+  `ministral-3:8b-ctx32k` weekdays 23:25 JST (14:25 UTC) — before the
+  post-open (9:30 ET) surge-detector secondary launch, since `3h`
+  keep-alive cannot span the overnight gap. Added to the
+  [tiala-host](system/services/tiala-host.md) launchd inventory and
+  referenced from [boreas](system/plm-units/boreas.md); the 2027-03-14
+  US-DST adjustment to 22:25 JST is registered in *Open items*.
+
 ## 2026-11-21 (plm-lifecycle-watch synced to merged implementation)
 * **Update by devin/web — not human-verified**:
   [plm-lifecycle-watch](system/services/plm-lifecycle-watch.md) now matches

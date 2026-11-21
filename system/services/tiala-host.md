@@ -51,7 +51,8 @@ program paths are host-local and intentionally not recorded here.
 | `com.magi.openclaw.cloudflared` | RunAtLoad | Named Tunnel `magi-openclaw` → `openclaw.khaos.company`. **Retired 2026-11-16** (Jun): LaunchAgent booted out and moved to `LaunchAgents.disabled`; DNS record and tunnel deleted in Cloudflare; the tunnel token secret disabled. Restoring requires a new tunnel | [cloudflare](cloudflare.md) §3 |
 | `com.magi.ollama-auth-proxy` | RunAtLoad | Bearer-auth enforcement (`OLLAMA_AUTH_TOKEN` injected env file) in front of raw Ollama | [cloudflare](cloudflare.md), [secrets-inventory](secrets-inventory.md) |
 | `local.ollama-proxy` | RunAtLoad | The local Host-rewrite proxy in front of Ollama — **no auth**; never in the tunnel path | [cloudflare](cloudflare.md) |
-| `local.ollama-env` | at login | `launchctl setenv OLLAMA_CONTEXT_LENGTH 65536` — host tuning | — |
+| `local.ollama-env` | at login | `launchctl setenv` for Ollama host env (`OLLAMA_CONTEXT_LENGTH`, `OLLAMA_KEEP_ALIVE=3h` since 2026-11-21) — host tuning | — |
+| `local.ollama-warmup` | Mon–Fri 23:25 JST (14:25 UTC) | Loopback warm-up ping to `ministral-3:8b-ctx32k` before the post-open (9:30 ET) surge-detector secondary launch, so the day's first call is warm — keep-alive can't span the overnight gap — added 2026-11-21 (devin/cli, Jun-approved; magi-core#724). Under US DST it fires 22:25 JST (see *Open items*) | [boreas](../plm-units/boreas.md) |
 | `local.tailscale-funnel` | — | **Disabled 2026-10-23** (unauthenticated publication remediated — see [cloudflare](cloudflare.md); details in magi-core#659) | [cloudflare](cloudflare.md), [aka-memory](aka-memory.md) |
 | `ai.openclaw.gateway` | RunAtLoad | OpenClaw Gateway (listener port/bind omitted under the public-repo writing rules; host-private details belong in magi-core#662), config `openclaw.json` in the OpenClaw state dir. **As of 2026-11-09** (observed on host): the OpenClaw CLI reports **v2026.11.1** (`4ffdd20`; `openclaw --version` returned v2026.6.1 `2e08f0f` on 2026-11-08 ~17:25 JST during the incident diagnosis) and the service command is Homebrew **`node`** (unversioned formula; the CLI resolved it to 26.12.1) with `--max-old-space-size=8192` — the explicit `node@22` path is gone (node@22 22.23.4 is still installed but unused by the Gateway). The version of the running Gateway process itself was not queried separately. History: `node@22` 22.23.4 from 2026-10-27 (was 22.22.0). `gateway.mode` must stay `local` — see *Incident 2026-11-08* below. Models (Jun 2026-10-27; not re-verified on 2026-11-09): primary `google/gemini-3.8-flash`, fallback `google/gemini-3.5-flash-lite` — replaced primary `sakana/fugu` (Sakana retired) and fallback `google/gemini-2.5-flash` (2.5 series being shut down); the `sakana` provider block is removed from `openclaw.json` and the agent `models.json` | [aka-memory](aka-memory.md), [cloudflare](cloudflare.md) |
 | `com.openclaw.gcs-memory-sync` | daily 21:00 JST | AKA memory backup → `gs://screen-share-459802-memory`; last run 2026-10-21 21:00:11 JST ok (86 objects) | [aka-memory](aka-memory.md) |
@@ -63,9 +64,11 @@ program paths are host-local and intentionally not recorded here.
 
 Ollama's historical consumer on this box was TIARA, which is **legacy**;
 the current consumer is **BOREAS only** — [ADAM](/system/plm-units/adam.md)
-(Ollama `qwen2.5:7b`) was retired on 2026-11-16 (Jun's decision), and
-removing its model from the SSD (`ollama rm qwen2.5:7b`) plus a
-`OLLAMA_KEEP_ALIVE` review for BOREAS are pending Jun's execution
+(Ollama `qwen2.5:7b`) was retired on 2026-11-16 (Jun's decision). Its
+model was removed from the SSD on 2026-11-21 (`ollama rm qwen2.5:7b`,
+Jun), and `OLLAMA_KEEP_ALIVE=3h` was applied on 2026-11-21 (devin/cli,
+Jun-approved in magi-core#724) via the `local.ollama-env` LaunchAgent so
+BOREAS's model stays resident through trading hours
 (see *Open items*). Access stays via the authenticated
 `magi-ollama` Named Tunnel (see [aka-memory](aka-memory.md)).
 
@@ -229,9 +232,15 @@ Recorded by claude/cloud from a read-only check run by the TIALA Claude CLI on
   recurrence of the 2026-10-22 issue; not investigated).
 * **macOS OpenClaw app**: v2026.3.28 fails to connect every 30 s with a
   protocol mismatch against the v2026.11.1 Gateway (app update pending).
-* **Ollama / tunnel**: BOREAS `502`s coincide with model cold loads (keep-alive
-  5 min, swap nearly full on the 16 GB host) and simultaneous drops of all
-  `magi-ollama` tunnel connections; ADAM `524`s are long prompts whose first
+* **Ollama / tunnel**: BOREAS `502`s coincide with model cold loads and
+  simultaneous drops of all `magi-ollama` tunnel connections — the
+  2026-11-21 host check (magi-core#724) found the model loads fine but
+  all edge connections die mid-request during cold-load stalls (swap
+  nearly full on the 16 GB host; keep-alive was 5 min then, `3h` since
+  2026-11-21). Also on 2026-11-21 (devin/cli, Jun-approved) the
+  `magi-ollama` tunnel transport was switched QUIC → HTTP/2 and
+  cloudflared updated to 2026.11.1 — mitigations for the mid-request
+  UDP-path drops; ADAM `524`s are long prompts whose first
   byte exceeds the edge timeout. Hypotheses only; remedies are Jun's (host)
   and an independently reviewed magi-core change (inference path).
 
@@ -304,11 +313,16 @@ Time Machine) — leave them.
 # Open items (NEEDS_JUN_DECISION)
 
 * **ADAM retired 2026-11-16** (Jun's decision; [adam.md](/system/plm-units/adam.md)):
-  pending on this host — `ollama rm qwen2.5:7b` (weights on the external SSD;
-  `ministral-3:8b-ctx32k` and its `ministral-3:8b` base tag stay), and a
-  `OLLAMA_KEEP_ALIVE` increase so BOREAS's model stays resident through
-  trading hours (currently 5 min; cold loads caused the 502s noted in
-  *Status 2026-11-13*). Both are Jun's to execute/approve.
+  host follow-ups **done 2026-11-21** — `ollama rm qwen2.5:7b` (Jun;
+  `ministral-3:8b-ctx32k` and its `ministral-3:8b` base tag stay), and
+  `OLLAMA_KEEP_ALIVE` raised to `3h` (devin/cli, Jun-approved in
+  magi-core#724) so BOREAS's model stays resident through
+  trading hours (was 5 min; cold loads caused the 502s noted in
+  *Status 2026-11-13*).
+* **`local.ollama-warmup` DST adjustment — due 2027-03-14**: when US
+  daylight saving starts (market open becomes 13:30 UTC = 22:30 JST),
+  move the weekday fire time from 23:25 JST to **22:25 JST**
+  (13:25 UTC). Symmetric revert applies at DST end (2027-11-07).
 * **OpenClaw Gateway stderr discarded**: `ai.openclaw.gateway` has
   `StandardErrorPath=/dev/null` — start-up failures (such as the
   2026-11-08 `gateway.mode` block) leave no log. Redirect to a file

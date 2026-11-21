@@ -153,9 +153,16 @@ guard, trading-mode or LILITH boundary change.
 Status as of 2026-11-21 (claude/cloud, from dogmaai/magi-core#724; not
 human-verified):
 
-* `OLLAMA_KEEP_ALIVE=3h` is **not yet applied** on TIALA — Ollama still
-  runs with the ~5 min default. It is the last open item of #724 and is
-  Jun's to execute.
+* `OLLAMA_KEEP_ALIVE=3h` was **applied on TIALA 2026-11-21** (devin/cli,
+  Jun-approved in #724) via the same `launchctl setenv` LaunchAgent used
+  for the other Ollama host env var; Ollama was restarted during the
+  weekend gap and `ollama ps` showed the model held for ~3h. It was the
+  last open item of #724.
+* A `local.ollama-warmup` LaunchAgent was added on TIALA on 2026-11-21
+  (devin/cli, Jun-approved): a loopback ping before the post-open
+  (9:30 ET) surge-detector secondary launch — 23:25 JST under winter
+  time, 22:25 JST under US DST — since `3h` cannot span the overnight
+  gap (see [tiala-host](/system/services/tiala-host.md)).
 * `qwen2.5:7b` was removed from TIALA on 2026-11-21 (Jun, `ollama rm`).
 * `magi-scheduler-adam` kept firing after the 2026-11-16 retirement
   decision (the last `magi-core-adam` execution was 2026-11-19 20:15 UTC)
@@ -177,7 +184,12 @@ as its `SECONDARY_JOB` (see Relationships). Across the whole streak
 `Bad gateway` page (not an Ollama JSON error) and arrives ~12–13 s after
 the request. The `qwen2.5:7b` calls on the same tunnel succeeded on
 2026-11-16 and 2026-11-17, failures concentrate on cold-model calls, and host swap (Grafana
-`job="tiala-host"` node metrics) rose to ~8.5–9.7 GB from 2026-11-15 to 2026-11-16 onward. The working hypothesis is a
-failed `ministral-3:8b-ctx32k` load under memory pressure. **The host-side
-Ollama logs have not been checked, so the cause is unconfirmed.** Detail
+`job="tiala-host"` node metrics) rose to ~8.5–9.7 GB from 2026-11-15 to 2026-11-16 onward. The initial working
+hypothesis was a
+failed `ministral-3:8b-ctx32k` load under memory pressure, but the
+host-side check on 2026-11-21 (devin/cli, not human-verified) found the
+model loaded successfully in every sampled window and the origin
+returned 200: the proximate cause is all `magi-ollama` tunnel
+connections dying mid-request during cold-load system stalls, which the
+Cloudflare edge reports as 502 ~12–13 s into the call. Detail
 and the next-step criteria are in dogmaai/magi-core#724.
