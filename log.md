@@ -32,6 +32,35 @@
   [tiala-host](system/services/tiala-host.md) launchd inventory and
   referenced from [boreas](system/plm-units/boreas.md); the 2027-03-14
   US-DST adjustment to 22:25 JST is registered in *Open items*.
+## 2026-11-21 (plm-lifecycle-watch synced to merged implementation)
+* **Update by devin/web — not human-verified**:
+  [plm-lifecycle-watch](system/services/plm-lifecycle-watch.md) now matches
+  the merged magi-moni#63 implementation after Devin Review rounds:
+  paginated model lists are followed (Google `nextPageToken`), unparseable
+  LLM output in the docs scan degrades to a `docs watch failed` finding,
+  the Ollama check picks the first stable release tag (no `-rcN`) and uses
+  numeric semver compare so ahead builds are not flagged, version-check
+  failures are themselves findings, and every request carries a ~30s
+  timeout through the body read. The `OLLAMA_AUTH_TOKEN` row in
+  [secrets-inventory](system/services/secrets-inventory.md) drops the
+  "pending" marker: magi-moni#63 merged 2026-11-21.
+
+## 2026-11-21 (PLM lifecycle watch — new monitoring concept)
+* **Creation by devin/web — not human-verified**:
+  [plm-lifecycle-watch](system/services/plm-lifecycle-watch.md) documents
+  the new `POST /monitor/plm-lifecycle` endpoint in magi-moni
+  (`lib/plm-lifecycle.js`): per-provider model-list presence,
+  `thoughts.model_version` served-model drift (7-day window), a Gemini-assisted
+  scan of provider deprecations/changelog pages, and the TIALA Ollama
+  version check. Coverage is the active roster only; `DEPRECATED_PROVIDERS`
+  are excluded by design. Complements
+  [magi-model-health-check](system/services/magi-model-health-check.md),
+  which only sees probes that have already started failing.
+  `status: draft`. Implements the watch Jun asked for on 2026-11-21.
+* **Ledger update**: `OLLAMA_AUTH_TOKEN` usage in
+  [secrets-inventory](system/services/secrets-inventory.md) gains the
+  magi-moni `--update-secrets` binding (magi-moni#63, merged 2026-11-21).
+  The provider API keys stay out of scope per that doc's own rule.
 
 ## 2026-11-21 (BOREAS keep-alive status corrected; CALL_FAILED streak recorded)
 * **Recorded by claude/cloud — not human-verified**: the unverified *ADAM
