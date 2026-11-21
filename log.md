@@ -1,5 +1,20 @@
 # Bundle Update Log
 
+## 2026-11-21 (TIALA disk cleanup recorded)
+* **Recorded by claude/cloud — not human-verified**: `tiala-host.md` gains
+  a *Disk cleanup 2026-11-21* section. Root free space 34 GiB → 67 GiB of
+  228 GiB (~85% → ~71% by the `tiala-disk-usage-high` formula): `aka`'s
+  cache cleanup (npm/pip/uv/brew, reported after execution), the
+  HuggingFace model cache moved to the external SSD behind a symlink, and
+  OpenD logs older than 14 days deleted (both Jun-approved, run by Devin
+  CLI); Devin also added Homebrew `rsync` 3.5.2. Homebrew `node` and the
+  OpenClaw Gateway were checked unchanged/running afterwards.
+* **New open items** (Jun's decisions): SSD dependency of the HuggingFace
+  cache, OpenD log rotation, netdata still stopped since 2026-10-22 (logs
+  untouched since then), and agent host changes without prior approval.
+  Frontmatter description/tags/generated updated; `status` stays `draft`;
+  no `verified` entries added. Base `c419b5c`.
+
 ## 2026-11-16 (ADAM retired — Ollama roster consolidated to BOREAS)
 * **Jun's decision (2026-11-16), recorded by devin/cli — not human-verified**:
   ADAM (`magi-core-adam`, Ollama `qwen2.5:7b` on TIALA) is retired. Reason:
