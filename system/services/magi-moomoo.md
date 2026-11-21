@@ -4,7 +4,7 @@ title: magi-moomoo
 description: MooMoo broker integration — account, positions, orders, market snapshots, history bars (/bars), and what PLM units see from it.
 lilith_safe: false
 status: draft
-generated: { by: claude/opus-5-5, at: 2026-11-21T05:30:00Z }
+generated: { by: claude/opus-5-5, at: 2026-11-21T05:40:00Z }
 verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: devin/cli, at: 2026-09-16T07:25:00Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }]
 stale_after: 2027-04-04T05:36:00Z
 tags: [service, moomoo, broker, market-data, bars]
@@ -127,10 +127,17 @@ Notes:
   prompt budget; `[HERMES INTELLIGENCE]` is optional and is dropped/truncated
   only after the lower-priority briefing, findings, symbol-VIX and ISABEL
   sections.
-* Live check 2026-11-21 (7 days): every LIVE session had a `moomoo_snapshots`
-  batch within 15 minutes before its first thought, and units quote the block
-  in `thoughts.reasoning` (e.g. "8% position (lowest of day), -1.19% vs
-  market", "thin spread"). Use varies by unit (QWEN often, PROMETHEUS rarely).
+* Live check 2026-11-21 (BigQuery MCP, read-only; see *Evidence queries*):
+  all 189 non-SHADOW sessions of the previous 7 days (QWEN 99, BOREAS 56,
+  TYPHON 17, PROMETHEUS 11, CASPER 4, ADAM 2) had a `moomoo_snapshots` batch
+  within 15 minutes before their first thought. Units quote the block in
+  `thoughts.reasoning` (e.g. QWEN/XOM 2026-11-16 "8% position (lowest of
+  day), -1.19% vs market"; QWEN/WMT 2026-11-18 "thin spread"). A keyword
+  match over the same 7 days found such cues in 66 of 253 QWEN `HOLD` rows
+  and 2 of 54 PROMETHEUS `HOLD` rows — a heuristic, not a measure of use.
+  The snapshot-before-thought check shows the data was fetched; that it
+  reached the prompt is inferred from the code path (the batch is written
+  only after the prompt block is built).
 
 # History bars (`GET /bars`, proxied as `/trade/bars`)
 
@@ -151,14 +158,39 @@ bar is the latest one. Implementation (`bridge/moomoo_bridge.py`):
 bridge passed `max_count=limit` over a fixed 60-day window, so it returned the
 **oldest** `limit` bars of the window — roughly one month stale for the
 20/21-bar callers and about two months stale for `limit=2`. Every
-`getMomooBars()` consumer was affected until the fixed bridge is deployed on
+`getMomooBars()` consumer (sic — that is the function's actual name in
+`magi-core/lib/moomoo.js`) was affected until the fixed bridge is deployed on
 TIALA: `get_price_history` indicators in PLM prompts, sVIX (`src/isabel.js`,
 also injected as the symbol-VIX prompt section), `trades.market_snapshot`
 (`lib/feedback.js`), `trades.atr_at_execution` (`lib/atr.js`, recorded after
 the order — not a guard input) and `magi-simulator.js`. Historical rows written
 before the deployment keep the stale values. Evidence: LLY snapshot 1,402–1,432
 on 2026-11-17 while QWEN received `latest_close $1250.09`; on 2026-11-20 QWEN
-received `SMA5=1223, SMA20=1181` with the price near 1,350.
+received `SMA5=1223, SMA20=1181` with the price near 1,350 (2026-11-20
+snapshot range 1,345.71–1,366.79). The QWEN figures are quoted from
+`thoughts.reasoning` (QWEN `HOLD` LLY, 2026-11-17 14:58Z and 2026-11-20
+17:56Z), not from a stored bars table — the bridge does not persist bars.
+
+## Evidence queries (2026-11-21)
+
+```sql
+-- snapshot batch within 15 min before each session's first thought
+WITH s AS (SELECT session_id, ANY_VALUE(unit_name) unit_name, MIN(timestamp) t0
+  FROM magi_core.thoughts
+  WHERE timestamp > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 7 DAY)
+    AND trade_mode != 'SHADOW' AND session_id IS NOT NULL GROUP BY 1),
+snap AS (SELECT snapshot_id, MIN(snapshot_ts) ts FROM magi_core.moomoo_snapshots
+  WHERE snapshot_ts > TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL 8 DAY) GROUP BY 1)
+SELECT unit_name, COUNT(*) sessions,
+  COUNTIF(EXISTS(SELECT 1 FROM snap WHERE snap.ts BETWEEN
+    TIMESTAMP_SUB(s.t0, INTERVAL 15 MINUTE) AND s.t0)) with_snapshot
+FROM s GROUP BY 1;
+
+-- LLY broker price per day
+SELECT DATE(snapshot_ts) d, MIN(last_price), MAX(last_price)
+FROM magi_core.moomoo_snapshots
+WHERE symbol = 'LLY' AND snapshot_ts > TIMESTAMP('2026-11-10') GROUP BY 1;
+```
 
 # Availability
 
