@@ -9,8 +9,9 @@
   and also records that `qwen2.5:7b` was removed on 2026-11-21 and that
   `magi-scheduler-adam` kept firing until 2026-11-20 (last execution
   2026-11-19 20:15 UTC).
-* **Investigation pointer**: 48 of BOREAS's 56 sessions in the 7 days to
-  2026-11-20 ended all-`CALL_FAILED` (47 × Cloudflare-edge HTTP 502 ~12–13 s
+* **Investigation pointer**: 48 of BOREAS's 56 sessions in the 7-day window
+  2026-11-12 → 2026-11-20 (scheduled runs plus surge-detector
+  `SECONDARY_JOB` runs) ended all-`CALL_FAILED` (47 × Cloudflare-edge HTTP 502 ~12–13 s
   after the request, 1 × 524). The hypothesis is a failed model load under
   TIALA memory pressure. It is unconfirmed until the host Ollama logs are
   checked; detail is in magi-core#724. The verified body, frontmatter and `status: stable` are

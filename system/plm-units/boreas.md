@@ -162,9 +162,13 @@ human-verified):
   until it was paused on 2026-11-20 and then deleted, so ADAM still loaded
   `qwen2.5:7b` on the shared GPU through 2026-11-19.
 
-**BOREAS `CALL_FAILED` streak (2026-11-09 → 2026-11-20, under
-investigation)**: 48 of BOREAS's 56 sessions in the 7 days to 2026-11-20
-ended all-`CALL_FAILED` (47 × HTTP 502, 1 × 524), and every session
+**BOREAS `CALL_FAILED` streak (under investigation)**: the failure rate
+rose from ~20% (2026-11-02 → 2026-11-06) to 40–60% from 2026-11-09. In
+the 7-day window 2026-11-12 → 2026-11-20 (the last session at the time
+of writing), 48 of BOREAS's 56 sessions ended all-`CALL_FAILED`
+(47 × HTTP 502, 1 × 524). The session count is above the scheduled
+4 runs per weekday because surge-detector also starts `magi-core-boreas`
+as its `SECONDARY_JOB` (see Relationships). Every session
 failed on 2026-11-13, 2026-11-16, 2026-11-18 and 2026-11-19. The 502 is the Cloudflare edge
 `Bad gateway` page (not an Ollama JSON error) and arrives ~12–13 s after
 the request. The `qwen2.5:7b` calls on the same tunnel succeeded on
