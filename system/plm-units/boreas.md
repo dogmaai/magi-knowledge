@@ -165,11 +165,11 @@ human-verified):
 **BOREAS `CALL_FAILED` streak (2026-11-09 → 2026-11-20, under
 investigation)**: 48 of BOREAS's 56 sessions in the 7 days to 2026-11-20
 ended all-`CALL_FAILED` (47 × HTTP 502, 1 × 524), and every session
-failed on 2026-11-13, 11-16, 11-18 and 11-19. The 502 is the Cloudflare edge
+failed on 2026-11-13, 2026-11-16, 2026-11-18 and 2026-11-19. The 502 is the Cloudflare edge
 `Bad gateway` page (not an Ollama JSON error) and arrives ~12–13 s after
 the request. The `qwen2.5:7b` calls on the same tunnel succeeded on
-11-16/17, failures concentrate on cold-model calls, and host swap rose to
-~8.5–9.7 GB from 2026-11-15 to 11-16 onward. The working hypothesis is a
+2026-11-16 and 2026-11-17, failures concentrate on cold-model calls, and host swap rose to
+~8.5–9.7 GB from 2026-11-15 to 2026-11-16 onward. The working hypothesis is a
 failed `ministral-3:8b-ctx32k` load under memory pressure. **The host-side
 Ollama logs have not been checked, so the cause is unconfirmed.** Detail
 and the next-step criteria are in dogmaai/magi-core#724.
