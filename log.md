@@ -32,6 +32,7 @@
   [tiala-host](system/services/tiala-host.md) launchd inventory and
   referenced from [boreas](system/plm-units/boreas.md); the 2027-03-14
   US-DST adjustment to 22:25 JST is registered in *Open items*.
+
 ## 2026-11-21 (plm-lifecycle-watch synced to merged implementation)
 * **Update by devin/web — not human-verified**:
   [plm-lifecycle-watch](system/services/plm-lifecycle-watch.md) now matches
