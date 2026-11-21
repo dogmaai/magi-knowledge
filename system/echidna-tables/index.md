@@ -52,6 +52,7 @@ Three write-path conventions matter:
 * `fugu_sequential_patterns` (deprecated 2026-09-17) - SEKHMET/`fugu-ultra` sequential **causal** outcome analysis; last row 2026-09-01, producer retired; table dropped 2026-09-23.
 * `sekhmet_reviews` (deprecated 2026-09-17) - SHADOW-only hard-case review ledger; created 2026-09-08, never received a row before the producer was retired; dropped 2026-09-23.
 * [daphne-feedback](daphne-feedback.md) - DAPHNE LP-taxonomy loss classification with a static causal flag (SQL-based).
+* [thought-outcome-feedback](thought-outcome-feedback.md) - TOA/TOF per-provider thought→outcome feedback (90d), injected into PLM prompts; source of the `[TOA]` Discord notification (draft).
 
 # Ops, config & governance
 
@@ -131,7 +132,7 @@ per-table docs are pending work, not waived:
 `isabel_requests`, `lilith_training_examples`, `llm_health_checks`,
 `manual_focus_symbols`, `model_training_log`, `pattern_discovery_kpi`,
 `stale_phrases`, `thought_analysis_findings`,
-`thought_embeddings`, `thought_outcome_feedback`, `thoughts_for_ds`,
+`thought_embeddings`, `thoughts_for_ds`,
 `thoughts_simulation`, `trades_for_ds`,
 `trades_simulation`, plus views
 `isabel_trade_analysis`, `market_research_view`, `symbol_change_rates`,
