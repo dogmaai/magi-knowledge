@@ -15,7 +15,11 @@
   band" can select a band with n < 3; Telegram trend has no 7-day minimum
   sample; grouping by provider ignores the draft model-cohorting key;
   retired providers (e.g. SOPHIA-5/`mistral`) keep getting rows until their
-  trades leave the 90-day window; schema inferred from code (no `bq show`).
+  trades leave the 90-day window; `← STRONG` label has no sample floor
+  (confirmed live on the PROMETHEUS n=1 row); `FLAT` excluded from win rate.
+* **Live check 2026-11-21** (output relayed by Jun): schema matches the
+  writer; WIN/LOSE counts match the Telegram summary; CASPER/BOREAS absent
+  because < 5 resolved pairs, not a join defect.
   `status: draft`. Base `f0b3c29`, magi-core `4605ae4`.
 
 ## 2026-11-21 (TIALA disk cleanup recorded)

@@ -5,7 +5,7 @@ description: TOA/TOF per-provider thought→outcome feedback (90d) — pre-rende
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=thought_outcome_feedback&page=table
 lilith_safe: false
 status: draft
-generated: { by: claude/opus-5-5, at: 2026-11-21T04:04:11Z }
+generated: { by: claude/opus-5-5, at: 2026-11-21T04:20:00Z }
 tags: [echidna, bigquery, toa, tof, feedback, calibration]
 dataset: magi_core
 table_type: BASE TABLE
@@ -20,9 +20,10 @@ per-provider metrics, and appends one row per provider per run. The runtime
 loader `lib/thought-feedback.js` reads the latest row and injects its
 `feedback_text` into the PLM prompt.
 
-> **Draft.** Written by claude/cloud from magi-core `4605ae4` source only.
-> The BigQuery schema and row contents were **not** checked against the live
-> table (no GCP credentials in that session). Not human-verified.
+> **Draft.** Written by claude/cloud from magi-core `4605ae4` source. Schema,
+> row counts and one `feedback_text` row were checked against the live table on
+> 2026-11-21 (output relayed by Jun from a session with BigQuery access; see
+> *Live check* below). Not human-verified.
 
 # Naming: TOA vs TOF
 
@@ -36,7 +37,12 @@ in `docs/feedback-loops.md`, the A/B holdout description and
 
 1. **Input.** `thoughts ⨝ trades ON thought_id` where `trades.result IN
    ('WIN','LOSE')`, `LENGTH(thoughts.reasoning) > 10`, and `trades.timestamp`
-   is within the last **90 days**. SHADOW decisions go to `trades_shadow`, not
+   is within the last **90 days**. It reads raw `trades`, not
+   [`trades_active`](views.md); the positive `result` match already excludes
+   `CONTAMINATED`, open (`NULL`/`HOLD`), `FLAT`, close-event and `CANCELLED`
+   rows (see [Result vocabulary](trades.md#result-vocabulary)). **`FLAT`
+   outcomes are not counted**, so the win rate is WIN/(WIN+LOSE), not over
+   all terminal entries. SHADOW decisions go to `trades_shadow`, not
    `trades`, so SHADOW units ([MELCHIOR-1](/system/plm-units/melchior-1.md))
    produce no pairs here.
 2. **Grouping.** By `thoughts.llm_provider`. The displayed unit name is the
@@ -62,24 +68,25 @@ in `docs/feedback-loops.md`, the A/B holdout description and
 
 # Schema
 
-Inferred from the writer's insert payload (`table.insert(...,
-{ ignoreUnknownValues: true })`); no DDL file exists in magi-core.
+Matches the writer's insert payload and the live table (`bq show`,
+2026-11-21): BASE TABLE, all columns NULLABLE, no column descriptions, no
+partitioning or clustering, 751 rows. No DDL file exists in magi-core.
 
-| Column | Type (inferred) | Description |
+| Column | Type | Description |
 |---|---|---|
 | analyzed_at | TIMESTAMP | Run time (same for all rows of one run). |
 | llm_provider | STRING | Provider key (`qwen`, `kimi`, `openai`, ...). Loader filter key. |
 | unit_name | STRING | Unit name of the provider's most recent pair. |
-| total_resolved | INT64 | WIN+LOSE pairs in the 90-day window. |
-| win_count | INT64 | WIN pairs. |
-| lose_count | INT64 | LOSE pairs. |
-| win_rate | INT64 | Rounded % (0–100). |
-| confidence_bands | STRING (JSON) | `[{band, win_rate, wins, loses, total}]` for bands `0.90+`, `0.80-0.89`, `0.70-0.79`, `0.60-0.69`, `<0.60`; empty bands omitted. |
-| regime_breakdown | STRING (JSON) | Win rate by `thoughts.vix_regime` (groups with n ≥ 3). |
-| symbol_breakdown | STRING (JSON) | `{top, worst}` — up to 5 symbols each, n ≥ 3. |
-| direction_breakdown | STRING (JSON) | Win rate by `trades.side`. |
-| reasoning_stats | STRING (JSON) | Average reasoning length for WIN vs LOSE. |
-| trend_7d | STRING (JSON) | `{wr_7d, count_7d, wr_30d, count_30d, delta}`; `delta = wr_7d − wr_30d` in pp. |
+| total_resolved | INTEGER | WIN+LOSE pairs in the 90-day window. |
+| win_count | INTEGER | WIN pairs. |
+| lose_count | INTEGER | LOSE pairs. |
+| win_rate | INTEGER | Rounded % (0–100), i.e. `Math.round(wins*100/total)`. |
+| confidence_bands | STRING (JSON text) | `[{band, win_rate, wins, loses, total}]` for bands `0.90+`, `0.80-0.89`, `0.70-0.79`, `0.60-0.69`, `<0.60`; empty bands omitted. |
+| regime_breakdown | STRING (JSON text) | Win rate by `thoughts.vix_regime` (groups with n ≥ 3). |
+| symbol_breakdown | STRING (JSON text) | `{top, worst}` — up to 5 symbols each, n ≥ 3. |
+| direction_breakdown | STRING (JSON text) | Win rate by `trades.side`. |
+| reasoning_stats | STRING (JSON text) | Average reasoning length for WIN vs LOSE. |
+| trend_7d | STRING (JSON text) | `{wr_7d, count_7d, wr_30d, count_30d, delta}`; `delta = wr_7d − wr_30d` in pp. |
 | feedback_text | STRING | Pre-rendered `[THOUGHT-OUTCOME FEEDBACK — <unit>]` prompt block. |
 
 # Reading the "[TOA] Thought-Outcome Feedback Updated" Telegram message
@@ -107,12 +114,40 @@ Per provider: `<UNIT>: <win_rate>% (<W>W/<L>L)` over **90 days**, then:
   aggregates on `(unit_name, model_version)`. Providers that changed unit or
   model within 90 days (e.g. `ollama`: ADAM → BOREAS) are blended under the
   most recent unit name.
-* **Small-sample feedback.** With the `openai` cold-start minimum of 1, a
-  single trade produces a feedback block that labels its band
-  `← STRONG` at 100%.
+* **Small-sample `← STRONG` label (confirmed live).** In
+  `generateFeedbackText()` a band is labelled `← STRONG` at `win_rate >= 65`
+  with **no sample minimum**, while `← WEAK` requires `total >= 5`. With the
+  `openai` cold-start minimum of 1, the PROMETHEUS row of 2026-11-21T04:00:11Z
+  injects `0.70-0.79: 100% actual (1W/0L, n=1) ← STRONG`. Whether to add an
+  n-floor to STRONG (or raise the `openai` minimum) is Jun's decision.
 * **`pattern_discovery_kpi`** has no concept doc yet (listed as pending in
   the [table index](index.md)).
-* **Schema** above is inferred from code, not `bq show`.
+* **Orphan lineage (minor).** 7 trades in the 90-day window carry a
+  `thought_id` with no matching `thoughts` row; they drop out of the inner
+  join.
+
+# Live check (2026-11-21, 90-day window, raw `trades`)
+
+| llm_provider | unit_name | trades | joined | WIN/LOSE |
+|---|---|---|---|---|
+| mistral | SOPHIA-5 (retired) | 429 | 429 | 138 |
+| qwen | QWEN | 174 | 174 | 40 |
+| *(null)* | — | 43 | 0 | 0 |
+| kimi | TYPHON | 38 | 38 | 8 |
+| ollama | BOREAS | 18 | 18 | 1 |
+| ollama | ADAM (retired) | 9 | 9 | 1 |
+| deepseek | CASPER | 11 | 11 | 1 |
+| openai | PROMETHEUS | 10 | 10 | 1 |
+| system | (various) | 20 | 20 | 0 |
+
+The WIN/LOSE counts match the 2026-11-21 Telegram summary (SOPHIA-5 93W/45L,
+QWEN 23W/17L, TYPHON 2W/6L, PROMETHEUS 1W/0L). CASPER and BOREAS (with ADAM,
+`ollama` = 2) are absent because they are under the minimum of 5 resolved
+pairs — **not** a join defect (joined = trades). `llm_provider='system'` rows
+are `AUTO_CLOSE` events and never reach WIN/LOSE. The 43 unjoined rows are 36
+with `thought_id IS NULL` (28 `CONTAMINATED`, 8 `RECON_BASELINE`, 5
+`AUTO_CLOSE`/`CLOSE`/`CANCELLED`) and 7 orphans. Why most CASPER/BOREAS trades
+are unresolved (open vs `FLAT` vs other) has not been checked yet.
 
 # Citations
 
