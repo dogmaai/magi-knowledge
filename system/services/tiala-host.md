@@ -63,9 +63,11 @@ program paths are host-local and intentionally not recorded here.
 
 Ollama's historical consumer on this box was TIARA, which is **legacy**;
 the current consumer is **BOREAS only** — [ADAM](/system/plm-units/adam.md)
-(Ollama `qwen2.5:7b`) was retired on 2026-11-16 (Jun's decision), and
-removing its model from the SSD (`ollama rm qwen2.5:7b`) plus a
-`OLLAMA_KEEP_ALIVE` review for BOREAS are pending Jun's execution
+(Ollama `qwen2.5:7b`) was retired on 2026-11-16 (Jun's decision). Its
+model was removed from the SSD on 2026-11-21 (`ollama rm qwen2.5:7b`,
+Jun), and `OLLAMA_KEEP_ALIVE=3h` was applied on 2026-11-21 (devin/cli,
+Jun-approved in magi-core#724) via the `local.ollama-env` LaunchAgent so
+BOREAS's model stays resident through trading hours
 (see *Open items*). Access stays via the authenticated
 `magi-ollama` Named Tunnel (see [aka-memory](aka-memory.md)).
 
@@ -229,9 +231,12 @@ Recorded by claude/cloud from a read-only check run by the TIALA Claude CLI on
   recurrence of the 2026-10-22 issue; not investigated).
 * **macOS OpenClaw app**: v2026.3.28 fails to connect every 30 s with a
   protocol mismatch against the v2026.11.1 Gateway (app update pending).
-* **Ollama / tunnel**: BOREAS `502`s coincide with model cold loads (keep-alive
-  5 min, swap nearly full on the 16 GB host) and simultaneous drops of all
-  `magi-ollama` tunnel connections; ADAM `524`s are long prompts whose first
+* **Ollama / tunnel**: BOREAS `502`s coincide with model cold loads and
+  simultaneous drops of all `magi-ollama` tunnel connections — the
+  2026-11-21 host check (magi-core#724) found the model loads fine but
+  all edge connections die mid-request during cold-load stalls (swap
+  nearly full on the 16 GB host; keep-alive was 5 min then, `3h` since
+  2026-11-21); ADAM `524`s are long prompts whose first
   byte exceeds the edge timeout. Hypotheses only; remedies are Jun's (host)
   and an independently reviewed magi-core change (inference path).
 
@@ -304,11 +309,12 @@ Time Machine) — leave them.
 # Open items (NEEDS_JUN_DECISION)
 
 * **ADAM retired 2026-11-16** (Jun's decision; [adam.md](/system/plm-units/adam.md)):
-  pending on this host — `ollama rm qwen2.5:7b` (weights on the external SSD;
-  `ministral-3:8b-ctx32k` and its `ministral-3:8b` base tag stay), and a
-  `OLLAMA_KEEP_ALIVE` increase so BOREAS's model stays resident through
-  trading hours (currently 5 min; cold loads caused the 502s noted in
-  *Status 2026-11-13*). Both are Jun's to execute/approve.
+  host follow-ups **done 2026-11-21** — `ollama rm qwen2.5:7b` (Jun;
+  `ministral-3:8b-ctx32k` and its `ministral-3:8b` base tag stay), and
+  `OLLAMA_KEEP_ALIVE` raised to `3h` (devin/cli, Jun-approved in
+  magi-core#724) so BOREAS's model stays resident through
+  trading hours (was 5 min; cold loads caused the 502s noted in
+  *Status 2026-11-13*).
 * **OpenClaw Gateway stderr discarded**: `ai.openclaw.gateway` has
   `StandardErrorPath=/dev/null` — start-up failures (such as the
   2026-11-08 `gateway.mode` block) leave no log. Redirect to a file

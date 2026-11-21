@@ -1,5 +1,23 @@
 # Bundle Update Log
 
+## 2026-11-21 (BOREAS `OLLAMA_KEEP_ALIVE=3h` applied; 502 cause corrected after host check)
+* **Recorded by devin/cli — not human-verified**: `OLLAMA_KEEP_ALIVE=3h`
+  was applied on TIALA via the `local.ollama-env` LaunchAgent (the same
+  `launchctl setenv` method as the existing context-length variable);
+  Ollama was restarted during the weekend gap and `ollama ps` confirmed
+  a ~3h model hold (dogmaai/magi-core#724). The "keep-alive not yet
+  applied" lines in [boreas](system/plm-units/boreas.md) and
+  [tiala-host](system/services/tiala-host.md) now read as applied, and
+  the ADAM-retirement host follow-ups in tiala-host's *Open items* are
+  marked done.
+* **Cause update**: the earlier "failed model load under memory
+  pressure" hypothesis for the BOREAS `CALL_FAILED` streak was refuted
+  on the host — `ministral-3:8b-ctx32k` loads succeed and the origin
+  returns 200; the edge 502 comes from all `magi-ollama` tunnel
+  connections dying mid-request during cold-load system stalls
+  (evidence and log excerpts in magi-core#724). The verified body,
+  frontmatter and `status` are unchanged; no `verified` entries added.
+
 ## 2026-11-21 (BOREAS keep-alive status corrected; CALL_FAILED streak recorded)
 * **Recorded by claude/cloud — not human-verified**: the unverified *ADAM
   retirement pointer* in `system/plm-units/boreas.md` read as if
