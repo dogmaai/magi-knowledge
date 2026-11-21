@@ -162,8 +162,11 @@ entries (CASPER: 2 terminal entries in 90 days), not because outcomes are
 pending. `FLAT` is a large share of terminal outcomes (QWEN 23 FLAT vs 40
 WIN/LOSE) and is invisible to this feedback by design. The high
 `CONTAMINATED` share (TYPHON 23/38, QWEN 64/187) is a `trades` lineage
-matter, excluded here by the positive `result` match; its cause and time
-distribution are not analysed in this doc.
+matter, excluded here by the positive `result` match. All 425 `CONTAMINATED`
+rows in the window fall between 2026-08-24T13:51Z and 2026-10-05T14:31Z,
+with none after 2026-10-05; the timing coincides with the 2026-10-03..05
+`RECON_BASELINE` seeding / ghost-fill quarantine in [trades](trades.md), but
+causation is not verified. Rows before the window start were not checked.
 
 # Citations
 
