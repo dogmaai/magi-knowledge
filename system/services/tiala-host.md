@@ -52,7 +52,7 @@ program paths are host-local and intentionally not recorded here.
 | `com.magi.ollama-auth-proxy` | RunAtLoad | Bearer-auth enforcement (`OLLAMA_AUTH_TOKEN` injected env file) in front of raw Ollama | [cloudflare](cloudflare.md), [secrets-inventory](secrets-inventory.md) |
 | `local.ollama-proxy` | RunAtLoad | The local Host-rewrite proxy in front of Ollama — **no auth**; never in the tunnel path | [cloudflare](cloudflare.md) |
 | `local.ollama-env` | at login | `launchctl setenv` for Ollama host env (`OLLAMA_CONTEXT_LENGTH`, `OLLAMA_KEEP_ALIVE=3h` since 2026-11-21) — host tuning | — |
-| `local.ollama-warmup` | Mon–Fri 23:40 JST | Loopback warm-up ping to `ministral-3:8b-ctx32k` ~5 min before BOREAS's first `:45` run, so the day's first call is warm — keep-alive can't span the overnight gap — added 2026-11-21 (devin/cli, Jun-approved; magi-core#724) | [boreas](../plm-units/boreas.md) |
+| `local.ollama-warmup` | Mon–Fri 23:25 JST (14:25 UTC) | Loopback warm-up ping to `ministral-3:8b-ctx32k` before the post-open (9:30 ET) surge-detector secondary launch, so the day's first call is warm — keep-alive can't span the overnight gap — added 2026-11-21 (devin/cli, Jun-approved; magi-core#724). Under US DST it fires 22:25 JST (see *Open items*) | [boreas](../plm-units/boreas.md) |
 | `local.tailscale-funnel` | — | **Disabled 2026-10-23** (unauthenticated publication remediated — see [cloudflare](cloudflare.md); details in magi-core#659) | [cloudflare](cloudflare.md), [aka-memory](aka-memory.md) |
 | `ai.openclaw.gateway` | RunAtLoad | OpenClaw Gateway (listener port/bind omitted under the public-repo writing rules; host-private details belong in magi-core#662), config `openclaw.json` in the OpenClaw state dir. **As of 2026-11-09** (observed on host): the OpenClaw CLI reports **v2026.11.1** (`4ffdd20`; `openclaw --version` returned v2026.6.1 `2e08f0f` on 2026-11-08 ~17:25 JST during the incident diagnosis) and the service command is Homebrew **`node`** (unversioned formula; the CLI resolved it to 26.12.1) with `--max-old-space-size=8192` — the explicit `node@22` path is gone (node@22 22.23.4 is still installed but unused by the Gateway). The version of the running Gateway process itself was not queried separately. History: `node@22` 22.23.4 from 2026-10-27 (was 22.22.0). `gateway.mode` must stay `local` — see *Incident 2026-11-08* below. Models (Jun 2026-10-27; not re-verified on 2026-11-09): primary `google/gemini-3.8-flash`, fallback `google/gemini-3.5-flash-lite` — replaced primary `sakana/fugu` (Sakana retired) and fallback `google/gemini-2.5-flash` (2.5 series being shut down); the `sakana` provider block is removed from `openclaw.json` and the agent `models.json` | [aka-memory](aka-memory.md), [cloudflare](cloudflare.md) |
 | `com.openclaw.gcs-memory-sync` | daily 21:00 JST | AKA memory backup → `gs://screen-share-459802-memory`; last run 2026-10-21 21:00:11 JST ok (86 objects) | [aka-memory](aka-memory.md) |
@@ -319,6 +319,10 @@ Time Machine) — leave them.
   magi-core#724) so BOREAS's model stays resident through
   trading hours (was 5 min; cold loads caused the 502s noted in
   *Status 2026-11-13*).
+* **`local.ollama-warmup` DST adjustment — due 2027-03-14**: when US
+  daylight saving starts (market open becomes 13:30 UTC = 22:30 JST),
+  move the weekday fire time from 23:25 JST to **22:25 JST**
+  (13:25 UTC). Symmetric revert applies at DST end (2027-11-07).
 * **OpenClaw Gateway stderr discarded**: `ai.openclaw.gateway` has
   `StandardErrorPath=/dev/null` — start-up failures (such as the
   2026-11-08 `gateway.mode` block) leave no log. Redirect to a file

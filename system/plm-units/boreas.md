@@ -158,6 +158,11 @@ human-verified):
   for the other Ollama host env var; Ollama was restarted during the
   weekend gap and `ollama ps` showed the model held for ~3h. It was the
   last open item of #724.
+* A `local.ollama-warmup` LaunchAgent was added on TIALA on 2026-11-21
+  (devin/cli, Jun-approved): a loopback ping before the post-open
+  (9:30 ET) surge-detector secondary launch — 23:25 JST under winter
+  time, 22:25 JST under US DST — since `3h` cannot span the overnight
+  gap (see [tiala-host](/system/services/tiala-host.md)).
 * `qwen2.5:7b` was removed from TIALA on 2026-11-21 (Jun, `ollama rm`).
 * `magi-scheduler-adam` kept firing after the 2026-11-16 retirement
   decision (the last `magi-core-adam` execution was 2026-11-19 20:15 UTC)
