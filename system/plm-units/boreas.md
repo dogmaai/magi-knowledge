@@ -159,8 +159,11 @@ human-verified):
 * `qwen2.5:7b` was removed from TIALA on 2026-11-21 (Jun, `ollama rm`).
 * `magi-scheduler-adam` kept firing after the 2026-11-16 retirement
   decision (the last `magi-core-adam` execution was 2026-11-19 20:15 UTC)
-  until it was paused on 2026-11-20 and then deleted, so ADAM still loaded
-  `qwen2.5:7b` on the shared GPU through 2026-11-19.
+  until it was paused on 2026-11-20 and then deleted. `llm_metrics` records
+  `qwen2.5:7b` calls on the shared GPU on 2026-11-16, 2026-11-17 and
+  2026-11-18 (last at 2026-11-18 18:19 UTC). None are recorded for the
+  2026-11-19 execution, so whether ADAM loaded the model that day is
+  unknown.
 
 **BOREAS `CALL_FAILED` streak (under investigation)**: the failure rate
 rose from ~20% (2026-11-02 → 2026-11-06) to 40–60% from 2026-11-09. In
@@ -169,7 +172,8 @@ the 7 days to 2026-11-21 (sessions on the five trading days
 (47 × HTTP 502, 1 × 524). The session count is above the scheduled
 4 runs per weekday because surge-detector also starts `magi-core-boreas`
 as its `SECONDARY_JOB` (see Relationships). Every session
-failed on 2026-11-13, 2026-11-16, 2026-11-18 and 2026-11-19. The 502 is the Cloudflare edge
+failed on 2026-11-13 (5 sessions), 2026-11-16 (13), 2026-11-18 (8) and
+2026-11-19 (11). The 502 is the Cloudflare edge
 `Bad gateway` page (not an Ollama JSON error) and arrives ~12–13 s after
 the request. The `qwen2.5:7b` calls on the same tunnel succeeded on
 2026-11-16 and 2026-11-17, failures concentrate on cold-model calls, and host swap rose to
