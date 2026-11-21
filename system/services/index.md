@@ -18,6 +18,7 @@ callers don't hard-code endpoints.
 | [aka-memory](aka-memory.md) | dogmaai/magi-moni | AKA long-term memory on TIALA + daily GCS backup. |
 | [magi-deep-research](magi-deep-research.md) | Devin Automation + `magi-core/scripts/upload-deep-research.mjs` (`dogmaai/magi-deep-research` repo deleted 2026-10-07) | Weekday daily Deep Research brief via Devin Automation. |
 | [magi-model-health-check](magi-model-health-check.md) | `dogmaai/magi-core` (`magi-llm-health-monitor` Cloud Run job, `health-monitor.js` — no standalone repo) | Periodic provider/model health checks. |
+| [plm-lifecycle-watch](plm-lifecycle-watch.md) | `dogmaai/magi-moni` (`/monitor/plm-lifecycle` endpoint, `lib/plm-lifecycle.js`) | PLM API update/deprecation watch: model-list presence, served-model drift, docs notices, Ollama version. |
 
 # Retired
 

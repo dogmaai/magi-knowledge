@@ -1,5 +1,18 @@
 # Bundle Update Log
 
+## 2026-11-21 (PLM lifecycle watch — new monitoring concept)
+* **Creation by devin/web — not human-verified**:
+  [plm-lifecycle-watch](system/services/plm-lifecycle-watch.md) documents
+  the new `POST /monitor/plm-lifecycle` endpoint in magi-moni
+  (`lib/plm-lifecycle.js`): per-provider model-list presence,
+  `thoughts.model_version` served-model drift (7-day window), a Gemini-assisted
+  scan of provider deprecations/changelog pages, and the TIALA Ollama
+  version check. Coverage is the active roster only; `DEPRECATED_PROVIDERS`
+  are excluded by design. Complements
+  [magi-model-health-check](system/services/magi-model-health-check.md),
+  which only sees probes that have already started failing.
+  `status: draft`. Implements the watch Jun asked for on 2026-11-21.
+
 ## 2026-11-21 (BOREAS keep-alive status corrected; CALL_FAILED streak recorded)
 * **Recorded by claude/cloud — not human-verified**: the unverified *ADAM
   retirement pointer* in `system/plm-units/boreas.md` read as if

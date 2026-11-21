@@ -37,6 +37,7 @@ which covers `ollama`; it delivered two `ollama` streak alerts to Discord on
 * [llm-config](/system/echidna-tables/llm-config.md) — registry of providers/models.
 * [llm-metrics](/system/echidna-tables/llm-metrics.md) — telemetry baseline.
 * [plm-units](/system/plm-units/) — the roster under test.
+* [plm-lifecycle-watch](plm-lifecycle-watch.md) — the complementary magi-moni watch for delistings, announced deprecations and served-model drift (probes here only see a model already failing).
 
 # Note
 
