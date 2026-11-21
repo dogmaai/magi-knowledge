@@ -1,5 +1,23 @@
 # Bundle Update Log
 
+## 2026-11-21 (thought_outcome_feedback concept doc — TOA/TOF)
+* **Creation by claude/cloud — not human-verified**:
+  [thought-outcome-feedback](system/echidna-tables/thought-outcome-feedback.md)
+  documents the Thought-Outcome Analyzer loop (`magi-thought-outcome-analyzer`,
+  23:00 ET weekdays): input join and 90-day window, per-provider grouping,
+  `getFeedbackMin` skip rule, inferred schema, runtime injection via
+  `lib/thought-feedback.js` (7-day staleness, A/B holdout) and how to read
+  the `[TOA] Thought-Outcome Feedback Updated` Telegram message. Defines
+  TOA (analyzer) and TOF (feedback/loader) as names for the same loop.
+* **Removes** `thought_outcome_feedback` from the "no per-table concept doc"
+  drift list in `system/echidna-tables/index.md`.
+* **Drift recorded, not resolved** (Jun's decisions): Telegram "Best conf
+  band" can select a band with n < 3; Telegram trend has no 7-day minimum
+  sample; grouping by provider ignores the draft model-cohorting key;
+  retired providers (e.g. SOPHIA-5/`mistral`) keep getting rows until their
+  trades leave the 90-day window; schema inferred from code (no `bq show`).
+  `status: draft`. Base `f0b3c29`, magi-core `4605ae4`.
+
 ## 2026-11-21 (TIALA disk cleanup recorded)
 * **Recorded by claude/cloud — not human-verified**: `tiala-host.md` gains
   a *Disk cleanup 2026-11-21* section. Root free space 34 GiB → 67 GiB of
