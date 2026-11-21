@@ -22,6 +22,21 @@
   because < 5 resolved pairs, not a join defect.
   `status: draft`. Base `f0b3c29`, magi-core `4605ae4`.
 
+## 2026-11-21 (magi-moomoo market data seen by PLM units; /bars fix)
+* **Recorded by claude/cloud — not human-verified**: `system/services/magi-moomoo.md`
+  gains *Market data seen by PLM units* (the `[HERMES:MOOMOO]` prompt block —
+  fields, thresholds, symbol universe, BOREAS prompt budget — and the
+  `get_price` / `get_price_history` / account tools) and *History bars
+  (`GET /bars`)*.
+* **Defect recorded as fixed**: magi-moomoo#102 (merged 2026-11-21, `52269c8`)
+  — `/bars` returned the oldest `limit` bars of a 60-day window (~1 month
+  stale), affecting PLM technical indicators, sVIX, `trades.market_snapshot`
+  and `trades.atr_at_execution`. Effective only after Jun deploys the bridge
+  on TIALA; earlier rows keep stale values.
+* `constitution/tools.md` (stable) is unchanged; data sources are documented
+  in the service doc instead. `status` stays `draft`; no `verified` entries
+  added. Base `f0b3c29`, magi-core `4605ae4`.
+
 ## 2026-11-21 (TIALA disk cleanup recorded)
 * **Recorded by claude/cloud — not human-verified**: `tiala-host.md` gains
   a *Disk cleanup 2026-11-21* section. Root free space 34 GiB → 67 GiB of
