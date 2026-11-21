@@ -35,8 +35,11 @@ alias re-pointing, see [CASPER](/system/plm-units/casper.md#provider-model-lifec
    `digest`). Paginated lists are followed before a model is declared missing
    (Google `nextPageToken`, capped at 10 pages).
 2. **Served-model drift** — `thoughts.model_version` per `unit_name` over the
-   last 7 days vs the configured model; any mismatch is a cohort-affecting
-   drift (see [model-cohorting](/system/constitution/model-cohorting.md)).
+   last 7 days vs the configured model; any mismatch is an operational alert
+   only. It does **not** split the evaluation cohort — units are evaluated
+   continuously by `unit_name` (Jun 2026-11-07; the
+   [model-cohorting](/system/constitution/model-cohorting.md) split rule is a
+   draft proposal not in force, see [CASPER](/system/plm-units/casper.md#provider-model-lifecycle)).
 3. **Docs watch** — fetches each provider's deprecations/changelog page
    (`DOC_WATCH` in `lib/plm-lifecycle.js`: platform.openai.com,
    ai.google.dev, api-docs.deepseek.com, alibabacloud model-studio,
