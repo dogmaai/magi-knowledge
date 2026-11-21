@@ -1,11 +1,11 @@
 ---
 type: BigQuery Table
 title: thought_outcome_feedback
-description: TOA/TOF per-provider thought→outcome feedback (90d) — pre-rendered PLM prompt block, confidence bands, trend; source of the "[TOA]" Telegram summary.
+description: TOA/TOF per-provider thought→outcome feedback (90d) — pre-rendered PLM prompt block, confidence bands, trend; source of the "[TOA]" Discord notification.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=thought_outcome_feedback&page=table
 lilith_safe: false
 status: draft
-generated: { by: claude/opus-5-5, at: 2026-11-21T04:20:00Z }
+generated: { by: claude/opus-5-5, at: 2026-11-21T04:25:00Z }
 tags: [echidna, bigquery, toa, tof, feedback, calibration]
 dataset: magi_core
 table_type: BASE TABLE
@@ -28,7 +28,7 @@ loader `lib/thought-feedback.js` reads the latest row and injects its
 # Naming: TOA vs TOF
 
 Both names refer to this one loop. **TOA** (Thought-Outcome *Analyzer*) is the
-batch job's log/Telegram prefix (`[TOA] ...`). **TOF** (Thought-Outcome
+batch job's log/notification prefix (`[TOA] ...`). **TOF** (Thought-Outcome
 *Feedback*) is the runtime loader's log prefix (`[TOF] ...`) and the name used
 in `docs/feedback-loops.md`, the A/B holdout description and
 [confidence-calibration](/system/constitution/confidence-calibration.md).
@@ -48,7 +48,7 @@ in `docs/feedback-loops.md`, the A/B holdout description and
 2. **Grouping.** By `thoughts.llm_provider`. The displayed unit name is the
    `unit_name` of the provider's **most recent** pair (rows are ordered by
    `trades.timestamp DESC`), falling back to `getUnitName(provider)`.
-3. **Minimum sample.** A provider is skipped (no row, no Telegram line) when
+3. **Minimum sample.** A provider is skipped (no row, no notification line) when
    pairs `< getFeedbackMin(provider).resolved` — default 5,
    `FEEDBACK_COLD_START_MIN.openai = 1` (see
    [PROMETHEUS](/system/plm-units/prometheus.md#feedback-cold-start)). The
@@ -57,8 +57,11 @@ in `docs/feedback-loops.md`, the A/B holdout description and
    best-effort rows in `pattern_discovery_kpi` (Brier score, calibration
    error, high-confidence ratio, expectancy, 7d/30d win rate, A/B
    injected-vs-holdout win rate, unique-symbol ratio, best regime, and
-   `daphne_fixable_loss_pct` from `daphne_feedback`); a Telegram summary in
-   category `ANALYSIS`.
+   `daphne_fixable_loss_pct` from `daphne_feedback`); a notification in
+   category `ANALYSIS`, sent through `lib/telegram.js` — a legacy name: since
+   the 2026-11-08 cutover it delivers to **Discord** only (see
+   [discord-migration](/system/services/discord-migration.md)); `<b>` tags are
+   stripped by `lib/discord.js`.
 5. **Injection.** `lib/thought-feedback.js` loads the latest row for the
    session's provider and returns `feedback_text` unless `total_resolved` is
    below the same minimum or the row is older than **7 days**. Sessions in the
@@ -89,7 +92,7 @@ partitioning or clustering, 751 rows. No DDL file exists in magi-core.
 | trend_7d | STRING (JSON text) | `{wr_7d, count_7d, wr_30d, count_30d, delta}`; `delta = wr_7d − wr_30d` in pp. |
 | feedback_text | STRING | Pre-rendered `[THOUGHT-OUTCOME FEEDBACK — <unit>]` prompt block. |
 
-# Reading the "[TOA] Thought-Outcome Feedback Updated" Telegram message
+# Reading the "[TOA] Thought-Outcome Feedback Updated" Discord message
 
 Per provider: `<UNIT>: <win_rate>% (<W>W/<L>L)` over **90 days**, then:
 
@@ -97,7 +100,7 @@ Per provider: `<UNIT>: <win_rate>% (<W>W/<L>L)` over **90 days**, then:
   n ≥ 3, **except** that the reduction starts from the first listed band
   (normally `0.90+`) without checking its n. A band with n < 3 can therefore
   be shown as "best". The message prints no n.
-* **Trend** — `wr_7d − wr_30d` in pp, printed when |delta| > 5. The Telegram
+* **Trend** — `wr_7d − wr_30d` in pp, printed when |delta| > 5. The notification
   line has **no minimum 7-day sample** (the prompt text requires
   `count_7d ≥ 3` before it prints a TREND line), so one or two recent trades
   can produce a large swing.
@@ -140,7 +143,7 @@ Per provider: `<UNIT>: <win_rate>% (<W>W/<L>L)` over **90 days**, then:
 | openai | PROMETHEUS | 10 | 10 | 1 |
 | system | (various) | 20 | 20 | 0 |
 
-The WIN/LOSE counts match the 2026-11-21 Telegram summary (SOPHIA-5 93W/45L,
+The WIN/LOSE counts match the 2026-11-21 Discord notification (SOPHIA-5 93W/45L,
 QWEN 23W/17L, TYPHON 2W/6L, PROMETHEUS 1W/0L). CASPER and BOREAS (with ADAM,
 `ollama` = 2) are absent because they are under the minimum of 5 resolved
 pairs — **not** a join defect (joined = trades). `llm_provider='system'` rows
