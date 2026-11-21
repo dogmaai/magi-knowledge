@@ -5,7 +5,7 @@
   [thought-outcome-feedback](system/echidna-tables/thought-outcome-feedback.md)
   documents the Thought-Outcome Analyzer loop (`magi-thought-outcome-analyzer`,
   23:00 ET weekdays): input join and 90-day window, per-provider grouping,
-  `getFeedbackMin` skip rule, inferred schema, runtime injection via
+  `getFeedbackMin` skip rule, schema (checked against `bq show`), runtime injection via
   `lib/thought-feedback.js` (7-day staleness, A/B holdout) and how to read
   the `[TOA] Thought-Outcome Feedback Updated` Discord notification (sent via the legacy-named `lib/telegram.js`). Defines
   TOA (analyzer) and TOF (feedback/loader) as names for the same loop.

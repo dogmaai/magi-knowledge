@@ -5,7 +5,7 @@ description: TOA/TOF per-provider thought→outcome feedback (90d) — pre-rende
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=thought_outcome_feedback&page=table
 lilith_safe: false
 status: draft
-generated: { by: claude/opus-5-5, at: 2026-11-21T04:25:00Z }
+generated: { by: claude/opus-5-5, at: 2026-11-21T05:35:00Z }
 tags: [echidna, bigquery, toa, tof, feedback, calibration]
 dataset: magi_core
 table_type: BASE TABLE
@@ -42,8 +42,8 @@ in `docs/feedback-loops.md`, the A/B holdout description and
    `CONTAMINATED`, open (`NULL`/`HOLD`), `FLAT`, close-event and `CANCELLED`
    rows (see [Result vocabulary](trades.md#result-vocabulary)). **`FLAT`
    outcomes are not counted**, so the win rate is WIN/(WIN+LOSE), not over
-   all terminal entries. SHADOW decisions go to `trades_shadow`, not
-   `trades`, so SHADOW units ([MELCHIOR-1](/system/plm-units/melchior-1.md))
+   all terminal entries. `SHADOW` decisions go to `trades_shadow`, not
+   `trades`, so `SHADOW` units ([MELCHIOR-1](/system/plm-units/melchior-1.md))
    produce no pairs here.
 2. **Grouping.** By `thoughts.llm_provider`. The displayed unit name is the
    `unit_name` of the provider's **most recent** pair (rows are ordered by
@@ -85,8 +85,8 @@ partitioning or clustering, 751 rows. No DDL file exists in magi-core.
 | lose_count | INTEGER | LOSE pairs. |
 | win_rate | INTEGER | Rounded % (0–100), i.e. `Math.round(wins*100/total)`. |
 | confidence_bands | STRING (JSON text) | `[{band, win_rate, wins, loses, total}]` for bands `0.90+`, `0.80-0.89`, `0.70-0.79`, `0.60-0.69`, `<0.60`; empty bands omitted. |
-| regime_breakdown | STRING (JSON text) | Win rate by `thoughts.vix_regime` (groups with n ≥ 3). |
-| symbol_breakdown | STRING (JSON text) | `{top, worst}` — up to 5 symbols each, n ≥ 3. |
+| regime_breakdown | STRING (JSON text) | Win rate by `thoughts.vix_regime` (groups with `n ≥ 3`). |
+| symbol_breakdown | STRING (JSON text) | `{top, worst}` — up to 5 symbols each, `n ≥ 3`. |
 | direction_breakdown | STRING (JSON text) | Win rate by `trades.side`. |
 | reasoning_stats | STRING (JSON text) | Average reasoning length for WIN vs LOSE. |
 | trend_7d | STRING (JSON text) | `{wr_7d, count_7d, wr_30d, count_30d, delta}`; `delta = wr_7d − wr_30d` in pp. |
@@ -97,12 +97,12 @@ partitioning or clustering, 751 rows. No DDL file exists in magi-core.
 Per provider: `<UNIT>: <win_rate>% (<W>W/<L>L)` over **90 days**, then:
 
 * **Best conf band** — the band with the highest win rate among bands with
-  n ≥ 3, **except** that the reduction starts from the first listed band
-  (normally `0.90+`) without checking its n. A band with n < 3 can therefore
+  `n ≥ 3`, **except** that the reduction starts from the first listed band
+  (normally `0.90+`) without checking its `n`. A band with `n < 3` can therefore
   be shown as "best". The message prints no n.
-* **Trend** — `wr_7d − wr_30d` in pp, printed when |delta| > 5. The notification
+* **Trend** — `wr_7d − wr_30d` in pp, printed when `|delta| > 5`. The notification
   line has **no minimum 7-day sample** (the prompt text requires
-  `count_7d ≥ 3` before it prints a TREND line), so one or two recent trades
+  `count_7d ≥ 3` before it prints a `TREND` line), so one or two recent trades
   can produce a large swing.
 * A provider missing from the message had fewer pairs than its minimum (or
   has no LIVE `trades` rows at all).
@@ -126,8 +126,8 @@ Per provider: `<UNIT>: <win_rate>% (<W>W/<L>L)` over **90 days**, then:
 * **`pattern_discovery_kpi`** has no concept doc yet (listed as pending in
   the [table index](index.md)).
 * **Orphan lineage (minor).** 7 trades in the 90-day window carry a
-  `thought_id` with no matching `thoughts` row; they drop out of the inner
-  join.
+  `thought_id` with no matching `thoughts` row (all `CONTAMINATED`); they
+  drop out of the inner join.
 
 # Live check (2026-11-21, 90-day window, raw `trades`)
 
@@ -147,9 +147,16 @@ The WIN/LOSE counts match the 2026-11-21 Discord notification (SOPHIA-5 93W/45L,
 QWEN 23W/17L, TYPHON 2W/6L, PROMETHEUS 1W/0L). CASPER and BOREAS (with ADAM,
 `ollama` = 2) are absent because they are under the minimum of 5 resolved
 pairs — **not** a join defect (joined = trades). `llm_provider='system'` rows
-are `AUTO_CLOSE` events and never reach WIN/LOSE. The 43 unjoined rows are 36
-with `thought_id IS NULL` (28 `CONTAMINATED`, 8 `RECON_BASELINE`, 5
-`AUTO_CLOSE`/`CLOSE`/`CANCELLED`) and 7 orphans. Result breakdown per unit (raw `trades`, 90 days, same day):
+are `AUTO_CLOSE` events and never reach WIN/LOSE. The 43 unjoined rows
+(re-queried 2026-11-21 ~05:30Z, BigQuery MCP) are 36 with
+`trades.thought_id IS NULL` — 28 `CONTAMINATED`, 3 `AUTO_CLOSE`, 2
+`BASELINE_SETTLED`, 1 `CANCELLED`, 1 `CLOSE`, 1 `HOLD` — and 7 orphans (a
+`thought_id` with no `thoughts` row), all 7 `CONTAMINATED`.
+
+Result breakdown per unit (raw `trades`, 90 days, same day). This table
+groups by `thoughts.unit_name` only, so each unit's column also includes its
+`llm_provider='system'` close-event rows listed separately above (QWEN
+174 + 13 = 187, CASPER 11 + 3 = 14, BOREAS 18 + 1 = 19, TYPHON 38 + 0):
 
 | result | BOREAS | CASPER | QWEN | TYPHON |
 |---|---|---|---|---|
