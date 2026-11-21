@@ -12,6 +12,10 @@
   [magi-model-health-check](system/services/magi-model-health-check.md),
   which only sees probes that have already started failing.
   `status: draft`. Implements the watch Jun asked for on 2026-11-21.
+* **Ledger update**: `OLLAMA_AUTH_TOKEN` usage in
+  [secrets-inventory](system/services/secrets-inventory.md) gains the
+  magi-moni `--update-secrets` binding (pending magi-moni#63). The
+  provider API keys stay out of scope per that doc's own rule.
 
 ## 2026-11-21 (BOREAS keep-alive status corrected; CALL_FAILED streak recorded)
 * **Recorded by claude/cloud — not human-verified**: the unverified *ADAM

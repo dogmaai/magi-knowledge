@@ -56,8 +56,10 @@ alias re-pointing, see [CASPER](/system/plm-units/casper.md#provider-model-lifec
   watch failed` finding, never a crash).
 - Ollama checks are read-only (`/api/tags`, `/api/version`) but require
   `OLLAMA_BASE_URL` / `OLLAMA_AUTH_TOKEN` on the service — the first
-  magi-moni binding back to TIALA since remote ops were removed
-  2026-11-16. Skipped gracefully when unbound.
+  magi-moni→TIALA call path since TIALA remote ops were removed from
+  magi-moni on 2026-11-16 (server.js header note; aka-memory is a
+  TIALA-side launchd job, not a magi-moni call path). Skipped gracefully
+  when unbound.
 - Secrets: `OPENAI_API_KEY`, `GEMINI_API_KEY`, `DEEPSEEK_API_KEY`,
   `QWEN_API_KEY`, `KIMI_API_KEY`, `OLLAMA_BASE_URL`, `OLLAMA_AUTH_TOKEN`
   (all bound via `--update-secrets` in `magi-moni/.github/workflows/deploy.yml`).
