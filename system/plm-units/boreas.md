@@ -171,13 +171,13 @@ the 7 days to 2026-11-21 (sessions on the five trading days
 2026-11-16 → 2026-11-20), 48 of BOREAS's 56 sessions ended all-`CALL_FAILED`
 (47 × HTTP 502, 1 × 524). The session count is above the scheduled
 4 runs per weekday because surge-detector also starts `magi-core-boreas`
-as its `SECONDARY_JOB` (see Relationships). Every session
-failed on 2026-11-13 (5 sessions), 2026-11-16 (13), 2026-11-18 (8) and
+as its `SECONDARY_JOB` (see Relationships). Across the whole streak
+(not only that window), every session failed on 2026-11-13 (5 sessions), 2026-11-16 (13), 2026-11-18 (8) and
 2026-11-19 (11). The 502 is the Cloudflare edge
 `Bad gateway` page (not an Ollama JSON error) and arrives ~12–13 s after
 the request. The `qwen2.5:7b` calls on the same tunnel succeeded on
-2026-11-16 and 2026-11-17, failures concentrate on cold-model calls, and host swap rose to
-~8.5–9.7 GB from 2026-11-15 to 2026-11-16 onward. The working hypothesis is a
+2026-11-16 and 2026-11-17, failures concentrate on cold-model calls, and host swap (Grafana
+`job="tiala-host"` node metrics) rose to ~8.5–9.7 GB from 2026-11-15 to 2026-11-16 onward. The working hypothesis is a
 failed `ministral-3:8b-ctx32k` load under memory pressure. **The host-side
 Ollama logs have not been checked, so the cause is unconfirmed.** Detail
 and the next-step criteria are in dogmaai/magi-core#724.
