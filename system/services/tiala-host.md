@@ -1,12 +1,12 @@
 ---
 type: Service
 title: TIALA host (Mac mini) — launchd job inventory
-description: The always-on TIALA Mac mini's launchd job inventory after the 2026-10-22 cleanup — active bridge/Ollama/OpenClaw/observability agents, OpenClaw cron jobs, the jobs disabled that day, the netdata log fix, the 2026-11-08 OpenClaw Gateway outage, OpenClaw paired devices, and open security/maintenance items.
+description: The always-on TIALA Mac mini's launchd job inventory after the 2026-10-22 cleanup — active bridge/Ollama/OpenClaw/observability agents, OpenClaw cron jobs, the jobs disabled that day, the netdata log fix, the 2026-11-08 OpenClaw Gateway outage, OpenClaw paired devices, the 2026-11-21 disk cleanup, and open security/maintenance items.
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-11-16T11:30:00Z }
+generated: { by: claude/cloud, at: 2026-11-21T02:30:00Z }
 stale_after: 2027-01-22T09:30:00Z
-tags: [service, infra, tiala, launchd, ollama, openclaw, netdata, tailscale]
+tags: [service, infra, tiala, launchd, ollama, openclaw, netdata, tailscale, disk]
 repo: infra (TIALA Mac mini M4)
 ---
 
@@ -271,6 +271,36 @@ Recorded by claude/cloud; not human-verified. Each step was backed up first.
   `plugins.entries.memory-core.config.dreaming.enabled=false`, which removed
   the managed job; it did not reappear after a plugin reload.
 
+# Disk cleanup 2026-11-21
+
+Recorded by claude/cloud from command output that Jun relayed from `aka`
+(OpenClaw) and a Devin CLI session on TIALA. Not human-verified.
+
+**Trigger**: root-volume free space had dropped to 34 GiB of 228 GiB
+(about 85% by the `tiala-disk-usage-high` formula, `1 - avail/size`;
+`df`'s `Capacity` column showed 32% because it measures only the sealed
+system snapshot volume, so it is not a usable signal on this host).
+After the 2026-10-22 netdata fix the volume had 49 GiB free.
+
+| Time (JST / ET) | Actor | Action | Freed |
+|---|---|---|---|
+| 2026-11-21 ~10:50 / 2026-11-20 ~20:50 | `aka` (reported after execution, not pre-approved) | `npm cache clean --force`, `~/Library/Caches/pip`, `uv cache clean`, `brew cleanup` | ~5 GiB |
+| 2026-11-21 11:11 / 2026-11-20 21:11 | Devin CLI | `brew install rsync` (3.5.2, plus deps `xxhash`, `popt`, `libidn2`, `libunistring`) — the stock `openrsync` lacked `--info=progress2`; not explicitly approved | — |
+| 2026-11-21 11:16 / 2026-11-20 21:16 | Devin CLI, Jun-approved | HuggingFace cache (`~/.cache/huggingface`, ~28 GiB of local model weights) copied to the external SSD (HFS+), verified with an `rsync -n --delete` dry run (no diff) and a broken-symlink check, original replaced by a symlink to the SSD copy, original removed | ~28 GiB |
+| 2026-11-21 ~11:20 / 2026-11-20 ~21:20 | Devin CLI, Jun-approved | OpenD log files older than 14 days deleted (`~/.com.moomoo.OpenD/Log` 5.6 GiB → 623 MiB); OpenD process stayed up (US market closed) | ~5 GiB |
+
+**After**: 67 GiB free (~71% used). Checks at the time: Homebrew `node`
+still 26.12.1 (formula revision `_1`; its keg was not touched by the
+rsync install), `ai.openclaw.gateway` `state = running`. The `brew
+cleanup` at ~10:52 JST only removed old kegs (xz, sqlite, readline, libuv
+directories show that mtime). Not freed or left alone on purpose:
+`~/Library/Application Support/Claude` (~11 GiB, Claude desktop app data
+used by the device bridge) and `~/Library/Caches/ai.openclaw.mac`
+(~2.8 GiB, Gateway impact unknown). Remaining large consumers: the rest of
+`~/Library/Caches` (~10 GiB), `/opt/homebrew` (~6.7 GiB), `~/.openclaw`
+(~5.3 GiB). The three local snapshots are `com.apple.os.update-*` (not
+Time Machine) — leave them.
+
 # Open items (NEEDS_JUN_DECISION)
 
 * **ADAM retired 2026-11-16** (Jun's decision; [adam.md](/system/plm-units/adam.md)):
@@ -293,6 +323,28 @@ Recorded by claude/cloud; not human-verified. Each step was backed up first.
   v2026.11.1 CLI rejected `node@22` (`current Node failed runtime
   admission`) and retried on `node`. Whether to pin a newer versioned
   formula, and which, is Jun's decision.
+
+* **HuggingFace cache depends on the external SSD** (2026-11-21):
+  `~/.cache/huggingface` is a symlink to the SSD copy. With the SSD
+  unmounted the link dangles; HuggingFace-based tools fail, or may replace
+  the link with a real directory and re-download onto the root volume.
+  Keep the SSD mounted; re-check the link after any SSD/volume change.
+* **OpenD log growth** (2026-11-21): about 5 GiB per 14 days
+  (~10 GiB/month) under `~/.com.moomoo.OpenD/Log`, with no rotation.
+  Whether to add a scheduled prune (for example a LaunchAgent deleting
+  files older than N days, run outside US market hours) is Jun's decision.
+* **netdata stopped** (2026-11-21): `brew services list` shows
+  `netdata` as `other` and no netdata process is running; every file in
+  its log dir was last written 2026-10-22, so the -6 exit seen on
+  2026-11-13 was likely never recovered. Host metrics and the disk alert
+  come from Alloy (magi-core#667 already slated netdata for removal).
+  Repair or retire — Jun's decision.
+* **Host changes by agents without prior approval** (2026-11-21): `aka`
+  ran the cache cleanup and reported afterwards; Devin installed `rsync`
+  via Homebrew unasked. Both harmless this time, but a `brew install` can
+  upgrade dependencies (see the unversioned-`node` item). Whether to
+  require pre-approval for TIALA mutations by `aka`/Devin is Jun's
+  decision.
 
 * **Tailscale Funnel Ollama exposure — remediated 2026-10-23** by
   disabling the Tailscale Funnel publication (LaunchAgent archived); the
