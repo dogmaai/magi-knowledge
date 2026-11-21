@@ -236,7 +236,10 @@ Recorded by claude/cloud from a read-only check run by the TIALA Claude CLI on
   2026-11-21 host check (magi-core#724) found the model loads fine but
   all edge connections die mid-request during cold-load stalls (swap
   nearly full on the 16 GB host; keep-alive was 5 min then, `3h` since
-  2026-11-21); ADAM `524`s are long prompts whose first
+  2026-11-21). Also on 2026-11-21 (devin/cli, Jun-approved) the
+  `magi-ollama` tunnel transport was switched QUIC → HTTP/2 and
+  cloudflared updated to 2026.11.1 — mitigations for the mid-request
+  UDP-path drops; ADAM `524`s are long prompts whose first
   byte exceeds the edge timeout. Hypotheses only; remedies are Jun's (host)
   and an independently reviewed magi-core change (inference path).
 
