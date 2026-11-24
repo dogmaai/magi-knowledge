@@ -5,7 +5,7 @@ description: LLM reasoning log — one row per decision, with action, reasoning,
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=thoughts&page=table
 lilith_safe: false
 status: draft
-generated: { by: claude/opus-5-5, at: 2026-11-07T04:33:35Z }
+generated: { by: claude/cloud, at: 2026-11-24T10:17:00Z }
 verified: [{ by: human:jun, at: 2026-10-03T03:25:59Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }]
 stale_after: 2027-04-18T08:44:00Z
 tags: [echidna, bigquery, thoughts, reasoning, core]
@@ -18,6 +18,9 @@ table_type: BASE TABLE
 > below). This revision is not yet human-verified, so the doc is `draft`
 > until Jun re-verifies it; the retained `verified` entries cover the earlier
 > revision.
+>
+> Revision note (2026-11-24): added the guard-row `thought_id` /
+> embedding note below (magi-core#734). Also not yet human-verified.
 
 `thoughts` captures each unit's reasoning for a decision. The
 [`thoughts_active`](views.md) VIEW filters it; the LILITH `rejected`-example
@@ -32,6 +35,13 @@ reasoning. Since magi-core#609 each guard row mints its own corpus
 deliberate: the guard verdict is a distinct decision event, and reusing
 the analysis decision_id would collide in the extractor's single-key
 dedupe.
+
+Guard audit rows carry no `thought_id` (all 34,500 `BLOCKED` / `WARN_ONLY`
+rows on 2026-11-24 — about half of the table), so they fall outside the
+embedding target and are never embedded into
+[thought_embeddings](thought-embeddings.md). Table-wide row counts of
+`thoughts` therefore do not measure embedding coverage; see
+[thought_embeddings coverage monitoring](thought-embeddings.md#coverage-monitoring).
 
 Two further producers journal non-LLM decision rows (magi-core#609):
 
