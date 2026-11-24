@@ -1,5 +1,28 @@
 # Bundle Update Log
 
+## 2026-11-24 (`thought_embeddings` catalogued; `EMBED_GAP` replaced by a coverage check)
+* **Creation by claude/cloud — not human-verified**:
+  [thought-embeddings](system/echidna-tables/thought-embeddings.md)
+  documents `magi_core.thought_embeddings` (live `bq show` + read-only
+  `SELECT`s, 2026-11-24; magi-core `a46c545`): the sync's embedding target
+  and 7-day window, the ISABEL / L5 read path, the two id forms (legacy
+  `session_id-symbol` ids are not unique), and the evaluator's new coverage
+  check from magi-core#734 — `EMBED_LAG` (72 h), `EMBED_BACKLOG` (since
+  2026-11-17), `EMBED_COVERAGE` (90 %), `EMBED_CHECK_FAILED` — which
+  replaced `EMBED_GAP`, a table-row ratio that alerted daily at ~59 % while
+  the sync was healthy. Also records the dry-run-only backfill script (not
+  executed) and the duplicate legacy rows in the L5 read set
+  (magi-core#733). `status: draft`; open policy points are listed under
+  *Decisions pending* in the doc.
+* [thoughts](system/echidna-tables/thoughts.md): note that guard audit rows
+  carry no `thought_id` and are never embedded (revision note added; still
+  `draft`, awaiting re-verification).
+* [ECHIDNA index](system/echidna-tables/index.md): `thought_embeddings`
+  moved from *Live tables not yet catalogued* to *Intelligence & analysis*.
+* Not changed: [magi-core](system/services/magi-core.md) is `stable`; a
+  pointer to the new alerts is left for Jun's next verification pass
+  rather than editing a human-verified doc.
+
 ## 2026-11-21 (BOREAS `OLLAMA_KEEP_ALIVE=3h` applied; 502 cause corrected after host check)
 * **Recorded by devin/cli — not human-verified**: `OLLAMA_KEEP_ALIVE=3h`
   was applied on TIALA via the `local.ollama-env` LaunchAgent (the same

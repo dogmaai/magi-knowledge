@@ -47,6 +47,7 @@ Three write-path conventions matter:
 * [focus-symbols](focus-symbols.md) - ISABEL daily focus list; the dynamic HERMES collection universe.
 * [consensus-signals](consensus-signals.md) - Cross-unit consensus detector.
 * [isabel-patterns](isabel-patterns.md) - ISABEL per-provider win/lose keyword patterns (`isabel_l4_patterns`).
+* [thought-embeddings](thought-embeddings.md) - Cohere embeddings of thoughts reasoning with outcome labels; the WIN/LOSE corpus behind the ISABEL centroids used by L5. Daily-synced, coverage-monitored by the evaluator (`EMBED_LAG` / `EMBED_BACKLOG` / `EMBED_COVERAGE`) (draft).
 * `thought_quality_scores` (deprecated 2026-09-17) - Per-thought quality scoring; documented table never existed — producer actually wrote `fugu_thought_quality_scores` / `thought_quality_rankings` (retired; both dropped 2026-09-23).
 * [gemini-pattern-analysis](gemini-pattern-analysis.md) - Periodic Gemini *generic* win/lose pattern report (not causal analysis).
 * `fugu_sequential_patterns` (deprecated 2026-09-17) - SEKHMET/`fugu-ultra` sequential **causal** outcome analysis; last row 2026-09-01, producer retired; table dropped 2026-09-23.
@@ -132,7 +133,7 @@ per-table docs are pending work, not waived:
 `isabel_requests`, `lilith_training_examples`, `llm_health_checks`,
 `manual_focus_symbols`, `model_training_log`, `pattern_discovery_kpi`,
 `stale_phrases`, `thought_analysis_findings`,
-`thought_embeddings`, `thoughts_for_ds`,
+`thoughts_for_ds`,
 `thoughts_simulation`, `trades_for_ds`,
 `trades_simulation`, plus views
 `isabel_trade_analysis`, `market_research_view`, `symbol_change_rates`,
