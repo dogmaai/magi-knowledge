@@ -5,8 +5,8 @@ description: Cohere embeddings of thoughts reasoning, labelled with the trade ou
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=thought_embeddings&page=table
 lilith_safe: false
 status: draft
-generated: { by: claude/cloud, at: 2026-11-24T10:17:00Z }
-stale_after: 2027-05-24T10:17:00Z
+generated: { by: claude/cloud, at: 2026-11-25T01:19:10Z }
+stale_after: 2027-05-25T01:19:10Z
 tags: [echidna, bigquery, embeddings, isabel, l5, data-quality]
 dataset: magi_core
 table_type: BASE TABLE
@@ -19,6 +19,10 @@ table_type: BASE TABLE
 > the 7-day sync window and the guard-row exclusion below are described
 > from code; whether they are intended policy is listed under
 > [Decisions pending](#decisions-pending).
+>
+> Revision note (2026-11-25): the backfill was run on Jun's approval —
+> see [Backfill](#backfill) for the execution record and the coverage
+> after it. Also not yet human-verified.
 
 `thought_embeddings` holds one Cohere embedding per embedded
 [thoughts](thoughts.md) row, with the reasoning text and, once the trade
@@ -156,6 +160,21 @@ Measured 2026-11-24 with the new query (read-only, ~27 MB scan): target
 1,859 (pending 96, lagging 0, backlog 0, known gap 1,763) — 94.4 % covered,
 no alert.
 
+After the backfill (2026-11-25 01:18 UTC, same query; the target grew by
+the 108 target rows written since the 11-24 measurement): target 33,829 ·
+strict 33,231 · content-equivalent 478 · excluded 10 · missing 110
+(pending 108, lagging 0, backlog 0, known gap 2 — the two
+multiple-independent-order ids, one thoughts row each) —
+33,709 / 33,819 = 99.67 %, printed by
+the check as 99.6 % (it rounds down to one decimal so a value just under a
+threshold never prints as the threshold).
+
+Units: the coverage check counts thoughts **rows**; the sync and the
+backfill count **thought_ids**. The 10 excluded rows are the 5
+conflicting-reasoning ids (2 rows each); the 2 multiple-independent-order
+ids are not recognized by the check and stay in *missing* (known gap). The
+backfill's "7 excluded" is the same set counted as ids (5 + 2).
+
 # Backfill
 
 `scripts/backfill_thought_embeddings.mjs` embeds target rows older than the
@@ -167,8 +186,50 @@ run time, and it must not run concurrently with `magi-sync-embeddings`.
 Dry run, 2026-11-24: 1,768 candidate ids, 1,761 embeddable, 7 excluded
 (5 conflicting reasoning, 2 multiple independent orders); 81 rows would
 carry a WIN/LOSE label and enter the L5 read set; 19 Cohere calls.
-**Not executed** — it changes the ISABEL centroids, so it needs Jun's
-approval and a reviewer other than the implementer.
+
+**Executed 2026-11-25 01:16–01:18 UTC** with magi-core `63888b2` (main at
+run time; the script is unchanged since `a46c545`, where magi-core#734
+added it), on Jun's explicit approval (he also merged magi-core#734),
+outside the sync's run time, by claude/cloud from a cloud agent session.
+The run's review gate (Jun's approval and a reviewer other than the
+implementer, because it changes the L5 input) was met through Jun —
+COLLABORATION.md accepts a reviewer other than the implementer *or Jun* —
+by his merge of magi-core#734 (the script) and his approval of the run; no
+separate agent review of the run took place. That review covered the
+script, not the `bq load` write substitute described below: the
+substitute was chosen during the run, after the approval, and was **not
+reviewed beforehand**. It is disclosed here and in the session report to
+Jun; the post-run checks below are the evidence that it wrote exactly the
+rows the script selected. Review of the substitute is left to Jun.
+
+* Dry run immediately before: same set (1,761 embeddable, 7 excluded,
+  81 L5-visible). Run with `--execute --confirm-count=1761`: 19 batches,
+  **1,761 rows appended, 0 failed** — the script's own batch count, with
+  each batch's write going through `bq load` as described next; the
+  post-run checks below confirm the result in the table.
+* The script's selection, labels, rows and Cohere calls were used
+  unchanged. In that agent container, the BigQuery Node client's upload
+  path failed before writing anything, so each batch was appended with an
+  equivalent `bq load` instead: NDJSON, append, ignore unknown values —
+  the same options `embedAndInsert` (`sync_embeddings.mjs`) passes to
+  `createWriteStream` (`NEWLINE_DELIMITED_JSON`, `WRITE_APPEND`,
+  `ignoreUnknownValues`), i.e. the load-job write the daily sync performs.
+* Three earlier attempts in the same container (01:13–01:15 UTC) wrote
+  nothing: one got only Cohere errors (its requests bypassed the session
+  proxy), two crashed in the Node upload path before any load job. The
+  project's job history for 01:10–01:20 UTC holds exactly 19 load jobs,
+  all `DONE` without error between 01:16:29 and 01:18:10 (the successful
+  run), and exactly 1,761 rows have a `created_at` after the previous
+  daily sync (2026-11-24 13:00 UTC), the first at 01:16:27.
+* Verified afterwards (read-only): table 40,553 → 42,314 rows and
+  31,619 → 33,380 distinct ids (+1,761 each); every new id is a
+  `thought_id`, none collided with an existing id, all vectors were
+  1024-dim; the L5 read set (WIN/LOSE, reasoning > 30 chars) grew
+  657 → 738 (+81). A second dry run found 0 embeddable rows (only the 7
+  excluded ids remained).
+* ISABEL picks the new WIN/LOSE rows up when its daily cache is next
+  rebuilt (`magi-isabel-cache`); L5 (warn-only) compares against the
+  updated centroids from then on.
 
 # Decisions pending
 
@@ -176,11 +237,17 @@ For Jun; until decided, the items above are described from code only.
 
 1. Guard audit rows are not embedded (no `thought_id`). Confirm as
    intended policy.
-2. The 7-day sync window: confirm whether rows that leave it unembedded are
-   meant to be recovered (backfill) or accepted as out of scope.
+2. The 7-day sync window: the historical gap was recovered once by the
+   backfill (2026-11-25). Whether future rows that leave the window
+   unembedded (`EMBED_BACKLOG`) should be backfilled routinely or accepted
+   as out of scope is still open.
 3. Duplicate legacy rows in the L5 read set (magi-core#733): read-side
    de-duplication, row deletion, or accept.
-4. Whether to run the backfill.
+
+# Decisions made
+
+* Running the backfill — approved by Jun and executed 2026-11-25 (see
+  [Backfill](#backfill)).
 
 # Citations
 
@@ -191,4 +258,5 @@ For Jun; until decided, the items above are described from code only.
 * magi-core#734 (coverage check + backfill script), magi-core#733
   (duplicates in the L5 read set).
 * Live metadata: `bq show magi_core.thought_embeddings`, 2026-11-24. Counts:
-  read-only `SELECT`s, 2026-11-24.
+  read-only `SELECT`s, 2026-11-24, and before/after the backfill on
+  2026-11-25.
