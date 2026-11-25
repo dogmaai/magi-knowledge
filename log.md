@@ -1,5 +1,16 @@
 # Bundle Update Log
 
+## 2026-11-25 (`thought_embeddings` backfill executed)
+* **Recorded by claude/cloud — not human-verified**: on Jun's approval the
+  magi-core#734 backfill script ran 2026-11-25 01:16–01:18 UTC and appended
+  1,761 embeddings for target thoughts rows that had left the 7-day sync
+  window (81 with a WIN/LOSE label, now in the ISABEL / L5 read set:
+  657 → 738). The evaluator's coverage check now reads 99.6 % with a known
+  gap of 2 rows (was 94.4 % / 1,763). Execution record, verification and
+  the container-specific write workaround are in
+  [thought-embeddings](system/echidna-tables/thought-embeddings.md#backfill);
+  "whether to run the backfill" moved from *Decisions pending* to resolved.
+
 ## 2026-11-24 (`thought_embeddings` catalogued; `EMBED_GAP` replaced by a coverage check)
 * **Creation by claude/cloud — not human-verified**:
   [thought-embeddings](system/echidna-tables/thought-embeddings.md)
