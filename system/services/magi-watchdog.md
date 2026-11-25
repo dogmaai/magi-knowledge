@@ -44,7 +44,7 @@ is sent. Otherwise, in this order:
 | Code | Severity | Condition |
 |---|---|---|
 | `INVALID_INPUT` | CRITICAL | The watchdog could not read its own counts. Headline "Watchdog check failed", not a trading stop. |
-| `NO_SESSIONS` | CRITICAL | No live session — max(`sessions` rows, distinct `thoughts.session_id`), because the `sessions` row is written only at session end. |
+| `NO_SESSIONS` | CRITICAL | No live session — max(count of `sessions` rows, count of distinct `thoughts.session_id`s), because the `sessions` row is written only at session end. |
 | `NO_THOUGHTS` | CRITICAL | Sessions ran but no thoughts other than `CALL_FAILED`. |
 | `ORDERS_WITHOUT_TRADES` | CRITICAL | An intent reached `CONFIRMED` (the `place_order` path that writes the `trades` row) but no `trades` row exists. |
 | `ORDERS_NOT_ACCEPTED` | CRITICAL / WARN | Intents ended `REJECTED` (not by the L1.5 reservation) / `LOST`, or are unresolved. CRITICAL only when no guard was involved and the broker path refused every decision. |
@@ -58,9 +58,11 @@ default); the headline carries the severity and code, and only CRITICAL adds
 
 # Known limits
 
-* "Decision" means `action` in `BUY` / `SELL` / `SHORT` / `COVER` or starting
-  `SELL `; other model-written variants (see
-  [thoughts action values](/system/echidna-tables/thoughts.md#action-values))
+* "Decision" means `action` (case-insensitive) in `BUY` / `SELL` / `SHORT` /
+  `COVER`, or starting with `SELL` followed by a space (e.g. `SELL (partial)`).
+  Underscore variants such as `SELL_FAVORED`, `SELL_TO_CLOSE` and
+  `BUY_TO_COVER`, and other model-written values (see
+  [thoughts action values](/system/echidna-tables/thoughts.md#action-values)),
   are not counted.
 * No baseline: a quiet but healthy day and a guard-limited day are both
   INFO; the watchdog does not judge whether the guard outcome is desirable.

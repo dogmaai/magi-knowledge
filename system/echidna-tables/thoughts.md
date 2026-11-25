@@ -102,8 +102,9 @@ Full-table read, 2026-11-25 (read-only): besides the values above, about
 `SELL_TO_CLOSE`, `CONSIDER_SCALE_OUT`, `WAIT`, and `HOLD (…)` with a
 free-text note; 48 rows (2026-01-29 → 02-02) are empty. Consumers should
 normalize rather than match exact strings; [magi-watchdog](/system/services/magi-watchdog.md)
-counts `BUY` / `SELL` / `SHORT` / `COVER` and any `SELL …` variant as a
-trade decision.
+counts `BUY` / `SELL` / `SHORT` / `COVER` and values starting with `SELL`
+followed by a space (e.g. `SELL (partial)`) as trade decisions; underscore
+variants such as `SELL_FAVORED` are not counted.
 
 # trade_mode values
 

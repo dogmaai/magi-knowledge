@@ -139,7 +139,7 @@ time window — and classifies each row:
 | strict | Embedded under its `thought_id`, or under a legacy key that maps 1:1. |
 | content-equivalent | A legacy embedding with the same key and reasoning exists, but the key is shared — covered, not attributable 1:1. |
 | excluded | Unembedded, and its `thought_id` has conflicting reasoning or metadata (the sync excludes it every run). Left out of the denominator. |
-| missing | No embedding. Split by age into *pending* (inside the window), of which *lagging* (past the lag budget), and, outside the window, *backlog* (on/after the known-gap cutoff) and *known gap* (before it). pending + backlog + known gap = missing: since magi-core#736 the known gap only counts rows outside the window, so a cutoff later than the window start cannot double-count. |
+| missing | No embedding. Split by age into *pending* (inside the window; the part past the lag budget is also counted as *lagging*) and, outside the window, *backlog* (on/after the known-gap cutoff) and *known gap* (before it). pending + backlog + known gap = missing: since magi-core#736 the known gap only counts rows outside the window, so a cutoff later than the window start cannot double-count. |
 
 Alerts (sent with the other data-quality alerts in one `[MAGI DATA QUALITY
 ALERT]` notification):
