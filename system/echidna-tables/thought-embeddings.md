@@ -86,11 +86,12 @@ are never picked up again by the daily sync; only the backfill script
     malformed rows that are skipped — none on 2026-11-25).
 
   Effect measured 2026-11-25 (read-only, magi-core `d40a086`, the #737
-  merge): 738 rows read → 673 kept (45 duplicate rows among non-conflicting
-  keys, plus 8 conflicting keys / 20 rows excluded — 57 surplus copies in
-  all, so not comparable with the 2026-11-24 count of 49 below, which was
-  taken over the then 657-row read set and included conflicting keys); WIN 428 → 384, LOSE
-  310 → 289; warning threshold 38.07 % → 38.25 %. The WIN/LOSE exclusion
+  merge): 738 rows read → 673 kept, i.e. **65 rows removed** = 45 surplus
+  copies of non-conflicting keys + all 20 rows of the 8 conflicting keys.
+  Counted as surplus copies over all 681 `(id, reasoning)` keys (rows −
+  keys) the read set holds 57 (45 + 20 − 8); that is the definition of the
+  2026-11-24 count of 49 below, taken over the then 657-row read set.
+  WIN 428 → 384, LOSE 310 → 289; warning threshold 38.07 % → 38.25 %. The WIN/LOSE exclusion
   goes beyond the "keep the newest row" option first proposed in
   magi-core#733; it was raised for Jun's decision in the PR and Jun merged
   it. It takes effect for sessions once `magi-isabel-cache` rebuilds the
