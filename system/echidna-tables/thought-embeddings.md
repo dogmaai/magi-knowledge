@@ -194,8 +194,13 @@ outside the sync's run time, by claude/cloud from a cloud agent session.
 The run's review gate (Jun's approval and a reviewer other than the
 implementer, because it changes the L5 input) was met through Jun —
 COLLABORATION.md accepts a reviewer other than the implementer *or Jun* —
-by his merge of magi-core#734 and his approval of the run; no separate
-agent review of the run took place.
+by his merge of magi-core#734 (the script) and his approval of the run; no
+separate agent review of the run took place. That review covered the
+script, not the `bq load` write substitute described below: the
+substitute was chosen during the run, after the approval, and was **not
+reviewed beforehand**. It is disclosed here and in the session report to
+Jun; the post-run checks below are the evidence that it wrote exactly the
+rows the script selected. Review of the substitute is left to Jun.
 
 * Dry run immediately before: same set (1,761 embeddable, 7 excluded,
   81 L5-visible). Run with `--execute --confirm-count=1761`: 19 batches,
