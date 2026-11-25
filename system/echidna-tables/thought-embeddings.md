@@ -160,10 +160,12 @@ Measured 2026-11-24 with the new query (read-only, ~27 MB scan): target
 1,859 (pending 96, lagging 0, backlog 0, known gap 1,763) — 94.4 % covered,
 no alert.
 
-After the backfill (2026-11-25 01:18 UTC, same query): target 33,829 ·
+After the backfill (2026-11-25 01:18 UTC, same query; the target grew by
+the 108 target rows written since the 11-24 measurement): target 33,829 ·
 strict 33,231 · content-equivalent 478 · excluded 10 · missing 110
 (pending 108, lagging 0, backlog 0, known gap 2 — the two
-multiple-independent-order ids) — 33,709 / 33,819 = 99.67 %, printed by
+multiple-independent-order ids, one thoughts row each) —
+33,709 / 33,819 = 99.67 %, printed by
 the check as 99.6 % (it rounds down to one decimal so a value just under a
 threshold never prints as the threshold).
 
@@ -188,11 +190,18 @@ carry a WIN/LOSE label and enter the L5 read set; 19 Cohere calls.
 **Executed 2026-11-25 01:16–01:18 UTC** with magi-core `63888b2` (main at
 run time; the script is unchanged since `a46c545`, where magi-core#734
 added it), on Jun's explicit approval (he also merged magi-core#734),
-outside the sync's run time, by claude/cloud from a cloud agent session:
+outside the sync's run time, by claude/cloud from a cloud agent session.
+The run's review gate (Jun's approval and a reviewer other than the
+implementer, because it changes the L5 input) was met through Jun —
+COLLABORATION.md accepts a reviewer other than the implementer *or Jun* —
+by his merge of magi-core#734 and his approval of the run; no separate
+agent review of the run took place.
 
 * Dry run immediately before: same set (1,761 embeddable, 7 excluded,
   81 L5-visible). Run with `--execute --confirm-count=1761`: 19 batches,
-  **1,761 rows appended, 0 failed**.
+  **1,761 rows appended, 0 failed** — the script's own batch count, with
+  each batch's write going through `bq load` as described next; the
+  post-run checks below confirm the result in the table.
 * The script's selection, labels, rows and Cohere calls were used
   unchanged. In that agent container, the BigQuery Node client's upload
   path failed before writing anything, so each batch was appended with an
