@@ -5,7 +5,7 @@
   [thought-embeddings](system/echidna-tables/thought-embeddings.md) *Readers*
   now describes magi-core#737 (merged by Jun): ISABEL collapses duplicate
   `(id, reasoning)` rows to the newest and excludes keys labelled both WIN
-  and LOSE before building the L5 centroids (738 → 673 rows read on
+  and LOSE before building the L5 centroids (738 rows read → 673 kept on
   2026-11-25). The duplicate-rows item moved from *Decisions pending* to
   *Decisions made*; the text-level merge across ids (magi-core#733 option 3)
   stays pending.

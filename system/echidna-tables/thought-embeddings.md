@@ -25,7 +25,7 @@ table_type: BASE TABLE
 > after it. Also not yet human-verified.
 >
 > Revision note (2026-11-25, later): ISABEL now de-duplicates its read set
-> (magi-core#737, merged by Jun) — see [Readers](#readers). Also not yet
+> (magi-core#737, merged by Jun as `d40a086`) — see [Readers](#readers). Also not yet
 > human-verified.
 
 `thought_embeddings` holds one Cohere embedding per embedded
@@ -85,8 +85,11 @@ are never picked up again by the daily sync; only the backfill script
     duplicateRows, conflictingKeys, conflictingRows}` (`read` excludes
     malformed rows that are skipped — none on 2026-11-25).
 
-  Effect measured 2026-11-25 (read-only): 738 rows read → 673 kept (45
-  duplicate rows, 8 conflicting keys / 20 rows); WIN 428 → 384, LOSE
+  Effect measured 2026-11-25 (read-only, magi-core `d40a086`, the #737
+  merge): 738 rows read → 673 kept (45 duplicate rows among non-conflicting
+  keys, plus 8 conflicting keys / 20 rows excluded — 57 surplus copies in
+  all, so not comparable with the 2026-11-24 count of 49 below, which was
+  taken over the then 657-row read set and included conflicting keys); WIN 428 → 384, LOSE
   310 → 289; warning threshold 38.07 % → 38.25 %. The WIN/LOSE exclusion
   goes beyond the "keep the newest row" option first proposed in
   magi-core#733; it was raised for Jun's decision in the PR and Jun merged
