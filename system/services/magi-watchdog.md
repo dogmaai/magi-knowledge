@@ -19,7 +19,9 @@ at `0 23 * * 1-5` (UTC) — after the US close — as listed in
 [thoughts](/system/echidna-tables/thoughts.md),
 [order_intents](/system/echidna-tables/order-intents.md) and
 [arbiter_verdicts](/system/echidna-tables/arbiter-verdicts.md). Notifies
-Discord through `lib/telegram.js`. Behaviour below is as of magi-core
+Discord through `lib/telegram.js` (the module keeps its Telegram-era name;
+delivery is Discord-only since 2026-11-08 — see
+[discord-migration](discord-migration.md)). Behaviour below is as of magi-core
 `296ef9d` (magi-core#735, deployed 2026-11-25).
 
 Replaces a 48 h wall-clock rule that alerted on Monday runs (the window was
