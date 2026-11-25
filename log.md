@@ -9,7 +9,8 @@
   gap of 2 rows (was 94.4 % / 1,763). Execution record, verification and
   the container-specific write workaround are in
   [thought-embeddings](system/echidna-tables/thought-embeddings.md#backfill);
-  "whether to run the backfill" moved from *Decisions pending* to resolved.
+  "whether to run the backfill" moved from *Decisions pending* to a new
+  *Decisions made* section.
 
 ## 2026-11-24 (`thought_embeddings` catalogued; `EMBED_GAP` replaced by a coverage check)
 * **Creation by claude/cloud — not human-verified**:

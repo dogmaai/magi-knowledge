@@ -163,7 +163,15 @@ no alert.
 After the backfill (2026-11-25 01:18 UTC, same query): target 33,829 ·
 strict 33,231 · content-equivalent 478 · excluded 10 · missing 110
 (pending 108, lagging 0, backlog 0, known gap 2 — the two
-multiple-independent-orders ids) — 99.6 % covered.
+multiple-independent-order ids) — 33,709 / 33,819 = 99.67 %, printed by
+the check as 99.6 % (it rounds down to one decimal so a value just under a
+threshold never prints as the threshold).
+
+Units: the coverage check counts thoughts **rows**; the sync and the
+backfill count **thought_ids**. The 10 excluded rows are the 5
+conflicting-reasoning ids (2 rows each); the 2 multiple-independent-order
+ids are not recognized by the check and stay in *missing* (known gap). The
+backfill's "7 excluded" is the same set counted as ids (5 + 2).
 
 # Backfill
 
@@ -177,25 +185,34 @@ Dry run, 2026-11-24: 1,768 candidate ids, 1,761 embeddable, 7 excluded
 (5 conflicting reasoning, 2 multiple independent orders); 81 rows would
 carry a WIN/LOSE label and enter the L5 read set; 19 Cohere calls.
 
-**Executed 2026-11-25 01:16–01:18 UTC** on Jun's explicit approval (he
-also merged magi-core#734, which added the script), outside the sync's
-run time, by claude/cloud from a cloud agent session:
+**Executed 2026-11-25 01:16–01:18 UTC** with magi-core `63888b2` (main at
+run time; the script is unchanged since `a46c545`, where magi-core#734
+added it), on Jun's explicit approval (he also merged magi-core#734),
+outside the sync's run time, by claude/cloud from a cloud agent session:
 
 * Dry run immediately before: same set (1,761 embeddable, 7 excluded,
   81 L5-visible). Run with `--execute --confirm-count=1761`: 19 batches,
   **1,761 rows appended, 0 failed**.
 * The script's selection, labels, rows and Cohere calls were used
-  unchanged. In that agent container the BigQuery Node client's upload
+  unchanged. In that agent container, the BigQuery Node client's upload
   path failed before writing anything, so each batch was appended with an
-  equivalent `bq load` (NDJSON, append, ignore unknown values) instead —
-  the same load-job write the sync performs. Two earlier attempts in the
-  same container wrote nothing (verified by row count).
+  equivalent `bq load` instead: NDJSON, append, ignore unknown values —
+  the same options `embedAndInsert` (`sync_embeddings.mjs`) passes to
+  `createWriteStream` (`NEWLINE_DELIMITED_JSON`, `WRITE_APPEND`,
+  `ignoreUnknownValues`), i.e. the load-job write the daily sync performs.
+* Three earlier attempts in the same container (01:13–01:15 UTC) wrote
+  nothing: one got only Cohere errors (its requests bypassed the session
+  proxy), two crashed in the Node upload path before any load job. The
+  project's job history for 01:10–01:20 UTC holds exactly 19 load jobs,
+  all `DONE` without error between 01:16:29 and 01:18:10 (the successful
+  run), and exactly 1,761 rows have a `created_at` after the previous
+  daily sync (2026-11-24 13:00 UTC), the first at 01:16:27.
 * Verified afterwards (read-only): table 40,553 → 42,314 rows and
   31,619 → 33,380 distinct ids (+1,761 each); every new id is a
-  `thought_id`, none collides with an existing id, all vectors are
+  `thought_id`, none collided with an existing id, all vectors were
   1024-dim; the L5 read set (WIN/LOSE, reasoning > 30 chars) grew
-  657 → 738 (+81). A second dry run finds 0 embeddable rows (only the 7
-  excluded ids remain).
+  657 → 738 (+81). A second dry run found 0 embeddable rows (only the 7
+  excluded ids remained).
 * ISABEL picks the new WIN/LOSE rows up when its daily cache is next
   rebuilt (`magi-isabel-cache`); L5 (warn-only) compares against the
   updated centroids from then on.
@@ -213,8 +230,10 @@ For Jun; until decided, the items above are described from code only.
 3. Duplicate legacy rows in the L5 read set (magi-core#733): read-side
    de-duplication, row deletion, or accept.
 
-Resolved: running the backfill — approved by Jun and executed 2026-11-25
-(see [Backfill](#backfill)).
+# Decisions made
+
+* Running the backfill — approved by Jun and executed 2026-11-25 (see
+  [Backfill](#backfill)).
 
 # Citations
 
