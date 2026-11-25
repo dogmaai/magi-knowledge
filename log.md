@@ -1,5 +1,15 @@
 # Bundle Update Log
 
+## 2026-11-25 (ISABEL de-duplicates the `thought_embeddings` read set)
+* **Update by claude/cloud — not human-verified**:
+  [thought-embeddings](system/echidna-tables/thought-embeddings.md) *Readers*
+  now describes magi-core#737 (merged by Jun): ISABEL collapses duplicate
+  `(id, reasoning)` rows to the newest and excludes keys labelled both WIN
+  and LOSE before building the L5 centroids (738 → 673 rows read on
+  2026-11-25). The duplicate-rows item moved from *Decisions pending* to
+  *Decisions made*; the text-level merge across ids (magi-core#733 option 3)
+  stays pending.
+
 ## 2026-11-25 (`thought_embeddings` backfill executed)
 * **Recorded by claude/cloud — not human-verified**: on Jun's approval the
   magi-core#734 backfill script ran 2026-11-25 01:16–01:18 UTC and appended
