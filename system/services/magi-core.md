@@ -243,3 +243,73 @@ the experiment). Background, metrics and decision rules live in magi-core
 (`magi-hermes-refresh`, [pre_trade_intelligence](/system/echidna-tables/pre-trade-intelligence.md))
 is unchanged. This pointer authorizes no schema, guard, trading-mode,
 Constitution or LILITH boundary change.
+
+## Order-chain and monitoring changes of 2026-11-23…25 (unverified)
+
+Pointer added 2026-11-25 by claude/cloud, from magi-core `63888b2` (includes
+#731 `133fd97`, #732, #734, #735). This section is **outside this concept's
+existing `verified` records and has not been verified by human:jun**. It
+does not modify the verified content above, which remains the baseline until
+Jun verifies a replacement. Whether these changes are deployed was not
+inspected.
+
+**Optional Firestore dependency (L1.5 option B).** The "Depends on" list
+above does not include Firestore. With `L15_RESERVATION_BACKEND=firestore`
+magi-core uses a Firestore transaction (`@google-cloud/firestore`, default
+database `arc-sig-experiment` in `screen-share-459802`) for the account-wide
+L1.5 reservation; unset, nothing touches Firestore. Behaviour:
+[L1.5](/system/guards/l1-5.md#in-flight-reservation-magi-core729-item-4).
+
+| Variable | Default | Effect |
+|---|---|---|
+| `L15_RESERVATION` | on | `off` disables the L1.5 in-flight reservation entirely. |
+| `L15_RESERVATION_BACKEND` | unset | `firestore` selects option B; unset keeps option A (`order_intents` + broker working orders). |
+| `L15_ACCOUNT_KEY` | `moomoo-<TRD_ENV>` | Firestore document id (one budget per broker account). |
+| `L15_FIRESTORE_PROJECT` | `screen-share-459802` | Firestore project. |
+| `L15_FIRESTORE_DATABASE` | `arc-sig-experiment` | Firestore database id. |
+| `L15_FIRESTORE_COLLECTION` | `l15-reservations` | Collection holding the account document. |
+| `L15_RESERVATION_TTL_MS` | `600000` | Reservation lifetime (10 min). |
+| `MOOMOO_URL_FALLBACK` | unset | `https` fallback for the magi-moomoo URL when the `service_endpoints` lookup fails — see [service_endpoints](/system/echidna-tables/service-endpoints.md#resolution-of-the-magi-moomoo-url-magi-core729-item-5). |
+
+At `63888b2` `deploy.yml` sets none of these `L15_*` variables or
+`MOOMOO_URL_FALLBACK`. The 5 000 ms `FILL_REFLECTION_MARGIN_MS` is a code
+constant, not an environment variable.
+
+**Other behaviour changes (magi-core#731).** SHADOW sessions evaluate exits
+but never send orders (`SHADOW_NO_ORDER`); the stop-loss can only be
+tightened from −5% — see
+[position_guard_evals](/system/echidna-tables/position-guard-evals.md); a
+trades row is `price_confirmed` only on a final fill — see
+[trades](/system/echidna-tables/trades.md#partial-fills-and-price_confirmed).
+`magi-position-guard` now exits non-zero and sends an `ALERT` when a scan or
+a protective close fails.
+
+**Embedding coverage (magi-core#734).** The evaluator's `EMBED_GAP` alert is
+replaced by `EMBED_LAG` / `EMBED_BACKLOG` / `EMBED_COVERAGE` /
+`EMBED_CHECK_FAILED`; see
+[thought_embeddings](/system/echidna-tables/thought-embeddings.md#coverage-monitoring).
+
+**`magi-watchdog` (magi-core#735).** The job (schedule unchanged, weekdays
+`0 23 * * 1-5` UTC) no longer alerts on "no trades row in 48 wall-clock
+hours". It measures **one NYSE trading day** (ET; `WATCHDOG_TRADING_DAYS = 1`,
+window from 00:00 ET), exits quietly on weekends and NYSE holidays, excludes
+`SHADOW` sessions and thoughts, and, when no trade was written, walks the
+pipeline (sessions → thoughts → BUY/SELL decisions → guard blocks →
+`order_intents` → trades) to say *why*. `lib/watchdog-eval.js`
+`classifyTradeActivity`:
+
+| Code | Severity | Meaning |
+|---|---|---|
+| `OK` | OK | At least one trade in the window (silent). |
+| `NO_SESSIONS` / `NO_THOUGHTS` | CRITICAL | No unit session, or sessions wrote no non-`CALL_FAILED` thoughts. |
+| `ORDERS_WITHOUT_TRADES` | CRITICAL | Orders accepted by the broker (`CONFIRMED`) but no trades row. |
+| `ORDERS_NOT_ACCEPTED` | CRITICAL / WARN | Orders sent but none accepted; CRITICAL only when no guard was involved and every decision was refused, else WARN. |
+| `ALL_HOLD` | INFO | Units ran; every decision was HOLD. |
+| `GUARD_BLOCKED` | INFO | Every decision was refused by a guard (`BLOCKED` thoughts, an L1.5-reservation `REJECTED` intent, or a non-`ADOPTED` arbiter verdict) — "risk rules working, no system stop". |
+| `DECISIONS_NOT_EXECUTED` | WARN | Some BUY/SELL decisions were neither guard-blocked nor sent. |
+| `INVALID_INPUT` | CRITICAL | The watchdog's own counts were unreadable — a query fault, not a trading stop. |
+
+Every non-OK result is sent as an `ALERT`; the headline distinguishes
+"Trade activity stopped — SYSTEM" (CRITICAL) from "No trades (INFO/WARN)"
+(a guard-only stop or a lesser anomaly). The magi_core tables it reads are
+unchanged.

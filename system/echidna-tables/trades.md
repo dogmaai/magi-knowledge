@@ -5,13 +5,20 @@ description: Primary trade log — entry/exit, PnL, and unit attribution for eve
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=trades&page=table
 lilith_safe: false
 status: draft
-generated: { by: devin/cli, at: 2026-11-16T11:30:00Z }
+generated: { by: claude/cloud, at: 2026-11-25T02:55:00Z }
 verified: [{ by: human:jun, at: 2026-06-19T01:02:48Z }, { by: human:jun, at: 2026-10-06T05:36:00Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }]
 stale_after: 2027-04-18T08:44:00Z
 tags: [echidna, bigquery, trades, core]
 dataset: magi_core
 table_type: BASE TABLE
 ---
+
+> Revision note (2026-11-25, claude/cloud — **not human-verified**): the
+> `qty` / `price_confirmed` rows and the *Partial fills* section below
+> describe magi-core#731 (`133fd97`; read at `63888b2`): `price_confirmed`
+> is true only on a **final** fill, and the evaluator replaces a partial
+> quantity when it confirms. Still `draft` until Jun re-verifies; the
+> retained `verified` entries cover earlier revisions.
 
 `trades` is the system of record for executed orders. The
 [`trades_active`](views.md) VIEW filters this table and is what most read paths
@@ -26,7 +33,7 @@ table_type: BASE TABLE
 | order_id | STRING | Broker order id. |
 | symbol | STRING | Ticker. |
 | side | STRING | `buy` / `sell`. |
-| qty | FLOAT64 | Confirmed filled quantity. Unconfirmed rows (`price_confirmed=FALSE`) may carry `0`; the submitted quantity lives in `requested_qty` until the evaluator reconciles the fill. |
+| qty | FLOAT64 | Confirmed filled quantity. Unconfirmed rows (`price_confirmed=FALSE`) may carry `0` **or the filled-so-far quantity of a still-working partial fill** (no price); the submitted quantity lives in `requested_qty`. See [Partial fills](#partial-fills-and-price_confirmed). |
 | requested_qty | FLOAT64 | Quantity requested at submission (written on manual/`AUTO_CLOSE` rows). |
 | price | FLOAT64 | Fill price. NULL until the fill is confirmed. |
 | reason | STRING | Short rationale string (`STOP_LOSS`, `TAKE_PROFIT`, …). |
@@ -48,10 +55,28 @@ table_type: BASE TABLE
 | time_to_fill_ms | INT64 | Latency signal→fill. |
 | order_attempts | INT64 | Order submission attempts. |
 | broker | STRING | Executing broker (e.g. `alpaca`, `moomoo`). |
-| price_confirmed | BOOL | `TRUE` = broker-confirmed fill. `FALSE` = submitted but unconfirmed (pending evaluator reconciliation — `price`/`pnl_*` may be null). `NULL` = legacy row predating the flag. |
+| price_confirmed | BOOL | `TRUE` = broker-confirmed **final** fill (no more shares can fill). `FALSE` = submitted but not final — unfilled, or a still-working partial fill — pending evaluator reconciliation (`price`/`pnl_*` may be null). `NULL` = legacy row predating the flag. |
 | entry_price | FLOAT64 | Canonical entry price. On `AUTO_CLOSE` rows this is the broker position's average entry. |
 | warn_only_layers | STRING | Comma-joined ids of opt-in warn-only guards that fired on this order (e.g. `L2`, `L3`, `L3,L2`). `NULL` = none fired / rows predating the column. Exact "would have been blocked" marker for #548 counterfactual measurement — the `WARN_ONLY` thoughts row carries no `thought_id`, so this column is the reliable per-trade link. |
 | model_version | STRING | Decision-time served-model identifier for distill-corpus attribution (added 2026-10-10, magi-core#592). `NULL` = unattributable / rows predating the column. |
+
+## Partial fills and `price_confirmed`
+
+(magi-core#729 item 2, #731.) `place_order` sets `price_confirmed = TRUE`
+only when the fill is **final** (`isFillFinal`, `magi-core/lib/fill-reconcile.js`):
+`FILLED_ALL` / `FILLED`; a terminal no-more-fill status such as
+`CANCELLED_PART` or `FAILED` (final at the quantity filled so far); filled
+quantity ≥ the requested quantity; or no status reported at all. A
+still-working partial fill (`FILLED_PART`, `SUBMITTED`, …) is journaled with
+its filled-so-far `qty`, **no price** and `price_confirmed = FALSE`.
+
+Because a confirmed row is never re-reconciled, the evaluator's `MERGE`
+into `trades` (`trade-evaluator.mjs`) replaces the stale partial quantity
+at the moment it confirms: a non-close row takes the evaluator's `qty` only
+while its own is empty (`IFNULL(T.qty, 0) = 0`) or when the update confirms
+it (`T.price_confirmed = FALSE AND S.price_confirmed = TRUE`); close rows
+(`CLOSE` / `ORPHAN_CLOSE`) keep owning their own `qty`. Until then consumers
+must treat an unconfirmed row's `qty` as a lower bound.
 
 Counterfactual aggregation note (`warn_only_layers`, magi-core#548): the
 exact measurement window is `timestamp >= TIMESTAMP '2026-10-03 10:40:42

@@ -52,6 +52,21 @@ weaker.
 > above are dormant under the current account mode. They remain the rules
 > for a margin account and stay in this section; reinstating shorts
 > requires symmetric FIFO accounting in the evaluator first.
+>
+> **Unverified revision note (2026-11-25, claude/cloud; not human-verified —
+> the frontmatter and the verified text above are unchanged):**
+> the evidence for "the deployed unit sessions run `ACCOUNT_TYPE=cash`" is
+> now **magi-core#732** (merged 2026-11-23, returning the unit sessions to
+> `TRD_ENV=SIMULATE` + `ACCOUNT_TYPE=cash`), not #631. Read at `63888b2`,
+> `deploy.yml` declares exactly that pair on six unit jobs; live Cloud Run
+> configuration was not inspected. How this relates to the margin setting of
+> #679 is **not resolved here** — see
+> [CASH ACCOUNT CONSTRAINT](/system/constitution/cash-account-constraint.md)
+> (open mismatch reported to Jun). And the "−5% hard floor, never widen" rule above
+> is now enforced in code (magi-core#731): `STOP_LOSS_PCT` may only tighten
+> it, a wider value is ignored and alerted
+> (`lib/stop-loss-floor.js`); see
+> [position_guard_evals](/system/echidna-tables/position-guard-evals.md).
 
 # Relationship to LILITH-safe risk-rules
 

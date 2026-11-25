@@ -1,5 +1,49 @@
 # Bundle Update Log
 
+## 2026-11-25 (sync to magi-core#731 / #732 / #734 / #735 — draft, awaiting Jun)
+* **Draft by claude/cloud — not human-verified.** Read against magi-core
+  `63888b2` (main at 2026-11-25; includes #731 `133fd97`, #732, #734, #735).
+  Nothing was deployed or queried in production; whether the changes run in
+  Cloud Run was not inspected. magi-core's `vendor/magi-knowledge` pin
+  (`c419b5c…`) is **not** updated here — separate work after this merges.
+* [L1.5](system/guards/l1-5.md): new *In-flight reservation* section
+  (magi-core#729 item 4) — layer 1 at L1.5 / layer 2 before the broker POST,
+  option A (`order_intents` PENDING + broker working orders; default on,
+  `L15_RESERVATION=off` disables) and option B (Firestore, opt-in
+  `L15_RESERVATION_BACKEND=firestore`), finalize / release rules, quantity
+  handling, 10-min TTL, 5 s `FILL_REFLECTION_MARGIN_MS` (**unmeasured
+  assumption**). The concurrent-position count is no longer described as
+  broker-only. Demoted `stable` → `draft` (earlier `verified` retained).
+* [magi-core](system/services/magi-core.md): unverified pointer section —
+  optional Firestore dependency and `L15_*` / `MOOMOO_URL_FALLBACK`
+  variables, the #731 behaviour changes, #734 alerts, and `magi-watchdog`
+  (#735: one NYSE trading day, guard-only stop vs system stop). Frontmatter
+  and verified text untouched (same pattern as the Discord / HERMES
+  pointers).
+* [position_guard_evals](system/echidna-tables/position-guard-evals.md):
+  `outcome` gains `SHADOW_NO_ORDER`; `applied_stop_pct` is tighten-only
+  (−5% floor); position-guard failure reporting. → `draft`.
+* [service_endpoints](system/echidna-tables/service-endpoints.md):
+  magi-moomoo URL cache (10 min), failure back-off (60 s),
+  `MOOMOO_URL_FALLBACK` (https only, unset by default). → `draft`.
+* [trades](system/echidna-tables/trades.md) (already `draft`):
+  `price_confirmed` only on a final fill; unconfirmed rows may hold a
+  partial `qty` that the evaluator `MERGE` replaces on confirmation
+  (`T.price_confirmed = FALSE AND S.price_confirmed = TRUE`).
+* [position-management](system/constitution/position-management.md):
+  unverified revision note — the `ACCOUNT_TYPE=cash` evidence moves from
+  #631 to #732, and the −5% floor is now code-enforced. Frontmatter and
+  verified text untouched.
+* **Not resolved (reported to Jun):** [position-management](system/constitution/position-management.md)
+  ("deployed units are cash") vs
+  [cash-account-constraint](system/constitution/cash-account-constraint.md)
+  (#679 moved seven declarations to margin; the file's *Historical
+  deployment* section does not mention #732). Neither doc was changed to
+  reconcile them.
+* #734 was already catalogued in
+  [thought-embeddings](system/echidna-tables/thought-embeddings.md)
+  (2026-11-24, `fe6116c`); only a pointer was added in magi-core.md.
+
 ## 2026-11-24 (`thought_embeddings` catalogued; `EMBED_GAP` replaced by a coverage check)
 * **Creation by claude/cloud — not human-verified**:
   [thought-embeddings](system/echidna-tables/thought-embeddings.md)
