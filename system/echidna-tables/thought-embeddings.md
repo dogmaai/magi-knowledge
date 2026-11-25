@@ -273,7 +273,7 @@ For Jun; until decided, the items above are described from code only.
    as out of scope is still open.
 3. Identical reasoning text under **different** ids in the L5 read set
    (magi-core#733, option 3): whether repeated reasoning across decisions
-   should count once in the centroids. Not merged today.
+   should count once in the centroids. Not currently merged.
 
 # Decisions made
 
