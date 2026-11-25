@@ -5,7 +5,7 @@ description: LLM reasoning log — one row per decision, with action, reasoning,
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=thoughts&page=table
 lilith_safe: false
 status: draft
-generated: { by: claude/cloud, at: 2026-11-24T10:17:00Z }
+generated: { by: claude/cloud, at: 2026-11-25T03:37:03Z }
 verified: [{ by: human:jun, at: 2026-10-03T03:25:59Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }]
 stale_after: 2027-04-18T08:44:00Z
 tags: [echidna, bigquery, thoughts, reasoning, core]
@@ -78,7 +78,7 @@ which is the intended corpus signal.
 | llm_provider | STRING | Provider key; `'system'` on `AUTO_CLOSE` close-decision rows (added 2026-10-11, magi-core#609). |
 | unit_name | STRING | MAGI unit name. |
 | symbol | STRING | Ticker under consideration. |
-| action | STRING | `BUY` / `SELL` / `HOLD`; `BLOCKED` / `WARN_ONLY` on guard-block rows; `CALL_FAILED` on failed/unusable LLM-call rows (added 2026-10-11, magi-core#609). |
+| action | STRING | `BUY` / `SELL` / `HOLD`; `BLOCKED` / `WARN_ONLY` on guard-block rows; `CALL_FAILED` on failed/unusable LLM-call rows (added 2026-10-11, magi-core#609). The value is the model's own string, so free-form variants also occur — see [action values](#action-values). |
 | side | STRING | Trade direction (`buy`/`sell`) written by `logGuardBlock` on guard-block rows; NULL elsewhere and for rows predating the column (added 2026-10-02, magi-core#535). |
 | reasoning | STRING | Parsed reasoning / thesis. |
 | hypothesis | STRING | Stated hypothesis. |
@@ -93,6 +93,17 @@ which is the intended corpus signal.
 | ariel_context_used | BOOL | Whether ARIEL market context was injected. |
 | feedback_injected | BOOL | A/B holdout flag: TRUE = feedback injected, FALSE = HOLDOUT arm, NULL = no assignment (added earlier; see `alter_thoughts_add_feedback_injected.sql`). |
 | model_version | STRING | Served-model identifier at decision time (e.g. `gemini-3.8-flash`, `ministral-3:8b-ctx32k`); also written on guard-block rows. Cohort key per [model-cohorting](/system/constitution/model-cohorting.md): `cohort = (unit_name, model_version)`. NULL for rows predating the column (added 2026-10-03, magi-core#544). |
+
+# action values
+
+Full-table read, 2026-11-25 (read-only): besides the values above, about
+50 rows carry a model-written variant — e.g. `SELL_FAVORED` (12),
+`BUY_TO_COVER` (3), `COVER` (2), `SELL (partial)` (2), `PASS` (2),
+`SELL_TO_CLOSE`, `CONSIDER_SCALE_OUT`, `WAIT`, and `HOLD (…)` with a
+free-text note; 48 rows (2026-01-29 → 02-02) are empty. Consumers should
+normalize rather than match exact strings; [magi-watchdog](/system/services/magi-watchdog.md)
+counts `BUY` / `SELL` / `SHORT` / `COVER` and any `SELL …` variant as a
+trade decision.
 
 # trade_mode values
 

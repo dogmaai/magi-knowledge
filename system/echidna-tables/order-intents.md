@@ -4,8 +4,8 @@ title: order_intents
 description: Append-only order-intent journal; magi-core orders are journaled before the broker POST (fail-closed for exposure-increasing orders; a risk-reducing order whose write fails still POSTs and is recovered via the remark key) and reconciled against broker order_history via the intent id embedded in the broker remark.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=order_intents&page=table
 lilith_safe: false
-status: stable
-generated: { by: devin/cli, at: 2026-10-20T08:39:00Z }
+status: draft
+generated: { by: claude/cloud, at: 2026-11-25T03:37:03Z }
 verified: [{ by: devin/local, at: 2026-09-13T00:00:00Z }, { by: human:jun, at: 2026-10-06T07:23:42Z }, { by: human:jun, at: 2026-10-20T08:44:00Z }]
 stale_after: 2027-04-18T08:44:00Z
 tags: [echidna, bigquery, orders, reliability, reconciliation]
@@ -39,7 +39,7 @@ UPDATE/DELETE — so inserts never hit the streaming-buffer restriction.
 |---|---|
 | `PENDING` | Intent journaled before the broker POST (or retried after it, for risk-reducing orders whose first write failed). If a `CONFIRMED`/`REJECTED`/`UNKNOWN` event never follows, the process died mid-flight. |
 | `CONFIRMED` | Broker accepted the order; `broker_order_id` (+ fill fields when present) recorded. A CONFIRMED event with no fill fields is still subject to reconciliation (2026-10-17 follow-up to broker order 335505), and since magi-core#634 a partially-filled CONFIRMED intent stays in the open set until the recorded fill covers `qty`. |
-| `REJECTED` | Broker refused the order before dispatch (HTTP 4xx or `success=false`). |
+| `REJECTED` | The order was refused and never dispatched. Three writers in `magi-core/lib/moomoo.js` (magi-core `296ef9d`): the broker refused it (HTTP 4xx or `success=false`; `detail` = the broker error); a pre-dispatch check threw (`detail` starts `pre-dispatch check failed: `); or the [L1.5](/system/guards/l1-5.md) in-flight reservation refused it (`detail` starts `L1.5 reservation: `, magi-core#731). The last is a guard outcome, not a broker fault. As of 2026-11-25 every `REJECTED` row in production is a broker refusal (80 since 2026-09-01; 0 with either prefix). |
 | `UNKNOWN` | Fill state currently unverifiable: the broker response was lost (fetch threw / HTTP 5xx / proxy crash), or a reconcile sweep matched a still-working order, or an accepted order (`broker_order_id` set) was absent from the history window — appended once per transition, not per sweep. The broker may hold the order; resolved by reconciliation, **never** by blind resubmission. |
 | `RECONCILED` | Matched against broker `order_history` by remark containment of `intent_id` **or** by `broker_order_id`; fill fields populated. Written only once the broker **order** reaches a terminal status — a still-working partial fill does not close the intent (magi-core#634). |
 | `LOST` | No broker order found within 24h for an intent **without** `broker_order_id` — the order never reached the broker. Alerts via Telegram. |
