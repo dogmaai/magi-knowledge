@@ -392,6 +392,46 @@ Time Machine) — leave them.
   tokens themselves were not rotated — Jun to decide whether rotation
   is still warranted. Private record: magi-core#659.
 
+# Local inference replacement preparation — PrismML `llama-server` / Ternary Bonsai 2.5 27B (2026-11-25, draft)
+
+Recorded by devin/web — **not human-verified**; no production cutover has
+occurred on TIALA yet. TIALA continues to run Ollama (`ministral-3:8b-ctx32k`)
+for [BOREAS](/system/plm-units/boreas.md) until live hardware benchmarking
+completes.
+
+* **Approved architecture (Option A, Jun 2026-11-25)**: store both the rollback
+  model (`ministral-3:8b-ctx32k`) and the candidate **Ternary Bonsai 2.5 27B**
+  GGUF on the external SSD, but keep **only one local model resident** in the
+  16 GB unified-memory / Metal budget (replacing BOREAS's Ollama runtime with
+  PrismML's `llama-server`, because Ollama does not support Bonsai 2.5's
+  Hadamard-rotated ternary weights).
+* **Merged prep — `dogmaai/magi-core#738`**: added optional `OLLAMA_*` env
+  vars in `lib/ollama-params.js` wired into `src/llm.js`
+  (`OLLAMA_TEMPERATURE`, `OLLAMA_MAX_TOKENS`, `OLLAMA_TOP_P`, `OLLAMA_TOP_K`,
+  `OLLAMA_MIN_P`, `OLLAMA_PRESENCE_PENALTY`, `OLLAMA_THINKING_BUDGET_TOKENS`,
+  `OLLAMA_ENABLE_THINKING`, `OLLAMA_REASONING_EFFORT`). All are omitted when
+  unset so existing Ollama defaults (`temperature=0.7`, `max_tokens=4096`) stay
+  identical; `top_k`, `min_p`, `thinking_budget_tokens`, and
+  `chat_template_kwargs` target `llama-server` rather than standard Ollama.
+* **Merged prep — `dogmaai/magi-moomoo#103`**:
+  * Added `com.magi.llama-server` LaunchAgent templates under
+    `scripts/llama-server/` (`com.magi.llama-server.plist`,
+    `start-llama-server.sh`, `install-llama-server-launchagent.sh`,
+    `magi-llama-server.newsyslog.conf`). Host-specific binary path, external
+    SSD model path, and loopback port stay in a host-local mode-600 env file;
+    missing config or an unmounted SSD exits `0` (no restart loop under
+    `KeepAlive{SuccessfulExit=false}`), while `SIGTERM` from newsyslog exits
+    `143` after graceful child shutdown so launchd restarts the server onto the
+    fresh log file.
+  * Updated `scripts/ollama-auth-proxy.py` to allow unauthenticated
+    `GET /health` (including query-string probes) alongside `GET /`, derive
+    upstream `Host`/`Origin` dynamically from `OLLAMA_TARGET`, and forward
+    streamed chunks with `read1()` (fallback `read()`).
+* **Pending (Jun host operations)**: manual TIALA benchmark of `PTQ1_0`
+  (memory/swap, tok/s, tool calling, Thinking vs Non-thinking), `SHADOW`
+  observation, `deploy.yml` cutover, and a follow-up update to
+  [boreas](/system/plm-units/boreas.md) once live.
+
 # Boundary
 
 Host ops inventory — no trading path, no LILITH relevance;
