@@ -20,6 +20,31 @@
   [magi-watchdog](system/services/magi-watchdog.md) — window, classification
   and notification of the trade-activity monitor (magi-core#735).
 
+## 2026-11-25 (TIALA `llama-server` / Ternary Bonsai 2.5 27B prep PRs merged)
+* **Recorded by devin/web — not human-verified**: added a draft preparation
+  section to [tiala-host](system/services/tiala-host.md#local-inference-replacement-preparation--prismml-llama-server--ternary-bonsai-25-27b-2026-11-25-draft)
+  recording the two merged preparatory PRs for Jun's Option A plan (single
+  resident local model on TIALA, external SSD storage):
+  * `dogmaai/magi-core#738`: optional `OLLAMA_*` sampling, `max_tokens`, and
+    thinking env vars (`lib/ollama-params.js` → `src/llm.js`), preserving
+    existing defaults when unset.
+  * `dogmaai/magi-moomoo#103`: `com.magi.llama-server` LaunchAgent/newsyslog
+    templates under `scripts/llama-server/` plus `GET /health` liveness,
+    dynamic `Host`/`Origin`, and `read1()` incremental SSE streaming in
+    `scripts/ollama-auth-proxy.py`.
+* No production host change or `boreas.md` cutover has been performed; TIALA
+  manual benchmarking and `SHADOW` validation remain pending Jun.
+
+## 2026-11-25 (ISABEL de-duplicates the `thought_embeddings` read set)
+* **Update by claude/cloud — not human-verified**:
+  [thought-embeddings](system/echidna-tables/thought-embeddings.md) *Readers*
+  now describes magi-core#737 (merged by Jun): ISABEL collapses duplicate
+  `(id, reasoning)` rows to the newest and excludes keys labelled both WIN
+  and LOSE before building the L5 centroids (738 rows read → 673 kept on
+  2026-11-25). The duplicate-rows item moved from *Decisions pending* to
+  *Decisions made*; the text-level merge across ids (magi-core#733 option 3)
+  stays pending.
+
 ## 2026-11-25 (`thought_embeddings` backfill executed)
 * **Recorded by claude/cloud — not human-verified**: on Jun's approval the
   magi-core#734 backfill script ran 2026-11-25 01:16–01:18 UTC and appended
