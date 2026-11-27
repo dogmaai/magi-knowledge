@@ -1,5 +1,14 @@
 # Bundle Update Log
 
+## 2026-11-27 (`CALL_FAILED` rows leave the `thought_embeddings` target)
+* **Update by claude/cloud — not human-verified**:
+  [thought-embeddings](system/echidna-tables/thought-embeddings.md) records
+  magi-core#739 (merged on Jun's request): the shared embedding target now
+  excludes `action = 'CALL_FAILED'` — their reasoning is the error text — for
+  both the daily sync and the evaluator's coverage check. The 216 rows
+  already embedded (NULL labels, outside the L5 read set) stay in the table;
+  deleting them is listed as open.
+
 ## 2026-11-25 (OKF aligned with production enums; `magi-watchdog` documented)
 * **Recorded by claude/cloud — not human-verified** (read-only `SELECT`s on
   production, magi-core `296ef9d`). Drift found while reviewing
