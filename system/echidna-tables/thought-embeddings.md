@@ -5,8 +5,8 @@ description: Cohere embeddings of thoughts reasoning, labelled with the trade ou
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=thought_embeddings&page=table
 lilith_safe: false
 status: draft
-generated: { by: claude/cloud, at: 2026-11-27T06:35:40Z }
-stale_after: 2027-05-27T06:35:40Z
+generated: { by: claude/cloud, at: 2026-11-27T06:44:13Z }
+stale_after: 2027-05-27T06:44:13Z
 tags: [echidna, bigquery, embeddings, isabel, l5, data-quality]
 dataset: magi_core
 table_type: BASE TABLE
@@ -48,7 +48,9 @@ form the win/lose centroids that the [L5 guard](/system/guards/l5.md)
    unlabelled; a `NULL` resolution never overwrites a label.
 2. **Candidate selection**: thoughts rows matching the **embedding target**
    — `reasoning` non-NULL and longer than 10 characters, `thought_id`
-   non-NULL (`embeddingTargetPredicate`, `lib/embedding-candidates.js`) —
+   non-NULL, and `action` not `CALL_FAILED` (`embeddingTargetPredicate`,
+   `lib/embedding-candidates.js`; the `CALL_FAILED` exclusion since
+   magi-core#739) —
    written within the last **7 days** (`EMBED_SYNC_WINDOW_DAYS`), and not
    already embedded under either id form (two anti-joins; see
    [Id forms](#id-forms)).
@@ -63,7 +65,12 @@ form the win/lose centroids that the [L5 guard](/system/guards/l5.md)
 
 Guard audit rows (`action` `BLOCKED` / `WARN_ONLY`) carry no `thought_id`, so
 they fall outside the target and are **not embedded** — by the predicate,
-not by an action-name filter. Rows that leave the 7-day window unembedded
+not by an action-name filter. `CALL_FAILED` rows do carry a `thought_id`
+but their reasoning is the error text (`LLM call failed: …`), so since
+magi-core#739 they are the one action excluded by name. Before that the
+sync embedded all 216 of them (2026-10-12 → 2026-11-25, all with
+`trade_result` NULL, so never in the L5 read set); those rows remain in the
+table. Rows that leave the 7-day window unembedded
 are never picked up again by the daily sync; only the backfill script
 (below) reaches them.
 
@@ -283,6 +290,11 @@ For Jun; until decided, the items above are described from code only.
 * Duplicate `(id, reasoning)` rows in the L5 read set — de-duplicated on
   read, with WIN/LOSE-conflicting keys excluded (magi-core#737, merged by
   Jun 2026-11-25); the table rows are left in place.
+* `CALL_FAILED` rows are not embedding targets (magi-core#739, merged on
+  Jun's request 2026-11-27). Coverage with the new target, 2026-11-27
+  (read-only): target 33,732 (−216), 99.8 % covered, lagging 0, backlog 0.
+  Whether to delete the 216 already-embedded rows (a production write) is
+  still open.
 
 # Citations
 
@@ -290,6 +302,7 @@ For Jun; until decided, the items above are described from code only.
   `lib/embedding-coverage.js`, `trade-evaluator.mjs` (`checkDataQuality`),
   `scripts/backfill_thought_embeddings.mjs`, `lib/embeddings.js`,
   `lib/isabel-cache-loader.js`.
+* magi-core#739 (`CALL_FAILED` excluded from the embedding target).
 * magi-core#737 (ISABEL read-side de-duplication, `lib/isabel-training-rows.js`).
 * magi-core#734 (coverage check + backfill script), magi-core#733
   (duplicates in the L5 read set).
