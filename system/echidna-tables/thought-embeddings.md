@@ -5,8 +5,8 @@ description: Cohere embeddings of thoughts reasoning, labelled with the trade ou
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=thought_embeddings&page=table
 lilith_safe: false
 status: draft
-generated: { by: claude/cloud, at: 2026-11-25T01:19:10Z }
-stale_after: 2027-05-25T01:19:10Z
+generated: { by: claude/cloud, at: 2026-11-25T03:45:00Z }
+stale_after: 2027-05-25T03:45:00Z
 tags: [echidna, bigquery, embeddings, isabel, l5, data-quality]
 dataset: magi_core
 table_type: BASE TABLE
@@ -23,6 +23,10 @@ table_type: BASE TABLE
 > Revision note (2026-11-25): the backfill was run on Jun's approval —
 > see [Backfill](#backfill) for the execution record and the coverage
 > after it. Also not yet human-verified.
+>
+> Revision note (2026-11-25, later): ISABEL now de-duplicates its read set
+> (magi-core#737, merged by Jun as `d40a086`) — see [Readers](#readers). Also not yet
+> human-verified.
 
 `thought_embeddings` holds one Cohere embedding per embedded
 [thoughts](thoughts.md) row, with the reasoning text and, once the trade
@@ -67,7 +71,33 @@ are never picked up again by the daily sync; only the backfill script
 
 * **ISABEL / L5** — `getIsabelEmbeddings` (`lib/embeddings.js`) reads every
   row with `trade_result IN ('WIN','LOSE')` and `reasoning` longer than 30
-  characters, with no row limit and no de-duplication. It does **not** use
+  characters (`ISABEL_TRAINING_SQL`, newest first by `created_at`,
+  `confidence`, `id`, `reasoning`), with no row limit. Since magi-core#737
+  the rows pass `selectIsabelTrainingRows` (`lib/isabel-training-rows.js`)
+  before the centroids:
+  * copies of one `(id, reasoning)` collapse to the newest row (its label
+    and confidence are used);
+  * a key whose copies carry both WIN and LOSE is **excluded** entirely —
+    legacy ids are not 1:1 with a trade, so the outcome cannot be decided;
+  * identical text under different ids is **not** merged (open policy
+    question, see [Decisions pending](#decisions-pending));
+  * the counts are logged as `[ISABEL] Training rows: {read, kept,
+    duplicateRows, conflictingKeys, conflictingRows}` (`read` excludes
+    malformed rows that are skipped — none on 2026-11-25).
+
+  Effect measured 2026-11-25 (read-only, magi-core `d40a086`, the #737
+  merge): 738 rows read → 673 kept, i.e. **65 rows removed** = 45 surplus
+  copies of non-conflicting keys + all 20 rows of the 8 conflicting keys.
+  Counted as surplus copies over all 681 `(id, reasoning)` keys (rows −
+  keys) the read set holds 57 (45 + 20 − 8); that is the definition of the
+  2026-11-24 count of 49 below, taken over the then 657-row read set.
+  WIN 428 → 384, LOSE 310 → 289; warning threshold 38.07 % → 38.25 %. The WIN/LOSE exclusion
+  goes beyond the "keep the newest row" option first proposed in
+  magi-core#733; it was raised for Jun's decision in the PR and Jun merged
+  it. It takes effect for sessions once `magi-isabel-cache` rebuilds the
+  cache after the deploy.
+
+  It does **not** use
   the stored `embedding` column: it re-embeds the reasoning texts with
   Cohere (`input_type: classification`) and builds confidence-weighted
   WIN/LOSE centroids. The `magi-isabel-cache` job stores the result in
@@ -112,9 +142,10 @@ Consequences:
   `reasoning`; the match is 1:1 only when exactly one embedding row and
   one thoughts row share that key.
 * 1,487 legacy `(id, reasoning)` keys occur more than once (3,563 rows, up
-  to 60 copies). In the L5 read set this is 36 WIN and 13 LOSE rows by
-  `(id, reasoning)` (44 / 16 by text alone), so duplicates weigh more on
-  the WIN centroid — tracked in magi-core#733.
+  to 60 copies). In the L5 read set this was 36 WIN and 13 LOSE rows by
+  `(id, reasoning)` (44 / 16 by text alone), so duplicates weighed more on
+  the WIN centroid (magi-core#733). The rows remain in the table; ISABEL
+  removes them on read since magi-core#737 (see [Readers](#readers)).
 * Legacy rows also match 7,939 guard audit rows by key and reasoning, so
   the legacy sync appears to have embedded guard rows that the current
   target excludes. (Inference from the key match; the legacy producer's
@@ -241,13 +272,17 @@ For Jun; until decided, the items above are described from code only.
    backfill (2026-11-25). Whether future rows that leave the window
    unembedded (`EMBED_BACKLOG`) should be backfilled routinely or accepted
    as out of scope is still open.
-3. Duplicate legacy rows in the L5 read set (magi-core#733): read-side
-   de-duplication, row deletion, or accept.
+3. Identical reasoning text under **different** ids in the L5 read set
+   (magi-core#733, option 3): whether repeated reasoning across decisions
+   should count once in the centroids. Not currently merged.
 
 # Decisions made
 
 * Running the backfill — approved by Jun and executed 2026-11-25 (see
   [Backfill](#backfill)).
+* Duplicate `(id, reasoning)` rows in the L5 read set — de-duplicated on
+  read, with WIN/LOSE-conflicting keys excluded (magi-core#737, merged by
+  Jun 2026-11-25); the table rows are left in place.
 
 # Citations
 
@@ -255,6 +290,7 @@ For Jun; until decided, the items above are described from code only.
   `lib/embedding-coverage.js`, `trade-evaluator.mjs` (`checkDataQuality`),
   `scripts/backfill_thought_embeddings.mjs`, `lib/embeddings.js`,
   `lib/isabel-cache-loader.js`.
+* magi-core#737 (ISABEL read-side de-duplication, `lib/isabel-training-rows.js`).
 * magi-core#734 (coverage check + backfill script), magi-core#733
   (duplicates in the L5 read set).
 * Live metadata: `bq show magi_core.thought_embeddings`, 2026-11-24. Counts:
