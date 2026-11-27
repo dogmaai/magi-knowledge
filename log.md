@@ -1,5 +1,25 @@
 # Bundle Update Log
 
+## 2026-11-25 (OKF aligned with production enums; `magi-watchdog` documented)
+* **Recorded by claude/cloud — not human-verified** (read-only `SELECT`s on
+  production, magi-core `296ef9d`). Drift found while reviewing
+  magi-core#735/#736; each doc below now matches the code and data, and the
+  two previously `stable` docs are `draft` until Jun re-verifies them:
+  * [sessions](system/echidna-tables/sessions.md) (stable → draft):
+    `trade_mode` is `NORMAL` / `SHADOW` (historical `SCALPING`, empty), not
+    `live` / `paper` / `simulation`; the row is written at session end.
+  * [order-intents](system/echidna-tables/order-intents.md) (stable → draft):
+    `REJECTED` also covers pre-dispatch check failures and L1.5 reservation
+    refusals (`detail` prefixes), not only broker refusals.
+  * [thoughts](system/echidna-tables/thoughts.md): new *action values*
+    section — model-written variants such as `SELL (partial)`.
+  * [thought-embeddings](system/echidna-tables/thought-embeddings.md):
+    magi-core#736 — missing/NULL counts raise `EMBED_CHECK_FAILED`; pending,
+    backlog and known gap are disjoint.
+* **Creation by claude/cloud — not human-verified**:
+  [magi-watchdog](system/services/magi-watchdog.md) — window, classification
+  and notification of the trade-activity monitor (magi-core#735).
+
 ## 2026-11-25 (TIALA `llama-server` / Ternary Bonsai 2.5 27B prep PRs merged)
 * **Recorded by devin/web — not human-verified**: added a draft preparation
   section to [tiala-host](system/services/tiala-host.md#local-inference-replacement-preparation--prismml-llama-server--ternary-bonsai-25-27b-2026-11-25-draft)

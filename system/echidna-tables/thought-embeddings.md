@@ -5,8 +5,8 @@ description: Cohere embeddings of thoughts reasoning, labelled with the trade ou
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=thought_embeddings&page=table
 lilith_safe: false
 status: draft
-generated: { by: claude/cloud, at: 2026-11-25T03:45:00Z }
-stale_after: 2027-05-25T03:45:00Z
+generated: { by: claude/cloud, at: 2026-11-27T06:35:40Z }
+stale_after: 2027-05-27T06:35:40Z
 tags: [echidna, bigquery, embeddings, isabel, l5, data-quality]
 dataset: magi_core
 table_type: BASE TABLE
@@ -170,7 +170,7 @@ time window — and classifies each row:
 | strict | Embedded under its `thought_id`, or under a legacy key that maps 1:1. |
 | content-equivalent | A legacy embedding with the same key and reasoning exists, but the key is shared — covered, not attributable 1:1. |
 | excluded | Unembedded, and its `thought_id` has conflicting reasoning or metadata (the sync excludes it every run). Left out of the denominator. |
-| missing | No embedding. Split by age into *pending* (inside the window, within the lag budget), *lagging*, *backlog* and *known gap*. |
+| missing | No embedding. Split by age into *pending* (inside the window; the part past the lag budget is also counted as *lagging*) and, outside the window, *backlog* (on/after the known-gap cutoff) and *known gap* (before it). pending + backlog + known gap = missing: since magi-core#736 the known gap only counts rows outside the window, so a cutoff later than the window start cannot double-count. |
 
 Alerts (sent with the other data-quality alerts in one `[MAGI DATA QUALITY
 ALERT]` notification):
@@ -180,7 +180,7 @@ ALERT]` notification):
 | `EMBED_LAG` | A target row inside the 7-day window is unembedded for more than **72 h**. The sync runs weekdays only, so a row written after Friday's run is about 60 h old at Monday's evaluator run; 72 h clears that. |
 | `EMBED_BACKLOG` | A target row written on/after **2026-11-17T00:00:00Z** left the window unembedded. Older ones are the *known gap*, logged but not alerted; the cutoff is a date so a backfill never needs it changed. |
 | `EMBED_COVERAGE` | (strict + content-equivalent) / (target − excluded) below **90 %**. |
-| `EMBED_CHECK_FAILED` | The coverage query returned no row or an invalid count. |
+| `EMBED_CHECK_FAILED` | The coverage query returned no row, or a count column that is invalid, negative, missing or NULL (a missing/NULL count no longer reads as 0 — magi-core#736). `oldest_pending_h` is not a count and is NULL when nothing is pending. |
 
 Not detected: a `thought_id` that joins several independent orders is
 excluded by the sync but needs the trades join to recognize, so the check
