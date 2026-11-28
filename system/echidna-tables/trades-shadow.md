@@ -1,11 +1,11 @@
 ---
 type: BigQuery Table
 title: trades_shadow
-description: Virtual-order ledger — BUY/SELL decisions that were recorded instead of sent to the broker (SHADOW units, L6_OBSERVE candidates, legacy LILITH), later marked WIN/LOSE/HOLD by magi-shadow-evaluator.
+description: Virtual-order ledger — BUY/SELL decisions that were recorded instead of sent to the broker (SHADOW units, L6_OBSERVE and L6_TREND candidates, legacy LILITH), later marked WIN/LOSE/HOLD by magi-shadow-evaluator.
 resource: https://console.cloud.google.com/bigquery?p=screen-share-459802&d=magi_core&t=trades_shadow&page=table
 lilith_safe: false
 status: draft
-generated: { by: claude/opus-5-5, at: 2026-11-07T04:33:35Z }
+generated: { by: claude/cloud, at: 2026-11-28T03:00:00Z }
 stale_after: 2027-05-07T04:33:35Z
 tags: [echidna, bigquery, trades, shadow, counterfactual]
 dataset: magi_core
@@ -29,6 +29,7 @@ call with the same `thought_id`.
 |---|---|---|
 | `SHADOW` | `src/llm.js` `place_order` under `TRADE_MODE=SHADOW` (row built by `lib/shadow-trade.js` `buildShadowDecisionRows`) | A SHADOW unit calls `place_order` for `BUY`/`SELL` with `qty > 0`. `HOLD` is never written here — it stays a `thoughts` row (see [MELCHIOR-1 SHADOW write paths](/system/plm-units/melchior-1.md#shadow-write-paths)). |
 | `L6_OBSERVE` | `src/llm.js` `recordL6ShadowCandidate` | An `EXTREME_FEAR` BUY that legacy [L6](/system/guards/l6.md) blocked but the new policy would allow or clamp; only the new-exposure leg is recorded. |
+| `L6_TREND` | `src/llm.js` `applyL6TrendLane` (`L6_TREND=observe`, magi-core#740) | An `EXTREME_FEAR`/`PANIC` BUY that L6 (or the L1.5 oversize check) blocks but that passes the [L6 trend lane](/system/guards/l6.md) (*Trend lane*); qty is the new-exposure leg capped at 4.5% / 2.25% of equity. |
 | `NORMAL` (legacy) | retired LILITH canary | 27 rows, 2026-07-22 → 2026-07-28; no current producer. |
 
 Both live producers skip the row when the signal price or `thought_id` is
@@ -53,13 +54,13 @@ the later attribution columns (`id`, `price_confirmed`, `entry_price`,
 |---|---|---|
 | session_id | STRING | FK → [sessions](sessions.md).session_id. |
 | timestamp | TIMESTAMP | Decision time (UTC). |
-| order_id | STRING | Synthetic id: `shadow-<thought_id>` (`SHADOW`) or `l6-observe-<thought_id>-<8 hex>` (`L6_OBSERVE`). MERGE key of the evaluator. Never a broker order id. |
+| order_id | STRING | Synthetic id: `shadow-<thought_id>` (`SHADOW`) or `l6-observe-<thought_id>-<8 hex>` (`L6_OBSERVE`) or `l6-trend-<thought_id>-<8 hex>` (`L6_TREND`). MERGE key of the evaluator. Never a broker order id. |
 | symbol | STRING | Ticker. |
 | side | STRING | `buy` / `sell`. |
-| qty | FLOAT64 | Decided quantity (`L6_OBSERVE`: new-exposure leg only). |
+| qty | FLOAT64 | Decided quantity (`L6_OBSERVE` / `L6_TREND`: new-exposure leg only; `L6_TREND` capped by the lane). |
 | price | FLOAT64 | Signal price (broker quote at decision time); same as `signal_price`. |
 | reason | STRING | Order reason (≤ 512 chars). |
-| trade_mode | STRING | `SHADOW` / `L6_OBSERVE`; `NORMAL` on legacy LILITH rows. |
+| trade_mode | STRING | `SHADOW` / `L6_OBSERVE` / `L6_TREND`; `NORMAL` on legacy LILITH rows. |
 | llm_provider | STRING | Provider key. |
 | unit_name | STRING | MAGI unit name. |
 | result | STRING | NULL until evaluated, then `WIN` / `LOSE` / `HOLD` (see *Evaluation*). |
