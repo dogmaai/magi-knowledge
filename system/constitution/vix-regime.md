@@ -1,7 +1,7 @@
 ---
 type: Constitution Section
 title: "MARKET REGIME AWARENESS - VIX"
-description: VIX-based size and selectivity adjustment -- direction comes from edge, not VIX; bands match the L6 regime enum, and L6 hard-blocks risk-increasing BUYs at VIX >= 25 except under the L6 trend lane (VIX falling + symbol uptrend).
+description: VIX-based size and selectivity adjustment -- direction comes from edge, not VIX; bands match the L6 regime enum, and L6 blocks risk-increasing BUYs at VIX >= 25 (L6_POLICY legacy/observe) or >= 30 (live), except under the L6 trend lane (VIX falling + symbol uptrend).
 lilith_safe: false
 status: draft
 generated: { by: claude/cloud, at: 2026-11-28T03:30:00Z }
@@ -33,7 +33,9 @@ guard will refuse:
 | 25 to < 30 | `EXTREME_FEAR` | Minimum size (0.3x cap = 4.5% of equity per symbol, Optuna-locked). Both directions allowed; oversize orders clamp to the allowed qty or are skipped when no headroom remains. | cap + clamp (new policy; see Modes) |
 | >= 30 | `PANIC` | Stay in cash unless exiting: all risk-increasing orders are system-blocked in BOTH directions (new BUY/SHORT, adds, flips). Only exposure-reducing orders pass — except a BUY under the trend exception below. | block risk-increasing orders, both sides (trend-lane BUYs excepted) |
 
-**Trend exception (`L6_TREND=live`, Jun 2026-11-28).** In `EXTREME_FEAR`
+**Trend exception (`L6_TREND=live`, Jun 2026-11-28, magi-core#741).** It
+applies under every `L6_POLICY`: with `legacy`/`observe` it excepts the
+EXTREME_FEAR/PANIC BUY block, with `live` the PANIC block. In `EXTREME_FEAR`
 and `PANIC` a risk-increasing BUY passes L6 only when BOTH the VIX is
 falling (at least 10% below its 5-day high and below its 5-day average) AND
 the symbol is in an uptrend (5-day average above the 20-day average, latest

@@ -4,7 +4,8 @@
 * **Update by claude/cloud — not human-verified**: records magi-core#740
   (merged): the L6 trend lane — EXTREME_FEAR/PANIC BUYs that pass a
   VIX-falling + symbol-uptrend check, capped at 4.5% / 2.25% of equity.
-  Jun decided on 2026-11-28 to enable it (`L6_TREND=live`) immediately.
+  Jun decided on 2026-11-28 to enable it (`L6_TREND=live`) immediately
+  (magi-core#741; units stay `TRD_ENV=SIMULATE`, paper).
   * [l6](system/guards/l6.md) (stable → draft): new *Trend lane* section;
     the PANIC rule now excepts trend-lane BUYs.
   * [vix-regime](system/constitution/vix-regime.md) (stable → draft): PANIC
