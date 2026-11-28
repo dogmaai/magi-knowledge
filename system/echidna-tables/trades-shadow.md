@@ -29,10 +29,10 @@ call with the same `thought_id`.
 |---|---|---|
 | `SHADOW` | `src/llm.js` `place_order` under `TRADE_MODE=SHADOW` (row built by `lib/shadow-trade.js` `buildShadowDecisionRows`) | A SHADOW unit calls `place_order` for `BUY`/`SELL` with `qty > 0`. `HOLD` is never written here — it stays a `thoughts` row (see [MELCHIOR-1 SHADOW write paths](/system/plm-units/melchior-1.md#shadow-write-paths)). |
 | `L6_OBSERVE` | `src/llm.js` `recordL6ShadowCandidate` | An `EXTREME_FEAR` BUY that legacy [L6](/system/guards/l6.md) blocked but the new policy would allow or clamp; only the new-exposure leg is recorded. |
-| `L6_TREND` | `src/llm.js` `applyL6TrendLane` (`L6_TREND=observe`, magi-core#740) | An `EXTREME_FEAR`/`PANIC` BUY that L6 (or the L1.5 oversize check) blocks but that passes the [L6 trend lane](/system/guards/l6.md) (*Trend lane*); qty is the new-exposure leg capped at 4.5% / 2.25% of equity. |
+| `L6_TREND` | `src/llm.js` `applyL6TrendLane` (`L6_TREND=observe`, magi-core#740) | An `EXTREME_FEAR`/`PANIC` BUY that L6 (or the L1.5 oversize check) blocks but that passes the [L6 trend lane](/system/guards/l6.md) (*Trend lane*); qty is the new-exposure leg capped at 4.5% / 2.25% of equity. Written only under `L6_TREND=observe`; since magi-core#741 the units run `L6_TREND=live`, where a passing BUY executes for real (a `trades` row) and no new `L6_TREND` shadow rows are written. |
 | `NORMAL` (legacy) | retired LILITH canary | 27 rows, 2026-07-22 → 2026-07-28; no current producer. |
 
-Both live producers skip the row when the signal price or `thought_id` is
+All shadow producers skip the row when the signal price or `thought_id` is
 unavailable, and write `trades_shadow` and `thoughts_shadow` together; a
 partial insert is logged as a failure.
 
