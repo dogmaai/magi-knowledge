@@ -1,10 +1,10 @@
 ---
 type: Constitution Section
 title: "MARKET REGIME AWARENESS - VIX"
-description: VIX-based size and selectivity adjustment -- direction comes from edge, not VIX; bands match the L6 regime enum, and L6 hard-blocks risk-increasing BUYs at VIX >= 25.
+description: VIX-based size and selectivity adjustment -- direction comes from edge, not VIX; bands match the L6 regime enum, and L6 hard-blocks risk-increasing BUYs at VIX >= 25 except under the L6 trend lane (VIX falling + symbol uptrend).
 lilith_safe: false
-status: stable
-generated: { by: devin/local, at: 2026-10-12T03:11:00Z }
+status: draft
+generated: { by: claude/cloud, at: 2026-11-28T03:30:00Z }
 verified: [{ by: human:jun, at: 2026-06-23T01:27:14Z }, { by: human:jun, at: 2026-10-12T02:46:00Z }, { by: human:jun, at: 2026-10-12T03:56:00Z }]
 stale_after: 2027-04-12T03:56:00Z
 tags: [constitution, v3, plm, vix, regime, risk]
@@ -31,7 +31,16 @@ guard will refuse:
 | 15 to < 20 | `LOW_FEAR` | Standard size; trade either direction on its own merit. | pass |
 | 20 to < 25 | `HIGH_FEAR` | Reduce size (0.7x cap); demand stronger confirmation; both directions allowed. | warn on BUY |
 | 25 to < 30 | `EXTREME_FEAR` | Minimum size (0.3x cap = 4.5% of equity per symbol, Optuna-locked). Both directions allowed; oversize orders clamp to the allowed qty or are skipped when no headroom remains. | cap + clamp (new policy; see Modes) |
-| >= 30 | `PANIC` | Stay in cash unless exiting: all risk-increasing orders are system-blocked in BOTH directions (new BUY/SHORT, adds, flips). Only exposure-reducing orders pass. | block risk-increasing orders, both sides |
+| >= 30 | `PANIC` | Stay in cash unless exiting: all risk-increasing orders are system-blocked in BOTH directions (new BUY/SHORT, adds, flips). Only exposure-reducing orders pass — except a BUY under the trend exception below. | block risk-increasing orders, both sides (trend-lane BUYs excepted) |
+
+**Trend exception (`L6_TREND=live`, Jun 2026-11-28).** In `EXTREME_FEAR`
+and `PANIC` a risk-increasing BUY passes L6 only when BOTH the VIX is
+falling (at least 10% below its 5-day high and below its 5-day average) AND
+the symbol is in an uptrend (5-day average above the 20-day average, latest
+close above the 20-day average). Size is capped at 4.5% of equity per
+symbol in `EXTREME_FEAR` and 2.25% in `PANIC`; larger orders are clamped.
+The prompt states this line and drops "do not attempt them" only when
+`L6_TREND=live`. See [L6 trend lane](/system/guards/l6.md).
 
 Boundaries are lower-inclusive (`classifyVixRegime` uses `<` against each
 `*_MAX`), so VIX exactly 25.0 is `EXTREME_FEAR` and exactly 30.0 is `PANIC`.
