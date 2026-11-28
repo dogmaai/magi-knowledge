@@ -41,8 +41,10 @@ falling (at least 10% below its 5-day high and below its 5-day average) AND
 the symbol is in an uptrend (5-day average above the 20-day average, latest
 close above the 20-day average). Size is capped at 4.5% of equity per
 symbol in `EXTREME_FEAR` and 2.25% in `PANIC`; larger orders are clamped.
-The prompt states this line and drops "do not attempt them" only when
-`L6_TREND=live`. See [L6 trend lane](/system/guards/l6.md).
+The prompt (constitution and the per-session regime section) states this
+line and drops "do not attempt them" only when `L6_TREND=live`; with
+`L6_POLICY=live` it covers `PANIC` only (2.25%). The current VIX must be a
+live Yahoo `^VIX` reading. See [L6 trend lane](/system/guards/l6.md).
 
 Boundaries are lower-inclusive (`classifyVixRegime` uses `<` against each
 `*_MAX`), so VIX exactly 25.0 is `EXTREME_FEAR` and exactly 30.0 is `PANIC`.
